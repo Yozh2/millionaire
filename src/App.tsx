@@ -723,14 +723,14 @@ export default function BG3Millionaire() {
                     disabled={!askAudience || selectedAnswer !== null}
                     className={`px-4 py-2 text-sm transition-all border-3 font-serif ${
                       askAudience && selectedAnswer === null
-                        ? 'bg-gradient-to-b from-purple-700 to-purple-900 border-purple-500 text-purple-100 hover:from-purple-600'
+                        ? 'bg-gradient-to-b from-teal-700 to-teal-900 border-teal-500 text-teal-100 hover:from-teal-600'
                         : 'bg-stone-950 border-stone-800 text-stone-600 cursor-not-allowed'
                     }`}
                     style={{
                       borderStyle: 'ridge',
                       boxShadow:
                         askAudience && selectedAnswer === null
-                          ? '0 0 15px rgba(168, 85, 247, 0.4)'
+                          ? '0 0 15px rgba(20, 184, 166, 0.4)'
                           : 'none',
                     }}
                   >

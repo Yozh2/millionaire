@@ -154,55 +154,55 @@ export const StarIcon = () => (
 /** D20 dice showing critical fail (1) - used for game over screen */
 export const CriticalFailIcon = () => (
   <svg viewBox="0 0 64 64" className="w-20 h-20 mx-auto">
-    {/* D20 icosahedron - triangular faces visible from front */}
-    {/* Main outer triangle shape */}
+    {/* D20 icosahedron - classic view with visible triangular faces */}
+    {/* Outer pentagon shape */}
     <polygon
-      points="32,4 60,54 4,54"
+      points="32,2 58,22 50,56 14,56 6,22"
       fill="#1a1a2e"
       stroke="#dc2626"
       strokeWidth="2"
     />
-    {/* Top inner triangle */}
+    {/* Top triangular face */}
     <polygon
-      points="32,4 44,30 20,30"
+      points="32,2 58,22 6,22"
       fill="#2d2d44"
       stroke="#991b1b"
       strokeWidth="1"
     />
-    {/* Bottom left triangle */}
+    {/* Upper right face */}
     <polygon
-      points="20,30 4,54 32,54"
+      points="58,22 50,56 32,34"
       fill="#252538"
       stroke="#991b1b"
       strokeWidth="1"
     />
-    {/* Bottom right triangle */}
+    {/* Upper left face */}
     <polygon
-      points="44,30 60,54 32,54"
+      points="6,22 32,34 14,56"
       fill="#1f1f33"
       stroke="#991b1b"
       strokeWidth="1"
     />
-    {/* Center triangle (main face with number) */}
+    {/* Bottom face */}
     <polygon
-      points="20,30 44,30 32,54"
+      points="14,56 50,56 32,34"
+      fill="#333350"
+      stroke="#991b1b"
+      strokeWidth="1"
+    />
+    {/* Center face (main face with number) */}
+    <polygon
+      points="6,22 58,22 32,34"
       fill="#2a2a3e"
       stroke="#991b1b"
       strokeWidth="1"
     />
-    {/* Small top triangles for detail */}
-    <polygon
-      points="32,4 26,17 38,17"
-      fill="#333350"
-      stroke="#991b1b"
-      strokeWidth="0.5"
-    />
     {/* The number 1 - critical fail */}
     <text
       x="32"
-      y="46"
+      y="32"
       textAnchor="middle"
-      fontSize="20"
+      fontSize="18"
       fontWeight="bold"
       fill="#ef4444"
       style={{ textShadow: '0 0 10px #ef4444' }}
@@ -211,7 +211,7 @@ export const CriticalFailIcon = () => (
     </text>
     {/* Outer glow effect */}
     <polygon
-      points="32,4 60,54 4,54"
+      points="32,2 58,22 50,56 14,56 6,22"
       fill="none"
       stroke="#ef4444"
       strokeWidth="1"
