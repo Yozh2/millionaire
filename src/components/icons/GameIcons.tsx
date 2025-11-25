@@ -150,3 +150,73 @@ export const StarIcon = () => (
     />
   </svg>
 );
+
+/** D20 dice showing critical fail (1) - used for game over screen */
+export const CriticalFailIcon = () => (
+  <svg viewBox="0 0 64 64" className="w-20 h-20 mx-auto">
+    {/* D20 icosahedron shape */}
+    <polygon
+      points="32,2 58,18 58,46 32,62 6,46 6,18"
+      fill="#1a1a2e"
+      stroke="#dc2626"
+      strokeWidth="2"
+    />
+    {/* Inner facets */}
+    <polygon
+      points="32,2 58,18 32,32"
+      fill="#2d2d44"
+      stroke="#991b1b"
+      strokeWidth="1"
+    />
+    <polygon
+      points="32,2 6,18 32,32"
+      fill="#252538"
+      stroke="#991b1b"
+      strokeWidth="1"
+    />
+    <polygon
+      points="58,18 58,46 32,32"
+      fill="#1f1f33"
+      stroke="#991b1b"
+      strokeWidth="1"
+    />
+    <polygon
+      points="6,18 6,46 32,32"
+      fill="#2a2a3e"
+      stroke="#991b1b"
+      strokeWidth="1"
+    />
+    <polygon
+      points="32,62 58,46 32,32"
+      fill="#232337"
+      stroke="#991b1b"
+      strokeWidth="1"
+    />
+    <polygon
+      points="32,62 6,46 32,32"
+      fill="#1c1c30"
+      stroke="#991b1b"
+      strokeWidth="1"
+    />
+    {/* The number 1 - critical fail */}
+    <text
+      x="32"
+      y="40"
+      textAnchor="middle"
+      fontSize="24"
+      fontWeight="bold"
+      fill="#ef4444"
+      style={{ textShadow: '0 0 10px #ef4444' }}
+    >
+      1
+    </text>
+    {/* Glow effect */}
+    <polygon
+      points="32,2 58,18 58,46 32,62 6,46 6,18"
+      fill="none"
+      stroke="#ef4444"
+      strokeWidth="1"
+      opacity="0.5"
+    />
+  </svg>
+);

@@ -13,4 +13,5 @@ export {
   ScrollIcon,
   TavernIcon,
   StarIcon,
+  CriticalFailIcon,
 } from './GameIcons';

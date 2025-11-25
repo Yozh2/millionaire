@@ -19,7 +19,6 @@ import { useState, useEffect } from 'react';
 import {
   TrophyIcon,
   MoneyIcon,
-  SkullIcon,
   MindFlayerIcon,
   DarkUrgeIcon,
   SwordIcon,
@@ -27,6 +26,7 @@ import {
   ScrollIcon,
   TavernIcon,
   StarIcon,
+  CriticalFailIcon,
 } from './components/icons';
 import { Panel, PanelHeader } from './components/ui';
 import { getQuestionsForMode, prizes, guaranteedPrizes, companionNames } from './data';
@@ -113,8 +113,21 @@ export default function BG3Millionaire() {
         textPrimary: 'text-amber-400',
         textSecondary: 'text-amber-200',
         textMuted: 'text-amber-700',
+        textAccent: 'text-amber-100',
         border: 'border-amber-800',
+        borderLight: 'border-amber-600',
         borderHover: 'hover:border-amber-600',
+        bgPanel: 'from-amber-950/90 via-stone-900/95 to-stone-950/90',
+        bgButton: 'from-amber-700 via-amber-800 to-amber-900',
+        bgButtonHover: 'hover:from-amber-600 hover:via-amber-700 hover:to-amber-800',
+        bgAnswer: 'from-amber-950 via-stone-900 to-neutral-950',
+        bgAnswerHover: 'hover:from-amber-900 hover:to-stone-900',
+        bgLifeline: 'from-amber-700 to-amber-900',
+        bgPrizeCurrent: 'bg-amber-900/60',
+        bgPrizePassed: 'bg-amber-950/40',
+        textLifeline: 'text-amber-100',
+        borderLifeline: 'border-amber-500',
+        shadowAnswer: 'hover:shadow-amber-900/50',
         glow: 'rgba(217, 119, 6, 0.5)',
         glowColor: '#fbbf24',
         glowSecondary: '#d97706',
@@ -126,8 +139,21 @@ export default function BG3Millionaire() {
         textPrimary: 'text-purple-400',
         textSecondary: 'text-purple-200',
         textMuted: 'text-purple-700',
+        textAccent: 'text-purple-100',
         border: 'border-purple-800',
+        borderLight: 'border-purple-600',
         borderHover: 'hover:border-purple-600',
+        bgPanel: 'from-purple-950/90 via-indigo-950/95 to-stone-950/90',
+        bgButton: 'from-purple-700 via-purple-800 to-purple-900',
+        bgButtonHover: 'hover:from-purple-600 hover:via-purple-700 hover:to-purple-800',
+        bgAnswer: 'from-purple-950 via-indigo-950 to-neutral-950',
+        bgAnswerHover: 'hover:from-purple-900 hover:to-indigo-950',
+        bgLifeline: 'from-purple-700 to-purple-900',
+        bgPrizeCurrent: 'bg-purple-900/60',
+        bgPrizePassed: 'bg-purple-950/40',
+        textLifeline: 'text-purple-100',
+        borderLifeline: 'border-purple-500',
+        shadowAnswer: 'hover:shadow-purple-900/50',
         glow: 'rgba(168, 85, 247, 0.5)',
         glowColor: '#a855f7',
         glowSecondary: '#7c3aed',
@@ -139,8 +165,21 @@ export default function BG3Millionaire() {
       textPrimary: 'text-red-400',
       textSecondary: 'text-red-200',
       textMuted: 'text-red-700',
+      textAccent: 'text-red-100',
       border: 'border-red-800',
+      borderLight: 'border-red-600',
       borderHover: 'hover:border-red-600',
+      bgPanel: 'from-red-950/90 via-stone-900/95 to-stone-950/90',
+      bgButton: 'from-red-700 via-red-800 to-red-900',
+      bgButtonHover: 'hover:from-red-600 hover:via-red-700 hover:to-red-800',
+      bgAnswer: 'from-red-950 via-stone-900 to-neutral-950',
+      bgAnswerHover: 'hover:from-red-900 hover:to-stone-900',
+      bgLifeline: 'from-red-700 to-red-900',
+      bgPrizeCurrent: 'bg-red-900/60',
+      bgPrizePassed: 'bg-red-950/40',
+      textLifeline: 'text-red-100',
+      borderLifeline: 'border-red-500',
+      shadowAnswer: 'hover:shadow-red-900/50',
       glow: 'rgba(239, 68, 68, 0.5)',
       glowColor: '#ef4444',
       glowSecondary: '#dc2626',
@@ -378,13 +417,13 @@ export default function BG3Millionaire() {
       }
     }
 
-    // Default state - fantasy amber style
+    // Default state - themed style
     return (
       base +
-      'bg-gradient-to-b from-amber-950 via-stone-900 to-neutral-950 ' +
-      'text-amber-200 border-amber-800 ' +
-      'hover:border-amber-600 hover:from-amber-900 hover:to-stone-900 ' +
-      'hover:text-amber-100 hover:shadow-lg hover:shadow-amber-900/50'
+      `bg-gradient-to-b ${theme.bgAnswer} ` +
+      `${theme.textSecondary} ${theme.border} ` +
+      `${theme.borderHover} ${theme.bgAnswerHover} ` +
+      `${theme.textAccent} hover:shadow-lg ${theme.shadowAnswer}`
     );
   };
 
@@ -630,15 +669,15 @@ export default function BG3Millionaire() {
                 </PanelHeader>
                 <div className="p-4">
                   <div className="flex justify-between items-center mb-3">
-                    <span className="text-amber-700 text-xs font-serif">
+                    <span className={`${theme.textMuted} text-xs font-serif`}>
                       Прогресс: {currentQuestion + 1}/15
                     </span>
-                    <span className="text-amber-400 font-bold flex items-center font-serif">
+                    <span className={`${theme.textPrimary} font-bold flex items-center font-serif`}>
                       <CoinIcon />
                       {prizes[currentQuestion]}
                     </span>
                   </div>
-                  <p className="text-amber-100 text-base leading-relaxed font-serif">
+                  <p className={`${theme.textAccent} text-base leading-relaxed font-serif`}>
                     {sortedQuestions[currentQuestion].question}
                   </p>
                 </div>
@@ -658,7 +697,7 @@ export default function BG3Millionaire() {
                       className={getAnswerStyle(index)}
                       style={{ borderStyle: 'ridge' }}
                     >
-                      <span className="text-amber-400 mr-2 font-bold">
+                      <span className={`${theme.textPrimary} mr-2 font-bold`}>
                         [{['A', 'B', 'C', 'D'][index]}]
                       </span>
                       {answer}
@@ -680,32 +719,32 @@ export default function BG3Millionaire() {
                   <div className="p-3">
                     {showHint.type === 'phone' && (
                       <div>
-                        <p className="text-amber-600 text-xs mb-1 font-serif">
+                        <p className={`${theme.textMuted} text-xs mb-1 font-serif`}>
                           <ScrollIcon /> Отправитель: {showHint.name}
                         </p>
-                        <p className="text-amber-200 italic font-serif">
+                        <p className={`${theme.textSecondary} italic font-serif`}>
                           "{showHint.text}"
                         </p>
                       </div>
                     )}
                     {showHint.type === 'audience' && (
                       <div>
-                        <p className="text-amber-600 text-xs mb-2 font-serif">
+                        <p className={`${theme.textMuted} text-xs mb-2 font-serif`}>
                           <TavernIcon /> Мнение таверны:
                         </p>
                         <div className="grid grid-cols-4 gap-2">
                           {showHint.percentages.map((p, i) => (
                             <div key={i} className="text-center">
                               <div
-                                className="h-16 bg-black border-2 border-amber-900 relative overflow-hidden"
+                                className={`h-16 bg-black border-2 ${theme.border} relative overflow-hidden`}
                                 style={{ borderStyle: 'inset' }}
                               >
                                 <div
-                                  className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-amber-700 to-amber-500 transition-all duration-500"
+                                  className={`absolute bottom-0 left-0 right-0 bg-gradient-to-t ${theme.bgLifeline} transition-all duration-500`}
                                   style={{ height: `${p}%` }}
                                 />
                               </div>
-                              <span className="text-xs text-amber-400 font-serif">
+                              <span className={`text-xs ${theme.textPrimary} font-serif`}>
                                 [{['A', 'B', 'C', 'D'][i]}] {p}%
                               </span>
                             </div>
@@ -812,9 +851,9 @@ export default function BG3Millionaire() {
                         key={index}
                         className={`text-xs px-2 py-1 flex justify-between items-center font-serif transition-all border-l-4 ${
                           isCurrent
-                            ? 'bg-amber-900/60 text-amber-200 border-amber-400 shadow-lg'
+                            ? `${theme.bgPrizeCurrent} ${theme.textSecondary} ${theme.borderLight} shadow-lg`
                             : isPassed
-                              ? 'bg-amber-950/40 text-amber-700 border-amber-800'
+                              ? `${theme.bgPrizePassed} ${theme.textMuted} ${theme.border}`
                               : isGuaranteed
                                 ? 'bg-yellow-950/40 text-yellow-600 border-yellow-700'
                                 : 'text-stone-600 border-stone-800'
@@ -822,7 +861,7 @@ export default function BG3Millionaire() {
                         style={
                           isCurrent
                             ? {
-                                boxShadow: '0 0 15px rgba(251, 191, 36, 0.4)',
+                                boxShadow: `0 0 15px ${theme.glow}`,
                                 borderStyle: 'solid',
                               }
                             : { borderStyle: 'solid' }
@@ -857,14 +896,14 @@ export default function BG3Millionaire() {
             <div className="text-center py-12 px-4">
               {gameState === 'won' && <TrophyIcon />}
               {gameState === 'took_money' && <MoneyIcon />}
-              {gameState === 'lost' && <SkullIcon />}
+              {gameState === 'lost' && <CriticalFailIcon />}
 
               <h2
                 className={`text-2xl font-bold mt-4 mb-4 tracking-wide font-serif ${
                   gameState === 'won'
                     ? 'text-yellow-400'
                     : gameState === 'took_money'
-                      ? 'text-amber-400'
+                      ? theme.textPrimary
                       : 'text-red-400'
                 }`}
                 style={{
@@ -872,7 +911,7 @@ export default function BG3Millionaire() {
                     gameState === 'won'
                       ? '0 0 25px #facc15, 0 2px 8px #000'
                       : gameState === 'took_money'
-                        ? '0 0 25px #fbbf24, 0 2px 8px #000'
+                        ? `0 0 25px ${theme.glowColor}, 0 2px 8px #000`
                         : '0 0 25px #ef4444, 0 2px 8px #000',
                 }}
               >
@@ -881,7 +920,7 @@ export default function BG3Millionaire() {
                 {gameState === 'lost' && '💀 КРИТИЧЕСКИЙ ПРОВАЛ 💀'}
               </h2>
 
-              <p className="text-amber-200 text-lg mb-2 font-serif">
+              <p className={`${theme.textSecondary} text-lg mb-2 font-serif`}>
                 {gameState === 'won' &&
                   'Вы завоевали величайшее сокровище Фаэруна!'}
                 {gameState === 'took_money' &&
@@ -895,7 +934,7 @@ export default function BG3Millionaire() {
               </div>
 
               {gameState === 'lost' && (
-                <p className="text-amber-600 mb-6 text-sm font-serif italic">
+                <p className={`${theme.textMuted} mb-6 text-sm font-serif italic`}>
                   Правильный ответ:{' '}
                   {
                     sortedQuestions[currentQuestion].answers[
@@ -907,10 +946,9 @@ export default function BG3Millionaire() {
 
               <button
                 onClick={newGame}
-                className="px-8 py-3 bg-gradient-to-b from-amber-700 via-amber-800 to-amber-900 text-amber-50 font-bold tracking-wide border-4 border-amber-600 hover:from-amber-600 hover:via-amber-700 hover:to-amber-800 transition-all transform hover:scale-105 font-serif"
+                className={`px-8 py-3 bg-gradient-to-b ${theme.bgButton} text-white font-bold tracking-wide border-4 ${theme.borderLight} ${theme.bgButtonHover} transition-all transform hover:scale-105 font-serif`}
                 style={{
-                  boxShadow:
-                    '0 0 25px rgba(217, 119, 6, 0.5), inset 0 1px 0 rgba(251, 191, 36, 0.3)',
+                  boxShadow: `0 0 25px ${theme.glow}, inset 0 1px 0 rgba(255, 255, 255, 0.2)`,
                   borderStyle: 'ridge',
                   textShadow: '0 2px 4px rgba(0,0,0,0.8)',
                 }}
