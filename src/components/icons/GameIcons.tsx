@@ -52,10 +52,19 @@ export const DarkUrgeIcon = () => (
 /** Sword icon - represents the hero/adventurer */
 export const SwordIcon = () => (
   <svg viewBox="0 0 64 64" className="w-16 h-16 mx-auto">
-    <rect x="28" y="4" width="8" height="40" fill="#94a3b8" rx="2" />
-    <rect x="26" y="42" width="12" height="6" fill="#475569" />
-    <rect x="20" y="48" width="24" height="4" fill="#334155" />
-    <path d="M30 6h4v36h-4z" fill="#cbd5e1" />
+    {/* Blade */}
+    <path d="M28 4h8l2 36h-12z" fill="#94a3b8" />
+    <path d="M30 6h4v32h-4z" fill="#cbd5e1" />
+    {/* Crossguard */}
+    <rect x="18" y="40" width="28" height="5" rx="2" fill="#8b4513" />
+    <rect x="20" y="41" width="24" height="3" rx="1" fill="#a0522d" />
+    {/* Grip */}
+    <rect x="28" y="45" width="8" height="12" fill="#654321" />
+    <rect x="29" y="47" width="2" height="8" fill="#8b4513" />
+    <rect x="33" y="47" width="2" height="8" fill="#8b4513" />
+    {/* Pommel */}
+    <circle cx="32" cy="60" r="4" fill="#b8860b" />
+    <circle cx="32" cy="60" r="2" fill="#daa520" />
   </svg>
 );
 

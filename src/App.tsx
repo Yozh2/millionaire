@@ -326,10 +326,10 @@ export default function BG3Millionaire() {
             <div className="flex justify-end mb-2">
               <button
                 onClick={toggleMusic}
-                className="px-3 py-1 text-xs bg-gradient-to-b from-amber-800 to-amber-900 text-amber-200 border-2 border-amber-700 hover:from-amber-700 hover:to-amber-800 transition-all font-serif"
-                style={{ borderStyle: 'ridge' }}
+                className="text-2xl hover:scale-110 transition-transform"
+                title={isMusicPlaying ? 'Выключить музыку' : 'Включить музыку'}
               >
-                {isMusicPlaying ? '🔊 Музыка вкл' : '🔇 Музыка выкл'}
+                {isMusicPlaying ? '🔊' : '🔇'}
               </button>
             </div>
 
@@ -345,8 +345,12 @@ export default function BG3Millionaire() {
               КТО ХОЧЕТ СТАТЬ МИЛЛИОНЕРОМ
             </h1>
             <h2
-              className="text-lg text-amber-600 tracking-wide italic"
-              style={{ lineHeight: '1.5' }}
+              className="text-lg text-amber-600 tracking-wide"
+              style={{
+                lineHeight: '1.5',
+                fontFamily: 'Arial, sans-serif',
+                fontStyle: 'italic',
+              }}
             >
               [ BALDUR'S GATE 3 EDITION ]
             </h2>
