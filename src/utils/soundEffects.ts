@@ -12,23 +12,45 @@ interface ToneConfig {
   volume?: number;
   attack?: number;
   decay?: number;
+  startOffset?: number;
 }
 
 let audioContext: AudioContext | null = null;
+let audioSupported = true;
 
 /**
  * Initialize the Web Audio API context.
  * Must be called after a user interaction (browser requirement).
+ * Returns null if Web Audio API is not supported.
  */
-const getAudioContext = (): AudioContext => {
+const getAudioContext = (): AudioContext | null => {
+  if (!audioSupported) {
+    return null;
+  }
+  
   if (!audioContext) {
-    audioContext = new (window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
+    try {
+      const AudioContextClass = window.AudioContext || 
+        (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+      
+      if (!AudioContextClass) {
+        audioSupported = false;
+        console.warn('Web Audio API is not supported in this browser');
+        return null;
+      }
+      
+      audioContext = new AudioContextClass();
+    } catch (error) {
+      audioSupported = false;
+      console.warn('Failed to create AudioContext:', error);
+      return null;
+    }
   }
   return audioContext;
 };
 
 /**
- * Play a single tone with envelope.
+ * Play a single tone with envelope using Web Audio API scheduling.
  */
 const playTone = ({
   frequency,
@@ -37,8 +59,11 @@ const playTone = ({
   volume = 0.3,
   attack = 0.01,
   decay = 0.1,
+  startOffset = 0,
 }: ToneConfig): void => {
   const ctx = getAudioContext();
+  if (!ctx) return;
+  
   const oscillator = ctx.createOscillator();
   const gainNode = ctx.createGain();
 
@@ -48,22 +73,22 @@ const playTone = ({
   oscillator.frequency.value = frequency;
   oscillator.type = type;
 
-  const now = ctx.currentTime;
-  gainNode.gain.setValueAtTime(0, now);
-  gainNode.gain.linearRampToValueAtTime(volume, now + attack);
-  gainNode.gain.linearRampToValueAtTime(volume * 0.7, now + attack + duration * 0.5);
-  gainNode.gain.linearRampToValueAtTime(0, now + duration);
+  const startTime = ctx.currentTime + startOffset;
+  gainNode.gain.setValueAtTime(0, startTime);
+  gainNode.gain.linearRampToValueAtTime(volume, startTime + attack);
+  gainNode.gain.linearRampToValueAtTime(volume * 0.7, startTime + attack + duration * 0.5);
+  gainNode.gain.linearRampToValueAtTime(0, startTime + duration);
 
-  oscillator.start(now);
-  oscillator.stop(now + duration + decay);
+  oscillator.start(startTime);
+  oscillator.stop(startTime + duration + decay);
 };
 
 /**
- * Play multiple tones in sequence (for melodic effects).
+ * Play multiple tones in sequence using Web Audio API scheduling.
  */
 const playSequence = (tones: ToneConfig[], delayBetween = 0.1): void => {
   tones.forEach((tone, index) => {
-    setTimeout(() => playTone(tone), index * delayBetween * 1000);
+    playTone({ ...tone, startOffset: index * delayBetween });
   });
 };
 
@@ -72,6 +97,8 @@ const playSequence = (tones: ToneConfig[], delayBetween = 0.1): void => {
  */
 export const playButtonClick = (): void => {
   const ctx = getAudioContext();
+  if (!ctx) return;
+  
   const oscillator = ctx.createOscillator();
   const gainNode = ctx.createGain();
 
@@ -94,6 +121,8 @@ export const playButtonClick = (): void => {
  */
 export const playAnswerClick = (): void => {
   const ctx = getAudioContext();
+  if (!ctx) return;
+  
   const oscillator = ctx.createOscillator();
   const gainNode = ctx.createGain();
 
@@ -129,6 +158,7 @@ export const playVictory = (): void => {
  */
 export const playDefeat = (): void => {
   const ctx = getAudioContext();
+  if (!ctx) return;
   
   // Create a low rumbling base
   const oscillator1 = ctx.createOscillator();
@@ -158,19 +188,21 @@ export const playDefeat = (): void => {
 
 /**
  * 50:50 lifeline sound - magical zap/elimination effect.
+ * Uses Web Audio API scheduling for both zaps.
  */
 export const playFiftyFifty = (): void => {
   const ctx = getAudioContext();
+  if (!ctx) return;
   
-  // Zap effect with frequency sweep
+  const now = ctx.currentTime;
+  
+  // First zap effect with frequency sweep
   const oscillator = ctx.createOscillator();
   const gainNode = ctx.createGain();
   oscillator.connect(gainNode);
   gainNode.connect(ctx.destination);
   
   oscillator.type = 'sawtooth';
-  
-  const now = ctx.currentTime;
   oscillator.frequency.setValueAtTime(1200, now);
   oscillator.frequency.exponentialRampToValueAtTime(200, now + 0.3);
   
@@ -180,24 +212,23 @@ export const playFiftyFifty = (): void => {
   oscillator.start(now);
   oscillator.stop(now + 0.35);
   
-  // Second zap slightly delayed
-  setTimeout(() => {
-    const osc2 = ctx.createOscillator();
-    const gain2 = ctx.createGain();
-    osc2.connect(gain2);
-    gain2.connect(ctx.destination);
-    
-    osc2.type = 'sawtooth';
-    const time = ctx.currentTime;
-    osc2.frequency.setValueAtTime(1000, time);
-    osc2.frequency.exponentialRampToValueAtTime(150, time + 0.25);
-    
-    gain2.gain.setValueAtTime(0.15, time);
-    gain2.gain.exponentialRampToValueAtTime(0.01, time + 0.25);
-    
-    osc2.start(time);
-    osc2.stop(time + 0.3);
-  }, 150);
+  // Second zap using Web Audio API scheduling (delayed by 0.15s)
+  const osc2 = ctx.createOscillator();
+  const gain2 = ctx.createGain();
+  osc2.connect(gain2);
+  gain2.connect(ctx.destination);
+  
+  osc2.type = 'sawtooth';
+  const secondZapTime = now + 0.15;
+  osc2.frequency.setValueAtTime(1000, secondZapTime);
+  osc2.frequency.exponentialRampToValueAtTime(150, secondZapTime + 0.25);
+  
+  gain2.gain.setValueAtTime(0, now);
+  gain2.gain.setValueAtTime(0.15, secondZapTime);
+  gain2.gain.exponentialRampToValueAtTime(0.01, secondZapTime + 0.25);
+  
+  osc2.start(secondZapTime);
+  osc2.stop(secondZapTime + 0.3);
 };
 
 /**
@@ -205,6 +236,7 @@ export const playFiftyFifty = (): void => {
  */
 export const playScrollUnfold = (): void => {
   const ctx = getAudioContext();
+  if (!ctx) return;
   
   // Soft rustling effect using noise-like tones
   const oscillator = ctx.createOscillator();
@@ -246,83 +278,90 @@ export const playScrollUnfold = (): void => {
 
 /**
  * Tavern/Audience sound - crowd murmur and cheer effect.
+ * Uses Web Audio API scheduling for all oscillators.
  */
 export const playTavernCheer = (): void => {
   const ctx = getAudioContext();
+  if (!ctx) return;
   
-  // Create multiple overlapping tones to simulate crowd
-  const frequencies = [300, 350, 400, 450, 500];
   const now = ctx.currentTime;
   
+  // Create multiple overlapping tones to simulate crowd using scheduled timing
+  const frequencies = [300, 350, 400, 450, 500];
+  
   frequencies.forEach((freq, index) => {
-    setTimeout(() => {
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      
-      osc.type = 'triangle';
-      const time = ctx.currentTime;
-      osc.frequency.setValueAtTime(freq, time);
-      osc.frequency.linearRampToValueAtTime(freq * 1.1, time + 0.2);
-      osc.frequency.linearRampToValueAtTime(freq * 0.9, time + 0.4);
-      
-      gain.gain.setValueAtTime(0.1, time);
-      gain.gain.linearRampToValueAtTime(0.15, time + 0.15);
-      gain.gain.exponentialRampToValueAtTime(0.01, time + 0.5);
-      
-      osc.start(time);
-      osc.stop(time + 0.55);
-    }, index * 50);
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    
+    osc.type = 'triangle';
+    const startTime = now + index * 0.05;
+    
+    osc.frequency.setValueAtTime(freq, startTime);
+    osc.frequency.linearRampToValueAtTime(freq * 1.1, startTime + 0.2);
+    osc.frequency.linearRampToValueAtTime(freq * 0.9, startTime + 0.4);
+    
+    // Schedule gain envelope
+    gain.gain.setValueAtTime(0, now);
+    gain.gain.setValueAtTime(0.1, startTime);
+    gain.gain.linearRampToValueAtTime(0.15, startTime + 0.15);
+    gain.gain.exponentialRampToValueAtTime(0.01, startTime + 0.5);
+    
+    osc.start(startTime);
+    osc.stop(startTime + 0.55);
   });
   
-  // Add a "mug slam" effect at the end
-  setTimeout(() => {
-    const thump = ctx.createOscillator();
-    const thumpGain = ctx.createGain();
-    thump.connect(thumpGain);
-    thumpGain.connect(ctx.destination);
-    
-    thump.type = 'sine';
-    const time = ctx.currentTime;
-    thump.frequency.setValueAtTime(100, time);
-    thump.frequency.exponentialRampToValueAtTime(50, time + 0.15);
-    
-    thumpGain.gain.setValueAtTime(0.25, time);
-    thumpGain.gain.exponentialRampToValueAtTime(0.01, time + 0.2);
-    
-    thump.start(time);
-    thump.stop(time + 0.25);
-  }, 300);
+  // Add a "mug slam" effect using scheduled timing
+  const thump = ctx.createOscillator();
+  const thumpGain = ctx.createGain();
+  thump.connect(thumpGain);
+  thumpGain.connect(ctx.destination);
+  
+  thump.type = 'sine';
+  const thumpTime = now + 0.3;
+  thump.frequency.setValueAtTime(100, thumpTime);
+  thump.frequency.exponentialRampToValueAtTime(50, thumpTime + 0.15);
+  
+  thumpGain.gain.setValueAtTime(0, now);
+  thumpGain.gain.setValueAtTime(0.25, thumpTime);
+  thumpGain.gain.exponentialRampToValueAtTime(0.01, thumpTime + 0.2);
+  
+  thump.start(thumpTime);
+  thump.stop(thumpTime + 0.25);
 };
 
 /**
  * Take money/coins sound - jingling coins effect.
+ * Uses Web Audio API scheduling for all coin sounds.
  */
 export const playCoins = (): void => {
   const ctx = getAudioContext();
+  if (!ctx) return;
+  
   const now = ctx.currentTime;
   
-  // Multiple short high-pitched tones for coin jingle
+  // Multiple short high-pitched tones for coin jingle with scheduled timing
   const coinFreqs = [2000, 2200, 1800, 2400, 2100, 1900, 2300];
   
   coinFreqs.forEach((freq, index) => {
-    setTimeout(() => {
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      
-      osc.type = 'sine';
-      osc.frequency.value = freq + Math.random() * 200;
-      
-      const time = ctx.currentTime;
-      gain.gain.setValueAtTime(0.15, time);
-      gain.gain.exponentialRampToValueAtTime(0.01, time + 0.1);
-      
-      osc.start(time);
-      osc.stop(time + 0.12);
-    }, index * 60);
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    
+    osc.type = 'sine';
+    // Add slight randomness to frequency for natural sound
+    osc.frequency.value = freq + (index * 50);
+    
+    const startTime = now + index * 0.06;
+    
+    gain.gain.setValueAtTime(0, now);
+    gain.gain.setValueAtTime(0.15, startTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, startTime + 0.1);
+    
+    osc.start(startTime);
+    osc.stop(startTime + 0.12);
   });
 };
 
@@ -342,6 +381,8 @@ export const playCorrect = (): void => {
  */
 export const playWrong = (): void => {
   const ctx = getAudioContext();
+  if (!ctx) return;
+  
   const oscillator = ctx.createOscillator();
   const gainNode = ctx.createGain();
 
@@ -365,6 +406,9 @@ export const playWrong = (): void => {
  */
 export const playModeSelect = (): void => {
   const ctx = getAudioContext();
+  if (!ctx) return;
+  
+  const now = ctx.currentTime;
   
   const osc1 = ctx.createOscillator();
   const gain1 = ctx.createGain();
@@ -372,7 +416,6 @@ export const playModeSelect = (): void => {
   gain1.connect(ctx.destination);
   
   osc1.type = 'sine';
-  const now = ctx.currentTime;
   osc1.frequency.setValueAtTime(400, now);
   osc1.frequency.linearRampToValueAtTime(600, now + 0.15);
   
@@ -382,7 +425,7 @@ export const playModeSelect = (): void => {
   osc1.start(now);
   osc1.stop(now + 0.25);
   
-  // Add shimmer
+  // Add shimmer using Web Audio API scheduling
   const shimmer = ctx.createOscillator();
   const shimmerGain = ctx.createGain();
   shimmer.connect(shimmerGain);
@@ -391,11 +434,13 @@ export const playModeSelect = (): void => {
   shimmer.type = 'sine';
   shimmer.frequency.value = 1000;
   
-  shimmerGain.gain.setValueAtTime(0.1, now + 0.05);
-  shimmerGain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+  const shimmerStart = now + 0.05;
+  shimmerGain.gain.setValueAtTime(0, now);
+  shimmerGain.gain.setValueAtTime(0.1, shimmerStart);
+  shimmerGain.gain.exponentialRampToValueAtTime(0.01, shimmerStart + 0.2);
   
-  shimmer.start(now + 0.05);
-  shimmer.stop(now + 0.3);
+  shimmer.start(shimmerStart);
+  shimmer.stop(shimmerStart + 0.25);
 };
 
 /**
@@ -403,6 +448,9 @@ export const playModeSelect = (): void => {
  */
 export const playGameStart = (): void => {
   const ctx = getAudioContext();
+  if (!ctx) return;
+  
+  const now = ctx.currentTime;
   
   // Main horn tone
   const osc = ctx.createOscillator();
@@ -411,7 +459,6 @@ export const playGameStart = (): void => {
   gain.connect(ctx.destination);
   
   osc.type = 'sawtooth';
-  const now = ctx.currentTime;
   osc.frequency.setValueAtTime(220, now);
   osc.frequency.linearRampToValueAtTime(330, now + 0.3);
   
