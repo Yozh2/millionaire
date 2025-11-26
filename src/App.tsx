@@ -45,6 +45,7 @@ import {
   playNewStart,
   playTakeMoney,
   setSoundEnabled,
+  preloadAudio,
 } from './utils';
 
 /**
@@ -72,6 +73,9 @@ export default function BG3Millionaire() {
 
   /** Answers eliminated by 50:50 lifeline */
   const [eliminatedAnswers, setEliminatedAnswers] = useState<number[]>([]);
+
+  /** Shuffled answer indices for current question (maps display index to original index) */
+  const [shuffledAnswers, setShuffledAnswers] = useState<number[]>([0, 1, 2, 3]);
 
   /** Current hint being displayed */
   const [showHint, setShowHint] = useState<Hint>(null);
@@ -105,16 +109,48 @@ export default function BG3Millionaire() {
   // Effects
   // ============================================
 
-  /** Sort questions by difficulty when mode is selected */
+  /** Preload sound effects and voice lines on mount */
+  useEffect(() => {
+    preloadAudio();
+  }, []);
+
+  /** Fisher-Yates shuffle algorithm */
+  const shuffleArray = <T,>(array: T[]): T[] => {
+    const shuffled = [...array];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+  };
+
+  /** Shuffle answers for current question */
+  const shuffleCurrentAnswers = () => {
+    setShuffledAnswers(shuffleArray([0, 1, 2, 3]));
+  };
+
+  /** Sort questions by difficulty, shuffling within each difficulty group */
   useEffect(() => {
     if (selectedMode) {
       const questions = getQuestionsForMode(selectedMode);
-      const sorted = [...questions].sort((a, b) => a.difficulty - b.difficulty);
-      setSortedQuestions(sorted);
-    }
-  }, [selectedMode]);
 
-  /** Switch soundtrack based on game state and selected mode */
+      // Group questions by difficulty
+      const grouped: Record<number, Question[]> = {};
+      questions.forEach((q: Question) => {
+        if (!grouped[q.difficulty]) grouped[q.difficulty] = [];
+        grouped[q.difficulty].push(q);
+      });
+
+      // Shuffle within each group and flatten, sorted by difficulty
+      const sortedDifficulties = Object.keys(grouped).map(Number).sort((a, b) => a - b);
+      const shuffledQuestions: Question[] = sortedDifficulties.flatMap(
+        difficulty => shuffleArray(grouped[difficulty])
+      );
+
+      setSortedQuestions(shuffledQuestions);
+      shuffleCurrentAnswers(); // Shuffle answers for first question
+    }
+  }, [selectedMode]);  /** Switch soundtrack based on game state and selected mode */
   useEffect(() => {
     const basePath = import.meta.env.BASE_URL;
     let newTrack: string;
@@ -311,20 +347,23 @@ export default function BG3Millionaire() {
   };
 
   /** Handle answer selection */
-  const handleAnswerClick = (index: number) => {
-    if (selectedAnswer !== null || eliminatedAnswers.includes(index)) return;
+  const handleAnswerClick = (displayIndex: number) => {
+    if (selectedAnswer !== null || eliminatedAnswers.includes(displayIndex)) return;
+
+    // Map display index to original answer index
+    const originalIndex = shuffledAnswers[displayIndex];
 
     // Play answer click sound
     playAnswerClick();
 
-    setSelectedAnswer(index);
+    setSelectedAnswer(displayIndex);
     setShowHint(null);
 
     // Delay to show correct/incorrect animation
     setTimeout(() => {
       const correct = sortedQuestions[currentQuestion].correct;
 
-      if (index === correct) {
+      if (originalIndex === correct) {
         // Correct answer - play correct sound
         playCorrect();
         if (currentQuestion === 14) {
@@ -333,10 +372,11 @@ export default function BG3Millionaire() {
           setWonPrize(prizes[14]);
           setGameState('won');
         } else {
-          // Move to next question
+          // Move to next question and shuffle answers
           setCurrentQuestion((prev) => prev + 1);
           setSelectedAnswer(null);
           setEliminatedAnswers([]);
+          shuffleCurrentAnswers();
         }
       } else {
         // Wrong answer - play defeat sequence (CriticalFailure + GameOver)
@@ -405,8 +445,15 @@ export default function BG3Millionaire() {
 
     setFiftyFifty(false);
     const correct = sortedQuestions[currentQuestion].correct;
-    const wrong = [0, 1, 2, 3].filter((i) => i !== correct);
-    const toEliminate = wrong.sort(() => Math.random() - 0.5).slice(0, 2);
+
+    // Find display indices of wrong answers
+    const wrongDisplayIndices = shuffledAnswers
+      .map((originalIdx, displayIdx) => ({ originalIdx, displayIdx }))
+      .filter(({ originalIdx }) => originalIdx !== correct)
+      .map(({ displayIdx }) => displayIdx);
+
+    // Randomly pick 2 wrong answers to eliminate
+    const toEliminate = wrongDisplayIndices.sort(() => Math.random() - 0.5).slice(0, 2);
     setEliminatedAnswers(toEliminate);
   };
 
@@ -454,16 +501,19 @@ export default function BG3Millionaire() {
     setAskAudience(false);
     const correct = sortedQuestions[currentQuestion].correct;
 
-    // Generate realistic-looking percentages
-    const percentages = [0, 0, 0, 0];
-    percentages[correct] = 40 + Math.floor(Math.random() * 35);
+    // Find display index of correct answer
+    const correctDisplayIndex = shuffledAnswers.indexOf(correct);
 
-    let remaining = 100 - percentages[correct];
-    const otherAnswers = [0, 1, 2, 3].filter(
-      (i) => i !== correct && !eliminatedAnswers.includes(i)
+    // Generate realistic-looking percentages based on DISPLAY indices
+    const percentages = [0, 0, 0, 0];
+    percentages[correctDisplayIndex] = 40 + Math.floor(Math.random() * 35);
+
+    let remaining = 100 - percentages[correctDisplayIndex];
+    const otherDisplayIndices = [0, 1, 2, 3].filter(
+      (i) => i !== correctDisplayIndex && !eliminatedAnswers.includes(i)
     );
 
-    otherAnswers.forEach((i, idx, arr) => {
+    otherDisplayIndices.forEach((i, idx, arr) => {
       if (idx === arr.length - 1) {
         percentages[i] = remaining;
       } else {
@@ -481,24 +531,27 @@ export default function BG3Millionaire() {
   // ============================================
 
   /** Get dynamic styling for answer buttons */
-  const getAnswerStyle = (index: number): string => {
+  const getAnswerStyle = (displayIndex: number): string => {
     const base =
       'relative px-4 py-3 text-left transition-all duration-300 ' +
       'cursor-pointer text-sm font-serif border-4 ';
 
     // Eliminated by 50:50
-    if (eliminatedAnswers.includes(index)) {
+    if (eliminatedAnswers.includes(displayIndex)) {
       return (
         base +
         'opacity-30 cursor-not-allowed bg-stone-950 text-stone-700 border-stone-900'
       );
     }
 
+    // Map display index to original answer index
+    const originalIndex = shuffledAnswers[displayIndex];
+
     // After answer selected
     if (selectedAnswer !== null) {
       const correct = sortedQuestions[currentQuestion].correct;
 
-      if (index === correct) {
+      if (originalIndex === correct) {
         // Correct answer - green glow
         return (
           base +
@@ -507,7 +560,7 @@ export default function BG3Millionaire() {
         );
       }
 
-      if (index === selectedAnswer && selectedAnswer !== correct) {
+      if (displayIndex === selectedAnswer && originalIndex !== correct) {
         // Wrong selected answer - red
         return (
           base +
@@ -784,22 +837,21 @@ export default function BG3Millionaire() {
 
               {/* Answer Buttons */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                {sortedQuestions[currentQuestion].answers.map(
-                  (answer, index) => (
+                {shuffledAnswers.map((originalIndex, displayIndex) => (
                     <button
-                      key={index}
-                      onClick={() => handleAnswerClick(index)}
+                      key={displayIndex}
+                      onClick={() => handleAnswerClick(displayIndex)}
                       disabled={
                         selectedAnswer !== null ||
-                        eliminatedAnswers.includes(index)
+                        eliminatedAnswers.includes(displayIndex)
                       }
-                      className={getAnswerStyle(index)}
+                      className={getAnswerStyle(displayIndex)}
                       style={{ borderStyle: 'ridge' }}
                     >
                       <span className={`${theme.textPrimary} mr-2 font-bold`}>
-                        [{['A', 'B', 'C', 'D'][index]}]
+                        [{['A', 'B', 'C', 'D'][displayIndex]}]
                       </span>
-                      {answer}
+                      {sortedQuestions[currentQuestion].answers[originalIndex]}
                     </button>
                   )
                 )}

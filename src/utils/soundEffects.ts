@@ -47,6 +47,59 @@ const getBasePath = (): string => {
   return import.meta.env.BASE_URL || '/';
 };
 
+// List of sound files to preload
+const SOUND_FILES = [
+  'ClickStandard.mp3',
+  'ClickStartAdventure.mp3',
+  'CriticalFailure.mp3',
+  'Friends.mp3',
+  'NewStart.mp3',
+  'PerceptionSuccess.mp3',
+  'Rawr.mp3',
+  'SelectedDarkUrge.mp3',
+  'SelectedHero.mp3',
+  'SelectedMindFlayer.mp3',
+  'Victory.mp3',
+];
+
+// List of voice files to preload
+const VOICE_FILES = [
+  'Astarion.mp3',
+  'Gale.mp3',
+  'Karlach.mp3',
+  'Shadowheart.mp3',
+];
+
+/**
+ * Preload all sound and voice files for instant playback.
+ * Call this on app initialization.
+ */
+export const preloadAudio = (): void => {
+  const basePath = getBasePath();
+
+  // Preload sounds
+  SOUND_FILES.forEach((filename) => {
+    const path = `${basePath}sounds/${filename}`;
+    if (!audioCache.has(path)) {
+      const audio = new Audio();
+      audio.preload = 'auto';
+      audio.src = path;
+      audioCache.set(path, audio);
+    }
+  });
+
+  // Preload voices
+  VOICE_FILES.forEach((filename) => {
+    const path = `${basePath}voices/${filename}`;
+    if (!audioCache.has(path)) {
+      const audio = new Audio();
+      audio.preload = 'auto';
+      audio.src = path;
+      audioCache.set(path, audio);
+    }
+  });
+};
+
 /**
  * Play an MP3 sound file from sounds directory
  */
