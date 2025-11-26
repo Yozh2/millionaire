@@ -32,6 +32,19 @@ import { Panel, PanelHeader } from './components/ui';
 import { ThemeProvider, getThemeColors } from './context';
 import { getQuestionsForMode, prizes, guaranteedPrizes, companionNames } from './data';
 import { Question, Hint, GameState, DifficultyMode } from './types';
+import {
+  playAnswerClick,
+  playVictory,
+  playDefeat,
+  playFiftyFifty,
+  playScrollUnfold,
+  playTavernCheer,
+  playCoins,
+  playCorrect,
+  playWrong,
+  playModeSelect,
+  playGameStart,
+} from './utils';
 
 /**
  * Main game component.
@@ -236,6 +249,9 @@ export default function BG3Millionaire() {
     // Don't start if no mode selected
     if (!selectedMode) return;
 
+    // Play game start sound effect
+    playGameStart();
+
     // Switch to character theme
     const basePath = import.meta.env.BASE_URL;
     const trackMap: Record<DifficultyMode, string> = {
@@ -282,6 +298,9 @@ export default function BG3Millionaire() {
   const handleAnswerClick = (index: number) => {
     if (selectedAnswer !== null || eliminatedAnswers.includes(index)) return;
 
+    // Play answer click sound
+    playAnswerClick();
+
     setSelectedAnswer(index);
     setShowHint(null);
 
@@ -290,9 +309,11 @@ export default function BG3Millionaire() {
       const correct = sortedQuestions[currentQuestion].correct;
 
       if (index === correct) {
-        // Correct answer
+        // Correct answer - play correct sound
+        playCorrect();
         if (currentQuestion === 14) {
-          // Won the game!
+          // Won the game! Play victory fanfare
+          setTimeout(() => playVictory(), 500);
           setWonPrize(prizes[14]);
           setGameState('won');
         } else {
@@ -302,7 +323,9 @@ export default function BG3Millionaire() {
           setEliminatedAnswers([]);
         }
       } else {
-        // Wrong answer - game over
+        // Wrong answer - play defeat sound
+        playWrong();
+        setTimeout(() => playDefeat(), 300);
         const lastGuaranteed = guaranteedPrizes
           .filter((p: number) => p < currentQuestion)
           .pop();
@@ -315,6 +338,7 @@ export default function BG3Millionaire() {
   /** Take current winnings and leave */
   const takeTheMoney = () => {
     if (currentQuestion === 0) return;
+    playCoins();
     setWonPrize(prizes[currentQuestion - 1]);
     setGameState('took_money');
   };
@@ -327,6 +351,9 @@ export default function BG3Millionaire() {
   const useFiftyFifty = () => {
     if (!fiftyFifty || selectedAnswer !== null) return;
 
+    // Play 50:50 magical zap sound
+    playFiftyFifty();
+
     setFiftyFifty(false);
     const correct = sortedQuestions[currentQuestion].correct;
     const wrong = [0, 1, 2, 3].filter((i) => i !== correct);
@@ -337,6 +364,9 @@ export default function BG3Millionaire() {
   /** Phone a Friend - Get advice from a companion */
   const usePhoneAFriend = () => {
     if (!phoneAFriend || selectedAnswer !== null) return;
+
+    // Play scroll unfold sound
+    playScrollUnfold();
 
     setPhoneAFriend(false);
     const correct = sortedQuestions[currentQuestion].correct;
@@ -368,6 +398,9 @@ export default function BG3Millionaire() {
   /** Ask the Audience - Show voting results */
   const useAskAudience = () => {
     if (!askAudience || selectedAnswer !== null) return;
+
+    // Play tavern cheer sound
+    playTavernCheer();
 
     setAskAudience(false);
     const correct = sortedQuestions[currentQuestion].correct;
@@ -558,7 +591,7 @@ export default function BG3Millionaire() {
                 <div className="flex justify-center gap-4 md:gap-6">
                   {/* Hero Mode */}
                   <button
-                    onClick={() => setSelectedMode('hero')}
+                    onClick={() => { setSelectedMode('hero'); playModeSelect(); }}
                     className={`flex flex-col items-center gap-2 p-3 md:p-4 border-4 transition-all transform hover:scale-105 ${
                       selectedMode === 'hero'
                         ? 'border-blue-500 bg-blue-950/50'
@@ -589,7 +622,7 @@ export default function BG3Millionaire() {
 
                   {/* Illithid Mode */}
                   <button
-                    onClick={() => setSelectedMode('illithid')}
+                    onClick={() => { setSelectedMode('illithid'); playModeSelect(); }}
                     className={`flex flex-col items-center gap-2 p-3 md:p-4 border-4 transition-all transform hover:scale-105 ${
                       selectedMode === 'illithid'
                         ? 'border-purple-500 bg-purple-950/50'
@@ -614,13 +647,13 @@ export default function BG3Millionaire() {
                       ИЛЛИТИД
                     </span>
                     <span className="text-xs text-stone-500 font-serif">
-                      Доблесть
+                      Сложно
                     </span>
                   </button>
 
                   {/* Dark Urge Mode */}
                   <button
-                    onClick={() => setSelectedMode('darkUrge')}
+                    onClick={() => { setSelectedMode('darkUrge'); playModeSelect(); }}
                     className={`flex flex-col items-center gap-2 p-3 md:p-4 border-4 transition-all transform hover:scale-105 ${
                       selectedMode === 'darkUrge'
                         ? 'border-red-500 bg-red-950/50'
@@ -645,7 +678,7 @@ export default function BG3Millionaire() {
                       СОБЛАЗН
                     </span>
                     <span className="text-xs text-stone-500 font-serif">
-                      Сложно
+                      Доблесть
                     </span>
                   </button>
                 </div>
