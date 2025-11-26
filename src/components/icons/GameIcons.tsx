@@ -154,55 +154,35 @@ export const StarIcon = () => (
 /** D20 dice showing critical fail (1) - used for game over screen */
 export const CriticalFailIcon = () => (
   <svg viewBox="0 0 64 64" className="w-20 h-20 mx-auto">
-    {/* D20 icosahedron - classic view with visible triangular faces */}
-    {/* Outer pentagon shape */}
+    {/* Hexagonal die shape */}
     <polygon
-      points="32,2 58,22 50,56 14,56 6,22"
+      points="32,4 56,18 56,46 32,60 8,46 8,18"
       fill="#1a1a2e"
       stroke="#dc2626"
       strokeWidth="2"
     />
-    {/* Top triangular face */}
+    {/* Inner hexagon for depth */}
     <polygon
-      points="32,2 58,22 6,22"
+      points="32,12 48,22 48,42 32,52 16,42 16,22"
       fill="#2d2d44"
       stroke="#991b1b"
       strokeWidth="1"
     />
-    {/* Upper right face */}
-    <polygon
-      points="58,22 50,56 32,34"
-      fill="#252538"
-      stroke="#991b1b"
-      strokeWidth="1"
-    />
-    {/* Upper left face */}
-    <polygon
-      points="6,22 32,34 14,56"
-      fill="#1f1f33"
-      stroke="#991b1b"
-      strokeWidth="1"
-    />
-    {/* Bottom face */}
-    <polygon
-      points="14,56 50,56 32,34"
-      fill="#333350"
-      stroke="#991b1b"
-      strokeWidth="1"
-    />
-    {/* Center face (main face with number) */}
-    <polygon
-      points="6,22 58,22 32,34"
-      fill="#2a2a3e"
-      stroke="#991b1b"
-      strokeWidth="1"
-    />
+    {/* Crosslines from vertices to center */}
+    <line x1="32" y1="4" x2="32" y2="32" stroke="#991b1b" strokeWidth="1" />
+    <line x1="56" y1="18" x2="32" y2="32" stroke="#991b1b" strokeWidth="1" />
+    <line x1="56" y1="46" x2="32" y2="32" stroke="#991b1b" strokeWidth="1" />
+    <line x1="32" y1="60" x2="32" y2="32" stroke="#991b1b" strokeWidth="1" />
+    <line x1="8" y1="46" x2="32" y2="32" stroke="#991b1b" strokeWidth="1" />
+    <line x1="8" y1="18" x2="32" y2="32" stroke="#991b1b" strokeWidth="1" />
+    {/* Center circle behind number */}
+    <circle cx="32" cy="32" r="12" fill="#1a1a2e" />
     {/* The number 1 - critical fail */}
     <text
       x="32"
-      y="32"
+      y="40"
       textAnchor="middle"
-      fontSize="18"
+      fontSize="24"
       fontWeight="bold"
       fill="#ef4444"
       style={{ textShadow: '0 0 10px #ef4444' }}
@@ -211,7 +191,7 @@ export const CriticalFailIcon = () => (
     </text>
     {/* Outer glow effect */}
     <polygon
-      points="32,2 58,22 50,56 14,56 6,22"
+      points="32,4 56,18 56,46 32,60 8,46 8,18"
       fill="none"
       stroke="#ef4444"
       strokeWidth="1"

@@ -15,7 +15,7 @@
  * @see https://github.com/Yozh2/bg3-millionaire
  */
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
   TrophyIcon,
   MoneyIcon,
@@ -74,8 +74,18 @@ export default function BG3Millionaire() {
   /** Background music state */
   const [isMusicPlaying, setIsMusicPlaying] = useState(false);
 
+  /** Track if user ever enabled music (for auto-play on track switch) */
+  const [musicEverEnabled, setMusicEverEnabled] = useState(false);
+  const musicEverEnabledRef = useRef(false);
+
   /** Track if user manually disabled music (don't auto-play if true) */
   const [userDisabledMusic, setUserDisabledMusic] = useState(false);
+  const userDisabledMusicRef = useRef(false);
+
+  /** Current soundtrack based on game state and mode */
+  const [currentTrack, setCurrentTrack] = useState<string>(
+    `${import.meta.env.BASE_URL}sounds/MainMenu.mp3`
+  );
 
   // ============================================
   // Effects
@@ -89,6 +99,50 @@ export default function BG3Millionaire() {
       setSortedQuestions(sorted);
     }
   }, [selectedMode]);
+
+  /** Switch soundtrack based on game state and selected mode */
+  useEffect(() => {
+    const basePath = import.meta.env.BASE_URL;
+    let newTrack: string;
+
+    if (gameState === 'start') {
+      // Main menu - always play MainMenu until game starts
+      newTrack = `${basePath}sounds/MainMenu.mp3`;
+    } else if (gameState === 'playing' && selectedMode) {
+      // Game started - play character theme
+      const trackMap: Record<DifficultyMode, string> = {
+        hero: `${basePath}sounds/Hero.mp3`,
+        illithid: `${basePath}sounds/Illithid.mp3`,
+        darkUrge: `${basePath}sounds/DarkUrge.mp3`,
+      };
+      newTrack = trackMap[selectedMode];
+    } else if (selectedMode) {
+      // Game over screens - keep character theme
+      const trackMap: Record<DifficultyMode, string> = {
+        hero: `${basePath}sounds/Hero.mp3`,
+        illithid: `${basePath}sounds/Illithid.mp3`,
+        darkUrge: `${basePath}sounds/DarkUrge.mp3`,
+      };
+      newTrack = trackMap[selectedMode];
+    } else {
+      newTrack = `${basePath}sounds/MainMenu.mp3`;
+    }
+
+    if (newTrack !== currentTrack) {
+      setCurrentTrack(newTrack);
+      const audio = document.getElementById('bg-music') as HTMLAudioElement;
+      if (audio) {
+        audio.src = newTrack;
+        audio.load();
+        // Auto-play if music was ever enabled and not manually disabled
+        if (musicEverEnabled && !userDisabledMusic) {
+          audio.play()
+            .then(() => setIsMusicPlaying(true))
+            .catch((err) => console.log('Track switch failed:', err));
+        }
+      }
+    }
+  }, [gameState, selectedMode, currentTrack, musicEverEnabled, userDisabledMusic]);
 
   // ============================================
   // Color Theme based on selected mode
@@ -113,6 +167,42 @@ export default function BG3Millionaire() {
   // Audio Controls
   // ============================================
 
+  /** Helper to switch track and play if music is enabled */
+  const switchTrack = (trackPath: string) => {
+    const audio = document.getElementById('bg-music') as HTMLAudioElement | null;
+    if (!audio) return;
+
+    const currentFileName = audio.src.split('/').pop();
+    const newFileName = trackPath.split('/').pop();
+    const needsSwitch = currentFileName !== newFileName;
+    
+    const shouldPlay = musicEverEnabledRef.current && !userDisabledMusicRef.current;
+
+    if (needsSwitch) {
+      setCurrentTrack(trackPath);
+      audio.src = trackPath;
+      
+      if (shouldPlay) {
+        // Wait for track to be ready before playing
+        const handleCanPlay = () => {
+          audio.play()
+            .then(() => setIsMusicPlaying(true))
+            .catch((err) => console.log('Track play failed:', err));
+          audio.removeEventListener('canplay', handleCanPlay);
+        };
+        audio.addEventListener('canplay', handleCanPlay);
+        audio.load();
+      } else {
+        audio.load();
+      }
+    } else if (shouldPlay && audio.paused) {
+      // Same track, just resume
+      audio.play()
+        .then(() => setIsMusicPlaying(true))
+        .catch((err) => console.log('Track play failed:', err));
+    }
+  };
+
   /** Toggle background music on/off */
   const toggleMusic = () => {
     const audio = document.getElementById('bg-music') as HTMLAudioElement | null;
@@ -121,13 +211,17 @@ export default function BG3Millionaire() {
     if (isMusicPlaying) {
       audio.pause();
       setIsMusicPlaying(false);
-      setUserDisabledMusic(true); // User manually disabled
+      setUserDisabledMusic(true);
+      userDisabledMusicRef.current = true;
     } else {
       audio
         .play()
         .then(() => {
           setIsMusicPlaying(true);
-          setUserDisabledMusic(false); // User re-enabled
+          setMusicEverEnabled(true);
+          musicEverEnabledRef.current = true;
+          setUserDisabledMusic(false);
+          userDisabledMusicRef.current = false;
         })
         .catch((err: Error) => console.log('Music play failed:', err));
     }
@@ -142,15 +236,14 @@ export default function BG3Millionaire() {
     // Don't start if no mode selected
     if (!selectedMode) return;
 
-    // Try to start music on game start (requires user interaction)
-    // But only if user hasn't manually disabled it
-    const audio = document.getElementById('bg-music') as HTMLAudioElement | null;
-    if (audio && !isMusicPlaying && !userDisabledMusic) {
-      audio
-        .play()
-        .then(() => setIsMusicPlaying(true))
-        .catch((err: Error) => console.log('Music play failed:', err));
-    }
+    // Switch to character theme
+    const basePath = import.meta.env.BASE_URL;
+    const trackMap: Record<DifficultyMode, string> = {
+      hero: `${basePath}sounds/Hero.mp3`,
+      illithid: `${basePath}sounds/Illithid.mp3`,
+      darkUrge: `${basePath}sounds/DarkUrge.mp3`,
+    };
+    switchTrack(trackMap[selectedMode]);
 
     // Reset game state
     const questions = getQuestionsForMode(selectedMode);
@@ -169,6 +262,10 @@ export default function BG3Millionaire() {
 
   /** Return to start screen for new game with difficulty selection */
   const newGame = () => {
+    // Switch to main menu music
+    const basePath = import.meta.env.BASE_URL;
+    switchTrack(`${basePath}sounds/MainMenu.mp3`);
+
     setGameState('start');
     setSelectedMode(null);
     setCurrentQuestion(0);
@@ -365,9 +462,7 @@ export default function BG3Millionaire() {
         }}
       >
         {/* Background Music */}
-        <audio id="bg-music" loop preload="auto">
-          <source src="https://files.catbox.moe/cnhb0v.mp3" type="audio/mpeg" />
-        </audio>
+        <audio id="bg-music" loop preload="auto" src={currentTrack} />
 
         <div className="max-w-4xl mx-auto">
           {/* Header */}
@@ -591,7 +686,7 @@ export default function BG3Millionaire() {
                 </PanelHeader>
                 <div className="p-4">
                   <div className="flex justify-between items-center mb-3">
-                    <span className={`${theme.textMuted} text-xs font-serif`}>
+                    <span className="text-amber-400 text-xs font-serif italic">
                       Прогресс: {currentQuestion + 1}/15
                     </span>
                     <span className={`${theme.textPrimary} font-bold flex items-center font-serif`}>
@@ -641,17 +736,17 @@ export default function BG3Millionaire() {
                   <div className="p-3">
                     {showHint.type === 'phone' && (
                       <div>
-                        <p className={`${theme.textMuted} text-xs mb-1 font-serif`}>
+                        <p className="text-amber-400 text-xs mb-1 font-serif italic">
                           <ScrollIcon /> Отправитель: {showHint.name}
                         </p>
-                        <p className={`${theme.textSecondary} italic font-serif`}>
+                        <p className="text-amber-300 italic font-serif">
                           "{showHint.text}"
                         </p>
                       </div>
                     )}
                     {showHint.type === 'audience' && (
                       <div>
-                        <p className={`${theme.textMuted} text-xs mb-2 font-serif`}>
+                        <p className="text-amber-400 text-xs mb-2 font-serif italic">
                           <TavernIcon /> Мнение таверны:
                         </p>
                         <div className="grid grid-cols-4 gap-2">
@@ -856,7 +951,7 @@ export default function BG3Millionaire() {
               </div>
 
               {gameState === 'lost' && (
-                <p className={`${theme.textMuted} mb-6 text-sm font-serif italic`}>
+                <p className="text-amber-400 mb-6 text-sm font-serif italic">
                   Правильный ответ:{' '}
                   {
                     sortedQuestions[currentQuestion].answers[
@@ -882,7 +977,7 @@ export default function BG3Millionaire() {
         )}
 
         {/* Footer */}
-        <div className={`text-center mt-4 text-xs tracking-wide font-serif italic ${theme.textMuted}`}>
+        <div className="text-center mt-4 text-xs tracking-wide font-serif italic text-amber-400/70">
           ✦ By Mystra's Grace ✦ For the Realms ✦ Gather Your Party ✦
         </div>
       </div>
