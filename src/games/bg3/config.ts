@@ -1,0 +1,216 @@
+/**
+ * Baldur's Gate 3 - Game Configuration
+ *
+ * Complete configuration for the BG3 edition of the quiz game.
+ */
+
+import { GameConfig, GameMode, Companion } from '../../engine/types';
+import { heroTheme, illithidTheme, darkUrgeTheme } from './themes';
+import { SwordIcon, MindFlayerIcon, DarkUrgeIcon, TrophyIcon, MoneyIcon, CriticalFailIcon } from './icons';
+import { heroQuestions, illithidQuestions, darkUrgeQuestions } from './questions';
+
+// ============================================
+// Game Modes
+// ============================================
+
+const heroMode: GameMode = {
+  id: 'hero',
+  name: 'ГЕРОЙ',
+  label: 'Легко',
+  icon: SwordIcon,
+  theme: heroTheme,
+  musicTrack: 'Hero.ogg',
+  selectSound: 'SelectedHero.mp3',
+};
+
+const illithidMode: GameMode = {
+  id: 'illithid',
+  name: 'ИЛЛИТИД',
+  label: 'Сложно',
+  icon: MindFlayerIcon,
+  theme: illithidTheme,
+  musicTrack: 'Illithid.ogg',
+  selectSound: 'SelectedMindFlayer.mp3',
+};
+
+const darkUrgeMode: GameMode = {
+  id: 'darkUrge',
+  name: 'СОБЛАЗН',
+  label: 'Доблесть',
+  icon: DarkUrgeIcon,
+  theme: darkUrgeTheme,
+  musicTrack: 'DarkUrge.ogg',
+  selectSound: 'SelectedDarkUrge.mp3',
+};
+
+// ============================================
+// Companions
+// ============================================
+
+const companions: Companion[] = [
+  { id: 'astarion', name: 'Астарион', voiceFile: 'Astarion.mp3' },
+  { id: 'gale', name: 'Гейл', voiceFile: 'Gale.mp3' },
+  { id: 'shadowheart', name: 'Шэдоухарт', voiceFile: 'Shadowheart.mp3' },
+  { id: 'karlach', name: 'Карлах', voiceFile: 'Karlach.mp3' },
+];
+
+// ============================================
+// Main Config
+// ============================================
+
+export const bg3Config: GameConfig = {
+  id: 'bg3',
+
+  title: 'КТО ХОЧЕТ СТАТЬ МИЛЛИОНЕРОМ',
+  subtitle: "BALDUR'S GATE 3 EDITION",
+
+  modes: [heroMode, illithidMode, darkUrgeMode],
+
+  questions: {
+    hero: heroQuestions,
+    illithid: illithidQuestions,
+    darkUrge: darkUrgeQuestions,
+  },
+
+  companions,
+
+  strings: {
+    // Header
+    headerTitle: '✦ ДРЕВНИЙ СВИТОК ✦ СРОЧНЫЙ КВЕСТ ✦',
+
+    // Start screen
+    introText:
+      'Искатель приключений! Перед тобой испытание на знание Забытых Королевств. ' +
+      '15 вопросов, 3 магические подсказки, 3,000,000 золотых на кону.',
+    selectPath: '✦ ВЫБЕРИ ПУТЬ ✦',
+    startButton: '⚔ НАЧАТЬ ПРИКЛЮЧЕНИЕ ⚔',
+
+    // Game screen - Question panel
+    questionHeader: '✦ ВОПРОС #{n} ✦',
+    difficultyLabel: 'СЛОЖНОСТЬ:',
+    progressLabel: 'Прогресс:',
+
+    // Game screen - Lifelines
+    lifelinesHeader: '✦ МАГИЧЕСКИЕ СПОСОБНОСТИ ✦',
+
+    // Game screen - Prize ladder
+    prizesHeader: '✦ СПИСОК НАГРАД ✦',
+
+    // Hints
+    hintPhoneHeader: '✦ МАГИЧЕСКОЕ ПОСЛАНИЕ ✦',
+    hintAudienceHeader: '✦ РЕЗУЛЬТАТЫ ГАДАНИЯ ✦',
+    hintSenderLabel: 'Отправитель:',
+    hintAudienceLabel: 'Мнение таверны:',
+
+    // Companion phrases
+    companionPhrases: {
+      confident: [
+        'Я уверен, что это "{answer}"',
+        'По-моему, правильный ответ — "{answer}"',
+        'Это точно "{answer}"',
+      ],
+      uncertain: [
+        'Думаю, что это "{answer}"',
+        'Рискну сказать "{answer}"',
+        'Возможно, это "{answer}"',
+      ],
+    },
+
+    // End screens
+    wonTitle: '⚔ ЛЕГЕНДАРНЫЙ ГЕРОЙ ⚔',
+    wonText: 'Вы завоевали величайшее сокровище Фаэруна!',
+    wonHeader: '✦ КВЕСТ ЗАВЕРШЁН ✦',
+
+    lostTitle: '💀 КРИТИЧЕСКИЙ ПРОВАЛ 💀',
+    lostText: 'Кость брошена. Неверный ответ.',
+    lostHeader: '✦ КВЕСТ ПРОВАЛЕН ✦',
+    correctAnswerLabel: 'Правильный ответ:',
+
+    tookMoneyTitle: '✨ МУДРЫЙ ВЫБОР ✨',
+    tookMoneyText: 'Мудрое решение, искатель приключений.',
+    tookMoneyHeader: '✦ НАГРАДА ПОЛУЧЕНА ✦',
+
+    prizeLabel: 'НАГРАДА:',
+    newGameButton: '⚔ НОВОЕ ПРИКЛЮЧЕНИЕ ⚔',
+
+    // Footer
+    footer: "✦ By Mystra's Grace ✦ For the Realms ✦ Gather Your Party ✦",
+
+    // Music toggle
+    musicOn: 'Выключить музыку',
+    musicOff: 'Включить музыку',
+  },
+
+  lifelines: {
+    fiftyFifty: {
+      name: '50:50',
+      icon: '⚡',
+      enabled: true,
+    },
+    phoneAFriend: {
+      name: 'Послание',
+      icon: '📜',
+      enabled: true,
+    },
+    askAudience: {
+      name: 'Таверна',
+      icon: '🍺',
+      enabled: true,
+    },
+    takeMoney: {
+      name: 'Забрать',
+      icon: '💰',
+      enabled: true,
+    },
+  },
+
+  prizes: {
+    values: [
+      '500',
+      '1,000',
+      '2,000',
+      '3,000',
+      '5,000',
+      '10,000',
+      '15,000',
+      '25,000',
+      '50,000',
+      '100,000',
+      '200,000',
+      '400,000',
+      '800,000',
+      '1,500,000',
+      '3,000,000',
+    ],
+    guaranteed: [4, 9, 14], // Questions 5, 10, 15
+    currency: 'золотых',
+  },
+
+  audio: {
+    musicVolume: 0.2,
+    soundVolume: 1.0,
+    voiceVolume: 1.0,
+    mainMenuTrack: 'MainMenu.ogg',
+    gameOverTrack: 'GameOver.ogg',
+    sounds: {
+      click: 'ClickStandard.mp3',
+      correct: 'ClickStandard.mp3',
+      victory: 'Victory.mp3',
+      defeat: 'CriticalFailure.mp3',
+      fiftyFifty: 'PerceptionSuccess.mp3',
+      phoneAFriend: 'Friends.mp3',
+      askAudience: 'Rawr.mp3',
+      takeMoney: 'ClickStandard.mp3',
+      gameStart: 'ClickStartAdventure.mp3',
+      newGame: 'NewStart.mp3',
+    },
+  },
+
+  endIcons: {
+    won: TrophyIcon,
+    lost: CriticalFailIcon,
+    tookMoney: MoneyIcon,
+  },
+};
+
+export default bg3Config;
