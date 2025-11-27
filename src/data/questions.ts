@@ -128,7 +128,7 @@ export const illithidQuestions: Question[] = [
     difficulty: 1,
   },
   {
-    question: 'Что такое церемофоз?',
+    question: 'Что такое цереморфоз?',
     answers: ['Ритуал гитьянки', 'Процесс превращения в иллитида', 'Магия некромантии', 'Тип заклинания'],
     correct: 1,
     difficulty: 1,
