@@ -103,7 +103,7 @@ export const preloadAudio = (): void => {
 /**
  * Play an MP3 sound file from sounds directory
  */
-const playMp3 = (filename: string, volume = 0.5): void => {
+const playMp3 = (filename: string, volume = 1.0): void => {
   if (!soundEnabled) return;
 
   const path = `${getBasePath()}sounds/${filename}`;
@@ -125,7 +125,7 @@ const playMp3 = (filename: string, volume = 0.5): void => {
 /**
  * Play an MP3 sound file from voices directory (companion voice lines)
  */
-const playVoice = (filename: string, volume = 0.5): void => {
+const playVoice = (filename: string, volume = 1.0): void => {
   if (!soundEnabled) return;
 
   const path = `${getBasePath()}voices/${filename}`;

@@ -192,8 +192,8 @@ export default function BG3Millionaire() {
       const audio = document.getElementById('bg-music') as HTMLAudioElement;
       if (audio) {
         audio.src = newTrack;
-        // Set volume for all music tracks (60%)
-        audio.volume = 0.6;
+        // Set volume for all music tracks (20%)
+        audio.volume = 0.01;
         audio.load();
         // Auto-play if music was ever enabled and not manually disabled
         if (musicEverEnabled && !userDisabledMusic) {
@@ -228,8 +228,8 @@ export default function BG3Millionaire() {
   // Audio Controls
   // ============================================
 
-  /** Volume level for background music (60% to let sounds/voices be heard clearly) */
-  const MUSIC_VOLUME = 0.6;
+  /** Volume level for background music (20% to let sounds/voices be heard clearly) */
+  const MUSIC_VOLUME = 0.2;
 
   /** Helper to switch track and play if music is enabled */
   const switchTrack = (trackPath: string) => {
@@ -280,6 +280,8 @@ export default function BG3Millionaire() {
       userDisabledMusicRef.current = true;
       setSoundEnabled(false); // Sync UI sounds with music
     } else {
+      // Set volume before playing
+      audio.volume = MUSIC_VOLUME;
       audio
         .play()
         .then(() => {
@@ -405,7 +407,7 @@ export default function BG3Millionaire() {
             const basePath = import.meta.env.BASE_URL;
             const gameOverTrack = `${basePath}music/GameOver.ogg`;
             audio.src = gameOverTrack;
-            audio.volume = 0.6; // Music volume
+            audio.volume = 0.2; // Music volume
             setCurrentTrack(gameOverTrack);
 
             const shouldPlay =
