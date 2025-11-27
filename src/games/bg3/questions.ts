@@ -1,9 +1,9 @@
+import { Question } from '../../engine/types';
+
 /**
- * BG3 Quiz Questions
+ * Quiz questions about Baldur's Gate 3 and Forgotten Realms lore.
  * Organized by difficulty mode: Hero (easy), Illithid (medium), Dark Urge (hard).
  */
-
-import { Question } from '../../engine/types';
 
 // ============================================
 // HERO MODE - Basic BG3 knowledge

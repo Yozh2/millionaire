@@ -24,6 +24,9 @@ export interface UseAudioReturn {
   /** Is music currently playing */
   isMusicPlaying: boolean;
 
+  /** Current track URL */
+  currentTrack: string;
+
   /** Toggle music on/off */
   toggleMusic: () => void;
 
@@ -58,6 +61,7 @@ export const useAudio = (
   audioElementId: string = 'bg-music'
 ): UseAudioReturn => {
   const [isMusicPlaying, setIsMusicPlaying] = useState(false);
+  const [currentTrack, setCurrentTrack] = useState('');
 
   // Track if user ever enabled music (for auto-play on track switch)
   const musicEverEnabled = useRef(false);
@@ -108,6 +112,7 @@ export const useAudio = (
         // No track available - stop music
         audio.pause();
         audio.src = '';
+        setCurrentTrack('');
         setIsMusicPlaying(false);
         return;
       }
@@ -122,6 +127,7 @@ export const useAudio = (
 
       audio.src = trackPath;
       audio.volume = config.audio.musicVolume;
+      setCurrentTrack(trackPath);
 
       const shouldPlay = musicEverEnabled.current && !userDisabledMusic.current;
 
@@ -215,6 +221,7 @@ export const useAudio = (
 
   return {
     isMusicPlaying,
+    currentTrack,
     toggleMusic,
     playSoundEffect,
     playCompanionVoice,

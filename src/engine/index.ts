@@ -61,3 +61,9 @@ export {
 
 // Components (to be added)
 // export { MillionaireGame } from './components/MillionaireGame';
+export {
+  MillionaireGame,
+  StartScreen,
+  GameScreen,
+  EndScreen,
+} from './components';

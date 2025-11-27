@@ -30,6 +30,9 @@ export interface ThemeColors {
   // Primary color name (for reference)
   primary: string;
 
+  // Background gradient for the entire screen
+  bgGradient?: string;
+
   // Text colors
   textPrimary: string;
   textSecondary: string;
