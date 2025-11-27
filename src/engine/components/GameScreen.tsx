@@ -147,8 +147,8 @@ export function GameScreen({
                   >
                     <ModeIcon />
                     <span
-                      className={`text-xs font-serif`}
-                      style={{ color: mode.theme.textPrimary }}
+                      className="text-xs font-serif"
+                      style={{ color: mode.theme.glowColor }}
                     >
                       {mode.name}
                     </span>
@@ -224,17 +224,15 @@ export function GameScreen({
           {hint && (
             <Panel className="p-1">
               <PanelHeader>
-                ✦{' '}
                 {hint.type === 'phone'
                   ? config.strings.hintPhoneHeader
-                  : config.strings.hintAudienceHeader}{' '}
-                ✦
+                  : config.strings.hintAudienceHeader}
               </PanelHeader>
               <div className="p-3">
                 {hint.type === 'phone' && (
                   <div>
                     <p className="text-amber-400 text-xs mb-1 font-serif italic">
-                      <ScrollIcon /> {config.strings.hintSenderLabel}:{' '}
+                      <ScrollIcon /> {config.strings.hintSenderLabel}{' '}
                       {hint.name}
                     </p>
                     <p className="text-amber-300 italic font-serif">
@@ -245,7 +243,7 @@ export function GameScreen({
                 {hint.type === 'audience' && (
                   <div>
                     <p className="text-amber-400 text-xs mb-2 font-serif italic">
-                      <TavernIcon /> {config.strings.hintAudienceLabel}:
+                      <TavernIcon /> {config.strings.hintAudienceLabel}
                     </p>
                     <div className="grid grid-cols-4 gap-2">
                       {hint.percentages.map((p, i) => (

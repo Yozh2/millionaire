@@ -121,7 +121,7 @@ export function EndScreen({
 
       {/* End Screen Panel */}
       <Panel className="p-1">
-        <PanelHeader>✦ {getHeader()} ✦</PanelHeader>
+        <PanelHeader>{getHeader()}</PanelHeader>
         <div className="text-center py-12 px-4">
           {getIcon()}
 
@@ -139,7 +139,7 @@ export function EndScreen({
           <div className="flex items-center justify-center gap-2 text-xl text-yellow-300 font-bold mb-6 font-serif">
             <CoinIcon />
             <span>
-              {config.strings.prizeLabel}: {wonPrize} {config.prizes.currency}
+              {config.strings.prizeLabel} {wonPrize} {config.prizes.currency}
             </span>
           </div>
 

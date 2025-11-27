@@ -75,7 +75,7 @@ export function StartScreen({
           {/* Mode Selection */}
           <div className="mb-8">
             <p className="text-amber-400 text-sm mb-4 font-serif tracking-wide">
-              ✦ {config.strings.selectPath} ✦
+              {config.strings.selectPath}
             </p>
             <div className="flex justify-center gap-4 md:gap-6 flex-wrap">
               {config.modes.map((mode) => {
@@ -86,26 +86,29 @@ export function StartScreen({
                   <button
                     key={mode.id}
                     onClick={() => onSelectMode(mode)}
-                    className={`flex flex-col items-center gap-2 p-3 md:p-4 border-4 transition-all transform hover:scale-105 ${
-                      isSelected
-                        ? `border-${mode.theme.primary}-500 bg-${mode.theme.primary}-950/50`
-                        : `border-stone-700 bg-stone-950/50 hover:border-${mode.theme.primary}-700`
-                    }`}
+                    className="flex flex-col items-center gap-2 p-3 md:p-4 border-4 transition-all transform hover:scale-105 bg-stone-950/50"
                     style={{
                       borderStyle: 'ridge',
-                      borderColor: isSelected
-                        ? mode.theme.borderLight.replace('border-', '').split(' ')[0]
-                        : undefined,
+                      borderColor: isSelected ? mode.theme.glowColor : '#44403c',
                       boxShadow: isSelected
                         ? `0 0 25px ${mode.theme.glow}, inset 0 0 15px ${mode.theme.glow}`
                         : 'none',
                     }}
+                    onMouseEnter={(e) => {
+                      if (!isSelected) {
+                        e.currentTarget.style.borderColor = mode.theme.glowColor;
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!isSelected) {
+                        e.currentTarget.style.borderColor = '#44403c';
+                      }
+                    }}
                   >
                     <ModeIcon />
                     <span
-                      className={`text-sm font-serif font-bold ${
-                        isSelected ? mode.theme.textPrimary : mode.theme.textMuted
-                      }`}
+                      className="text-sm font-serif font-bold"
+                      style={{ color: isSelected ? mode.theme.glowColor : mode.theme.glowSecondary }}
                     >
                       {mode.name}
                     </span>

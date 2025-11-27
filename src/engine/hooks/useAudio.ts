@@ -73,6 +73,23 @@ export const useAudio = (
     setGameId(config.id);
   }, [config.id]);
 
+  // Load main menu track on mount
+  useEffect(() => {
+    const loadInitialTrack = async () => {
+      if (config.audio.mainMenuTrack) {
+        const paths = getAssetPaths('music', config.audio.mainMenuTrack, config.id);
+        
+        // Try specific path first
+        if (await checkFileExists(paths.specific)) {
+          setCurrentTrack(paths.specific);
+        } else if (await checkFileExists(paths.fallback)) {
+          setCurrentTrack(paths.fallback);
+        }
+      }
+    };
+    loadInitialTrack();
+  }, [config.id, config.audio.mainMenuTrack]);
+
   // Get audio element
   const getAudioElement = useCallback((): HTMLAudioElement | null => {
     return document.getElementById(audioElementId) as HTMLAudioElement | null;
@@ -159,6 +176,10 @@ export const useAudio = (
       userDisabledMusic.current = true;
       setEngineSoundEnabled(false);
     } else {
+      // Set src if not already set
+      if (!audio.src && currentTrack) {
+        audio.src = currentTrack;
+      }
       // Set volume before playing
       audio.volume = config.audio.musicVolume;
       audio
@@ -171,7 +192,7 @@ export const useAudio = (
         })
         .catch((err) => console.log('Music play failed:', err));
     }
-  }, [isMusicPlaying, config.audio.musicVolume, getAudioElement]);
+  }, [isMusicPlaying, config.audio.musicVolume, getAudioElement, currentTrack]);
 
   // Play sound effect
   const playSoundEffect = useCallback(
