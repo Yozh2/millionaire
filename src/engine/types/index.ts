@@ -331,7 +331,7 @@ export interface GameConfig {
   /** Audio configuration */
   audio: AudioConfig;
 
-  /** 
+  /**
    * End screen icons (optional, uses defaults if not provided)
    * Keys: 'won', 'lost', 'tookMoney'
    */

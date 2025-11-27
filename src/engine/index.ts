@@ -34,14 +34,30 @@ export type {
   GameConfig,
 } from './types';
 
+// Hooks
+export { useGameState, type UseGameStateReturn } from './hooks/useGameState';
+export { useAudio, type UseAudioReturn } from './hooks/useAudio';
+
+// Utils
+export {
+  getBasePath,
+  getAssetPaths,
+  checkFileExists,
+  resolveAssetPath,
+  type AssetType,
+} from './utils/assetLoader';
+
+export {
+  setGameId,
+  setSoundEnabled,
+  isSoundEnabled,
+  playSound,
+  playSoundByType,
+  playMusic,
+  playVoice,
+  preloadSounds,
+  clearAudioCache,
+} from './utils/audioPlayer';
+
 // Components (to be added)
 // export { MillionaireGame } from './components/MillionaireGame';
-
-// Hooks (to be added)
-// export { useGameState } from './hooks/useGameState';
-// export { useAudio } from './hooks/useAudio';
-// export { useLifelines } from './hooks/useLifelines';
-
-// Utils (to be added)
-// export { playSound, playMusic, playVoice } from './utils/audioPlayer';
-// export { getAssetPath } from './utils/assetLoader';
