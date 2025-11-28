@@ -58,10 +58,10 @@ const darkUrgeCampaign: Campaign = {
 // ============================================
 
 const companions: Companion[] = [
-  { id: 'astarion', name: 'Астарион', voiceFile: 'Astarion.mp3' },
-  { id: 'gale', name: 'Гейл', voiceFile: 'Gale.mp3' },
-  { id: 'shadowheart', name: 'Шэдоухарт', voiceFile: 'Shadowheart.mp3' },
-  { id: 'karlach', name: 'Карлах', voiceFile: 'Karlach.mp3' },
+  { id: 'astarion', name: 'Астарион', voiceFile: 'Astarion.ogg' },
+  { id: 'gale', name: 'Гейл', voiceFile: 'Gale.ogg' },
+  { id: 'shadowheart', name: 'Шэдоухарт', voiceFile: 'Shadowheart.ogg' },
+  { id: 'karlach', name: 'Карлах', voiceFile: 'Karlach.ogg' },
 ];
 
 // ============================================
