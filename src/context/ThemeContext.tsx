@@ -73,7 +73,7 @@ export const getThemeColors = (mode: DifficultyMode | null): ThemeColors => {
       headerBorderColor: '#451a03',
     };
   }
-  if (mode === 'illithid') {
+  if (mode === 'mindFlayer') {
     return {
       primary: 'purple',
       textPrimary: 'text-purple-400',

@@ -48,7 +48,8 @@ export type PlayResult = 'file' | 'oscillator' | 'none';
 
 let audioContext: AudioContext | null = null;
 let audioSupported = true;
-let soundEnabled = true;
+// Sound is disabled by default until user enables music
+let soundEnabled = false;
 
 // Cache for preloaded audio elements
 const audioCache: Map<string, HTMLAudioElement> = new Map();
@@ -94,27 +95,48 @@ const OSCILLATOR_SOUNDS: Record<string, OscillatorSoundConfig> = {
     tones: [{ frequency: 800, duration: 0.08, type: 'sine', volume: 0.2 }],
   },
 
-  // Correct answer - ascending happy tones
-  correct: {
+  // Start - epic horn for campaign start
+  start: {
     tones: [
-      { frequency: 523, duration: 0.12, type: 'triangle', volume: 0.25 },
-      { frequency: 659, duration: 0.12, type: 'triangle', volume: 0.25 },
-      { frequency: 784, duration: 0.2, type: 'triangle', volume: 0.3 },
+      { frequency: 294, duration: 0.2, type: 'sawtooth', volume: 0.2 },
+      { frequency: 392, duration: 0.2, type: 'sawtooth', volume: 0.25 },
+      { frequency: 523, duration: 0.3, type: 'sawtooth', volume: 0.3 },
     ],
-    delayBetween: 0.1,
+    delayBetween: 0.15,
   },
 
-  // Wrong answer - descending sad tones
-  wrong: {
+  // Hint - 50:50 lifeline magical zap
+  hint: {
     tones: [
-      { frequency: 400, duration: 0.15, type: 'sawtooth', volume: 0.2 },
-      { frequency: 300, duration: 0.25, type: 'sawtooth', volume: 0.25 },
+      { frequency: 1200, duration: 0.05, type: 'square', volume: 0.15 },
+      { frequency: 800, duration: 0.05, type: 'square', volume: 0.15 },
+      { frequency: 1000, duration: 0.1, type: 'sine', volume: 0.2 },
     ],
-    delayBetween: 0.12,
+    delayBetween: 0.04,
   },
 
-  // Victory fanfare
-  victory: {
+  // Call - phone a friend
+  call: {
+    tones: [
+      { frequency: 600, duration: 0.1, type: 'sine', volume: 0.2 },
+      { frequency: 800, duration: 0.1, type: 'sine', volume: 0.2 },
+      { frequency: 1000, duration: 0.15, type: 'sine', volume: 0.25 },
+    ],
+    delayBetween: 0.08,
+  },
+
+  // Vote - ask the audience
+  vote: {
+    tones: [
+      { frequency: 300, duration: 0.1, type: 'triangle', volume: 0.2 },
+      { frequency: 400, duration: 0.1, type: 'triangle', volume: 0.2 },
+      { frequency: 500, duration: 0.15, type: 'triangle', volume: 0.25 },
+    ],
+    delayBetween: 0.06,
+  },
+
+  // Money - victory / take money coin sounds
+  money: {
     tones: [
       { frequency: 523, duration: 0.15, type: 'triangle', volume: 0.3 },
       { frequency: 659, duration: 0.15, type: 'triangle', volume: 0.3 },
@@ -124,7 +146,17 @@ const OSCILLATOR_SOUNDS: Record<string, OscillatorSoundConfig> = {
     delayBetween: 0.12,
   },
 
-  // Defeat sound - dramatic descending
+  // Restart - new game refresh sound
+  restart: {
+    tones: [
+      { frequency: 800, duration: 0.1, type: 'sine', volume: 0.2 },
+      { frequency: 600, duration: 0.1, type: 'sine', volume: 0.2 },
+      { frequency: 800, duration: 0.15, type: 'sine', volume: 0.25 },
+    ],
+    delayBetween: 0.08,
+  },
+
+  // Defeat - dramatic descending
   defeat: {
     tones: [
       { frequency: 400, duration: 0.2, type: 'sawtooth', volume: 0.3 },
@@ -134,64 +166,14 @@ const OSCILLATOR_SOUNDS: Record<string, OscillatorSoundConfig> = {
     delayBetween: 0.15,
   },
 
-  // 50:50 lifeline - magical zap
-  fiftyFifty: {
+  // Correct answer - ascending happy tones (proceed to next question)
+  correct: {
     tones: [
-      { frequency: 1200, duration: 0.05, type: 'square', volume: 0.15 },
-      { frequency: 800, duration: 0.05, type: 'square', volume: 0.15 },
-      { frequency: 1000, duration: 0.1, type: 'sine', volume: 0.2 },
+      { frequency: 523, duration: 0.12, type: 'triangle', volume: 0.25 },
+      { frequency: 659, duration: 0.12, type: 'triangle', volume: 0.25 },
+      { frequency: 784, duration: 0.2, type: 'triangle', volume: 0.3 },
     ],
-    delayBetween: 0.04,
-  },
-
-  // Phone a Friend - mystical scroll
-  phoneAFriend: {
-    tones: [
-      { frequency: 600, duration: 0.1, type: 'sine', volume: 0.2 },
-      { frequency: 800, duration: 0.1, type: 'sine', volume: 0.2 },
-      { frequency: 1000, duration: 0.15, type: 'sine', volume: 0.25 },
-    ],
-    delayBetween: 0.08,
-  },
-
-  // Ask the Audience - tavern cheer
-  askAudience: {
-    tones: [
-      { frequency: 300, duration: 0.1, type: 'triangle', volume: 0.2 },
-      { frequency: 400, duration: 0.1, type: 'triangle', volume: 0.2 },
-      { frequency: 500, duration: 0.15, type: 'triangle', volume: 0.25 },
-    ],
-    delayBetween: 0.06,
-  },
-
-  // Take money - coin sounds
-  takeMoney: {
-    tones: [
-      { frequency: 1500, duration: 0.05, type: 'sine', volume: 0.2 },
-      { frequency: 2000, duration: 0.05, type: 'sine', volume: 0.2 },
-      { frequency: 1800, duration: 0.08, type: 'sine', volume: 0.25 },
-    ],
-    delayBetween: 0.05,
-  },
-
-  // Game start - epic horn
-  gameStart: {
-    tones: [
-      { frequency: 294, duration: 0.2, type: 'sawtooth', volume: 0.2 },
-      { frequency: 392, duration: 0.2, type: 'sawtooth', volume: 0.25 },
-      { frequency: 523, duration: 0.3, type: 'sawtooth', volume: 0.3 },
-    ],
-    delayBetween: 0.15,
-  },
-
-  // New game - refresh sound
-  newGame: {
-    tones: [
-      { frequency: 800, duration: 0.1, type: 'sine', volume: 0.2 },
-      { frequency: 600, duration: 0.1, type: 'sine', volume: 0.2 },
-      { frequency: 800, duration: 0.15, type: 'sine', volume: 0.25 },
-    ],
-    delayBetween: 0.08,
+    delayBetween: 0.1,
   },
 
   // Mode select - selection confirmation
@@ -329,17 +311,16 @@ const tryPlayFile = async (
  * Map sound type names to oscillator keys
  */
 const SOUND_TYPE_MAP: Record<string, string> = {
-  ClickStandard: 'click',
-  ClickStartAdventure: 'gameStart',
+  Click: 'click',
+  Start: 'start',
+  Hint: 'hint',
+  Call: 'call',
+  Vote: 'vote',
+  Money: 'money',
+  Restart: 'restart',
+  Fail: 'defeat',
   Correct: 'correct',
-  Wrong: 'wrong',
-  Victory: 'victory',
-  CriticalFailure: 'defeat',
-  PerceptionSuccess: 'fiftyFifty',
-  Friends: 'phoneAFriend',
-  Rawr: 'askAudience',
-  TakeMoney: 'takeMoney',
-  NewStart: 'newGame',
+  Next: 'correct',
 };
 
 /**

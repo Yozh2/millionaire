@@ -83,12 +83,12 @@ export interface ThemeColors {
 }
 
 // ============================================
-// Game Mode Types
+// Campaign Types
 // ============================================
 
-/** A game mode/campaign configuration */
-export interface GameMode {
-  /** Unique identifier for this mode */
+/** A campaign/difficulty configuration */
+export interface Campaign {
+  /** Unique identifier for this campaign */
   id: string;
 
   /** Display name (e.g., 'ГЕРОЙ', 'АВТОБОТ') */
@@ -97,16 +97,16 @@ export interface GameMode {
   /** Difficulty label (e.g., 'Легко', 'Сложно') */
   label: string;
 
-  /** Icon component for this mode */
+  /** Icon component for this campaign */
   icon: ComponentType;
 
-  /** Color theme for this mode */
+  /** Color theme for this campaign */
   theme: ThemeColors;
 
-  /** Music track filename for this mode (optional) */
+  /** Music track filename for this campaign (optional) */
   musicTrack?: string;
 
-  /** Sound effect when selecting this mode (optional) */
+  /** Sound effect when selecting this campaign (optional) */
   selectSound?: string;
 }
 
@@ -179,17 +179,24 @@ export interface PrizesConfig {
 
 /** Sound effect mapping - logical name to filename */
 export interface SoundEffects {
+  /** Click - default button click sound */
   click?: string;
-  correct?: string;
-  wrong?: string;
-  victory?: string;
+  /** Start - campaign start button */
+  start?: string;
+  /** Hint - 50:50 lifeline sound */
+  hint?: string;
+  /** Call - phone a friend lifeline sound */
+  call?: string;
+  /** Vote - ask the audience lifeline sound */
+  vote?: string;
+  /** Money - victory or take money sound */
+  money?: string;
+  /** Restart - new game / return to menu sound */
+  restart?: string;
+  /** Defeat - wrong answer / game over sound */
   defeat?: string;
-  fiftyFifty?: string;
-  phoneAFriend?: string;
-  askAudience?: string;
-  takeMoney?: string;
-  gameStart?: string;
-  newGame?: string;
+  /** Correct - correct answer, proceed to next question */
+  correct?: string;
 }
 
 /** Audio configuration */
@@ -313,8 +320,8 @@ export interface GameConfig {
   /** Subtitle (edition name) */
   subtitle: string;
 
-  /** Available game modes/campaigns (2-N) */
-  modes: GameMode[];
+  /** Available campaigns/difficulties (2-N) */
+  campaigns: Campaign[];
 
   /** Questions grouped by mode ID */
   questions: Record<string, Question[]>;
@@ -342,5 +349,19 @@ export interface GameConfig {
     won?: ComponentType;
     lost?: ComponentType;
     tookMoney?: ComponentType;
+  };
+
+  /**
+   * Icons used in game UI (optional, uses emoji defaults if not provided)
+   */
+  icons?: {
+    /** Small coin icon for prize display */
+    coin?: ComponentType;
+    /** Icon for phone a friend hint */
+    phoneHint?: ComponentType;
+    /** Icon for ask the audience hint */
+    audienceHint?: ComponentType;
+    /** Star icon for difficulty rating */
+    star?: ComponentType;
   };
 }

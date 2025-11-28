@@ -4,43 +4,53 @@
  * Complete configuration for the BG3 edition of the quiz game.
  */
 
-import { GameConfig, GameMode, Companion } from '../../engine/types';
-import { heroTheme, illithidTheme, darkUrgeTheme } from './themes';
-import { SwordIcon, MindFlayerIcon, DarkUrgeIcon, TrophyIcon, MoneyIcon, CriticalFailIcon } from './icons';
-import { heroQuestions, illithidQuestions, darkUrgeQuestions } from './questions';
+import { GameConfig, Campaign, Companion } from '../../engine/types';
+import { heroTheme, mindFlayerTheme, darkUrgeTheme } from './themes';
+import {
+  SwordIcon,
+  MindFlayerIcon,
+  DarkUrgeIcon,
+  TrophyIcon,
+  MoneyIcon,
+  CriticalFailIcon,
+  CoinIcon,
+  ScrollIcon,
+  TavernIcon,
+} from './icons';
+import { heroQuestions, mindFlayerQuestions, darkUrgeQuestions } from './questions';
 
 // ============================================
-// Game Modes
+// Campaigns
 // ============================================
 
-const heroMode: GameMode = {
+const heroCampaign: Campaign = {
   id: 'hero',
   name: 'ГЕРОЙ',
   label: 'Легко',
   icon: SwordIcon,
   theme: heroTheme,
   musicTrack: 'Hero.ogg',
-  selectSound: 'SelectedHero.mp3',
+  selectSound: 'CampaignHero.ogg',
 };
 
-const illithidMode: GameMode = {
-  id: 'illithid',
+const mindFlayerCampaign: Campaign = {
+  id: 'mindFlayer',
   name: 'ИЛЛИТИД',
   label: 'Сложно',
   icon: MindFlayerIcon,
-  theme: illithidTheme,
-  musicTrack: 'Illithid.ogg',
-  selectSound: 'SelectedMindFlayer.mp3',
+  theme: mindFlayerTheme,
+  musicTrack: 'MindFlayer.ogg',
+  selectSound: 'CampaignMindFlayer.ogg',
 };
 
-const darkUrgeMode: GameMode = {
+const darkUrgeCampaign: Campaign = {
   id: 'darkUrge',
   name: 'СОБЛАЗН',
   label: 'Доблесть',
   icon: DarkUrgeIcon,
   theme: darkUrgeTheme,
   musicTrack: 'DarkUrge.ogg',
-  selectSound: 'SelectedDarkUrge.mp3',
+  selectSound: 'CampaignDarkUrge.ogg',
 };
 
 // ============================================
@@ -64,11 +74,11 @@ export const bg3Config: GameConfig = {
   title: 'КТО ХОЧЕТ СТАТЬ МИЛЛИОНЕРОМ',
   subtitle: "BALDUR'S GATE 3 EDITION",
 
-  modes: [heroMode, illithidMode, darkUrgeMode],
+  campaigns: [heroCampaign, mindFlayerCampaign, darkUrgeCampaign],
 
   questions: {
     hero: heroQuestions,
-    illithid: illithidQuestions,
+    mindFlayer: mindFlayerQuestions,
     darkUrge: darkUrgeQuestions,
   },
 
@@ -193,16 +203,13 @@ export const bg3Config: GameConfig = {
     mainMenuTrack: 'MainMenu.ogg',
     gameOverTrack: 'GameOver.ogg',
     sounds: {
-      click: 'ClickStandard.mp3',
-      correct: 'ClickStandard.mp3',
-      victory: 'Victory.mp3',
-      defeat: 'CriticalFailure.mp3',
-      fiftyFifty: 'PerceptionSuccess.mp3',
-      phoneAFriend: 'Friends.mp3',
-      askAudience: 'Rawr.mp3',
-      takeMoney: 'ClickStandard.mp3',
-      gameStart: 'ClickStartAdventure.mp3',
-      newGame: 'NewStart.mp3',
+      click: 'Click.ogg',
+      start: 'Start.ogg',
+      hint: 'Hint.ogg',
+      vote: 'Vote.ogg',
+      money: 'Money.ogg',
+      restart: 'Restart.ogg',
+      defeat: 'Fail.ogg',
     },
   },
 
@@ -210,6 +217,12 @@ export const bg3Config: GameConfig = {
     won: TrophyIcon,
     lost: CriticalFailIcon,
     tookMoney: MoneyIcon,
+  },
+
+  icons: {
+    coin: CoinIcon,
+    phoneHint: ScrollIcon,
+    audienceHint: TavernIcon,
   },
 };
 

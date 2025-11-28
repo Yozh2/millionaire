@@ -8,9 +8,9 @@
  * - Handles audio integration
  */
 
-import { useEffect } from 'react';
+import { useEffect, useCallback } from 'react';
 import { ThemeProvider } from '../../context';
-import { GameConfig, ThemeColors } from '../types';
+import { GameConfig, ThemeColors, Campaign } from '../types';
 import { useGameState, useAudio } from '../hooks';
 import { StartScreen } from './StartScreen';
 import { GameScreen } from './GameScreen';
@@ -34,9 +34,9 @@ export function MillionaireGame({ config }: MillionaireGameProps) {
     // Audio preloading is handled by the useAudio hook
   }, []);
 
-  // Get current theme based on selected mode
-  const currentMode = gameState.selectedMode;
-  const theme: ThemeColors = currentMode?.theme || config.modes[0].theme;
+  // Get current theme based on selected campaign
+  const currentCampaign = gameState.selectedCampaign;
+  const theme: ThemeColors = currentCampaign?.theme || config.campaigns[0].theme;
 
   // Get background style based on mode
   const getBackgroundStyle = () => {
@@ -47,8 +47,35 @@ export function MillionaireGame({ config }: MillionaireGameProps) {
     return theme.bgGradient;
   };
 
-  // Convert GameMode to DifficultyMode string for ThemeProvider
-  const difficultyMode = currentMode?.id as 'hero' | 'illithid' | 'darkUrge' | null;
+  // Convert Campaign to DifficultyMode string for ThemeProvider
+  const difficultyMode = currentCampaign?.id as 'hero' | 'mindFlayer' | 'darkUrge' | null;
+
+  // Wrapper for selectCampaign with sound
+  const handleSelectCampaign = useCallback((campaign: Campaign) => {
+    // Play campaign-specific select sound if defined, otherwise generic click
+    if (campaign.selectSound) {
+      audio.playSoundFile(campaign.selectSound);
+    } else {
+      audio.playSoundEffect('click');
+    }
+    gameState.selectCampaign(campaign);
+  }, [audio, gameState]);
+
+  // Wrapper for startGame with sound and music switch
+  const handleStartGame = useCallback(() => {
+    if (!gameState.selectedCampaign) return;
+
+    audio.playSoundEffect('start');
+    audio.playCampaignMusic(gameState.selectedCampaign);
+    gameState.startGame();
+  }, [audio, gameState]);
+
+  // Wrapper for newGame with sound and music switch
+  const handleNewGame = useCallback(() => {
+    audio.playSoundEffect('restart');
+    audio.playMainMenu();
+    gameState.newGame();
+  }, [audio, gameState]);
 
   return (
     <ThemeProvider mode={difficultyMode}>
@@ -72,9 +99,9 @@ export function MillionaireGame({ config }: MillionaireGameProps) {
           {gameState.gameState === 'start' && (
             <StartScreen
               config={config}
-              selectedMode={gameState.selectedMode}
-              onSelectMode={gameState.selectMode}
-              onStartGame={gameState.startGame}
+              selectedCampaign={gameState.selectedCampaign}
+              onSelectCampaign={handleSelectCampaign}
+              onStartGame={handleStartGame}
               isMusicPlaying={audio.isMusicPlaying}
               onToggleMusic={audio.toggleMusic}
               theme={theme}
@@ -98,7 +125,7 @@ export function MillionaireGame({ config }: MillionaireGameProps) {
             <EndScreen
               config={config}
               gameState={gameState}
-              onNewGame={gameState.newGame}
+              onNewGame={handleNewGame}
               isMusicPlaying={audio.isMusicPlaying}
               onToggleMusic={audio.toggleMusic}
               theme={theme}

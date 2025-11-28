@@ -3,7 +3,7 @@
  */
 export {
   heroQuestions,
-  illithidQuestions,
+  mindFlayerQuestions,
   darkUrgeQuestions,
   getQuestionsForMode,
   prizes,

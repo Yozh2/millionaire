@@ -1,12 +1,12 @@
 /**
  * useAudio Hook
- * 
+ *
  * Manages background music and sound effects with fallback support.
  * Handles autoplay restrictions and user preferences.
  */
 
 import { useState, useRef, useCallback, useEffect } from 'react';
-import { GameConfig, GameMode } from '../types';
+import { GameConfig, Campaign } from '../types';
 import {
   setGameId,
   setSoundEnabled as setEngineSoundEnabled,
@@ -33,11 +33,14 @@ export interface UseAudioReturn {
   /** Play a sound effect by config key */
   playSoundEffect: (key: keyof GameConfig['audio']['sounds']) => void;
 
+  /** Play a sound effect by filename directly */
+  playSoundFile: (filename: string) => void;
+
   /** Play a companion voice line */
   playCompanionVoice: (voiceFile: string) => void;
 
-  /** Switch to a new music track */
-  switchMusicTrack: (trackFile: string | undefined) => void;
+  /** Switch to a new music track (autoPlay forces playback on user action) */
+  switchMusicTrack: (trackFile: string | undefined, autoPlay?: boolean) => void;
 
   /** Play main menu music */
   playMainMenu: () => void;
@@ -45,8 +48,8 @@ export interface UseAudioReturn {
   /** Play game over music */
   playGameOver: () => void;
 
-  /** Play mode-specific music */
-  playModeMusic: (mode: GameMode) => void;
+  /** Play campaign-specific music */
+  playCampaignMusic: (campaign: Campaign) => void;
 
   /** Stop all music */
   stopMusic: () => void;
@@ -78,7 +81,7 @@ export const useAudio = (
     const loadInitialTrack = async () => {
       if (config.audio.mainMenuTrack) {
         const paths = getAssetPaths('music', config.audio.mainMenuTrack, config.id);
-        
+
         // Try specific path first
         if (await checkFileExists(paths.specific)) {
           setCurrentTrack(paths.specific);
@@ -119,7 +122,7 @@ export const useAudio = (
 
   // Switch to a new track
   const switchMusicTrack = useCallback(
-    async (trackFile: string | undefined) => {
+    async (trackFile: string | undefined, autoPlay: boolean = false) => {
       const audio = getAudioElement();
       if (!audio) return;
 
@@ -146,9 +149,17 @@ export const useAudio = (
       audio.volume = config.audio.musicVolume;
       setCurrentTrack(trackPath);
 
-      const shouldPlay = musicEverEnabled.current && !userDisabledMusic.current;
+      // Play if: autoPlay requested OR (user enabled music before AND hasn't disabled it)
+      const shouldPlay = autoPlay || (musicEverEnabled.current && !userDisabledMusic.current);
 
       if (shouldPlay) {
+        // Mark music as enabled when autoPlay is used
+        if (autoPlay) {
+          musicEverEnabled.current = true;
+          userDisabledMusic.current = false;
+          setEngineSoundEnabled(true);
+        }
+
         const handleCanPlay = () => {
           audio
             .play()
@@ -208,6 +219,14 @@ export const useAudio = (
     [config.audio.sounds, config.audio.soundVolume]
   );
 
+  // Play sound by filename directly
+  const playSoundFile = useCallback(
+    (filename: string) => {
+      playSound(filename, config.audio.soundVolume);
+    },
+    [config.audio.soundVolume]
+  );
+
   // Play companion voice
   const playCompanionVoice = useCallback(
     (voiceFile: string) => {
@@ -218,16 +237,21 @@ export const useAudio = (
 
   // Convenience methods
   const playMainMenu = useCallback(() => {
-    switchMusicTrack(config.audio.mainMenuTrack);
+    // Auto-play if music was ever enabled by user
+    const shouldAutoPlay = musicEverEnabled.current && !userDisabledMusic.current;
+    switchMusicTrack(config.audio.mainMenuTrack, shouldAutoPlay);
   }, [config.audio.mainMenuTrack, switchMusicTrack]);
 
   const playGameOver = useCallback(() => {
-    switchMusicTrack(config.audio.gameOverTrack);
+    // Auto-play if music was ever enabled by user
+    const shouldAutoPlay = musicEverEnabled.current && !userDisabledMusic.current;
+    switchMusicTrack(config.audio.gameOverTrack, shouldAutoPlay);
   }, [config.audio.gameOverTrack, switchMusicTrack]);
 
-  const playModeMusic = useCallback(
-    (mode: GameMode) => {
-      switchMusicTrack(mode.musicTrack);
+  const playCampaignMusic = useCallback(
+    (campaign: Campaign) => {
+      // Use autoPlay=true because this is triggered by user action (start game)
+      switchMusicTrack(campaign.musicTrack, true);
     },
     [switchMusicTrack]
   );
@@ -245,11 +269,12 @@ export const useAudio = (
     currentTrack,
     toggleMusic,
     playSoundEffect,
+    playSoundFile,
     playCompanionVoice,
     switchMusicTrack,
     playMainMenu,
     playGameOver,
-    playModeMusic,
+    playCampaignMusic,
     stopMusic,
   };
 };

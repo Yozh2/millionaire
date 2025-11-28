@@ -1,14 +1,14 @@
 /**
- * StartScreen - Mode selection and game start screen
+ * StartScreen - Campaign selection and game start screen
  */
 
-import { GameConfig, GameMode, ThemeColors } from '../types';
+import { GameConfig, Campaign, ThemeColors } from '../types';
 import { Panel, PanelHeader } from '../../components/ui';
 
 interface StartScreenProps {
   config: GameConfig;
-  selectedMode: GameMode | null;
-  onSelectMode: (mode: GameMode) => void;
+  selectedCampaign: Campaign | null;
+  onSelectCampaign: (campaign: Campaign) => void;
   onStartGame: () => void;
   isMusicPlaying: boolean;
   onToggleMusic: () => void;
@@ -17,8 +17,8 @@ interface StartScreenProps {
 
 export function StartScreen({
   config,
-  selectedMode,
-  onSelectMode,
+  selectedCampaign,
+  onSelectCampaign,
   onStartGame,
   isMusicPlaying,
   onToggleMusic,
@@ -28,7 +28,7 @@ export function StartScreen({
     <>
       {/* Header */}
       <Panel className="mb-4 p-1">
-        <PanelHeader>✦ ДРЕВНИЙ СВИТОК ✦ СРОЧНЫЙ КВЕСТ ✦</PanelHeader>
+        <PanelHeader>{config.strings.headerTitle}</PanelHeader>
         <div className="p-4 text-center">
           {/* Music Toggle */}
           <div className="flex justify-end mb-2">
@@ -64,9 +64,9 @@ export function StartScreen({
         </div>
       </Panel>
 
-      {/* Quest Panel */}
+      {/* Campaign Selection Panel */}
       <Panel className="p-1">
-        <PanelHeader>✦ СВИТОК КВЕСТА ✦</PanelHeader>
+        <PanelHeader>{config.strings.selectPath}</PanelHeader>
         <div className="text-center py-8 px-4">
           <p className="text-amber-200 text-base mb-6 max-w-md mx-auto leading-relaxed font-serif">
             {config.strings.introText}
@@ -78,25 +78,25 @@ export function StartScreen({
               {config.strings.selectPath}
             </p>
             <div className="flex justify-center gap-4 md:gap-6 flex-wrap">
-              {config.modes.map((mode) => {
-                const isSelected = selectedMode?.id === mode.id;
-                const ModeIcon = mode.icon;
+              {config.campaigns.map((campaign) => {
+                const isSelected = selectedCampaign?.id === campaign.id;
+                const CampaignIcon = campaign.icon;
 
                 return (
                   <button
-                    key={mode.id}
-                    onClick={() => onSelectMode(mode)}
+                    key={campaign.id}
+                    onClick={() => onSelectCampaign(campaign)}
                     className="flex flex-col items-center gap-2 p-3 md:p-4 border-4 transition-all transform hover:scale-105 bg-stone-950/50"
                     style={{
                       borderStyle: 'ridge',
-                      borderColor: isSelected ? mode.theme.glowColor : '#44403c',
+                      borderColor: isSelected ? campaign.theme.glowColor : '#44403c',
                       boxShadow: isSelected
-                        ? `0 0 25px ${mode.theme.glow}, inset 0 0 15px ${mode.theme.glow}`
+                        ? `0 0 25px ${campaign.theme.glow}, inset 0 0 15px ${campaign.theme.glow}`
                         : 'none',
                     }}
                     onMouseEnter={(e) => {
                       if (!isSelected) {
-                        e.currentTarget.style.borderColor = mode.theme.glowColor;
+                        e.currentTarget.style.borderColor = campaign.theme.glowColor;
                       }
                     }}
                     onMouseLeave={(e) => {
@@ -105,15 +105,15 @@ export function StartScreen({
                       }
                     }}
                   >
-                    <ModeIcon />
+                    <CampaignIcon />
                     <span
                       className="text-sm font-serif font-bold"
-                      style={{ color: isSelected ? mode.theme.glowColor : mode.theme.glowSecondary }}
+                      style={{ color: isSelected ? campaign.theme.glowColor : campaign.theme.glowSecondary }}
                     >
-                      {mode.name}
+                      {campaign.name}
                     </span>
                     <span className="text-xs text-stone-500 font-serif">
-                      {mode.label}
+                      {campaign.label}
                     </span>
                   </button>
                 );
@@ -124,18 +124,18 @@ export function StartScreen({
           {/* Start Button */}
           <button
             onClick={onStartGame}
-            disabled={!selectedMode}
+            disabled={!selectedCampaign}
             className={`px-8 py-3 font-bold text-lg tracking-wide border-4 transition-all transform font-serif ${
-              selectedMode
+              selectedCampaign
                 ? `bg-gradient-to-b ${theme.bgButton} text-white ${theme.borderLight} ${theme.bgButtonHover} hover:scale-105`
                 : 'bg-gradient-to-b from-stone-700 via-stone-800 to-stone-900 text-stone-500 border-stone-600 cursor-not-allowed'
             }`}
             style={{
-              boxShadow: selectedMode
+              boxShadow: selectedCampaign
                 ? `0 0 25px ${theme.glow}, inset 0 1px 0 rgba(255, 255, 255, 0.2)`
                 : 'none',
               borderStyle: 'ridge',
-              textShadow: selectedMode ? '0 2px 4px rgba(0,0,0,0.8)' : 'none',
+              textShadow: selectedCampaign ? '0 2px 4px rgba(0,0,0,0.8)' : 'none',
             }}
           >
             {config.strings.startButton}

@@ -3,7 +3,7 @@
  */
 
 /** Difficulty modes corresponding to character origins */
-export type DifficultyMode = 'hero' | 'illithid' | 'darkUrge';
+export type DifficultyMode = 'hero' | 'mindFlayer' | 'darkUrge';
 
 /** Represents a single quiz question */
 export interface Question {

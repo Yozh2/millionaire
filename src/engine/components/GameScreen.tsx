@@ -6,7 +6,11 @@ import { GameConfig, ThemeColors } from '../types';
 import { UseGameStateReturn } from '../hooks/useGameState';
 import { UseAudioReturn } from '../hooks/useAudio';
 import { Panel, PanelHeader } from '../../components/ui';
-import { CoinIcon, ScrollIcon, TavernIcon } from '../../components/icons';
+
+// Default emoji-based icons
+const DefaultCoinIcon = () => <span className="mr-1">🪙</span>;
+const DefaultPhoneHintIcon = () => <span className="inline-block">📞</span>;
+const DefaultAudienceHintIcon = () => <span className="inline-block">📊</span>;
 
 interface GameScreenProps {
   config: GameConfig;
@@ -39,6 +43,53 @@ export function GameScreen({
   const questionData = questions[currentQuestion];
   const prizes = config.prizes.values;
   const guaranteedPrizes = config.prizes.guaranteed;
+
+  // Get icons from config or use defaults
+  const CoinIcon = config.icons?.coin || DefaultCoinIcon;
+  const PhoneHintIcon = config.icons?.phoneHint || DefaultPhoneHintIcon;
+  const AudienceHintIcon = config.icons?.audienceHint || DefaultAudienceHintIcon;
+
+  // Wrapped handlers with sound effects
+  const handleAnswerWithSound = async (displayIndex: number) => {
+    audio.playSoundEffect('click');
+    const result = await handleAnswer(displayIndex);
+    if (result === 'correct') {
+      // Play correct/next sound (oscillator if not defined in config)
+      audio.playSoundEffect('correct');
+    } else if (result === 'wrong') {
+      audio.playSoundEffect('defeat');
+      audio.playGameOver();
+    }
+  };
+
+  const handleFiftyFiftyWithSound = () => {
+    audio.playSoundEffect('hint');
+    useFiftyFifty();
+  };
+
+  const handlePhoneAFriendWithSound = () => {
+    const companion = usePhoneAFriend();
+    if (companion) {
+      // Play call sound first, then companion voice
+      audio.playSoundEffect('call');
+      // Small delay before voice to let the call sound start
+      setTimeout(() => {
+        if (companion.voiceFile) {
+          audio.playCompanionVoice(companion.voiceFile);
+        }
+      }, 300);
+    }
+  };
+
+  const handleAskAudienceWithSound = () => {
+    audio.playSoundEffect('vote');
+    useAskAudience();
+  };
+
+  const handleTakeMoneyWithSound = () => {
+    audio.playSoundEffect('money');
+    takeTheMoney();
+  };
 
   /** Get dynamic styling for answer buttons */
   const getAnswerStyle = (displayIndex: number): string => {
@@ -132,25 +183,25 @@ export function GameScreen({
             {config.subtitle}
           </h2>
 
-          {/* Mode Icons */}
-          {gameState.selectedMode && (
+          {/* Campaign Icons */}
+          {gameState.selectedCampaign && (
             <div className="flex justify-center gap-6 mt-3">
-              {config.modes.map((mode) => {
-                const ModeIcon = mode.icon;
-                const isActive = mode.id === gameState.selectedMode?.id;
+              {config.campaigns.map((campaign) => {
+                const CampaignIcon = campaign.icon;
+                const isActive = campaign.id === gameState.selectedCampaign?.id;
                 return (
                   <div
-                    key={mode.id}
+                    key={campaign.id}
                     className={`flex items-center gap-1 transition-opacity ${
                       isActive ? 'opacity-100' : 'opacity-30'
                     }`}
                   >
-                    <ModeIcon />
+                    <CampaignIcon />
                     <span
                       className="text-xs font-serif"
-                      style={{ color: mode.theme.glowColor }}
+                      style={{ color: campaign.theme.glowColor }}
                     >
-                      {mode.name}
+                      {campaign.name}
                     </span>
                   </div>
                 );
@@ -204,7 +255,7 @@ export function GameScreen({
             {shuffledAnswers.map((originalIndex, displayIndex) => (
               <button
                 key={displayIndex}
-                onClick={() => handleAnswer(displayIndex)}
+                onClick={() => handleAnswerWithSound(displayIndex)}
                 disabled={
                   selectedAnswer !== null ||
                   eliminatedAnswers.includes(displayIndex)
@@ -232,7 +283,7 @@ export function GameScreen({
                 {hint.type === 'phone' && (
                   <div>
                     <p className="text-amber-400 text-xs mb-1 font-serif italic">
-                      <ScrollIcon /> {config.strings.hintSenderLabel}{' '}
+                      <PhoneHintIcon /> {config.strings.hintSenderLabel}{' '}
                       {hint.name}
                     </p>
                     <p className="text-amber-300 italic font-serif">
@@ -243,7 +294,7 @@ export function GameScreen({
                 {hint.type === 'audience' && (
                   <div>
                     <p className="text-amber-400 text-xs mb-2 font-serif italic">
-                      <TavernIcon /> {config.strings.hintAudienceLabel}
+                      <AudienceHintIcon /> {config.strings.hintAudienceLabel}
                     </p>
                     <div className="grid grid-cols-4 gap-2">
                       {hint.percentages.map((p, i) => (
@@ -276,7 +327,7 @@ export function GameScreen({
             <PanelHeader>{config.strings.lifelinesHeader}</PanelHeader>
             <div className="flex flex-wrap gap-2 p-3 justify-center">
               <button
-                onClick={useFiftyFifty}
+                onClick={handleFiftyFiftyWithSound}
                 disabled={!lifelines.fiftyFifty || selectedAnswer !== null}
                 className={`px-4 py-2 text-sm transition-all border-3 font-serif ${
                   lifelines.fiftyFifty && selectedAnswer === null
@@ -294,7 +345,7 @@ export function GameScreen({
                 {config.lifelines.fiftyFifty.icon} {config.lifelines.fiftyFifty.name}
               </button>
               <button
-                onClick={usePhoneAFriend}
+                onClick={handlePhoneAFriendWithSound}
                 disabled={!lifelines.phoneAFriend || selectedAnswer !== null}
                 className={`px-4 py-2 text-sm transition-all border-3 font-serif ${
                   lifelines.phoneAFriend && selectedAnswer === null
@@ -313,7 +364,7 @@ export function GameScreen({
                 {config.lifelines.phoneAFriend.name}
               </button>
               <button
-                onClick={useAskAudience}
+                onClick={handleAskAudienceWithSound}
                 disabled={!lifelines.askAudience || selectedAnswer !== null}
                 className={`px-4 py-2 text-sm transition-all border-3 font-serif ${
                   lifelines.askAudience && selectedAnswer === null
@@ -332,7 +383,7 @@ export function GameScreen({
                 {config.lifelines.askAudience.name}
               </button>
               <button
-                onClick={takeTheMoney}
+                onClick={handleTakeMoneyWithSound}
                 disabled={currentQuestion === 0 || selectedAnswer !== null}
                 className={`px-4 py-2 text-sm transition-all border-3 font-serif ${
                   currentQuestion > 0 && selectedAnswer === null

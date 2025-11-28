@@ -1,12 +1,12 @@
 /**
  * Default Game Configuration
- * 
+ *
  * Minimal PoC game for testing the engine.
  * Uses oscillator sounds only, no external assets.
  * All settings are abstract and minimal.
  */
 
-import { GameConfig, GameMode, ThemeColors } from '../../engine/types';
+import { GameConfig, Campaign, ThemeColors } from '../../engine/types';
 
 // ============================================
 // Minimal Theme
@@ -79,23 +79,23 @@ const MoneyIcon = () => (
 );
 
 // ============================================
-// Game Modes (just 2 for simplicity)
+// Campaigns (just 2 for simplicity)
 // ============================================
 
-const easyMode: GameMode = {
+const easyCampaign: Campaign = {
   id: 'easy',
-  name: 'EASY',
-  label: 'Beginner',
+  name: 'ЛЕГКО',
+  label: 'Новичок',
   icon: EasyIcon,
   theme: defaultTheme,
   // No music - will be silent
   // No select sound - will use oscillator
 };
 
-const hardMode: GameMode = {
+const hardCampaign: Campaign = {
   id: 'hard',
-  name: 'HARD',
-  label: 'Expert',
+  name: 'СЛОЖНО',
+  label: 'Эксперт',
   icon: HardIcon,
   theme: {
     ...defaultTheme,
@@ -112,49 +112,49 @@ const hardMode: GameMode = {
 };
 
 // ============================================
-// Sample Questions
+// Sample Questions (на русском языке)
 // ============================================
 
 const easyQuestions = [
   // Difficulty 1
-  { question: 'What is 2 + 2?', answers: ['3', '4', '5', '6'], correct: 1, difficulty: 1 },
-  { question: 'What color is the sky?', answers: ['Red', 'Green', 'Blue', 'Yellow'], correct: 2, difficulty: 1 },
-  { question: 'How many legs does a dog have?', answers: ['2', '3', '4', '5'], correct: 2, difficulty: 1 },
-  { question: 'What is the capital of France?', answers: ['London', 'Berlin', 'Paris', 'Rome'], correct: 2, difficulty: 1 },
-  { question: 'What planet do we live on?', answers: ['Mars', 'Venus', 'Earth', 'Jupiter'], correct: 2, difficulty: 1 },
+  { question: 'Сколько будет 2 + 2?', answers: ['3', '4', '5', '6'], correct: 1, difficulty: 1 },
+  { question: 'Какого цвета небо?', answers: ['Красное', 'Зелёное', 'Голубое', 'Жёлтое'], correct: 2, difficulty: 1 },
+  { question: 'Сколько ног у собаки?', answers: ['2', '3', '4', '5'], correct: 2, difficulty: 1 },
+  { question: 'Столица Франции?', answers: ['Лондон', 'Берлин', 'Париж', 'Рим'], correct: 2, difficulty: 1 },
+  { question: 'На какой планете мы живём?', answers: ['Марс', 'Венера', 'Земля', 'Юпитер'], correct: 2, difficulty: 1 },
   // Difficulty 2
-  { question: 'What is 7 × 8?', answers: ['54', '56', '58', '64'], correct: 1, difficulty: 2 },
-  { question: 'Who wrote Romeo and Juliet?', answers: ['Dickens', 'Shakespeare', 'Twain', 'Hemingway'], correct: 1, difficulty: 2 },
-  { question: 'What is H2O?', answers: ['Salt', 'Sugar', 'Water', 'Oil'], correct: 2, difficulty: 2 },
-  { question: 'How many continents are there?', answers: ['5', '6', '7', '8'], correct: 2, difficulty: 2 },
-  { question: 'What year did WW2 end?', answers: ['1943', '1944', '1945', '1946'], correct: 2, difficulty: 2 },
+  { question: 'Сколько будет 7 × 8?', answers: ['54', '56', '58', '64'], correct: 1, difficulty: 2 },
+  { question: 'Кто написал "Ромео и Джульетту"?', answers: ['Диккенс', 'Шекспир', 'Твен', 'Хемингуэй'], correct: 1, difficulty: 2 },
+  { question: 'Что такое H2O?', answers: ['Соль', 'Сахар', 'Вода', 'Масло'], correct: 2, difficulty: 2 },
+  { question: 'Сколько континентов на Земле?', answers: ['5', '6', '7', '8'], correct: 2, difficulty: 2 },
+  { question: 'В каком году закончилась Вторая мировая война?', answers: ['1943', '1944', '1945', '1946'], correct: 2, difficulty: 2 },
   // Difficulty 3
-  { question: 'What is the speed of light?', answers: ['300,000 km/s', '150,000 km/s', '500,000 km/s', '1,000,000 km/s'], correct: 0, difficulty: 3 },
-  { question: 'Who painted the Mona Lisa?', answers: ['Michelangelo', 'Da Vinci', 'Raphael', 'Donatello'], correct: 1, difficulty: 3 },
-  { question: 'What is the largest ocean?', answers: ['Atlantic', 'Indian', 'Arctic', 'Pacific'], correct: 3, difficulty: 3 },
-  { question: 'What element has symbol Au?', answers: ['Silver', 'Gold', 'Copper', 'Iron'], correct: 1, difficulty: 3 },
-  { question: 'In what year was the internet invented?', answers: ['1969', '1979', '1989', '1999'], correct: 0, difficulty: 3 },
+  { question: 'Какова скорость света?', answers: ['300,000 км/с', '150,000 км/с', '500,000 км/с', '1,000,000 км/с'], correct: 0, difficulty: 3 },
+  { question: 'Кто написал "Мону Лизу"?', answers: ['Микеланджело', 'Да Винчи', 'Рафаэль', 'Донателло'], correct: 1, difficulty: 3 },
+  { question: 'Какой океан самый большой?', answers: ['Атлантический', 'Индийский', 'Северный Ледовитый', 'Тихий'], correct: 3, difficulty: 3 },
+  { question: 'Какой элемент обозначается Au?', answers: ['Серебро', 'Золото', 'Медь', 'Железо'], correct: 1, difficulty: 3 },
+  { question: 'В каком году был изобретён интернет?', answers: ['1969', '1979', '1989', '1999'], correct: 0, difficulty: 3 },
 ];
 
 const hardQuestions = [
   // Difficulty 1
-  { question: 'What is the square root of 144?', answers: ['10', '11', '12', '13'], correct: 2, difficulty: 1 },
-  { question: 'What is the chemical symbol for Sodium?', answers: ['S', 'So', 'Na', 'Sd'], correct: 2, difficulty: 1 },
-  { question: 'Who discovered gravity?', answers: ['Einstein', 'Newton', 'Galileo', 'Darwin'], correct: 1, difficulty: 1 },
-  { question: 'What is the longest river?', answers: ['Amazon', 'Nile', 'Yangtze', 'Mississippi'], correct: 1, difficulty: 1 },
-  { question: 'How many bones in human body?', answers: ['186', '196', '206', '216'], correct: 2, difficulty: 1 },
+  { question: 'Чему равен квадратный корень из 144?', answers: ['10', '11', '12', '13'], correct: 2, difficulty: 1 },
+  { question: 'Какой химический символ у натрия?', answers: ['S', 'So', 'Na', 'Sd'], correct: 2, difficulty: 1 },
+  { question: 'Кто открыл закон всемирного тяготения?', answers: ['Эйнштейн', 'Ньютон', 'Галилей', 'Дарвин'], correct: 1, difficulty: 1 },
+  { question: 'Какая река самая длинная?', answers: ['Амазонка', 'Нил', 'Янцзы', 'Миссисипи'], correct: 1, difficulty: 1 },
+  { question: 'Сколько костей в теле человека?', answers: ['186', '196', '206', '216'], correct: 2, difficulty: 1 },
   // Difficulty 2
-  { question: 'What is Avogadro\'s number?', answers: ['6.02×10²³', '3.14×10²³', '9.81×10²³', '2.99×10²³'], correct: 0, difficulty: 2 },
-  { question: 'Who wrote "1984"?', answers: ['Huxley', 'Orwell', 'Bradbury', 'Asimov'], correct: 1, difficulty: 2 },
-  { question: 'What is the hardest natural substance?', answers: ['Titanium', 'Diamond', 'Graphene', 'Tungsten'], correct: 1, difficulty: 2 },
-  { question: 'Which planet has the most moons?', answers: ['Jupiter', 'Saturn', 'Uranus', 'Neptune'], correct: 1, difficulty: 2 },
-  { question: 'What is the half-life of Carbon-14?', answers: ['5,730 years', '1,000 years', '10,000 years', '100 years'], correct: 0, difficulty: 2 },
+  { question: 'Чему равно число Авогадро?', answers: ['6,02×10²³', '3,14×10²³', '9,81×10²³', '2,99×10²³'], correct: 0, difficulty: 2 },
+  { question: 'Кто написал роман "1984"?', answers: ['Хаксли', 'Оруэлл', 'Брэдбери', 'Азимов'], correct: 1, difficulty: 2 },
+  { question: 'Какое самое твёрдое природное вещество?', answers: ['Титан', 'Алмаз', 'Графен', 'Вольфрам'], correct: 1, difficulty: 2 },
+  { question: 'У какой планеты больше всего спутников?', answers: ['Юпитер', 'Сатурн', 'Уран', 'Нептун'], correct: 1, difficulty: 2 },
+  { question: 'Каков период полураспада углерода-14?', answers: ['5,730 лет', '1,000 лет', '10,000 лет', '100 лет'], correct: 0, difficulty: 2 },
   // Difficulty 3
-  { question: 'What is Planck\'s constant?', answers: ['6.626×10⁻³⁴', '3.14×10⁻³⁴', '9.109×10⁻³⁴', '1.602×10⁻³⁴'], correct: 0, difficulty: 3 },
-  { question: 'Who proved Fermat\'s Last Theorem?', answers: ['Euler', 'Gauss', 'Wiles', 'Riemann'], correct: 2, difficulty: 3 },
-  { question: 'What is the Chandrasekhar limit?', answers: ['1.4 M☉', '2.0 M☉', '3.0 M☉', '0.5 M☉'], correct: 0, difficulty: 3 },
-  { question: 'Which enzyme unzips DNA?', answers: ['Ligase', 'Polymerase', 'Helicase', 'Primase'], correct: 2, difficulty: 3 },
-  { question: 'What causes the Mpemba effect?', answers: ['Evaporation', 'Convection', 'Unknown', 'Supercooling'], correct: 2, difficulty: 3 },
+  { question: 'Чему равна постоянная Планка?', answers: ['6,626×10⁻³⁴', '3,14×10⁻³⁴', '9,109×10⁻³⁴', '1,602×10⁻³⁴'], correct: 0, difficulty: 3 },
+  { question: 'Кто доказал Великую теорему Ферма?', answers: ['Эйлер', 'Гаусс', 'Уайлс', 'Риман'], correct: 2, difficulty: 3 },
+  { question: 'Каков предел Чандрасекара?', answers: ['1,4 M☉', '2,0 M☉', '3,0 M☉', '0,5 M☉'], correct: 0, difficulty: 3 },
+  { question: 'Какой фермент расплетает ДНК?', answers: ['Лигаза', 'Полимераза', 'Геликаза', 'Праймаза'], correct: 2, difficulty: 3 },
+  { question: 'Что вызывает эффект Мпембы?', answers: ['Испарение', 'Конвекция', 'Неизвестно', 'Переохлаждение'], correct: 2, difficulty: 3 },
 ];
 
 // ============================================
@@ -164,10 +164,10 @@ const hardQuestions = [
 export const defaultConfig: GameConfig = {
   id: 'default',
 
-  title: 'QUIZ GAME',
-  subtitle: 'ENGINE TEST',
+  title: 'КТО ХОЧЕТ СТАТЬ МИЛЛИОНЕРОМ',
+  subtitle: 'ТЕСТ ДВИЖКА',
 
-  modes: [easyMode, hardMode],
+  campaigns: [easyCampaign, hardCampaign],
 
   questions: {
     easy: easyQuestions,
@@ -178,56 +178,56 @@ export const defaultConfig: GameConfig = {
   companions: [],
 
   strings: {
-    headerTitle: '★ QUIZ ★',
+    headerTitle: '★ ВИКТОРИНА ★',
 
-    introText: 'Test your knowledge! Answer 15 questions to win the grand prize.',
-    selectPath: 'SELECT DIFFICULTY',
-    startButton: '▶ START GAME',
+    introText: 'Проверь свои знания! Ответь на 15 вопросов, чтобы выиграть главный приз.',
+    selectPath: 'ВЫБЕРИТЕ СЛОЖНОСТЬ',
+    startButton: '▶ НАЧАТЬ ИГРУ',
 
-    questionHeader: 'QUESTION #{n}',
-    difficultyLabel: 'DIFFICULTY:',
-    progressLabel: 'Progress:',
+    questionHeader: 'ВОПРОС #{n}',
+    difficultyLabel: 'СЛОЖНОСТЬ:',
+    progressLabel: 'Прогресс:',
 
-    lifelinesHeader: 'LIFELINES',
-    prizesHeader: 'PRIZES',
+    lifelinesHeader: 'ПОДСКАЗКИ',
+    prizesHeader: 'ПРИЗЫ',
 
-    hintPhoneHeader: 'FRIEND\'S ADVICE',
-    hintAudienceHeader: 'AUDIENCE POLL',
-    hintSenderLabel: 'From:',
-    hintAudienceLabel: 'Audience says:',
+    hintPhoneHeader: 'СОВЕТ ДРУГА',
+    hintAudienceHeader: 'ОПРОС ЗАЛА',
+    hintSenderLabel: 'От:',
+    hintAudienceLabel: 'Зал считает:',
 
     companionPhrases: {
-      confident: ['I\'m sure it\'s "{answer}"', 'Definitely "{answer}"'],
-      uncertain: ['Maybe "{answer}"?', 'I think it\'s "{answer}"'],
+      confident: ['Я уверен, что это "{answer}"', 'Точно "{answer}"'],
+      uncertain: ['Может быть "{answer}"?', 'Думаю, это "{answer}"'],
     },
 
-    wonTitle: '🎉 WINNER!',
-    wonText: 'Congratulations! You won the grand prize!',
-    wonHeader: 'VICTORY',
+    wonTitle: '🎉 ПОБЕДА!',
+    wonText: 'Поздравляем! Вы выиграли главный приз!',
+    wonHeader: 'ПОБЕДА',
 
-    lostTitle: '❌ GAME OVER',
-    lostText: 'Wrong answer!',
-    lostHeader: 'DEFEAT',
-    correctAnswerLabel: 'Correct answer:',
+    lostTitle: '❌ ИГРА ОКОНЧЕНА',
+    lostText: 'Неправильный ответ!',
+    lostHeader: 'ПОРАЖЕНИЕ',
+    correctAnswerLabel: 'Правильный ответ:',
 
-    tookMoneyTitle: '💰 CASHED OUT',
-    tookMoneyText: 'Smart choice!',
-    tookMoneyHeader: 'PRIZE CLAIMED',
+    tookMoneyTitle: '💰 ДЕНЬГИ ЗАБРАНЫ',
+    tookMoneyText: 'Умный выбор!',
+    tookMoneyHeader: 'ПРИЗ ПОЛУЧЕН',
 
-    prizeLabel: 'PRIZE:',
-    newGameButton: '▶ PLAY AGAIN',
+    prizeLabel: 'ПРИЗ:',
+    newGameButton: '▶ ИГРАТЬ СНОВА',
 
-    footer: '★ Quiz Game Engine Test ★',
+    footer: '★ Тестовый движок викторины ★',
 
-    musicOn: 'Mute',
-    musicOff: 'Unmute',
+    musicOn: 'Выкл. музыку',
+    musicOff: 'Вкл. музыку',
   },
 
   lifelines: {
     fiftyFifty: { name: '50:50', icon: '⚡', enabled: true },
-    phoneAFriend: { name: 'Phone', icon: '📞', enabled: false }, // Disabled - no companions
-    askAudience: { name: 'Poll', icon: '📊', enabled: true },
-    takeMoney: { name: 'Cash Out', icon: '💰', enabled: true },
+    phoneAFriend: { name: 'Звонок', icon: '📞', enabled: false }, // Disabled - no companions
+    askAudience: { name: 'Зал', icon: '📊', enabled: true },
+    takeMoney: { name: 'Забрать', icon: '💰', enabled: true },
   },
 
   prizes: {
@@ -248,7 +248,7 @@ export const defaultConfig: GameConfig = {
     sounds: {
       click: 'Click.mp3',      // Will fall back to oscillator
       correct: 'Correct.mp3',  // Will fall back to oscillator
-      victory: 'Victory.mp3',  // Will fall back to oscillator
+      money: 'Money.mp3',      // Will fall back to oscillator
       defeat: 'Defeat.mp3',    // Will fall back to oscillator
     },
   },

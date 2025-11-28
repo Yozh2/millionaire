@@ -38,8 +38,8 @@ export const heroTheme: ThemeColors = {
   headerBorderColor: '#451a03',
 };
 
-/** Illithid mode theme - mysterious purple colors */
-export const illithidTheme: ThemeColors = {
+/** Mind Flayer mode theme - mysterious purple colors */
+export const mindFlayerTheme: ThemeColors = {
   primary: 'purple',
   textPrimary: 'text-purple-400',
   textSecondary: 'text-purple-200',

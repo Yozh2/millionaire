@@ -1,6 +1,6 @@
 /**
  * useGameState Hook
- * 
+ *
  * Manages all game state and logic for the quiz game.
  * Independent of UI - can be used with any rendering layer.
  */
@@ -11,7 +11,8 @@ import {
   GameState,
   Question,
   Hint,
-  GameMode,
+  Campaign,
+  Companion,
 } from '../types';
 
 // ============================================
@@ -22,8 +23,8 @@ export interface GameStateData {
   /** Current game state */
   gameState: GameState;
 
-  /** Currently selected mode (null if not selected) */
-  selectedMode: GameMode | null;
+  /** Currently selected campaign (null if not selected) */
+  selectedCampaign: Campaign | null;
 
   /** Current question index (0-14) */
   currentQuestion: number;
@@ -59,13 +60,13 @@ export interface GameStateData {
   /** Current prize value */
   currentPrize: string;
 
-  /** Theme for current mode */
-  currentTheme: GameConfig['modes'][0]['theme'] | null;
+  /** Theme for current campaign */
+  currentTheme: GameConfig['campaigns'][0]['theme'] | null;
 }
 
 export interface GameStateActions {
-  /** Select a game mode */
-  selectMode: (mode: GameMode) => void;
+  /** Select a campaign */
+  selectCampaign: (campaign: Campaign) => void;
 
   /** Start the game */
   startGame: () => void;
@@ -82,8 +83,8 @@ export interface GameStateActions {
   /** Use 50:50 lifeline */
   useFiftyFifty: () => void;
 
-  /** Use Phone a Friend lifeline */
-  usePhoneAFriend: () => void;
+  /** Use Phone a Friend lifeline - returns companion for voice playback */
+  usePhoneAFriend: () => Companion | null;
 
   /** Use Ask the Audience lifeline */
   useAskAudience: () => void;
@@ -133,7 +134,7 @@ const shuffleQuestionsByDifficulty = (questions: Question[]): Question[] => {
 export const useGameState = (config: GameConfig): UseGameStateReturn => {
   // Core state
   const [gameState, setGameState] = useState<GameState>('start');
-  const [selectedMode, setSelectedMode] = useState<GameMode | null>(null);
+  const [selectedCampaign, setSelectedCampaign] = useState<Campaign | null>(null);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [questions, setQuestions] = useState<Question[]>([]);
@@ -159,8 +160,8 @@ export const useGameState = (config: GameConfig): UseGameStateReturn => {
   );
 
   const currentTheme = useMemo(
-    () => selectedMode?.theme || null,
-    [selectedMode]
+    () => selectedCampaign?.theme || null,
+    [selectedCampaign]
   );
 
   const lifelines = useMemo(
@@ -173,11 +174,11 @@ export const useGameState = (config: GameConfig): UseGameStateReturn => {
     setShuffledAnswers(shuffleArray([0, 1, 2, 3]));
   }, []);
 
-  // Initialize questions for a mode
+  // Initialize questions for a campaign
   const initializeQuestions = useCallback(
-    (mode: GameMode) => {
-      const modeQuestions = config.questions[mode.id] || [];
-      const shuffled = shuffleQuestionsByDifficulty(modeQuestions);
+    (campaign: Campaign) => {
+      const campaignQuestions = config.questions[campaign.id] || [];
+      const shuffled = shuffleQuestionsByDifficulty(campaignQuestions);
       setQuestions(shuffled);
       shuffleCurrentAnswers();
     },
@@ -200,25 +201,25 @@ export const useGameState = (config: GameConfig): UseGameStateReturn => {
   // Actions
   // ============================================
 
-  const selectMode = useCallback(
-    (mode: GameMode) => {
-      setSelectedMode(mode);
-      initializeQuestions(mode);
+  const selectCampaign = useCallback(
+    (campaign: Campaign) => {
+      setSelectedCampaign(campaign);
+      initializeQuestions(campaign);
     },
     [initializeQuestions]
   );
 
   const startGame = useCallback(() => {
-    if (!selectedMode) return;
+    if (!selectedCampaign) return;
 
     resetState();
-    initializeQuestions(selectedMode);
+    initializeQuestions(selectedCampaign);
     setGameState('playing');
-  }, [selectedMode, resetState, initializeQuestions]);
+  }, [selectedCampaign, resetState, initializeQuestions]);
 
   const newGame = useCallback(() => {
     setGameState('start');
-    setSelectedMode(null);
+    setSelectedCampaign(null);
     resetState();
     setQuestions([]);
   }, [resetState]);
@@ -303,9 +304,9 @@ export const useGameState = (config: GameConfig): UseGameStateReturn => {
     setEliminatedAnswers(toEliminate);
   }, [fiftyFifty, selectedAnswer, currentQuestionData, shuffledAnswers]);
 
-  const usePhoneAFriend = useCallback(() => {
-    if (!phoneAFriend || selectedAnswer !== null || !currentQuestionData) return;
-    if (config.companions.length === 0) return;
+  const usePhoneAFriend = useCallback((): Companion | null => {
+    if (!phoneAFriend || selectedAnswer !== null || !currentQuestionData) return null;
+    if (config.companions.length === 0) return null;
 
     setPhoneAFriend(false);
     const correct = currentQuestionData.correct;
@@ -331,6 +332,8 @@ export const useGameState = (config: GameConfig): UseGameStateReturn => {
       name: companion.name,
       text: phrase.replace('{answer}', answerText),
     });
+
+    return companion;
   }, [phoneAFriend, selectedAnswer, currentQuestionData, config]);
 
   const useAskAudience = useCallback(() => {
@@ -375,7 +378,7 @@ export const useGameState = (config: GameConfig): UseGameStateReturn => {
   return {
     // State
     gameState,
-    selectedMode,
+    selectedCampaign,
     currentQuestion,
     selectedAnswer,
     questions,
@@ -389,7 +392,7 @@ export const useGameState = (config: GameConfig): UseGameStateReturn => {
     currentTheme,
 
     // Actions
-    selectMode,
+    selectCampaign,
     startGame,
     newGame,
     handleAnswer,

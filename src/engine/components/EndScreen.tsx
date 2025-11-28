@@ -2,10 +2,27 @@
  * EndScreen - Game over screens (won, lost, took money)
  */
 
-import { GameConfig, ThemeColors, GameState } from '../types';
+import { GameConfig, ThemeColors } from '../types';
 import { UseGameStateReturn } from '../hooks/useGameState';
 import { Panel, PanelHeader } from '../../components/ui';
-import { TrophyIcon, MoneyIcon, CriticalFailIcon, CoinIcon } from '../../components/icons';
+
+// Default emoji-based icons
+const DefaultTrophyIcon = () => (
+  <div className="w-24 h-24 mx-auto flex items-center justify-center text-6xl animate-bounce">
+    🏆
+  </div>
+);
+const DefaultFailIcon = () => (
+  <div className="w-24 h-24 mx-auto flex items-center justify-center text-6xl">
+    ❌
+  </div>
+);
+const DefaultMoneyIcon = () => (
+  <div className="w-24 h-24 mx-auto flex items-center justify-center text-6xl">
+    💰
+  </div>
+);
+const DefaultCoinIcon = () => <span className="mr-1">🪙</span>;
 
 interface EndScreenProps {
   config: GameConfig;
@@ -44,9 +61,9 @@ export function EndScreen({
     }
 
     // Default icons
-    if (state === 'won') return <TrophyIcon />;
-    if (state === 'lost') return <CriticalFailIcon />;
-    return <MoneyIcon />;
+    if (state === 'won') return <DefaultTrophyIcon />;
+    if (state === 'lost') return <DefaultFailIcon />;
+    return <DefaultMoneyIcon />;
   };
 
   const getTitle = () => {
@@ -137,7 +154,7 @@ export function EndScreen({
           </p>
 
           <div className="flex items-center justify-center gap-2 text-xl text-yellow-300 font-bold mb-6 font-serif">
-            <CoinIcon />
+            <DefaultCoinIcon />
             <span>
               {config.strings.prizeLabel} {wonPrize} {config.prizes.currency}
             </span>

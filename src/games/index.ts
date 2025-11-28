@@ -1,6 +1,6 @@
 /**
  * Games barrel export
- * 
+ *
  * Import game configs from here.
  */
 

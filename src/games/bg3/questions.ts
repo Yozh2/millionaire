@@ -2,7 +2,7 @@ import { Question } from '../../engine/types';
 
 /**
  * Quiz questions about Baldur's Gate 3 and Forgotten Realms lore.
- * Organized by difficulty mode: Hero (easy), Illithid (medium), Dark Urge (hard).
+ * Organized by difficulty mode: Hero (easy), Mind Flayer (medium), Dark Urge (hard).
  */
 
 // ============================================
@@ -105,9 +105,9 @@ export const heroQuestions: Question[] = [
 ];
 
 // ============================================
-// ILLITHID MODE - Advanced BG3 & D&D lore
+// MIND FLAYER MODE - Advanced BG3 & D&D lore
 // ============================================
-export const illithidQuestions: Question[] = [
+export const mindFlayerQuestions: Question[] = [
   // Difficulty 1 - Easy (questions 1-5)
   {
     question: 'Как называется древняя империя, создавшая Корону Карсуса?',

@@ -103,39 +103,103 @@ export const TrophyIcon = () => (
   </svg>
 );
 
-/** Money/coin icon for took money screen */
+/** Money/coin icon for took money screen - stack of fantasy gold coins */
 export const MoneyIcon = () => (
   <svg viewBox="0 0 64 64" className="w-24 h-24 mx-auto">
-    <ellipse cx="32" cy="36" rx="20" ry="12" fill="#d97706" />
-    <ellipse cx="32" cy="32" rx="20" ry="12" fill="#fbbf24" />
-    <ellipse cx="32" cy="28" rx="20" ry="12" fill="#d97706" />
-    <ellipse cx="32" cy="24" rx="20" ry="12" fill="#fbbf24" />
-    <text x="32" y="30" textAnchor="middle" fill="#92400e" fontSize="14" fontWeight="bold">
-      $
+    {/* Bottom coins in stack */}
+    <ellipse cx="32" cy="40" rx="22" ry="10" fill="#b45309" />
+    <ellipse cx="32" cy="38" rx="22" ry="10" fill="#d97706" />
+    <ellipse cx="32" cy="34" rx="22" ry="10" fill="#b45309" />
+    <ellipse cx="32" cy="32" rx="22" ry="10" fill="#fbbf24" />
+    {/* Top coin */}
+    <ellipse cx="32" cy="28" rx="22" ry="10" fill="#b45309" />
+    <ellipse cx="32" cy="26" rx="22" ry="10" fill="#fbbf24" />
+    <ellipse cx="32" cy="26" rx="17" ry="7" fill="#f59e0b" />
+    {/* Stylized G letter */}
+    <text
+      x="32" y="30"
+      textAnchor="middle"
+      fill="#78350f"
+      fontSize="14"
+      fontWeight="bold"
+      fontFamily="Georgia, serif"
+      style={{ fontStyle: 'italic' }}
+    >
+      G
     </text>
+    {/* Coin shine */}
+    <ellipse cx="40" cy="22" rx="5" ry="2" fill="#fde68a" opacity="0.5" />
   </svg>
 );
 
-/** Critical fail / skull icon for defeat screen */
+/** Critical fail - D20 dice showing 1 */
 export const CriticalFailIcon = () => (
-  <svg viewBox="0 0 64 64" className="w-24 h-24 mx-auto">
-    <ellipse cx="32" cy="28" rx="18" ry="20" fill="#dc2626" />
-    <ellipse cx="32" cy="26" rx="16" ry="18" fill="#1f1f1f" />
-    <ellipse cx="25" cy="24" rx="5" ry="6" fill="#dc2626" />
-    <ellipse cx="39" cy="24" rx="5" ry="6" fill="#dc2626" />
-    <path d="M26 38 L32 34 L38 38" stroke="#dc2626" strokeWidth="2" fill="none" />
-    <path d="M28 42 L32 38 L36 42" stroke="#dc2626" strokeWidth="2" fill="none" />
-    <rect x="30" y="48" width="4" height="8" fill="#1f1f1f" />
+  <svg viewBox="0 0 64 64" className="w-20 h-20 mx-auto">
+    {/* Hexagonal die shape */}
+    <polygon
+      points="32,4 56,18 56,46 32,60 8,46 8,18"
+      fill="#1a1a2e"
+      stroke="#dc2626"
+      strokeWidth="2"
+    />
+    {/* Inner hexagon for depth */}
+    <polygon
+      points="32,12 48,22 48,42 32,52 16,42 16,22"
+      fill="#2d2d44"
+      stroke="#991b1b"
+      strokeWidth="1"
+    />
+    {/* Crosslines from vertices to center */}
+    <line x1="32" y1="4" x2="32" y2="32" stroke="#991b1b" strokeWidth="1" />
+    <line x1="56" y1="18" x2="32" y2="32" stroke="#991b1b" strokeWidth="1" />
+    <line x1="56" y1="46" x2="32" y2="32" stroke="#991b1b" strokeWidth="1" />
+    <line x1="32" y1="60" x2="32" y2="32" stroke="#991b1b" strokeWidth="1" />
+    <line x1="8" y1="46" x2="32" y2="32" stroke="#991b1b" strokeWidth="1" />
+    <line x1="8" y1="18" x2="32" y2="32" stroke="#991b1b" strokeWidth="1" />
+    {/* Center circle behind number */}
+    <circle cx="32" cy="32" r="12" fill="#1a1a2e" />
+    {/* The number 1 - critical fail */}
+    <text
+      x="32"
+      y="40"
+      textAnchor="middle"
+      fontSize="24"
+      fontWeight="bold"
+      fill="#ef4444"
+      style={{ textShadow: '0 0 10px #ef4444' }}
+    >
+      1
+    </text>
+    {/* Outer glow effect */}
+    <polygon
+      points="32,4 56,18 56,46 32,60 8,46 8,18"
+      fill="none"
+      stroke="#ef4444"
+      strokeWidth="1"
+      opacity="0.5"
+    />
   </svg>
 );
 
-/** Small coin icon for inline use */
+/** Small coin icon for inline use - fantasy gold with G */
 export const CoinIcon = () => (
   <svg viewBox="0 0 24 24" className="w-5 h-5 inline mr-1">
-    <circle cx="12" cy="12" r="10" fill="#fbbf24" stroke="#d97706" strokeWidth="1" />
-    <text x="12" y="16" textAnchor="middle" fill="#92400e" fontSize="10" fontWeight="bold">
-      $
+    {/* Coin base */}
+    <circle cx="12" cy="12" r="10" fill="#fbbf24" stroke="#b45309" strokeWidth="1.5" />
+    <circle cx="12" cy="12" r="7" fill="#f59e0b" />
+    {/* Stylized G */}
+    <text
+      x="12" y="16"
+      textAnchor="middle"
+      fill="#78350f"
+      fontSize="11"
+      fontWeight="bold"
+      fontFamily="Georgia, serif"
+    >
+      G
     </text>
+    {/* Shine */}
+    <ellipse cx="15" cy="8" rx="2" ry="1" fill="#fde68a" opacity="0.6" />
   </svg>
 );
 

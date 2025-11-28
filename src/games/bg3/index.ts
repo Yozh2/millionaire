@@ -4,8 +4,8 @@
  */
 
 export { bg3Config, default } from './config';
-export { heroTheme, illithidTheme, darkUrgeTheme } from './themes';
-export { heroQuestions, illithidQuestions, darkUrgeQuestions } from './questions';
+export { heroTheme, mindFlayerTheme, darkUrgeTheme } from './themes';
+export { heroQuestions, mindFlayerQuestions, darkUrgeQuestions } from './questions';
 export {
   MindFlayerIcon,
   DarkUrgeIcon,

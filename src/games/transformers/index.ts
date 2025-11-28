@@ -1,6 +1,6 @@
 /**
  * Transformers Game Configuration
- * 
+ *
  * Placeholder for future Transformers-themed quiz game.
  * TODO: Add questions, themes, icons, and audio assets.
  */

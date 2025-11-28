@@ -19,7 +19,7 @@
 export type {
   Question,
   ThemeColors,
-  GameMode,
+  Campaign,
   Companion,
   LifelineConfig,
   LifelinesConfig,
