@@ -2,8 +2,8 @@
  * Asset loader with fallback support.
  *
  * Loading priority:
- * 1. Game-specific: /sounds/bg3/Click.mp3
- * 2. Base fallback: /sounds/Click.mp3
+ * 1. Game-specific: /sounds/{gameId}/Click.ogg
+ * 2. Base fallback: /sounds/Click.ogg
  * 3. Oscillator (sounds only)
  * 4. Silent (music/voices)
  */

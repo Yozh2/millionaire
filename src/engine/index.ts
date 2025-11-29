@@ -7,10 +7,10 @@
  * @example
  * ```tsx
  * import { MillionaireGame } from './engine';
- * import { bg3Config } from './games/bg3';
+ * import { myGameConfig } from './games/myGame';
  *
  * function App() {
- *   return <MillionaireGame config={bg3Config} />;
+ *   return <MillionaireGame config={myGameConfig} />;
  * }
  * ```
  */
