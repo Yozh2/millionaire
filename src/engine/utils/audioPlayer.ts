@@ -232,6 +232,9 @@ const playTone = ({
   decay = 0.1,
   startOffset = 0,
 }: ToneConfig): void => {
+  // Double-check sound is enabled (safety check)
+  if (!soundEnabled) return;
+
   const ctx = getAudioContext();
   if (!ctx) return;
 
@@ -261,6 +264,9 @@ const playTone = ({
  * Play a sequence of tones
  */
 const playOscillatorSound = (config: OscillatorSoundConfig): void => {
+  // Double-check sound is enabled (safety check)
+  if (!soundEnabled) return;
+
   const { tones, delayBetween = 0.1 } = config;
   tones.forEach((tone, index) => {
     playTone({ ...tone, startOffset: index * delayBetween });

@@ -149,17 +149,11 @@ export const useAudio = (
       audio.volume = config.audio.musicVolume;
       setCurrentTrack(trackPath);
 
-      // Play if: autoPlay requested OR (user enabled music before AND hasn't disabled it)
-      const shouldPlay = autoPlay || (musicEverEnabled.current && !userDisabledMusic.current);
+      // Only play if user has explicitly enabled music before
+      // autoPlay just means "play if user already enabled sound"
+      const shouldPlay = musicEverEnabled.current && !userDisabledMusic.current;
 
       if (shouldPlay) {
-        // Mark music as enabled when autoPlay is used
-        if (autoPlay) {
-          musicEverEnabled.current = true;
-          userDisabledMusic.current = false;
-          setEngineSoundEnabled(true);
-        }
-
         const handleCanPlay = () => {
           audio
             .play()

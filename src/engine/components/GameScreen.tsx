@@ -145,7 +145,7 @@ export function GameScreen({
     <>
       {/* Header */}
       <Panel className="mb-4 p-1">
-        <PanelHeader>✦ ДРЕВНИЙ СВИТОК ✦ СРОЧНЫЙ КВЕСТ ✦</PanelHeader>
+        <PanelHeader>{config.strings.headerTitle}</PanelHeader>
         <div className="p-4 text-center">
           {/* Music Toggle */}
           <div className="flex justify-end mb-2">
@@ -185,7 +185,7 @@ export function GameScreen({
 
           {/* Campaign Icons */}
           {gameState.selectedCampaign && (
-            <div className="flex justify-center gap-6 mt-3">
+            <div className="flex justify-center gap-4 md:gap-6 mt-3 flex-wrap">
               {config.campaigns.map((campaign) => {
                 const CampaignIcon = campaign.icon;
                 const isActive = campaign.id === gameState.selectedCampaign?.id;

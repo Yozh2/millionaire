@@ -43,6 +43,9 @@ export function EndScreen({
 }: EndScreenProps) {
   const { gameState: state, wonPrize, currentQuestion, questions } = gameState;
 
+  // Get icons from config or use defaults
+  const CoinIcon = config.icons?.coin || DefaultCoinIcon;
+
   // Get the correct icon component
   const getIcon = () => {
     if (config.endIcons) {
@@ -100,7 +103,7 @@ export function EndScreen({
     <>
       {/* Header */}
       <Panel className="mb-4 p-1">
-        <PanelHeader>✦ ДРЕВНИЙ СВИТОК ✦ СРОЧНЫЙ КВЕСТ ✦</PanelHeader>
+        <PanelHeader>{config.strings.headerTitle}</PanelHeader>
         <div className="p-4 text-center">
           {/* Music Toggle */}
           <div className="flex justify-end mb-2">
@@ -154,7 +157,7 @@ export function EndScreen({
           </p>
 
           <div className="flex items-center justify-center gap-2 text-xl text-yellow-300 font-bold mb-6 font-serif">
-            <DefaultCoinIcon />
+            {CoinIcon && <CoinIcon />}
             <span>
               {config.strings.prizeLabel} {wonPrize} {config.prizes.currency}
             </span>
@@ -162,7 +165,7 @@ export function EndScreen({
 
           {state === 'lost' && questions[currentQuestion] && (
             <p className="text-amber-400 mb-6 text-sm font-serif italic">
-              {config.strings.correctAnswerLabel}:{' '}
+              {config.strings.correctAnswerLabel}{' '}
               {questions[currentQuestion].answers[questions[currentQuestion].correct]}
             </p>
           )}

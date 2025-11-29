@@ -67,3 +67,6 @@ export {
   GameScreen,
   EndScreen,
 } from './components';
+
+// Context
+export { ThemeProvider, useTheme, defaultTheme } from './context';

@@ -9,7 +9,7 @@
  */
 
 import { useEffect, useCallback } from 'react';
-import { ThemeProvider } from '../../context';
+import { ThemeProvider } from '../context';
 import { GameConfig, ThemeColors, Campaign } from '../types';
 import { useGameState, useAudio } from '../hooks';
 import { StartScreen } from './StartScreen';
@@ -47,9 +47,6 @@ export function MillionaireGame({ config }: MillionaireGameProps) {
     return theme.bgGradient;
   };
 
-  // Convert Campaign to DifficultyMode string for ThemeProvider
-  const difficultyMode = currentCampaign?.id as 'hero' | 'mindFlayer' | 'darkUrge' | null;
-
   // Wrapper for selectCampaign with sound
   const handleSelectCampaign = useCallback((campaign: Campaign) => {
     // Play campaign-specific select sound if defined, otherwise generic click
@@ -78,7 +75,7 @@ export function MillionaireGame({ config }: MillionaireGameProps) {
   }, [audio, gameState]);
 
   return (
-    <ThemeProvider mode={difficultyMode}>
+    <ThemeProvider theme={theme}>
       <div
         className="min-h-screen p-4 transition-all duration-500"
         style={{
