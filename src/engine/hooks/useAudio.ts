@@ -129,11 +129,12 @@ export const useAudio = (
       const trackPath = await loadTrack(trackFile);
 
       if (!trackPath) {
-        // No track available - stop music
+        // No track available - stop music playback but keep sound enabled state
         audio.pause();
         audio.src = '';
         setCurrentTrack('');
-        setIsMusicPlaying(false);
+        // Don't reset isMusicPlaying if user has sound enabled
+        // This allows oscillator sounds to continue working
         return;
       }
 
@@ -173,29 +174,43 @@ export const useAudio = (
   // Toggle music
   const toggleMusic = useCallback(() => {
     const audio = getAudioElement();
-    if (!audio) return;
 
     if (isMusicPlaying) {
-      audio.pause();
+      // Turn off music and sounds
+      if (audio) {
+        audio.pause();
+      }
       setIsMusicPlaying(false);
       userDisabledMusic.current = true;
       setEngineSoundEnabled(false);
     } else {
-      // Set src if not already set
-      if (!audio.src && currentTrack) {
-        audio.src = currentTrack;
+      // Turn on sounds first
+      musicEverEnabled.current = true;
+      userDisabledMusic.current = false;
+      setEngineSoundEnabled(true);
+
+      // Try to play music if there's a track
+      if (audio && currentTrack) {
+        // Set src if not already set
+        if (!audio.src) {
+          audio.src = currentTrack;
+        }
+        // Set volume before playing
+        audio.volume = config.audio.musicVolume;
+        audio
+          .play()
+          .then(() => {
+            setIsMusicPlaying(true);
+          })
+          .catch((err) => {
+            // Music failed but sounds are still enabled
+            console.log('Music play failed (sounds still enabled):', err);
+            setIsMusicPlaying(true); // Show as "on" for sound effects
+          });
+      } else {
+        // No music track, but sounds are enabled
+        setIsMusicPlaying(true); // Show as "on" for sound effects
       }
-      // Set volume before playing
-      audio.volume = config.audio.musicVolume;
-      audio
-        .play()
-        .then(() => {
-          setIsMusicPlaying(true);
-          musicEverEnabled.current = true;
-          userDisabledMusic.current = false;
-          setEngineSoundEnabled(true);
-        })
-        .catch((err) => console.log('Music play failed:', err));
     }
   }, [isMusicPlaying, config.audio.musicVolume, getAudioElement, currentTrack]);
 

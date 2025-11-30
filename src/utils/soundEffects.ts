@@ -294,7 +294,7 @@ export const playFiftyFifty = (): void => {
 /**
  * Companion voice lines mapping.
  * Maps companion names to their voice file names.
- * Files are stored in public/voices/ directory.
+ * Files are stored in public/games/{gameId}/voices/ directory.
  */
 const companionVoiceMap: Record<string, string> = {
   'Астарион': 'Astarion.mp3',

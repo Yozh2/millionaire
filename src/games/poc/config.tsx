@@ -1,5 +1,5 @@
 /**
- * Default Game Configuration
+ * PoC Game Configuration
  *
  * Minimal PoC game for testing the engine.
  * Uses oscillator sounds only, no external assets.
@@ -12,36 +12,36 @@ import { GameConfig, Campaign, ThemeColors } from '../../engine/types';
 // Minimal Theme
 // ============================================
 
-const defaultTheme: ThemeColors = {
-  primary: 'slate',
-  textPrimary: 'text-slate-300',
-  textSecondary: 'text-slate-400',
-  textMuted: 'text-slate-600',
-  textAccent: 'text-slate-200',
-  border: 'border-slate-700',
-  borderLight: 'border-slate-500',
-  borderHover: 'hover:border-slate-500',
-  bgPanel: 'from-slate-900/90 via-slate-800/95 to-slate-950/90',
-  bgPanelFrom: '#1e293b',
-  bgPanelVia: '#334155',
-  bgPanelTo: '#0f172a',
-  bgHeader: 'from-slate-700 via-slate-600 to-slate-700',
-  bgHeaderVia: '#475569',
-  bgButton: 'from-slate-600 via-slate-700 to-slate-800',
-  bgButtonHover: 'hover:from-slate-500 hover:via-slate-600 hover:to-slate-700',
-  bgAnswer: 'from-slate-800 via-slate-900 to-slate-950',
-  bgAnswerHover: 'hover:from-slate-700 hover:to-slate-800',
-  bgLifeline: 'from-slate-600 to-slate-800',
-  bgPrizeCurrent: 'bg-slate-700/60',
-  bgPrizePassed: 'bg-slate-800/40',
-  textLifeline: 'text-slate-100',
-  borderLifeline: 'border-slate-400',
-  shadowAnswer: 'hover:shadow-slate-700/50',
-  glow: 'rgba(148, 163, 184, 0.5)',
-  glowColor: '#94a3b8',
-  glowSecondary: '#64748b',
-  borderImageColors: '#475569, #1e293b',
-  headerBorderColor: '#1e293b',
+const pocTheme: ThemeColors = {
+  primary: 'indigo',
+  textPrimary: 'text-indigo-200',
+  textSecondary: 'text-indigo-300',
+  textMuted: 'text-indigo-500',
+  textAccent: 'text-indigo-100',
+  border: 'border-indigo-600',
+  borderLight: 'border-indigo-400',
+  borderHover: 'hover:border-indigo-400',
+  bgPanel: 'from-indigo-950/95 via-violet-900/90 to-indigo-950/95',
+  bgPanelFrom: '#1e1b4b',
+  bgPanelVia: '#4c1d95',
+  bgPanelTo: '#1e1b4b',
+  bgHeader: 'from-indigo-700 via-violet-600 to-indigo-700',
+  bgHeaderVia: '#7c3aed',
+  bgButton: 'from-indigo-600 via-violet-700 to-indigo-800',
+  bgButtonHover: 'hover:from-indigo-500 hover:via-violet-600 hover:to-indigo-700',
+  bgAnswer: 'from-indigo-900 via-violet-950 to-indigo-950',
+  bgAnswerHover: 'hover:from-indigo-800 hover:to-violet-900',
+  bgLifeline: 'from-violet-600 to-indigo-800',
+  bgPrizeCurrent: 'bg-violet-700/60',
+  bgPrizePassed: 'bg-indigo-800/40',
+  textLifeline: 'text-indigo-100',
+  borderLifeline: 'border-violet-400',
+  shadowAnswer: 'hover:shadow-violet-600/50',
+  glow: 'rgba(139, 92, 246, 0.6)',
+  glowColor: '#8b5cf6',
+  glowSecondary: '#6366f1',
+  borderImageColors: '#6366f1, #1e1b4b',
+  headerBorderColor: '#4c1d95',
 };
 
 // ============================================
@@ -87,7 +87,7 @@ const easyCampaign: Campaign = {
   name: 'ЛЕГКО',
   label: 'Новичок',
   icon: EasyIcon,
-  theme: defaultTheme,
+  theme: pocTheme,
   // No music - will be silent
   // No select sound - will use oscillator
 };
@@ -98,16 +98,35 @@ const hardCampaign: Campaign = {
   label: 'Эксперт',
   icon: HardIcon,
   theme: {
-    ...defaultTheme,
-    primary: 'rose',
-    textPrimary: 'text-rose-400',
-    textSecondary: 'text-rose-300',
-    border: 'border-rose-800',
-    borderLight: 'border-rose-600',
-    bgHeader: 'from-rose-900 via-rose-800 to-rose-900',
-    bgButton: 'from-rose-700 via-rose-800 to-rose-900',
-    glow: 'rgba(244, 63, 94, 0.5)',
-    glowColor: '#f43f5e',
+    ...pocTheme,
+    primary: 'amber',
+    textPrimary: 'text-amber-200',
+    textSecondary: 'text-amber-300',
+    textAccent: 'text-amber-100',
+    border: 'border-amber-600',
+    borderLight: 'border-amber-400',
+    borderHover: 'hover:border-amber-400',
+    bgPanel: 'from-amber-950/95 via-orange-900/90 to-amber-950/95',
+    bgPanelFrom: '#451a03',
+    bgPanelVia: '#9a3412',
+    bgPanelTo: '#451a03',
+    bgHeader: 'from-amber-700 via-orange-600 to-amber-700',
+    bgHeaderVia: '#ea580c',
+    bgButton: 'from-amber-600 via-orange-700 to-amber-800',
+    bgButtonHover: 'hover:from-amber-500 hover:via-orange-600 hover:to-amber-700',
+    bgAnswer: 'from-amber-900 via-orange-950 to-amber-950',
+    bgAnswerHover: 'hover:from-amber-800 hover:to-orange-900',
+    bgLifeline: 'from-orange-600 to-amber-800',
+    bgPrizeCurrent: 'bg-orange-700/60',
+    bgPrizePassed: 'bg-amber-800/40',
+    textLifeline: 'text-amber-100',
+    borderLifeline: 'border-orange-400',
+    shadowAnswer: 'hover:shadow-orange-600/50',
+    glow: 'rgba(251, 191, 36, 0.6)',
+    glowColor: '#fbbf24',
+    glowSecondary: '#f59e0b',
+    borderImageColors: '#f59e0b, #451a03',
+    headerBorderColor: '#9a3412',
   },
 };
 
@@ -161,8 +180,8 @@ const hardQuestions = [
 // Main Config
 // ============================================
 
-export const defaultConfig: GameConfig = {
-  id: 'default',
+export const pocConfig: GameConfig = {
+  id: 'poc',
 
   title: 'КТО ХОЧЕТ СТАТЬ МИЛЛИОНЕРОМ',
   subtitle: 'ТЕСТ ДВИЖКА',
@@ -174,8 +193,12 @@ export const defaultConfig: GameConfig = {
     hard: hardQuestions,
   },
 
-  // No companions - Phone a Friend will be disabled
-  companions: [],
+  // Simple companions for Phone a Friend
+  companions: [
+    { id: 'alexey', name: 'Алексей (эрудит)' },
+    { id: 'maria', name: 'Мария (учитель)' },
+    { id: 'sergey', name: 'Сергей (программист)' },
+  ],
 
   strings: {
     headerTitle: '★ ВИКТОРИНА ★',
@@ -225,7 +248,7 @@ export const defaultConfig: GameConfig = {
 
   lifelines: {
     fiftyFifty: { name: '50:50', icon: '⚡', enabled: true },
-    phoneAFriend: { name: 'Звонок', icon: '📞', enabled: false }, // Disabled - no companions
+    phoneAFriend: { name: 'Звонок', icon: '📞', enabled: true },
     askAudience: { name: 'Зал', icon: '📊', enabled: true },
     takeMoney: { name: 'Забрать', icon: '💰', enabled: true },
   },
@@ -260,4 +283,4 @@ export const defaultConfig: GameConfig = {
   },
 };
 
-export default defaultConfig;
+export default pocConfig;

@@ -2,13 +2,13 @@
  * Audio player with fallback support.
  *
  * Loading priority for sounds:
- * 1. Game-specific file: /sounds/{gameId}/{filename}
- * 2. Base fallback file: /sounds/{filename}
+ * 1. Game-specific file: /games/{gameId}/sounds/{filename}
+ * 2. Shared fallback file: /games/shared/sounds/{filename}
  * 3. Oscillator-generated sound
  *
  * For music/voices:
- * 1. Game-specific file: /music/{gameId}/{filename}
- * 2. Base fallback file: /music/{filename}
+ * 1. Game-specific file: /games/{gameId}/music/{filename}
+ * 2. Shared fallback file: /games/shared/music/{filename}
  * 3. Silent (no playback)
  */
 

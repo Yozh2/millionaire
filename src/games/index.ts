@@ -4,8 +4,8 @@
  * Import game configs from here.
  */
 
-// Default - minimal test game
-export { defaultConfig } from './default';
+// PoC - minimal test game
+export { pocConfig } from './poc';
 
 // Baldur's Gate 3
 export { bg3Config } from './bg3';

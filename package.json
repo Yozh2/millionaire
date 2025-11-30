@@ -1,7 +1,7 @@
 {
-  "name": "bg3-millionaire",
-  "version": "1.0.0",
-  "description": "Кто хочет стать миллионером - Baldur's Gate 3 Edition",
+  "name": "millionaire-quiz-engine",
+  "version": "2.0.0",
+  "description": "Universal 'Who Wants to Be a Millionaire' quiz game engine with theming support",
   "private": true,
   "type": "module",
   "dependencies": {

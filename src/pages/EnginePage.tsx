@@ -6,8 +6,8 @@
  */
 
 import { MillionaireGame } from '../engine';
-import { defaultConfig } from '../games/default';
+import { pocConfig } from '../games/poc';
 
 export default function EnginePage() {
-  return <MillionaireGame config={defaultConfig} />;
+  return <MillionaireGame config={pocConfig} />;
 }

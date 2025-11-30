@@ -1,116 +1,111 @@
-# Copilot Instructions for BG3 Millionaire
+# Copilot Instructions for Millionaire Quiz Engine
 
 ## Project Overview
 
-BG3 Millionaire is a "Who Wants to Be a Millionaire" style quiz game themed around Baldur's Gate 3 and Forgotten Realms lore. The application is built as a single-page React application with TypeScript.
+A reusable "Who Wants to Be a Millionaire" quiz game engine supporting multiple themed games. Currently features BG3 (Baldur's Gate 3) edition with plans for Transformers and other themes.
 
-## Tech Stack
+## Architecture
 
-- **Frontend Framework**: React 18 with functional components and hooks
-- **Language**: TypeScript (strict mode enabled)
-- **Build Tool**: Vite 5
-- **Styling**: Tailwind CSS 3 with custom fantasy-themed design system
-- **Deployment**: GitHub Pages via `gh-pages` package
+**Engine-Game Separation**: The codebase separates reusable engine logic from game-specific content:
+
+```
+src/
+├── engine/              # Reusable quiz game engine
+│   ├── components/      # MillionaireGame, StartScreen, GameScreen, EndScreen
+│   ├── hooks/           # useGameState (logic), useAudio (sound management)
+│   ├── context/         # ThemeProvider for dynamic theming
+│   ├── types/           # GameConfig, Question, Campaign, ThemeColors interfaces
+│   └── utils/           # Asset loading with fallback support
+├── games/               # Game configurations
+│   ├── bg3/             # BG3: config, questions, themes, icons
+│   └── default/         # Minimal test game (no external assets)
+├── pages/               # Route components (BG3Page, EnginePage)
+├── components/          # Shared UI (GameSelector, Panel)
+└── App.tsx              # Router with lazy-loaded game pages
+```
+
+**Data Flow**: `App.tsx` → `pages/*Page.tsx` → `<MillionaireGame config={gameConfig} />` → engine hooks manage state/audio
 
 ## Development Commands
 
 ```bash
-npm run dev      # Start development server (http://localhost:5173)
-npm run build    # Build for production (outputs to /dist)
-npm run preview  # Preview production build locally
+npm run dev      # Start dev server (http://localhost:5173)
+npm run build    # Build for production → /dist
 npm run deploy   # Build and deploy to GitHub Pages
 ```
 
-## Project Structure
+## Creating a New Game
 
-```
-src/
-├── components/
-│   ├── icons/          # SVG icon components (TrophyIcon, CoinIcon, etc.)
-│   └── ui/             # Reusable UI components (Panel, PanelHeader)
-├── context/
-│   └── ThemeContext.tsx  # Dynamic theme system based on difficulty mode
-├── data/
-│   ├── questions.ts    # Quiz questions organized by difficulty
-│   └── index.ts        # Prize values and companion names
-├── types/
-│   └── index.ts        # TypeScript type definitions
-├── App.tsx             # Main game component with all game logic
-├── main.tsx            # Application entry point
-└── index.css           # Global styles and Tailwind imports
-```
+1. Create folder `src/games/{gameId}/` with:
+   - `config.ts` - Export `GameConfig` object (see `src/engine/types/index.ts`)
+   - `questions.ts` - Questions array per campaign
+   - `themes.ts` - `ThemeColors` per campaign
+   - `icons.tsx` - SVG icon components
 
-## Coding Conventions
+2. Add assets to `public/games/{gameId}/`:
+   ```
+   public/games/{gameId}/
+   ├── music/      # Background music per campaign
+   ├── sounds/     # Sound effects (Click.ogg, etc.)
+   └── voices/     # Companion voice lines
+   ```
 
-### TypeScript
-- Use strict TypeScript typing
-- Define interfaces for component props
-- Use union types for game states: `'start' | 'playing' | 'won' | 'lost' | 'took_money'`
-- Define difficulty modes as: `'hero' | 'illithid' | 'darkUrge'`
+3. Create page in `src/pages/{GameId}Page.tsx`
+4. Add route in `src/App.tsx`
+5. Add card to `src/components/GameSelector.tsx`
 
-### React Patterns
-- Use functional components with hooks (useState, useEffect, useRef)
-- Use React Context for theme management (ThemeProvider, useTheme)
-- Keep component logic in the component file unless it's reusable
-- Use JSDoc comments for documenting component purpose and complex logic
+## Key Interfaces
 
-### Styling
-- Use Tailwind CSS utility classes
-- Dynamic styles based on theme context (amber for hero, purple for illithid, red for dark urge)
-- Fantasy/medieval aesthetic with serif fonts and ornate borders
-- Responsive design using Tailwind's responsive prefixes (md:, lg:)
-
-### File Organization
-- Export components from index.ts barrel files
-- Keep related types in `types/index.ts`
-- Organize questions by difficulty mode in `data/questions.ts`
-
-## Localization
-
-The application UI is in **Russian**. When adding new text content:
-- Keep user-facing strings in Russian
-- Use fantasy/RPG terminology consistent with the game theme
-- Follow existing patterns for text like:
-  - "✦ КВЕСТ ✦" (Quest)
-  - "⚔ НАЧАТЬ ПРИКЛЮЧЕНИЕ ⚔" (Start Adventure)
-  - Prize values in "золотых" (gold)
-
-## Game Features
-
-### Difficulty Modes
-- **Hero (Герой)**: Easy mode - amber/gold theme
-- **Illithid (Иллитид)**: Medium mode - purple theme  
-- **Dark Urge (Тёмный Позыв)**: Hard mode - red theme
-
-### Lifelines (Подсказки)
-- **50:50**: Removes two wrong answers
-- **Послание (Phone a Friend)**: Advice from a companion
-- **Таверна (Ask the Audience)**: Voting percentages
-
-### Key Game Logic
-- 15 questions sorted by difficulty (1-5 stars)
-- Guaranteed prize checkpoints at questions 5, 10, and 15
-- Background music that changes based on game mode
-
-## Adding New Questions
-
-Questions should follow this format:
 ```typescript
-{
-  question: 'Question text in Russian?',
-  answers: ['Option A', 'Option B', 'Option C', 'Option D'],
-  correct: 0,  // Index of correct answer (0-3)
-  difficulty: 3,  // Difficulty rating (1-5)
+// Complete game config (src/engine/types/index.ts)
+interface GameConfig {
+  id: string;                          // Asset path prefix
+  title: string; subtitle: string;
+  campaigns: Campaign[];               // Difficulty modes
+  questions: Record<string, Question[]>;
+  companions: Companion[];
+  strings: GameStrings;                // All UI text
+  lifelines: LifelinesConfig;
+  prizes: PrizesConfig;
+  audio: AudioConfig;
+}
+
+// Question format
+interface Question {
+  question: string;
+  answers: string[];      // Exactly 4 answers
+  correct: number;        // Index 0-3
+  difficulty: number;     // 1-3 stars
 }
 ```
 
-## Theme System
+## Asset Loading (Priority)
 
-The `ThemeContext` provides dynamic styling based on selected mode. Access theme colors via:
+1. Game-specific: `/games/{gameId}/sounds/Click.ogg`
+2. Shared fallback: `/games/shared/sounds/Click.ogg`
+3. Oscillator tone (sounds only)
+
+## Conventions
+
+- **Language**: UI strings in Russian, code/comments in English
+- **Types**: All types in `src/engine/types/index.ts`, use barrel exports
+- **Styling**: Tailwind CSS with theme-aware classes from `ThemeColors`
+- **State**: Game logic in `useGameState` hook, audio in `useAudio` hook
+- **Components**: Functional components with JSDoc, props interfaces
+
+## Game States
+
+`GameState = 'start' | 'playing' | 'won' | 'lost' | 'took_money'`
+
+## Theming
+
+Access current theme via `useTheme()` hook. Theme includes ~40 Tailwind class strings for consistent styling across campaigns. Example from `src/games/bg3/themes.ts`:
+
 ```typescript
-const theme = useTheme();
-// or
-const theme = getThemeColors(selectedMode);
+const heroTheme: ThemeColors = {
+  primary: 'amber',
+  textPrimary: 'text-amber-100',
+  bgButton: 'from-amber-600 via-amber-700 to-amber-800',
+  // ... (see ThemeColors interface for all properties)
+};
 ```
-
-Theme includes colors for text, borders, backgrounds, glows, and shadows.

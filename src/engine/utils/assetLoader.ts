@@ -2,8 +2,8 @@
  * Asset loader with fallback support.
  *
  * Loading priority:
- * 1. Game-specific: /sounds/{gameId}/Click.ogg
- * 2. Base fallback: /sounds/Click.ogg
+ * 1. Game-specific: /games/{gameId}/sounds/Click.ogg
+ * 2. Shared fallback: /games/shared/sounds/Click.ogg
  * 3. Oscillator (sounds only)
  * 4. Silent (music/voices)
  */
@@ -32,8 +32,8 @@ export const getAssetPaths = (
 ): { specific: string; fallback: string } => {
   const basePath = getBasePath();
   return {
-    specific: `${basePath}${type}/${gameId}/${filename}`,
-    fallback: `${basePath}${type}/${filename}`,
+    specific: `${basePath}games/${gameId}/${type}/${filename}`,
+    fallback: `${basePath}games/shared/${type}/${filename}`,
   };
 };
 
