@@ -11,6 +11,7 @@ import { Panel, PanelHeader } from '../../components/ui';
 // Type for effects hook return
 interface EffectsAPI {
   triggerConfetti: (origin?: { x: number; y: number }) => void;
+  triggerCoins: (origin?: { x: number; y: number }) => void;
   triggerSparks: (origin?: { x: number; y: number }) => void;
   triggerPulse: (origin?: { x: number; y: number }, color?: string) => void;
   triggerFireworks: () => void;
@@ -140,7 +141,7 @@ export function GameScreen({
 
   const handleTakeMoneyWithSound = (e: React.MouseEvent) => {
     audio.playSoundEffect('money');
-    effects?.triggerConfetti(getNormalizedCoords(e));
+    effects?.triggerCoins(getNormalizedCoords(e));
     takeTheMoney();
   };
 

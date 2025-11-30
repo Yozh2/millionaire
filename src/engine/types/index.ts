@@ -5,6 +5,16 @@
 
 import { ComponentType } from 'react';
 
+/**
+ * Custom coin drawing function for particle effects.
+ * Called with canvas context, size, and color index.
+ */
+export type DrawCoinFunction = (
+  ctx: CanvasRenderingContext2D,
+  size: number,
+  colorIndex: number
+) => void;
+
 // ============================================
 // Question Types
 // ============================================
@@ -391,4 +401,11 @@ export interface GameConfig {
     /** Star icon for difficulty rating */
     star?: ComponentType;
   };
+
+  /**
+   * Custom coin drawing function for particle effects (optional).
+   * If not provided, uses default gold coin with "G" letter.
+   * See drawDefaultCoin in ParticleCanvas for reference implementation.
+   */
+  drawCoinParticle?: DrawCoinFunction;
 }

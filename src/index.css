@@ -56,6 +56,12 @@ body {
   animation: shine-sweep 0.5s ease-out forwards;
 }
 
+/* Hover effect - slight lift */
+.answer-btn:not(:disabled):hover {
+  transform: scale(1.02) translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
 /* Button press effect - "pushed in" */
 .answer-btn:not(:disabled):active {
   transform: scale(0.97) translateY(2px);

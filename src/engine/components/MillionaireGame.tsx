@@ -92,6 +92,7 @@ export function MillionaireGame({ config }: MillionaireGameProps) {
           primaryColor={effects.effectState.primaryColor}
           secondaryColor={effects.effectState.secondaryColor}
           intensity={effects.effectState.intensity}
+          drawCoin={config.drawCoinParticle}
         />
 
         {/* Background Music */}

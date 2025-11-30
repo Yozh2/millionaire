@@ -35,6 +35,7 @@ export type {
   AudienceHint,
   Hint,
   GameConfig,
+  DrawCoinFunction,
 } from './types';
 
 // Hooks
@@ -77,6 +78,9 @@ export {
   GameScreen,
   EndScreen,
 } from './components';
+
+// Particle utils (for custom coin drawing)
+export { drawDefaultCoin, COIN_COLORS } from './components/ParticleCanvas';
 
 // Context
 export { ThemeProvider, useTheme, defaultTheme } from './context';

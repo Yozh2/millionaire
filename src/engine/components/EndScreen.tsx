@@ -10,6 +10,7 @@ import { Panel, PanelHeader } from '../../components/ui';
 // Type for effects hook return
 interface EffectsAPI {
   triggerConfetti: (origin?: { x: number; y: number }) => void;
+  triggerCoins: (origin?: { x: number; y: number }) => void;
   triggerSparks: (origin?: { x: number; y: number }) => void;
   triggerPulse: (origin?: { x: number; y: number }, color?: string) => void;
   triggerFireworks: () => void;
@@ -57,11 +58,11 @@ export function EndScreen({
   // Trigger celebration effects on mount
   useEffect(() => {
     if (state === 'won') {
-      // Big win - fireworks!
-      effects?.triggerFireworks();
+      // Big win - coins rain!
+      effects?.triggerCoins({ x: 0.5, y: 0.3 });
     } else if (state === 'took_money' && wonPrize > 0) {
-      // Took money with prize - confetti
-      effects?.triggerConfetti({ x: 0.5, y: 0.5 });
+      // Took money with prize - coins
+      effects?.triggerCoins({ x: 0.5, y: 0.5 });
     }
   }, [state, wonPrize, effects]);
 

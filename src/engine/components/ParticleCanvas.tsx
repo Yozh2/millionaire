@@ -1,15 +1,19 @@
 /**
  * Canvas-based particle animation system for visual effects.
- * Supports confetti, sparks, and pulse wave effects.
+ * Supports confetti, sparks, pulse, fireworks, and coins effects.
  */
 
 import { useEffect, useRef, useCallback } from 'react';
+import type { DrawCoinFunction } from '../types';
 
 // ============================================================================
 // Types
 // ============================================================================
 
-export type EffectType = 'confetti' | 'sparks' | 'pulse' | 'fireworks';
+export type EffectType = 'confetti' | 'sparks' | 'pulse' | 'fireworks' | 'coins';
+
+// Re-export DrawCoinFunction for convenience
+export type { DrawCoinFunction };
 
 interface Particle {
   x: number;
@@ -23,7 +27,7 @@ interface Particle {
   rotationSpeed: number;
   life: number;
   maxLife: number;
-  type: 'rect' | 'circle' | 'star';
+  type: 'rect' | 'circle' | 'star' | 'coin';
 }
 
 interface PulseWave {
@@ -49,6 +53,8 @@ interface ParticleCanvasProps {
   onComplete?: () => void;
   /** Duration multiplier (1 = default) */
   intensity?: number;
+  /** Custom coin drawing function for 'coins' effect */
+  drawCoin?: DrawCoinFunction;
 }
 
 // ============================================================================
@@ -155,13 +161,62 @@ const createFireworkParticle = (
   };
 };
 
+const createCoinParticle = (
+  canvasWidth: number,
+  canvasHeight: number,
+  originX: number,
+  originY: number
+): Particle => {
+  const angle = Math.random() * Math.PI * 2;
+  const speed = 5 + Math.random() * 8;
+
+  return {
+    x: originX * canvasWidth,
+    y: originY * canvasHeight,
+    vx: Math.cos(angle) * speed * (0.5 + Math.random()),
+    vy: Math.sin(angle) * speed - 6 - Math.random() * 3,
+    size: 18 + Math.random() * 10,
+    color: String(Math.floor(Math.random() * 3)),
+    alpha: 1,
+    rotation: Math.random() * Math.PI * 2,
+    rotationSpeed: (Math.random() - 0.5) * 0.15,
+    life: 0,
+    maxLife: 180 + Math.random() * 80,
+    type: 'coin',
+  };
+};
+
 // ============================================================================
 // Drawing utilities
 // ============================================================================
 
+/**
+ * Default simple coin drawing (fallback if game doesn't provide custom).
+ * Just a colored circle with a symbol.
+ */
+export const drawDefaultCoin: DrawCoinFunction = (ctx, size, colorIndex) => {
+  const colors = ['#FFD700', '#FFA500', '#FFFF00'];
+  const radius = size / 2;
+
+  ctx.beginPath();
+  ctx.arc(0, 0, radius, 0, Math.PI * 2);
+  ctx.fillStyle = colors[colorIndex % colors.length];
+  ctx.fill();
+  ctx.strokeStyle = '#8B7500';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  ctx.fillStyle = '#8B7500';
+  ctx.font = `bold ${size * 0.5}px sans-serif`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('$', 0, 0);
+};
+
 const drawParticle = (
   ctx: CanvasRenderingContext2D,
-  particle: Particle
+  particle: Particle,
+  coinDrawFn: DrawCoinFunction = drawDefaultCoin
 ): void => {
   ctx.save();
   ctx.globalAlpha = particle.alpha;
@@ -186,6 +241,9 @@ const drawParticle = (
     case 'star':
       drawStar(ctx, 0, 0, 5, particle.size / 2, particle.size / 4);
       ctx.fill();
+      break;
+    case 'coin':
+      coinDrawFn(ctx, particle.size, parseInt(particle.color) || 0);
       break;
   }
 
@@ -248,6 +306,7 @@ export const ParticleCanvas: React.FC<ParticleCanvasProps> = ({
   origin = { x: 0.5, y: 0.5 },
   onComplete,
   intensity = 1,
+  drawCoin = drawDefaultCoin,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const particlesRef = useRef<Particle[]>([]);
@@ -269,6 +328,15 @@ export const ParticleCanvas: React.FC<ParticleCanvasProps> = ({
           for (let i = 0; i < Math.floor(80 * intensity); i++) {
             particlesRef.current.push(
               createConfettiParticle(width, height, origin.x, origin.y)
+            );
+          }
+          break;
+
+        case 'coins':
+          // Spawn coin burst (fewer particles for performance)
+          for (let i = 0; i < Math.floor(25 * intensity); i++) {
+            particlesRef.current.push(
+              createCoinParticle(width, height, origin.x, origin.y)
             );
           }
           break;
@@ -367,7 +435,7 @@ export const ParticleCanvas: React.FC<ParticleCanvasProps> = ({
 
       // Draw if still visible
       if (particle.alpha > 0.01) {
-        drawParticle(ctx, particle);
+        drawParticle(ctx, particle, drawCoin);
         return true;
       }
       return false;

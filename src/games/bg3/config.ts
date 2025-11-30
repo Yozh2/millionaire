@@ -4,7 +4,7 @@
  * Complete configuration for the BG3 edition of the quiz game.
  */
 
-import { GameConfig, Campaign, Companion } from '../../engine/types';
+import { GameConfig, Campaign, Companion, DrawCoinFunction } from '../../engine/types';
 import { heroTheme, mindFlayerTheme, darkUrgeTheme } from './themes';
 import {
   SwordIcon,
@@ -22,6 +22,55 @@ import {
   mindFlayerQuestionPool,
   darkUrgeQuestionPool,
 } from './questions';
+
+// ============================================
+// Custom Coin Drawing (Gold with "G")
+// ============================================
+
+const COIN_COLORS = [
+  { base: '#fbbf24', inner: '#f59e0b', stroke: '#b45309', shine: '#fde68a' },
+  { base: '#fcd34d', inner: '#fbbf24', stroke: '#d97706', shine: '#fef3c7' },
+  { base: '#f59e0b', inner: '#d97706', stroke: '#92400e', shine: '#fde68a' },
+];
+
+const drawGoldCoin: DrawCoinFunction = (ctx, size, colorIndex) => {
+  const colors = COIN_COLORS[colorIndex % COIN_COLORS.length];
+  const radius = size / 2;
+  const innerRadius = radius * 0.7;
+
+  // Outer circle (coin base)
+  ctx.beginPath();
+  ctx.arc(0, 0, radius, 0, Math.PI * 2);
+  ctx.fillStyle = colors.base;
+  ctx.fill();
+  ctx.strokeStyle = colors.stroke;
+  ctx.lineWidth = size * 0.08;
+  ctx.stroke();
+
+  // Inner circle
+  ctx.beginPath();
+  ctx.arc(0, 0, innerRadius, 0, Math.PI * 2);
+  ctx.fillStyle = colors.inner;
+  ctx.fill();
+
+  // Letter "G"
+  ctx.fillStyle = colors.stroke;
+  ctx.font = `bold ${size * 0.45}px Georgia, serif`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('G', 0, size * 0.05);
+
+  // Shine highlight
+  ctx.beginPath();
+  ctx.ellipse(
+    radius * 0.35, -radius * 0.35,
+    radius * 0.2, radius * 0.1,
+    -0.5, 0, Math.PI * 2
+  );
+  ctx.fillStyle = colors.shine;
+  ctx.globalAlpha = 0.6;
+  ctx.fill();
+};
 
 // ============================================
 // Campaigns
@@ -213,6 +262,9 @@ export const bg3Config: GameConfig = {
     phoneHint: ScrollIcon,
     audienceHint: TavernIcon,
   },
+
+  // Custom gold coin particles for win/take money effects
+  drawCoinParticle: drawGoldCoin,
 };
 
 export default bg3Config;

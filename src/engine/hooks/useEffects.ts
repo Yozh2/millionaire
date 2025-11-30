@@ -19,6 +19,8 @@ interface UseEffectsReturn {
   effectState: EffectState;
   /** Trigger confetti effect (for wins) */
   triggerConfetti: (origin?: { x: number; y: number }) => void;
+  /** Trigger coins effect (for wins/taking money - uses coin icons) */
+  triggerCoins: (origin?: { x: number; y: number }) => void;
   /** Trigger sparks effect (for correct answers) */
   triggerSparks: (origin?: { x: number; y: number }) => void;
   /** Trigger pulse effect (for hints) */
@@ -105,6 +107,16 @@ export const useEffects = (): UseEffectsReturn => {
     [triggerEffect]
   );
 
+  const triggerCoins = useCallback(
+    (origin?: { x: number; y: number }) => {
+      triggerEffect('coins', {
+        origin: origin ?? { x: 0.5, y: 0.7 },
+        intensity: 1,
+      });
+    },
+    [triggerEffect]
+  );
+
   const triggerSparks = useCallback(
     (origin?: { x: number; y: number }) => {
       triggerEffect('sparks', {
@@ -139,6 +151,7 @@ export const useEffects = (): UseEffectsReturn => {
   return {
     effectState,
     triggerConfetti,
+    triggerCoins,
     triggerSparks,
     triggerPulse,
     triggerFireworks,
