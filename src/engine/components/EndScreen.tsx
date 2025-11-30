@@ -200,18 +200,21 @@ export function EndScreen({
             </p>
           )}
 
-          <button
-            onClick={onNewGame}
-            className={`action-btn px-8 py-3 bg-gradient-to-b ${theme.bgButton} text-white font-bold tracking-wide border-4 ${theme.borderLight} font-serif animate-pop-in stagger-6`}
-            style={{
-              ['--btn-glow' as string]: theme.glow,
-              boxShadow: `0 5px 20px rgba(0, 0, 0, 0.3), 0 0 25px ${theme.glow}`,
-              borderStyle: 'ridge',
-              textShadow: '0 2px 4px rgba(0,0,0,0.8)',
-            }}
-          >
-            {config.strings.newGameButton}
-          </button>
+          {/* New Game Button */}
+          <div className="animate-pop-in stagger-6">
+            <button
+              onClick={onNewGame}
+              className={`action-btn px-8 py-3 bg-gradient-to-b ${theme.bgButton} text-white font-bold text-lg tracking-wide border-4 ${theme.borderLight} font-serif`}
+              style={{
+                ['--btn-glow' as string]: theme.glow,
+                boxShadow: `0 5px 20px rgba(0, 0, 0, 0.3), 0 0 25px ${theme.glow}`,
+                borderStyle: 'ridge',
+                textShadow: '0 2px 4px rgba(0,0,0,0.8)',
+              }}
+            >
+              {config.strings.newGameButton}
+            </button>
+          </div>
         </div>
       </Panel>
     </div>

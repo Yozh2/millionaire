@@ -301,14 +301,71 @@ body {
 
 /* ============================================
    Action Buttons (Start Game, New Game)
-   3D perspective press effect + shine on hover
+   "Lift towards camera" effect on hover
    ============================================ */
+
+/* Keyframes for press down - scale back to normal */
+@keyframes heavy-slam {
+  0% {
+    transform: scale(1.12);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Reverse shine sweep (right to left) on slam */
+@keyframes shine-sweep-reverse {
+  0% {
+    left: 100%;
+  }
+  100% {
+    left: -100%;
+  }
+}
+
+/* Impact glow burst */
+@keyframes impact-glow {
+  0% {
+    box-shadow:
+      0 2px 8px rgba(0, 0, 0, 0.4),
+      0 0 30px var(--btn-glow, rgba(255, 200, 0, 0.8)),
+      0 0 60px var(--btn-glow, rgba(255, 200, 0, 0.6)),
+      0 0 100px var(--btn-glow, rgba(255, 200, 0, 0.4)),
+      inset 0 2px 10px rgba(0, 0, 0, 0.3);
+  }
+  100% {
+    box-shadow:
+      0 2px 8px rgba(0, 0, 0, 0.4),
+      0 0 15px var(--btn-glow, rgba(255, 200, 0, 0.4)),
+      inset 0 2px 10px rgba(0, 0, 0, 0.3);
+  }
+}
+
+/* Crack lines expanding outward */
+@keyframes crack-expand {
+  0% {
+    transform: scaleX(0);
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    transform: scaleX(1);
+    opacity: 0.6;
+  }
+}
+
 .action-btn {
   position: relative;
-  overflow: hidden;
+  overflow: hidden; /* Keep shine inside button */
   transform-style: preserve-3d;
-  transform: perspective(500px) rotateX(0deg) scale(1);
-  transition: transform 0.15s ease-out, box-shadow 0.15s ease-out;
+  transform: scale(1);
+  transform-origin: center center;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  z-index: 10;
 }
 
 /* Shine effect on hover */
@@ -323,9 +380,9 @@ body {
     130deg,
     transparent 0%,
     transparent 25%,
-    rgba(255, 255, 255, 0.1) 40%,
-    rgba(255, 255, 255, 0.2) 50%,
-    rgba(255, 255, 255, 0.1) 60%,
+    rgba(255, 255, 255, 0.15) 40%,
+    rgba(255, 255, 255, 0.3) 50%,
+    rgba(255, 255, 255, 0.15) 60%,
     transparent 75%,
     transparent 100%
   );
@@ -339,21 +396,26 @@ body {
   animation: shine-sweep 0.6s ease-out forwards;
 }
 
-/* Hover state - slight lift */
-.action-btn:not(:disabled):hover {
-  transform: perspective(500px) rotateX(-5deg) scale(1.02);
-  box-shadow:
-    0 10px 30px rgba(0, 0, 0, 0.4),
-    0 0 30px var(--btn-glow, rgba(255, 200, 0, 0.3));
+/* Reverse shine on active (slam down) */
+.action-btn:not(:disabled):active::before {
+  animation: shine-sweep-reverse 0.3s ease-out forwards;
 }
 
-/* Active/pressed state - push back into screen */
-.action-btn:not(:disabled):active {
-  transform: perspective(500px) rotateX(10deg) scale(0.98);
+/* HOVER - Lift towards camera (scale up from center) */
+.action-btn:not(:disabled):hover {
+  transform: scale(1.12);
   box-shadow:
-    0 2px 10px rgba(0, 0, 0, 0.3),
-    inset 0 3px 15px rgba(0, 0, 0, 0.4);
-  transition: transform 0.08s ease-out, box-shadow 0.08s ease-out;
+    0 0 30px rgba(0, 0, 0, 0.4),
+    0 0 50px var(--btn-glow, rgba(255, 200, 0, 0.4)),
+    0 0 80px var(--btn-glow, rgba(255, 200, 0, 0.2));
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ACTIVE/PRESSED - HEAVY SLAM DOWN with impact glow! */
+.action-btn:not(:disabled):active {
+  animation: heavy-slam 0.15s ease-out forwards,
+             impact-glow 0.4s ease-out forwards;
 }
 
 /* ============================================

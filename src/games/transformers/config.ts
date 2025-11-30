@@ -6,7 +6,7 @@
  * - Autocracy (Автократия)
  */
 
-import { GameConfig, Campaign } from '../../engine/types';
+import { GameConfig, Campaign, DrawCoinFunction } from '../../engine/types';
 import { decepticonTheme, autobotTheme } from './themes';
 import { megatronQuestionPool, autocracyQuestionPool } from './questions';
 import {
@@ -16,6 +16,31 @@ import {
   DestroyedIcon,
   EnergonIcon,
 } from './icons';
+
+// ============================================
+// Custom Energon Crystal Drawing - simple pink/blue crystal
+// ============================================
+
+const drawEnergonCrystal: DrawCoinFunction = (ctx, size, colorIndex) => {
+  const colors = ['#FF69B4', '#00BFFF', '#DA70D6']; // Pink, Blue, Orchid
+  const glowColors = ['#FFB6C1', '#87CEEB', '#DDA0DD'];
+
+  const halfSize = size / 2;
+
+  // Simple diamond/crystal shape
+  ctx.beginPath();
+  ctx.moveTo(0, -halfSize);           // Top
+  ctx.lineTo(halfSize * 0.6, 0);      // Right
+  ctx.lineTo(0, halfSize);            // Bottom
+  ctx.lineTo(-halfSize * 0.6, 0);     // Left
+  ctx.closePath();
+
+  ctx.fillStyle = colors[colorIndex % colors.length];
+  ctx.fill();
+  ctx.strokeStyle = glowColors[colorIndex % glowColors.length];
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+};
 
 // ============================================
 // Campaigns
@@ -153,6 +178,9 @@ export const transformersConfig: GameConfig = {
     lost: DestroyedIcon,
     tookMoney: EnergonIcon,
   },
+
+  // Energon crystals instead of coins
+  drawCoinParticle: drawEnergonCrystal,
 };
 
 export default transformersConfig;

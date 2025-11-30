@@ -168,20 +168,20 @@ const createCoinParticle = (
   originY: number
 ): Particle => {
   const angle = Math.random() * Math.PI * 2;
-  const speed = 5 + Math.random() * 8;
+  const speed = 4 + Math.random() * 6;
 
   return {
     x: originX * canvasWidth,
     y: originY * canvasHeight,
     vx: Math.cos(angle) * speed * (0.5 + Math.random()),
-    vy: Math.sin(angle) * speed - 6 - Math.random() * 3,
-    size: 18 + Math.random() * 10,
+    vy: Math.sin(angle) * speed - 5 - Math.random() * 2,
+    size: 16 + Math.random() * 8,
     color: String(Math.floor(Math.random() * 3)),
     alpha: 1,
     rotation: Math.random() * Math.PI * 2,
-    rotationSpeed: (Math.random() - 0.5) * 0.15,
+    rotationSpeed: (Math.random() - 0.5) * 0.1,
     life: 0,
-    maxLife: 180 + Math.random() * 80,
+    maxLife: 120 + Math.random() * 60,
     type: 'coin',
   };
 };
@@ -191,26 +191,22 @@ const createCoinParticle = (
 // ============================================================================
 
 /**
- * Default simple coin drawing (fallback if game doesn't provide custom).
- * Just a colored circle with a symbol.
+ * Default simple coin drawing - just a gold circle, no text for performance.
  */
 export const drawDefaultCoin: DrawCoinFunction = (ctx, size, colorIndex) => {
-  const colors = ['#FFD700', '#FFA500', '#FFFF00'];
+  const colors = ['#FFD700', '#FFA500', '#FFEC8B'];
   const radius = size / 2;
 
+  // Simple filled circle
   ctx.beginPath();
   ctx.arc(0, 0, radius, 0, Math.PI * 2);
   ctx.fillStyle = colors[colorIndex % colors.length];
   ctx.fill();
-  ctx.strokeStyle = '#8B7500';
-  ctx.lineWidth = 2;
-  ctx.stroke();
 
-  ctx.fillStyle = '#8B7500';
-  ctx.font = `bold ${size * 0.5}px sans-serif`;
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillText('$', 0, 0);
+  // Simple border
+  ctx.strokeStyle = '#B8860B';
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
 };
 
 const drawParticle = (
@@ -324,8 +320,8 @@ export const ParticleCanvas: React.FC<ParticleCanvasProps> = ({
 
       switch (effectType) {
         case 'confetti':
-          // Spawn confetti burst
-          for (let i = 0; i < Math.floor(80 * intensity); i++) {
+          // Spawn confetti burst (reduced for performance)
+          for (let i = 0; i < Math.floor(40 * intensity); i++) {
             particlesRef.current.push(
               createConfettiParticle(width, height, origin.x, origin.y)
             );
@@ -333,8 +329,8 @@ export const ParticleCanvas: React.FC<ParticleCanvasProps> = ({
           break;
 
         case 'coins':
-          // Spawn coin burst (fewer particles for performance)
-          for (let i = 0; i < Math.floor(25 * intensity); i++) {
+          // Spawn coin burst (very few particles for performance)
+          for (let i = 0; i < Math.floor(12 * intensity); i++) {
             particlesRef.current.push(
               createCoinParticle(width, height, origin.x, origin.y)
             );
@@ -343,7 +339,7 @@ export const ParticleCanvas: React.FC<ParticleCanvasProps> = ({
 
         case 'sparks':
           // Spawn spark burst
-          for (let i = 0; i < Math.floor(30 * intensity); i++) {
+          for (let i = 0; i < Math.floor(15 * intensity); i++) {
             particlesRef.current.push(
               createSparkParticle(width, height, origin.x, origin.y)
             );
