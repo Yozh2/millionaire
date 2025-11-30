@@ -36,8 +36,8 @@ export interface UseAudioReturn {
   /** Play a sound effect by filename directly */
   playSoundFile: (filename: string) => void;
 
-  /** Play a companion voice line */
-  playCompanionVoice: (voiceFile: string) => void;
+  /** Play a companion voice line, returns true if voice was played */
+  playCompanionVoice: (voiceFile: string) => Promise<boolean>;
 
   /** Switch to a new music track (autoPlay forces playback on user action) */
   switchMusicTrack: (trackFile: string | undefined, autoPlay?: boolean) => void;
@@ -236,10 +236,10 @@ export const useAudio = (
     [config.audio.soundVolume]
   );
 
-  // Play companion voice
+  // Play companion voice, returns true if voice file was found and played
   const playCompanionVoice = useCallback(
-    (voiceFile: string) => {
-      playVoice(voiceFile, config.audio.voiceVolume);
+    async (voiceFile: string): Promise<boolean> => {
+      return playVoice(voiceFile, config.audio.voiceVolume);
     },
     [config.audio.voiceVolume]
   );

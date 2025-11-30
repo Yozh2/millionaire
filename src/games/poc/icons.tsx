@@ -5,20 +5,20 @@
  */
 
 /**
- * Easy mode icon (green circle)
+ * Ice/Easy mode icon (snowflake)
  */
 export const EasyIcon = () => (
   <div className="w-16 h-16 mx-auto flex items-center justify-center text-4xl">
-    🟢
+    ❄️
   </div>
 );
 
 /**
- * Hard mode icon (red circle)
+ * Fire/Hard mode icon (flame)
  */
 export const HardIcon = () => (
   <div className="w-16 h-16 mx-auto flex items-center justify-center text-4xl">
-    🔴
+    🔥
   </div>
 );
 

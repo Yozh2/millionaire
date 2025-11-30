@@ -70,17 +70,18 @@ export function GameScreen({
     useFiftyFifty();
   };
 
-  const handlePhoneAFriendWithSound = () => {
+  const handlePhoneAFriendWithSound = async () => {
     const companion = usePhoneAFriend();
     if (companion) {
-      // Play call sound first, then companion voice
-      audio.playSoundEffect('call');
-      // Small delay before voice to let the call sound start
-      setTimeout(() => {
-        if (companion.voiceFile) {
-          audio.playCompanionVoice(companion.voiceFile);
-        }
-      }, 300);
+      // Try to play companion voice file first
+      let voicePlayed = false;
+      if (companion.voiceFile) {
+        voicePlayed = await audio.playCompanionVoice(companion.voiceFile);
+      }
+      // Fall back to oscillator call sound if no voice file found
+      if (!voicePlayed) {
+        audio.playSoundEffect('call');
+      }
     }
   };
 
