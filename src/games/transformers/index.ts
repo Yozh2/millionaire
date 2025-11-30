@@ -1,15 +1,18 @@
 /**
- * Transformers Game Configuration
+ * Transformers Game - IDW Comics Edition
  *
- * Placeholder for future Transformers-themed quiz game.
- * TODO: Add questions, themes, icons, and audio assets.
+ * Quiz about Transformers IDW comics:
+ * - Megatron: Origin
+ * - Autocracy
  */
 
-// This file will contain the Transformers game config
-// Structure will be similar to BG3:
-// - config.tsx - main configuration
-// - themes.ts - Autobot/Decepticon themes
-// - questions.ts - Transformers trivia
-// - icons.tsx - Autobot/Decepticon icons
-
-export {};
+export { transformersConfig, transformersConfig as default } from './config';
+export { megatronQuestionPool, autocracyQuestionPool } from './questions';
+export { decepticonTheme, autobotTheme } from './themes';
+export {
+  DecepticonIcon,
+  AutobotIcon,
+  MatrixIcon,
+  DestroyedIcon,
+  EnergonIcon,
+} from './icons';

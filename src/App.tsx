@@ -8,7 +8,7 @@
  * - /         → Game selector
  * - /poc      → PoC game (no external assets)
  * - /bg3      → Baldur's Gate 3 Edition
- * - /transformers → Transformers Edition (coming soon)
+ * - /transformers → Transformers IDW Comics Edition
  *
  * @author Yozh2
  * @see https://github.com/Yozh2/millionaire
@@ -21,6 +21,7 @@ import { GameSelector } from './components/GameSelector';
 // Lazy load game configs for code splitting
 const PocGame = lazy(() => import('./pages/PocPage'));
 const BG3Game = lazy(() => import('./pages/BG3Page'));
+const TransformersGame = lazy(() => import('./pages/TransformersPage'));
 
 /**
  * Loading spinner component
@@ -46,6 +47,7 @@ export default function App() {
         <Route path="/" element={<GameSelector />} />
         <Route path="/poc" element={<PocGame />} />
         <Route path="/bg3" element={<BG3Game />} />
+        <Route path="/transformers" element={<TransformersGame />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Suspense>

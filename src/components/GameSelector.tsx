@@ -46,12 +46,12 @@ const games: GameCard[] = [
     id: 'transformers',
     path: '/transformers',
     title: 'TRANSFORMERS',
-    subtitle: 'Robots in Disguise',
-    description: 'Викторина по вселенной Трансформеров',
+    subtitle: 'IDW Comics Edition',
+    description: 'Викторина по комиксам IDW: Мегатрон и Автократия',
     icon: '🤖',
-    gradient: 'from-red-700 via-blue-600 to-red-800',
-    borderColor: 'border-red-500',
-    available: false,
+    gradient: 'from-purple-700 via-red-600 to-purple-800',
+    borderColor: 'border-purple-500',
+    available: true,
   },
 ];
 

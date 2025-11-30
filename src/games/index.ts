@@ -10,5 +10,5 @@ export { pocConfig } from './poc';
 // Baldur's Gate 3
 export { bg3Config } from './bg3';
 
-// Transformers (placeholder)
-// export { transformersConfig } from './transformers';
+// Transformers - IDW Comics
+export { transformersConfig } from './transformers';
