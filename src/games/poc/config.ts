@@ -1,0 +1,135 @@
+/**
+ * PoC Game Configuration
+ *
+ * Minimal PoC game for testing the engine.
+ * Uses oscillator sounds only, no external assets.
+ */
+
+import { GameConfig, Campaign } from '../../engine/types';
+import { easyTheme, hardTheme } from './themes';
+import { easyQuestionPool, hardQuestionPool } from './questions';
+import { EasyIcon, HardIcon, TrophyIcon, FailIcon, MoneyIcon } from './icons';
+
+// ============================================
+// Campaigns
+// ============================================
+
+const easyCampaign: Campaign = {
+  id: 'easy',
+  name: 'ЛЕГКО',
+  label: 'Новичок',
+  icon: EasyIcon,
+  theme: easyTheme,
+};
+
+const hardCampaign: Campaign = {
+  id: 'hard',
+  name: 'СЛОЖНО',
+  label: 'Эксперт',
+  icon: HardIcon,
+  theme: hardTheme,
+};
+
+// ============================================
+// Main Config
+// ============================================
+
+export const pocConfig: GameConfig = {
+  id: 'poc',
+
+  title: 'КТО ХОЧЕТ СТАТЬ МИЛЛИОНЕРОМ',
+  subtitle: 'ТЕСТ ДВИЖКА',
+
+  campaigns: [easyCampaign, hardCampaign],
+
+  questionPools: {
+    easy: easyQuestionPool,
+    hard: hardQuestionPool,
+  },
+
+  companions: [
+    { id: 'alexey', name: 'Алексей (эрудит)' },
+    { id: 'maria', name: 'Мария (учитель)' },
+    { id: 'sergey', name: 'Сергей (программист)' },
+  ],
+
+  strings: {
+    headerTitle: '★ ВИКТОРИНА ★',
+
+    introText:
+      'Проверь свои знания! Ответь на вопросы, чтобы выиграть главный приз.',
+    selectPath: 'ВЫБЕРИТЕ СЛОЖНОСТЬ',
+    startButton: '▶ НАЧАТЬ ИГРУ',
+
+    questionHeader: 'ВОПРОС #{n}',
+    difficultyLabel: 'СЛОЖНОСТЬ:',
+    progressLabel: 'Прогресс:',
+
+    lifelinesHeader: 'ПОДСКАЗКИ',
+    prizesHeader: 'ПРИЗЫ',
+
+    hintPhoneHeader: 'СОВЕТ ДРУГА',
+    hintAudienceHeader: 'ОПРОС ЗАЛА',
+    hintSenderLabel: 'От:',
+    hintAudienceLabel: 'Зал считает:',
+
+    companionPhrases: {
+      confident: ['Я уверен, что это "{answer}"', 'Точно "{answer}"'],
+      uncertain: ['Может быть "{answer}"?', 'Думаю, это "{answer}"'],
+    },
+
+    wonTitle: '🎉 ПОБЕДА!',
+    wonText: 'Поздравляем! Вы выиграли главный приз!',
+    wonHeader: 'ПОБЕДА',
+
+    lostTitle: '❌ ИГРА ОКОНЧЕНА',
+    lostText: 'Неправильный ответ!',
+    lostHeader: 'ПОРАЖЕНИЕ',
+    correctAnswerLabel: 'Правильный ответ:',
+
+    tookMoneyTitle: '💰 ДЕНЬГИ ЗАБРАНЫ',
+    tookMoneyText: 'Умный выбор!',
+    tookMoneyHeader: 'ПРИЗ ПОЛУЧЕН',
+
+    prizeLabel: 'ПРИЗ:',
+    newGameButton: '▶ ИГРАТЬ СНОВА',
+
+    footer: '★ Тестовый движок викторины ★',
+
+    musicOn: 'Выкл. музыку',
+    musicOff: 'Вкл. музыку',
+  },
+
+  lifelines: {
+    fiftyFifty: { name: '50:50', icon: '⚡', enabled: true },
+    phoneAFriend: { name: 'Звонок', icon: '📞', enabled: true },
+    askAudience: { name: 'Зал', icon: '📊', enabled: true },
+    takeMoney: { name: 'Забрать', icon: '💰', enabled: true },
+  },
+
+  prizes: {
+    maxPrize: 1000000,
+    currency: '$',
+    guaranteedFractions: [1 / 3, 2 / 3, 1],
+  },
+
+  audio: {
+    musicVolume: 0.2,
+    soundVolume: 1.0,
+    voiceVolume: 1.0,
+    sounds: {
+      click: 'Click.mp3',
+      correct: 'Correct.mp3',
+      money: 'Money.mp3',
+      defeat: 'Defeat.mp3',
+    },
+  },
+
+  endIcons: {
+    won: TrophyIcon,
+    lost: FailIcon,
+    tookMoney: MoneyIcon,
+  },
+};
+
+export default pocConfig;

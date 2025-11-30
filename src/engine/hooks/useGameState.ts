@@ -3,6 +3,9 @@
  *
  * Manages all game state and logic for the quiz game.
  * Independent of UI - can be used with any rendering layer.
+ *
+ * Supports dynamic question selection from pools and
+ * automatic prize ladder calculation.
  */
 
 import { useState, useCallback, useMemo } from 'react';
@@ -13,7 +16,14 @@ import {
   Hint,
   Campaign,
   Companion,
+  PrizeLadder,
 } from '../types';
+import {
+  selectQuestionsFromPool,
+  calculatePrizeLadder,
+  getGuaranteedPrize,
+  getQuestionDifficulty,
+} from '../utils/questionGenerator';
 
 // ============================================
 // Types
@@ -26,14 +36,20 @@ export interface GameStateData {
   /** Currently selected campaign (null if not selected) */
   selectedCampaign: Campaign | null;
 
-  /** Current question index (0-14) */
+  /** Current question index (0-based) */
   currentQuestion: number;
+
+  /** Total number of questions in current game */
+  totalQuestions: number;
 
   /** Selected answer display index (null if not selected) */
   selectedAnswer: number | null;
 
   /** Current questions for selected mode */
   questions: Question[];
+
+  /** Current prize ladder (calculated based on question count) */
+  prizeLadder: PrizeLadder;
 
   /** Shuffled answer indices for current question */
   shuffledAnswers: number[];
@@ -57,8 +73,11 @@ export interface GameStateData {
   /** Current question data (convenience getter) */
   currentQuestionData: Question | null;
 
-  /** Current prize value */
+  /** Current prize value (for current question) */
   currentPrize: string;
+
+  /** Current question difficulty (1-3) */
+  currentDifficulty: number;
 
   /** Theme for current campaign */
   currentTheme: GameConfig['campaigns'][0]['theme'] | null;
@@ -75,7 +94,9 @@ export interface GameStateActions {
   newGame: () => void;
 
   /** Handle answer click */
-  handleAnswer: (displayIndex: number) => Promise<'correct' | 'wrong' | 'ignored'>;
+  handleAnswer: (
+    displayIndex: number
+  ) => Promise<'correct' | 'wrong' | 'ignored'>;
 
   /** Take current winnings and leave */
   takeTheMoney: () => void;
@@ -109,24 +130,6 @@ const shuffleArray = <T,>(array: T[]): T[] => {
   return shuffled;
 };
 
-/** Shuffle questions within difficulty groups */
-const shuffleQuestionsByDifficulty = (questions: Question[]): Question[] => {
-  const grouped: Record<number, Question[]> = {};
-
-  questions.forEach((q) => {
-    if (!grouped[q.difficulty]) grouped[q.difficulty] = [];
-    grouped[q.difficulty].push(q);
-  });
-
-  const sortedDifficulties = Object.keys(grouped)
-    .map(Number)
-    .sort((a, b) => a - b);
-
-  return sortedDifficulties.flatMap((difficulty) =>
-    shuffleArray(grouped[difficulty])
-  );
-};
-
 // ============================================
 // Hook
 // ============================================
@@ -134,11 +137,19 @@ const shuffleQuestionsByDifficulty = (questions: Question[]): Question[] => {
 export const useGameState = (config: GameConfig): UseGameStateReturn => {
   // Core state
   const [gameState, setGameState] = useState<GameState>('start');
-  const [selectedCampaign, setSelectedCampaign] = useState<Campaign | null>(null);
+  const [selectedCampaign, setSelectedCampaign] = useState<Campaign | null>(
+    null
+  );
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [questions, setQuestions] = useState<Question[]>([]);
-  const [shuffledAnswers, setShuffledAnswers] = useState<number[]>([0, 1, 2, 3]);
+  const [prizeLadder, setPrizeLadder] = useState<PrizeLadder>({
+    values: [],
+    guaranteed: [],
+  });
+  const [shuffledAnswers, setShuffledAnswers] = useState<number[]>([
+    0, 1, 2, 3,
+  ]);
   const [eliminatedAnswers, setEliminatedAnswers] = useState<number[]>([]);
   const [hint, setHint] = useState<Hint>(null);
   const [wonPrize, setWonPrize] = useState('0');
@@ -149,14 +160,21 @@ export const useGameState = (config: GameConfig): UseGameStateReturn => {
   const [askAudience, setAskAudience] = useState(true);
 
   // Derived state
+  const totalQuestions = questions.length;
+
   const currentQuestionData = useMemo(
     () => (questions.length > 0 ? questions[currentQuestion] : null),
     [questions, currentQuestion]
   );
 
   const currentPrize = useMemo(
-    () => config.prizes.values[currentQuestion] || '0',
-    [config.prizes.values, currentQuestion]
+    () => prizeLadder.values[currentQuestion] || '0',
+    [prizeLadder.values, currentQuestion]
+  );
+
+  const currentDifficulty = useMemo(
+    () => getQuestionDifficulty(currentQuestion, totalQuestions),
+    [currentQuestion, totalQuestions]
   );
 
   const currentTheme = useMemo(
@@ -174,15 +192,31 @@ export const useGameState = (config: GameConfig): UseGameStateReturn => {
     setShuffledAnswers(shuffleArray([0, 1, 2, 3]));
   }, []);
 
-  // Initialize questions for a campaign
-  const initializeQuestions = useCallback(
+  // Initialize questions and prize ladder for a campaign
+  const initializeGame = useCallback(
     (campaign: Campaign) => {
-      const campaignQuestions = config.questions[campaign.id] || [];
-      const shuffled = shuffleQuestionsByDifficulty(campaignQuestions);
-      setQuestions(shuffled);
+      const pool = config.questionPools[campaign.id];
+      if (!pool) {
+        console.warn(`No question pool found for campaign: ${campaign.id}`);
+        setQuestions([]);
+        setPrizeLadder({ values: [], guaranteed: [] });
+        return;
+      }
+
+      // Select random questions from pool
+      const selectedQuestions = selectQuestionsFromPool(pool);
+      setQuestions(selectedQuestions);
+
+      // Calculate prize ladder based on question count
+      const ladder = calculatePrizeLadder(
+        selectedQuestions.length,
+        config.prizes
+      );
+      setPrizeLadder(ladder);
+
       shuffleCurrentAnswers();
     },
-    [config.questions, shuffleCurrentAnswers]
+    [config.questionPools, config.prizes, shuffleCurrentAnswers]
   );
 
   // Reset all state
@@ -204,24 +238,25 @@ export const useGameState = (config: GameConfig): UseGameStateReturn => {
   const selectCampaign = useCallback(
     (campaign: Campaign) => {
       setSelectedCampaign(campaign);
-      initializeQuestions(campaign);
+      initializeGame(campaign);
     },
-    [initializeQuestions]
+    [initializeGame]
   );
 
   const startGame = useCallback(() => {
     if (!selectedCampaign) return;
 
     resetState();
-    initializeQuestions(selectedCampaign);
+    initializeGame(selectedCampaign);
     setGameState('playing');
-  }, [selectedCampaign, resetState, initializeQuestions]);
+  }, [selectedCampaign, resetState, initializeGame]);
 
   const newGame = useCallback(() => {
     setGameState('start');
     setSelectedCampaign(null);
     resetState();
     setQuestions([]);
+    setPrizeLadder({ values: [], guaranteed: [] });
   }, [resetState]);
 
   const handleAnswer = useCallback(
@@ -242,9 +277,9 @@ export const useGameState = (config: GameConfig): UseGameStateReturn => {
 
           if (originalIndex === correct) {
             // Correct answer
-            if (currentQuestion === config.prizes.values.length - 1) {
+            if (currentQuestion === totalQuestions - 1) {
               // Won the game!
-              setWonPrize(config.prizes.values[currentQuestion]);
+              setWonPrize(prizeLadder.values[currentQuestion]);
               setGameState('won');
             } else {
               // Move to next question
@@ -255,15 +290,12 @@ export const useGameState = (config: GameConfig): UseGameStateReturn => {
             }
             resolve('correct');
           } else {
-            // Wrong answer
-            const lastGuaranteed = config.prizes.guaranteed
-              .filter((p) => p < currentQuestion)
-              .pop();
-            setWonPrize(
-              lastGuaranteed !== undefined
-                ? config.prizes.values[lastGuaranteed]
-                : '0'
+            // Wrong answer - get guaranteed prize
+            const guaranteedPrize = getGuaranteedPrize(
+              currentQuestion,
+              prizeLadder
             );
+            setWonPrize(guaranteedPrize);
             setGameState('lost');
             resolve('wrong');
           }
@@ -276,16 +308,17 @@ export const useGameState = (config: GameConfig): UseGameStateReturn => {
       shuffledAnswers,
       questions,
       currentQuestion,
-      config.prizes,
+      totalQuestions,
+      prizeLadder,
       shuffleCurrentAnswers,
     ]
   );
 
   const takeTheMoney = useCallback(() => {
     if (currentQuestion === 0) return;
-    setWonPrize(config.prizes.values[currentQuestion - 1]);
+    setWonPrize(prizeLadder.values[currentQuestion - 1]);
     setGameState('took_money');
-  }, [currentQuestion, config.prizes.values]);
+  }, [currentQuestion, prizeLadder.values]);
 
   const useFiftyFifty = useCallback(() => {
     if (!fiftyFifty || selectedAnswer !== null || !currentQuestionData) return;
@@ -380,8 +413,10 @@ export const useGameState = (config: GameConfig): UseGameStateReturn => {
     gameState,
     selectedCampaign,
     currentQuestion,
+    totalQuestions,
     selectedAnswer,
     questions,
+    prizeLadder,
     shuffledAnswers,
     eliminatedAnswers,
     hint,
@@ -389,6 +424,7 @@ export const useGameState = (config: GameConfig): UseGameStateReturn => {
     wonPrize,
     currentQuestionData,
     currentPrize,
+    currentDifficulty,
     currentTheme,
 
     // Actions

@@ -18,8 +18,8 @@ src/
 │   └── utils/           # Asset loading with fallback support
 ├── games/               # Game configurations
 │   ├── bg3/             # BG3: config, questions, themes, icons
-│   └── default/         # Minimal test game (no external assets)
-├── pages/               # Route components (BG3Page, EnginePage)
+│   └── poc/             # Proof of Concept test game (no external assets)
+├── pages/               # Route components (BG3Page, PocPage)
 ├── components/          # Shared UI (GameSelector, Panel)
 └── App.tsx              # Router with lazy-loaded game pages
 ```

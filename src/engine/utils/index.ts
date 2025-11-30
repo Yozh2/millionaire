@@ -25,3 +25,10 @@ export {
   clearAudioCache,
   type PlayResult,
 } from './audioPlayer';
+
+export {
+  selectQuestionsFromPool,
+  calculatePrizeLadder,
+  getGuaranteedPrize,
+  getQuestionDifficulty,
+} from './questionGenerator';

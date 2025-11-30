@@ -17,7 +17,11 @@ import {
   ScrollIcon,
   TavernIcon,
 } from './icons';
-import { heroQuestions, mindFlayerQuestions, darkUrgeQuestions } from './questions';
+import {
+  heroQuestionPool,
+  mindFlayerQuestionPool,
+  darkUrgeQuestionPool,
+} from './questions';
 
 // ============================================
 // Campaigns
@@ -76,10 +80,10 @@ export const bg3Config: GameConfig = {
 
   campaigns: [heroCampaign, mindFlayerCampaign, darkUrgeCampaign],
 
-  questions: {
-    hero: heroQuestions,
-    mindFlayer: mindFlayerQuestions,
-    darkUrge: darkUrgeQuestions,
+  questionPools: {
+    hero: heroQuestionPool,
+    mindFlayer: mindFlayerQuestionPool,
+    darkUrge: darkUrgeQuestionPool,
   },
 
   companions,
@@ -175,25 +179,10 @@ export const bg3Config: GameConfig = {
   },
 
   prizes: {
-    values: [
-      '500',
-      '1,000',
-      '2,000',
-      '3,000',
-      '5,000',
-      '10,000',
-      '15,000',
-      '25,000',
-      '50,000',
-      '100,000',
-      '200,000',
-      '400,000',
-      '800,000',
-      '1,500,000',
-      '3,000,000',
-    ],
-    guaranteed: [4, 9, 14], // Questions 5, 10, 15
+    maxPrize: 3000000,
     currency: 'золотых',
+    // Guaranteed at 1/3, 2/3, and final question
+    guaranteedFractions: [1 / 3, 2 / 3, 1],
   },
 
   audio: {

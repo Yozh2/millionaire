@@ -9,6 +9,9 @@ import { ComponentType } from 'react';
 // Question Types
 // ============================================
 
+/** Difficulty levels for questions */
+export type QuestionDifficulty = 'easy' | 'medium' | 'hard';
+
 /** Represents a single quiz question */
 export interface Question {
   /** The question text displayed to the player */
@@ -17,8 +20,19 @@ export interface Question {
   answers: string[];
   /** Index of the correct answer (0-3) */
   correct: number;
-  /** Difficulty rating (1-3 stars) */
-  difficulty: number;
+}
+
+/**
+ * Pool of questions organized by difficulty.
+ * Up to 5 questions from each difficulty will be selected randomly.
+ */
+export interface QuestionPool {
+  /** Easy questions (first ~1/3 of the game) */
+  easy: Question[];
+  /** Medium questions (middle ~1/3 of the game) */
+  medium: Question[];
+  /** Hard questions (final ~1/3 of the game) */
+  hard: Question[];
 }
 
 // ============================================
@@ -161,16 +175,29 @@ export interface LifelinesConfig {
 // Prize Types
 // ============================================
 
-/** Prize ladder configuration */
+/** Prize configuration */
 export interface PrizesConfig {
-  /** List of prize values (bottom to top, typically 15 items) */
+  /** Maximum prize value (e.g., 1000000 for "million") */
+  maxPrize: number;
+
+  /** Currency name (e.g., 'золотых', 'энергонов') */
+  currency: string;
+
+  /**
+   * Guaranteed prize positions as fractions of total questions.
+   * E.g., [1/3, 2/3, 1] means guaranteed at 1/3, 2/3, and final question.
+   * These will be rounded to nearest question number.
+   */
+  guaranteedFractions: number[];
+}
+
+/** Runtime prize ladder (calculated based on actual question count) */
+export interface PrizeLadder {
+  /** Prize values for each question (index 0 = question 1) */
   values: string[];
 
   /** Indices of guaranteed/safe prizes (0-based) */
   guaranteed: number[];
-
-  /** Currency name (e.g., 'золотых', 'энергонов') */
-  currency: string;
 }
 
 // ============================================
@@ -323,8 +350,8 @@ export interface GameConfig {
   /** Available campaigns/difficulties (2-N) */
   campaigns: Campaign[];
 
-  /** Questions grouped by mode ID */
-  questions: Record<string, Question[]>;
+  /** Question pools grouped by campaign ID */
+  questionPools: Record<string, QuestionPool>;
 
   /** Companions for "Phone a Friend" (can be empty) */
   companions: Companion[];
@@ -335,7 +362,7 @@ export interface GameConfig {
   /** Lifelines configuration */
   lifelines: LifelinesConfig;
 
-  /** Prize ladder configuration */
+  /** Prize configuration */
   prizes: PrizesConfig;
 
   /** Audio configuration */

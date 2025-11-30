@@ -1,6 +1,16 @@
 /**
- * PoC Game - Engine Test
- * Minimal configuration with oscillator sounds only.
+ * PoC Game - Proof of Concept
+ *
+ * Minimal game for testing the engine.
  */
 
-export { pocConfig, default } from './config';
+export { pocConfig, pocConfig as default } from './config';
+export { easyQuestionPool, hardQuestionPool } from './questions';
+export { easyTheme, hardTheme } from './themes';
+export {
+  EasyIcon,
+  HardIcon,
+  TrophyIcon,
+  FailIcon,
+  MoneyIcon,
+} from './icons';

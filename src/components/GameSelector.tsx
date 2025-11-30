@@ -21,10 +21,10 @@ interface GameCard {
 
 const games: GameCard[] = [
   {
-    id: 'engine',
-    path: '/engine',
-    title: 'ДЕМО ДВИЖКА',
-    subtitle: 'Proof of Concept',
+    id: 'poc',
+    path: '/poc',
+    title: 'PROOF OF CONCEPT',
+    subtitle: 'Тестовая игра',
     description: 'Минимальная демонстрация движка без внешних ассетов',
     icon: '⚙️',
     gradient: 'from-slate-700 via-slate-600 to-slate-800',

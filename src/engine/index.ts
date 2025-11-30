@@ -18,6 +18,9 @@
 // Types
 export type {
   Question,
+  QuestionPool,
+  QuestionDifficulty,
+  PrizeLadder,
   ThemeColors,
   Campaign,
   Companion,
@@ -58,6 +61,13 @@ export {
   preloadSounds,
   clearAudioCache,
 } from './utils/audioPlayer';
+
+export {
+  selectQuestionsFromPool,
+  calculatePrizeLadder,
+  getGuaranteedPrize,
+  getQuestionDifficulty,
+} from './utils/questionGenerator';
 
 // Components (to be added)
 // export { MillionaireGame } from './components/MillionaireGame';

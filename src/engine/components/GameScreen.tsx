@@ -27,12 +27,15 @@ export function GameScreen({
 }: GameScreenProps) {
   const {
     currentQuestion,
+    totalQuestions,
     questions,
+    prizeLadder,
     shuffledAnswers,
     eliminatedAnswers,
     selectedAnswer,
     hint,
     lifelines,
+    currentDifficulty,
     handleAnswer,
     useFiftyFifty,
     usePhoneAFriend,
@@ -41,8 +44,8 @@ export function GameScreen({
   } = gameState;
 
   const questionData = questions[currentQuestion];
-  const prizes = config.prizes.values;
-  const guaranteedPrizes = config.prizes.guaranteed;
+  const prizes = prizeLadder.values;
+  const guaranteedPrizes = prizeLadder.guaranteed;
 
   // Get icons from config or use defaults
   const CoinIcon = config.icons?.coin || DefaultCoinIcon;
@@ -225,15 +228,15 @@ export function GameScreen({
               </span>
               <span>
                 {config.strings.difficultyLabel}:{' '}
-                {'★'.repeat(questionData.difficulty)}
-                {'☆'.repeat(3 - questionData.difficulty)}
+                {'★'.repeat(currentDifficulty)}
+                {'☆'.repeat(3 - currentDifficulty)}
               </span>
             </PanelHeader>
             <div className="p-4">
               <div className="flex justify-between items-center mb-3">
                 <span className="text-amber-400 text-xs font-serif italic">
                   {config.strings.progressLabel}: {currentQuestion + 1}/
-                  {prizes.length}
+                  {totalQuestions}
                 </span>
                 <span
                   className={`${theme.textPrimary} font-bold flex items-center font-serif`}
@@ -411,12 +414,15 @@ export function GameScreen({
           <div className="p-2 space-y-1">
             {[...prizes].reverse().map((prize: string, reverseIndex: number) => {
               // Convert reverse index to actual question index
-              const index = prizes.length - 1 - reverseIndex;
+              const index = totalQuestions - 1 - reverseIndex;
               const questionNumber = index + 1;
               const isGuaranteed = guaranteedPrizes.includes(index);
               const isCurrent = index === currentQuestion;
               const isPassed = index < currentQuestion;
-              const difficultyLevel = index < 5 ? 1 : index < 10 ? 2 : 3;
+              // Calculate difficulty based on position (1/3, 2/3, 3/3)
+              const fraction = index / totalQuestions;
+              const difficultyLevel =
+                fraction < 1 / 3 ? 1 : fraction < 2 / 3 ? 2 : 3;
 
               return (
                 <div

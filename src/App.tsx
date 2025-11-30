@@ -6,7 +6,7 @@
  *
  * Routes:
  * - /         → Game selector
- * - /engine   → Engine PoC (no external assets)
+ * - /poc      → PoC game (no external assets)
  * - /bg3      → Baldur's Gate 3 Edition
  * - /transformers → Transformers Edition (coming soon)
  *
@@ -19,7 +19,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { GameSelector } from './components/GameSelector';
 
 // Lazy load game configs for code splitting
-const EngineGame = lazy(() => import('./pages/EnginePage'));
+const PocGame = lazy(() => import('./pages/PocPage'));
 const BG3Game = lazy(() => import('./pages/BG3Page'));
 
 /**
@@ -44,7 +44,7 @@ export default function App() {
     <Suspense fallback={<LoadingScreen />}>
       <Routes>
         <Route path="/" element={<GameSelector />} />
-        <Route path="/engine" element={<EngineGame />} />
+        <Route path="/poc" element={<PocGame />} />
         <Route path="/bg3" element={<BG3Game />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
