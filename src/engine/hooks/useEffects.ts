@@ -42,14 +42,14 @@ const DEFAULT_STATE: EffectState = {
 
 /**
  * Hook for managing particle visual effects.
- * 
+ *
  * @example
  * ```tsx
  * const { effectState, triggerConfetti, triggerSparks } = useEffects();
- * 
+ *
  * // In component
  * <ParticleCanvas {...effectState} />
- * 
+ *
  * // Trigger effects
  * triggerConfetti(); // Full screen confetti
  * triggerSparks({ x: 0.5, y: 0.3 }); // Sparks at specific position
@@ -74,7 +74,7 @@ export const useEffects = (): UseEffectsReturn => {
     ) => {
       // Clear previous effect first
       clearEffect();
-      
+
       // Small delay to ensure effect rerenders
       requestAnimationFrame(() => {
         setEffectState({

@@ -87,7 +87,7 @@ const createConfettiParticle = (
 ): Particle => {
   const angle = Math.random() * Math.PI * 2;
   const speed = 8 + Math.random() * 12;
-  
+
   return {
     x: originX * canvasWidth,
     y: originY * canvasHeight,
@@ -112,7 +112,7 @@ const createSparkParticle = (
 ): Particle => {
   const angle = Math.random() * Math.PI * 2;
   const speed = 3 + Math.random() * 6;
-  
+
   return {
     x: originX * canvasWidth,
     y: originY * canvasHeight,
@@ -138,7 +138,7 @@ const createFireworkParticle = (
 ): Particle => {
   const angle = Math.random() * Math.PI * 2;
   const speed = 2 + Math.random() * 8;
-  
+
   return {
     x: originX * canvasWidth,
     y: originY * canvasHeight,
@@ -311,12 +311,12 @@ export const ParticleCanvas: React.FC<ParticleCanvasProps> = ({
           // Multiple firework bursts
           const colors = [primaryColor, secondaryColor, '#FFD700', '#4ECDC4'];
           const burstCount = Math.floor(3 * intensity);
-          
+
           for (let b = 0; b < burstCount; b++) {
             const burstX = 0.2 + Math.random() * 0.6;
             const burstY = 0.2 + Math.random() * 0.4;
             const burstColor = colors[b % colors.length];
-            
+
             setTimeout(() => {
               for (let i = 0; i < 40; i++) {
                 particlesRef.current.push(
@@ -353,18 +353,18 @@ export const ParticleCanvas: React.FC<ParticleCanvasProps> = ({
     // Update and draw particles
     particlesRef.current = particlesRef.current.filter((particle) => {
       particle.life++;
-      
+
       // Physics
       particle.x += particle.vx;
       particle.y += particle.vy;
       particle.vy += 0.15; // Gravity
       particle.vx *= 0.99; // Air resistance
       particle.rotation += particle.rotationSpeed;
-      
+
       // Fade out
       const lifeRatio = particle.life / particle.maxLife;
       particle.alpha = Math.max(0, 1 - lifeRatio * lifeRatio);
-      
+
       // Draw if still visible
       if (particle.alpha > 0.01) {
         drawParticle(ctx, particle);
@@ -400,12 +400,12 @@ export const ParticleCanvas: React.FC<ParticleCanvasProps> = ({
     if (effect && effect !== lastEffectRef.current) {
       lastEffectRef.current = effect;
       spawnEffect(effect);
-      
+
       if (!animationRef.current) {
         animationRef.current = requestAnimationFrame(animate);
       }
     }
-    
+
     // Reset when effect becomes null
     if (!effect) {
       lastEffectRef.current = null;

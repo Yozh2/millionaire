@@ -98,15 +98,7 @@ export function GameScreen({
     _e: React.MouseEvent
   ) => {
     audio.playSoundEffect('click');
-    
-    // Trigger sparks IMMEDIATELY on mouseup if answer is correct
-    if (isAnswerCorrect(displayIndex)) {
-      const indexCoords = getElementCenterCoords(
-        answerIndexRefs.current[displayIndex]
-      );
-      effects?.triggerSparks(indexCoords);
-    }
-    
+
     // Wait for the reveal animation (2 sec) then play result sound
     const result = await handleAnswer(displayIndex);
     if (result === 'correct') {
@@ -393,13 +385,14 @@ export function GameScreen({
               <button
                 onClick={handleFiftyFiftyWithSound}
                 disabled={!lifelines.fiftyFifty || selectedAnswer !== null}
-                className={`px-4 py-2 text-sm transition-all border-3 font-serif ${
+                className={`lifeline-btn px-4 py-2 text-sm border-3 font-serif ${
                   lifelines.fiftyFifty && selectedAnswer === null
-                    ? 'bg-gradient-to-b from-orange-700 to-orange-900 border-orange-500 text-orange-100 hover:from-orange-600'
+                    ? 'bg-gradient-to-b from-orange-700 to-orange-900 border-orange-500 text-orange-100'
                     : 'bg-stone-950 border-stone-800 text-stone-600 cursor-not-allowed'
                 }`}
                 style={{
                   borderStyle: 'ridge',
+                  ['--lifeline-glow' as string]: 'rgba(249, 115, 22, 0.5)',
                   boxShadow:
                     lifelines.fiftyFifty && selectedAnswer === null
                       ? '0 0 15px rgba(249, 115, 22, 0.4)'
@@ -411,13 +404,14 @@ export function GameScreen({
               <button
                 onClick={handlePhoneAFriendWithSound}
                 disabled={!lifelines.phoneAFriend || selectedAnswer !== null}
-                className={`px-4 py-2 text-sm transition-all border-3 font-serif ${
+                className={`lifeline-btn px-4 py-2 text-sm border-3 font-serif ${
                   lifelines.phoneAFriend && selectedAnswer === null
-                    ? 'bg-gradient-to-b from-blue-700 to-blue-900 border-blue-500 text-blue-100 hover:from-blue-600'
+                    ? 'bg-gradient-to-b from-blue-700 to-blue-900 border-blue-500 text-blue-100'
                     : 'bg-stone-950 border-stone-800 text-stone-600 cursor-not-allowed'
                 }`}
                 style={{
                   borderStyle: 'ridge',
+                  ['--lifeline-glow' as string]: 'rgba(59, 130, 246, 0.5)',
                   boxShadow:
                     lifelines.phoneAFriend && selectedAnswer === null
                       ? '0 0 15px rgba(59, 130, 246, 0.4)'
@@ -430,13 +424,14 @@ export function GameScreen({
               <button
                 onClick={handleAskAudienceWithSound}
                 disabled={!lifelines.askAudience || selectedAnswer !== null}
-                className={`px-4 py-2 text-sm transition-all border-3 font-serif ${
+                className={`lifeline-btn px-4 py-2 text-sm border-3 font-serif ${
                   lifelines.askAudience && selectedAnswer === null
-                    ? 'bg-gradient-to-b from-teal-700 to-teal-900 border-teal-500 text-teal-100 hover:from-teal-600'
+                    ? 'bg-gradient-to-b from-teal-700 to-teal-900 border-teal-500 text-teal-100'
                     : 'bg-stone-950 border-stone-800 text-stone-600 cursor-not-allowed'
                 }`}
                 style={{
                   borderStyle: 'ridge',
+                  ['--lifeline-glow' as string]: 'rgba(20, 184, 166, 0.5)',
                   boxShadow:
                     lifelines.askAudience && selectedAnswer === null
                       ? '0 0 15px rgba(20, 184, 166, 0.4)'
@@ -449,13 +444,14 @@ export function GameScreen({
               <button
                 onClick={handleTakeMoneyWithSound}
                 disabled={currentQuestion === 0 || selectedAnswer !== null}
-                className={`px-4 py-2 text-sm transition-all border-3 font-serif ${
+                className={`lifeline-btn px-4 py-2 text-sm border-3 font-serif ${
                   currentQuestion > 0 && selectedAnswer === null
-                    ? 'bg-gradient-to-b from-yellow-700 to-yellow-900 border-yellow-600 text-yellow-100 hover:from-yellow-600'
+                    ? 'bg-gradient-to-b from-yellow-700 to-yellow-900 border-yellow-600 text-yellow-100'
                     : 'bg-stone-950 border-stone-800 text-stone-600 cursor-not-allowed'
                 }`}
                 style={{
                   borderStyle: 'ridge',
+                  ['--lifeline-glow' as string]: 'rgba(234, 179, 8, 0.5)',
                   boxShadow:
                     currentQuestion > 0 && selectedAnswer === null
                       ? '0 0 15px rgba(234, 179, 8, 0.4)'

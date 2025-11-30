@@ -7,9 +7,9 @@ import { useEffects } from '../engine/hooks/useEffects';
 import { ParticleCanvas } from '../engine/components/ParticleCanvas';
 
 // Demo type for canvas effect cards
-type DemoId = 
-  | 'lightning' | 'fire' | 'smoke' | 'stars' 
-  | 'vortex' | 'trail' | 'wave' | 'snow' 
+type DemoId =
+  | 'lightning' | 'fire' | 'smoke' | 'stars'
+  | 'vortex' | 'trail' | 'wave' | 'snow'
   | 'rainbow' | 'shatter' | 'focus' | 'orb';
 
 interface CanvasDemoCardProps {
@@ -51,18 +51,18 @@ function CanvasDemoCard({ title, description, demoId }: CanvasDemoCardProps) {
       lightning: (progress) => {
         ctx.fillStyle = 'rgba(10, 10, 30, 0.3)';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
+
         if (Math.random() > 0.7) {
           ctx.strokeStyle = `rgba(180, 200, 255, ${0.8 + Math.random() * 0.2})`;
           ctx.lineWidth = 2 + Math.random() * 3;
           ctx.shadowBlur = 20;
           ctx.shadowColor = '#88aaff';
-          
+
           let x = canvas.width / 2;
           let y = 0;
           ctx.beginPath();
           ctx.moveTo(x, y);
-          
+
           while (y < canvas.height) {
             x += (Math.random() - 0.5) * 40;
             y += 10 + Math.random() * 20;
@@ -77,19 +77,19 @@ function CanvasDemoCard({ title, description, demoId }: CanvasDemoCardProps) {
       fire: (progress) => {
         ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
+
         const particles = 8;
         for (let i = 0; i < particles; i++) {
           const x = canvas.width / 2 + (Math.random() - 0.5) * 40;
           const y = canvas.height - Math.random() * 60 * (1 + progress);
           const size = 5 + Math.random() * 15;
           const hue = 20 + Math.random() * 30;
-          
+
           const gradient = ctx.createRadialGradient(x, y, 0, x, y, size);
           gradient.addColorStop(0, `hsla(${hue}, 100%, 70%, 0.9)`);
           gradient.addColorStop(0.5, `hsla(${hue - 10}, 100%, 50%, 0.5)`);
           gradient.addColorStop(1, 'transparent');
-          
+
           ctx.fillStyle = gradient;
           ctx.fillRect(x - size, y - size, size * 2, size * 2);
         }
@@ -99,16 +99,16 @@ function CanvasDemoCard({ title, description, demoId }: CanvasDemoCardProps) {
       smoke: (progress) => {
         ctx.fillStyle = 'rgba(20, 20, 30, 0.1)';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
+
         for (let i = 0; i < 5; i++) {
           const x = canvas.width / 2 + Math.sin(progress * 5 + i) * 30;
           const y = canvas.height - (progress * canvas.height * 0.8) - i * 20;
           const size = 20 + i * 10 + progress * 30;
-          
+
           const gradient = ctx.createRadialGradient(x, y, 0, x, y, size);
           gradient.addColorStop(0, `rgba(150, 150, 160, ${0.3 - progress * 0.2})`);
           gradient.addColorStop(1, 'transparent');
-          
+
           ctx.fillStyle = gradient;
           ctx.beginPath();
           ctx.arc(x, y, size, 0, Math.PI * 2);
@@ -120,18 +120,18 @@ function CanvasDemoCard({ title, description, demoId }: CanvasDemoCardProps) {
       stars: (progress) => {
         ctx.fillStyle = 'rgba(5, 5, 20, 0.2)';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
+
         for (let i = 0; i < 20; i++) {
           const x = (i * 37) % canvas.width;
           const y = (i * 53) % canvas.height;
           const twinkle = Math.sin(progress * 10 + i * 2) * 0.5 + 0.5;
           const size = 1 + twinkle * 3;
-          
+
           ctx.fillStyle = `rgba(255, 255, 255, ${twinkle * 0.8 + 0.2})`;
           ctx.beginPath();
           ctx.arc(x, y, size, 0, Math.PI * 2);
           ctx.fill();
-          
+
           // Star rays
           if (twinkle > 0.7) {
             ctx.strokeStyle = `rgba(255, 255, 255, ${(twinkle - 0.7) * 2})`;
@@ -150,17 +150,17 @@ function CanvasDemoCard({ title, description, demoId }: CanvasDemoCardProps) {
       vortex: (progress) => {
         ctx.fillStyle = 'rgba(10, 5, 20, 0.15)';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
+
         const cx = canvas.width / 2;
         const cy = canvas.height / 2;
-        
+
         for (let i = 0; i < 50; i++) {
           const angle = (i / 50) * Math.PI * 6 + progress * Math.PI * 4;
           const radius = i * 2 + 5;
           const x = cx + Math.cos(angle) * radius;
           const y = cy + Math.sin(angle) * radius;
           const hue = (i * 7 + progress * 360) % 360;
-          
+
           ctx.fillStyle = `hsla(${hue}, 80%, 60%, 0.8)`;
           ctx.beginPath();
           ctx.arc(x, y, 2 + i * 0.05, 0, Math.PI * 2);
@@ -172,10 +172,10 @@ function CanvasDemoCard({ title, description, demoId }: CanvasDemoCardProps) {
       trail: (progress) => {
         ctx.fillStyle = 'rgba(10, 10, 20, 0.2)';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
+
         const x = canvas.width * (0.2 + progress * 0.6);
         const y = canvas.height / 2 + Math.sin(progress * Math.PI * 4) * 30;
-        
+
         // Trail
         for (let i = 10; i > 0; i--) {
           const trailX = x - i * 8;
@@ -185,7 +185,7 @@ function CanvasDemoCard({ title, description, demoId }: CanvasDemoCardProps) {
           ctx.arc(trailX, y, 8 - i * 0.5, 0, Math.PI * 2);
           ctx.fill();
         }
-        
+
         // Main object
         ctx.fillStyle = '#ffaa00';
         ctx.shadowBlur = 15;
@@ -200,14 +200,14 @@ function CanvasDemoCard({ title, description, demoId }: CanvasDemoCardProps) {
       wave: (progress) => {
         ctx.fillStyle = 'rgba(10, 20, 40, 0.2)';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
+
         const cx = canvas.width / 2;
         const cy = canvas.height / 2;
-        
+
         for (let i = 0; i < 4; i++) {
           const radius = progress * 80 + i * 25;
           const alpha = Math.max(0, 1 - radius / 120);
-          
+
           ctx.strokeStyle = `rgba(100, 180, 255, ${alpha})`;
           ctx.lineWidth = 3 - i * 0.5;
           ctx.beginPath();
@@ -220,14 +220,14 @@ function CanvasDemoCard({ title, description, demoId }: CanvasDemoCardProps) {
       snow: (progress) => {
         ctx.fillStyle = 'rgba(10, 15, 30, 0.15)';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
+
         for (let i = 0; i < 30; i++) {
           const seed = i * 123.456;
           const x = ((seed + progress * 50) % canvas.width);
           const y = ((i * 47 + progress * canvas.height * 2) % (canvas.height + 20)) - 10;
           const size = 2 + (i % 4);
           const wobble = Math.sin(progress * 5 + i) * 5;
-          
+
           ctx.fillStyle = `rgba(255, 255, 255, ${0.5 + (i % 5) * 0.1})`;
           ctx.beginPath();
           ctx.arc(x + wobble, y, size, 0, Math.PI * 2);
@@ -241,13 +241,13 @@ function CanvasDemoCard({ title, description, demoId }: CanvasDemoCardProps) {
           0, 0,
           canvas.width, canvas.height
         );
-        
+
         const offset = progress * 360;
         for (let i = 0; i <= 6; i++) {
           const hue = (i * 60 + offset) % 360;
           gradient.addColorStop(i / 6, `hsl(${hue}, 80%, 50%)`);
         }
-        
+
         ctx.fillStyle = gradient;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
       },
@@ -256,22 +256,22 @@ function CanvasDemoCard({ title, description, demoId }: CanvasDemoCardProps) {
       shatter: (progress) => {
         ctx.fillStyle = 'rgba(5, 5, 15, 0.3)';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
+
         const cx = canvas.width / 2;
         const cy = canvas.height / 2;
         const shards = 12;
-        
+
         for (let i = 0; i < shards; i++) {
           const angle = (i / shards) * Math.PI * 2;
           const distance = progress * 60;
           const x = cx + Math.cos(angle) * distance;
           const y = cy + Math.sin(angle) * distance + progress * progress * 30;
           const rotation = progress * 3 + i;
-          
+
           ctx.save();
           ctx.translate(x, y);
           ctx.rotate(rotation);
-          
+
           ctx.fillStyle = `rgba(150, 200, 255, ${1 - progress * 0.8})`;
           ctx.beginPath();
           ctx.moveTo(0, -8);
@@ -279,7 +279,7 @@ function CanvasDemoCard({ title, description, demoId }: CanvasDemoCardProps) {
           ctx.lineTo(-6, 4);
           ctx.closePath();
           ctx.fill();
-          
+
           ctx.restore();
         }
       },
@@ -288,22 +288,22 @@ function CanvasDemoCard({ title, description, demoId }: CanvasDemoCardProps) {
       focus: (progress) => {
         ctx.fillStyle = 'rgba(10, 10, 20, 0.3)';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
+
         const cx = canvas.width / 2;
         const cy = canvas.height / 2;
-        
+
         for (let i = 0; i < 3; i++) {
           const baseRadius = 60 - i * 15;
           const radius = baseRadius - progress * baseRadius * 0.8;
           const alpha = progress;
-          
+
           ctx.strokeStyle = `rgba(255, 200, 50, ${alpha})`;
           ctx.lineWidth = 3 - i;
           ctx.beginPath();
           ctx.arc(cx, cy, Math.max(5, radius), 0, Math.PI * 2);
           ctx.stroke();
         }
-        
+
         // Center point
         if (progress > 0.7) {
           ctx.fillStyle = `rgba(255, 220, 100, ${(progress - 0.7) * 3})`;
@@ -317,11 +317,11 @@ function CanvasDemoCard({ title, description, demoId }: CanvasDemoCardProps) {
       orb: (progress) => {
         ctx.fillStyle = 'rgba(5, 0, 15, 0.2)';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
+
         const cx = canvas.width / 2;
         const cy = canvas.height / 2;
         const baseRadius = 35;
-        
+
         // Outer glow
         const gradient = ctx.createRadialGradient(cx, cy, 0, cx, cy, baseRadius * 1.5);
         gradient.addColorStop(0, `rgba(180, 100, 255, 0.8)`);
@@ -329,14 +329,14 @@ function CanvasDemoCard({ title, description, demoId }: CanvasDemoCardProps) {
         gradient.addColorStop(1, 'transparent');
         ctx.fillStyle = gradient;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
+
         // Inner energy
         for (let i = 0; i < 8; i++) {
           const angle = (i / 8) * Math.PI * 2 + progress * Math.PI * 2;
           const wobble = Math.sin(progress * 10 + i) * 5;
           const x = cx + Math.cos(angle) * (15 + wobble);
           const y = cy + Math.sin(angle) * (15 + wobble);
-          
+
           ctx.fillStyle = `rgba(255, 200, 255, ${0.5 + Math.sin(progress * 8 + i) * 0.3})`;
           ctx.beginPath();
           ctx.arc(x, y, 3, 0, Math.PI * 2);
@@ -377,8 +377,8 @@ function CanvasDemoCard({ title, description, demoId }: CanvasDemoCardProps) {
     <div
       className={`
         relative p-4 rounded-lg border-2 cursor-pointer transition-all
-        ${isPlaying 
-          ? 'border-purple-400 bg-purple-900/30' 
+        ${isPlaying
+          ? 'border-purple-400 bg-purple-900/30'
           : 'border-gray-600 bg-gray-800/50 hover:border-purple-500 hover:bg-gray-800'
         }
       `}
@@ -449,11 +449,11 @@ export function EffectsSandboxPage() {
           <h2 className="text-2xl font-bold text-amber-400 mb-4 border-b border-amber-400/30 pb-2">
             🎆 Canvas Particle Effects
           </h2>
-          
+
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {/* Confetti */}
             <button
-              onClick={(e) => triggerEffect('Confetti', () => 
+              onClick={(e) => triggerEffect('Confetti', () =>
                 effects.triggerConfetti({
                   x: e.clientX / window.innerWidth,
                   y: e.clientY / window.innerHeight,
@@ -572,7 +572,7 @@ export function EffectsSandboxPage() {
           <h2 className="text-2xl font-bold text-amber-400 mb-4 border-b border-amber-400/30 pb-2">
             🎨 Pulse Color Variations
           </h2>
-          
+
           <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
             {[
               { name: 'Gold', color: '#FFD700' },
@@ -607,7 +607,7 @@ export function EffectsSandboxPage() {
           <p className="text-gray-400 mb-4 text-sm">
             Разная интенсивность конфетти (количество частиц)
           </p>
-          
+
           <div className="flex gap-4 flex-wrap">
             {[0.5, 1, 1.5, 2].map((intensity) => (
               <button
@@ -635,7 +635,7 @@ export function EffectsSandboxPage() {
             Ниже показаны дополнительные эффекты, которые можно реализовать с помощью Canvas API.
             Нажимай на карточки, чтобы увидеть демо-анимации.
           </p>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             <CanvasDemoCard
               title="⚡ Lightning / Electric Arc"
