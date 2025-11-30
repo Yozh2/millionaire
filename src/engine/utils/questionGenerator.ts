@@ -195,7 +195,7 @@ export const calculatePrizeLadder = (
     // Ensure values are strictly increasing
     if (roundedValue <= previousValue) {
       // Find next nice number above previous
-      roundedValue = previousValue + (previousValue < 1000 ? 100 : 
+      roundedValue = previousValue + (previousValue < 1000 ? 100 :
                      previousValue < 10000 ? 500 :
                      previousValue < 100000 ? 1000 : 10000);
       roundedValue = roundToNiceNumber(roundedValue);
