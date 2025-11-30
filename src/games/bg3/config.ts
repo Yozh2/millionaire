@@ -179,7 +179,7 @@ export const bg3Config: GameConfig = {
   },
 
   prizes: {
-    maxPrize: 3000000,
+    maxPrize: 1000000,
     currency: 'золотых',
     // Guaranteed at 1/3, 2/3, and final question
     guaranteedFractions: [1 / 3, 2 / 3, 1],
