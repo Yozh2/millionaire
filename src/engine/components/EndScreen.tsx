@@ -2,9 +2,18 @@
  * EndScreen - Game over screens (won, lost, took money)
  */
 
+import { useEffect } from 'react';
 import { GameConfig, ThemeColors } from '../types';
 import { UseGameStateReturn } from '../hooks/useGameState';
 import { Panel, PanelHeader } from '../../components/ui';
+
+// Type for effects hook return
+interface EffectsAPI {
+  triggerConfetti: (origin?: { x: number; y: number }) => void;
+  triggerSparks: (origin?: { x: number; y: number }) => void;
+  triggerPulse: (origin?: { x: number; y: number }, color?: string) => void;
+  triggerFireworks: () => void;
+}
 
 // Default emoji-based icons
 const DefaultTrophyIcon = () => (
@@ -31,6 +40,7 @@ interface EndScreenProps {
   isMusicPlaying: boolean;
   onToggleMusic: () => void;
   theme: ThemeColors;
+  effects?: EffectsAPI;
 }
 
 export function EndScreen({
@@ -40,8 +50,20 @@ export function EndScreen({
   isMusicPlaying,
   onToggleMusic,
   theme,
+  effects,
 }: EndScreenProps) {
   const { gameState: state, wonPrize, currentQuestion, questions } = gameState;
+
+  // Trigger celebration effects on mount
+  useEffect(() => {
+    if (state === 'won') {
+      // Big win - fireworks!
+      effects?.triggerFireworks();
+    } else if (state === 'took_money' && wonPrize > 0) {
+      // Took money with prize - confetti
+      effects?.triggerConfetti({ x: 0.5, y: 0.5 });
+    }
+  }, [state, wonPrize, effects]);
 
   // Get icons from config or use defaults
   const CoinIcon = config.icons?.coin || DefaultCoinIcon;
@@ -172,9 +194,10 @@ export function EndScreen({
 
           <button
             onClick={onNewGame}
-            className={`px-8 py-3 bg-gradient-to-b ${theme.bgButton} text-white font-bold tracking-wide border-4 ${theme.borderLight} ${theme.bgButtonHover} transition-all transform hover:scale-105 font-serif`}
+            className={`action-btn px-8 py-3 bg-gradient-to-b ${theme.bgButton} text-white font-bold tracking-wide border-4 ${theme.borderLight} font-serif`}
             style={{
-              boxShadow: `0 0 25px ${theme.glow}, inset 0 1px 0 rgba(255, 255, 255, 0.2)`,
+              ['--btn-glow' as string]: theme.glow,
+              boxShadow: `0 5px 20px rgba(0, 0, 0, 0.3), 0 0 25px ${theme.glow}`,
               borderStyle: 'ridge',
               textShadow: '0 2px 4px rgba(0,0,0,0.8)',
             }}

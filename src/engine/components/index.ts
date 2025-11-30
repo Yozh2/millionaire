@@ -6,3 +6,4 @@ export { MillionaireGame } from './MillionaireGame';
 export { StartScreen } from './StartScreen';
 export { GameScreen } from './GameScreen';
 export { EndScreen } from './EndScreen';
+export { ParticleCanvas, type EffectType } from './ParticleCanvas';

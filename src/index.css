@@ -12,3 +12,107 @@ body {
   font-family: Georgia, serif;
   background: #000;
 }
+
+/* Shine sweep animation for answer buttons */
+@keyframes shine-sweep {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 200%;
+  }
+}
+
+.answer-btn {
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.1s ease-out, box-shadow 0.1s ease-out;
+}
+
+.answer-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    transparent 0%,
+    transparent 30%,
+    rgba(255, 255, 255, 0.15) 45%,
+    rgba(255, 255, 255, 0.3) 50%,
+    rgba(255, 255, 255, 0.15) 55%,
+    transparent 70%,
+    transparent 100%
+  );
+  transform: skewX(-20deg);
+  pointer-events: none;
+  z-index: 10;
+}
+
+.answer-btn:not(:disabled):hover::before {
+  animation: shine-sweep 0.5s ease-out forwards;
+}
+
+/* Button press effect - "pushed in" */
+.answer-btn:not(:disabled):active {
+  transform: scale(0.97) translateY(2px);
+  box-shadow: inset 0 3px 8px rgba(0, 0, 0, 0.4);
+}
+
+/* ============================================
+   Action Buttons (Start Game, New Game)
+   3D perspective press effect + shine on hover
+   ============================================ */
+.action-btn {
+  position: relative;
+  overflow: hidden;
+  transform-style: preserve-3d;
+  transform: perspective(500px) rotateX(0deg) scale(1);
+  transition: transform 0.15s ease-out, box-shadow 0.15s ease-out;
+}
+
+/* Shine effect on hover */
+.action-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    transparent 0%,
+    transparent 30%,
+    rgba(255, 255, 255, 0.12) 45%,
+    rgba(255, 255, 255, 0.25) 50%,
+    rgba(255, 255, 255, 0.12) 55%,
+    transparent 70%,
+    transparent 100%
+  );
+  transform: skewX(-20deg);
+  pointer-events: none;
+  z-index: 10;
+}
+
+.action-btn:not(:disabled):hover::before {
+  animation: shine-sweep 0.6s ease-out forwards;
+}
+
+/* Hover state - slight lift */
+.action-btn:not(:disabled):hover {
+  transform: perspective(500px) rotateX(-5deg) scale(1.02);
+  box-shadow: 
+    0 10px 30px rgba(0, 0, 0, 0.4),
+    0 0 30px var(--btn-glow, rgba(255, 200, 0, 0.3));
+}
+
+/* Active/pressed state - push back into screen */
+.action-btn:not(:disabled):active {
+  transform: perspective(500px) rotateX(10deg) scale(0.98);
+  box-shadow: 
+    0 2px 10px rgba(0, 0, 0, 0.3),
+    inset 0 3px 15px rgba(0, 0, 0, 0.4);
+  transition: transform 0.08s ease-out, box-shadow 0.08s ease-out;
+}

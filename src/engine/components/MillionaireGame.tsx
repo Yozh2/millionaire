@@ -11,10 +11,11 @@
 import { useEffect, useCallback } from 'react';
 import { ThemeProvider } from '../context';
 import { GameConfig, ThemeColors, Campaign } from '../types';
-import { useGameState, useAudio } from '../hooks';
+import { useGameState, useAudio, useEffects } from '../hooks';
 import { StartScreen } from './StartScreen';
 import { GameScreen } from './GameScreen';
 import { EndScreen } from './EndScreen';
+import { ParticleCanvas } from './ParticleCanvas';
 
 interface MillionaireGameProps {
   /** Game configuration - defines modes, questions, themes, etc. */
@@ -28,6 +29,7 @@ interface MillionaireGameProps {
 export function MillionaireGame({ config }: MillionaireGameProps) {
   const gameState = useGameState(config);
   const audio = useAudio(config);
+  const effects = useEffects();
 
   // Preload audio on mount
   useEffect(() => {
@@ -77,12 +79,21 @@ export function MillionaireGame({ config }: MillionaireGameProps) {
   return (
     <ThemeProvider theme={theme}>
       <div
-        className="min-h-screen p-4 transition-all duration-500"
+        className="min-h-screen p-4 transition-all duration-500 relative overflow-hidden"
         style={{
           background: getBackgroundStyle(),
           fontFamily: 'Georgia, serif',
         }}
       >
+        {/* Particle Effects Layer */}
+        <ParticleCanvas
+          effect={effects.effectState.effect}
+          origin={effects.effectState.origin}
+          primaryColor={effects.effectState.primaryColor}
+          secondaryColor={effects.effectState.secondaryColor}
+          intensity={effects.effectState.intensity}
+        />
+
         {/* Background Music */}
         <audio
           id="bg-music"
@@ -112,6 +123,7 @@ export function MillionaireGame({ config }: MillionaireGameProps) {
               gameState={gameState}
               audio={audio}
               theme={theme}
+              effects={effects}
             />
           )}
 
@@ -126,6 +138,7 @@ export function MillionaireGame({ config }: MillionaireGameProps) {
               isMusicPlaying={audio.isMusicPlaying}
               onToggleMusic={audio.toggleMusic}
               theme={theme}
+              effects={effects}
             />
           )}
 

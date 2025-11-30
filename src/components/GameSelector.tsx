@@ -7,7 +7,7 @@
 
 import { Link } from 'react-router-dom';
 
-interface GameCard {
+interface GameCardData {
   id: string;
   path: string;
   title: string;
@@ -19,7 +19,7 @@ interface GameCard {
   available: boolean;
 }
 
-const games: GameCard[] = [
+const GAMES: GameCardData[] = [
   {
     id: 'poc',
     path: '/poc',
@@ -55,45 +55,7 @@ const games: GameCard[] = [
   },
 ];
 
-export function GameSelector() {
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-slate-900 to-gray-950 flex flex-col items-center justify-center p-4">
-      {/* Header */}
-      <div className="text-center mb-12">
-        <h1 className="text-4xl md:text-6xl font-bold text-white mb-4 tracking-wider">
-          🎯 MILLIONAIRE
-        </h1>
-        <p className="text-xl text-gray-400">
-          Выберите игру
-        </p>
-      </div>
-
-      {/* Game Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl w-full">
-        {games.map((game) => (
-          <GameCardComponent key={game.id} game={game} />
-        ))}
-      </div>
-
-      {/* Footer */}
-      <div className="mt-12 text-center text-gray-600 text-sm">
-        <p>Millionaire Quiz Engine v1.0</p>
-        <p className="mt-1">
-          <a
-            href="https://github.com/Yozh2/millionaire"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-blue-500 hover:text-blue-400 transition-colors"
-          >
-            GitHub
-          </a>
-        </p>
-      </div>
-    </div>
-  );
-}
-
-function GameCardComponent({ game }: { game: GameCard }) {
+function GameCard({ game }: { game: GameCardData }) {
   const CardContent = (
     <div
       className={`
@@ -137,6 +99,61 @@ function GameCardComponent({ game }: { game: GameCard }) {
   }
 
   return CardContent;
+}
+
+export function GameSelector() {
+  return (
+    <div
+      className="min-h-screen p-8"
+      style={{
+        background: 'radial-gradient(ellipse at center, #1a1a2e 0%, #16213e 50%, #0f0f23 100%)',
+      }}
+    >
+      <div className="max-w-6xl mx-auto">
+        {/* Header */}
+        <div className="text-center mb-12">
+          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
+            🎯 Кто хочет стать миллионером?
+          </h1>
+          <p className="text-gray-400 text-lg">
+            Выбери тематическую игру и проверь свои знания
+          </p>
+        </div>
+
+        {/* Game Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {GAMES.map((game) => (
+            <GameCard key={game.id} game={game} />
+          ))}
+        </div>
+
+        {/* Sandbox Link */}
+        <div className="text-center mt-12">
+          <Link
+            to="/sandbox"
+            className="text-gray-500 hover:text-amber-400 transition-colors text-sm"
+          >
+            🎨 Effects Sandbox (для разработчиков)
+          </Link>
+        </div>
+
+        {/* Footer */}
+        <div className="text-center mt-8 text-gray-600 text-sm">
+          <p>Универсальный движок викторины • v2.0</p>
+          <p className="mt-1">
+            <a
+              href="https://github.com/Yozh2/millionaire"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-500 hover:text-blue-400 transition-colors"
+            >
+              GitHub
+            </a>
+          </p>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export default GameSelector;

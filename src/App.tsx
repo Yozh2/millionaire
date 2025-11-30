@@ -9,6 +9,7 @@
  * - /poc      → PoC game (no external assets)
  * - /bg3      → Baldur's Gate 3 Edition
  * - /transformers → Transformers IDW Comics Edition
+ * - /sandbox  → Effects demo page
  *
  * @author Yozh2
  * @see https://github.com/Yozh2/millionaire
@@ -22,6 +23,7 @@ import { GameSelector } from './components/GameSelector';
 const PocGame = lazy(() => import('./pages/PocPage'));
 const BG3Game = lazy(() => import('./pages/BG3Page'));
 const TransformersGame = lazy(() => import('./pages/TransformersPage'));
+const EffectsSandbox = lazy(() => import('./pages/EffectsSandboxPage'));
 
 /**
  * Loading spinner component
@@ -48,6 +50,7 @@ export default function App() {
         <Route path="/poc" element={<PocGame />} />
         <Route path="/bg3" element={<BG3Game />} />
         <Route path="/transformers" element={<TransformersGame />} />
+        <Route path="/sandbox" element={<EffectsSandbox />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Suspense>

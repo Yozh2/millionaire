@@ -2,10 +2,19 @@
  * GameScreen - Main gameplay screen with question, answers, lifelines
  */
 
+import { useRef } from 'react';
 import { GameConfig, ThemeColors } from '../types';
 import { UseGameStateReturn } from '../hooks/useGameState';
 import { UseAudioReturn } from '../hooks/useAudio';
 import { Panel, PanelHeader } from '../../components/ui';
+
+// Type for effects hook return
+interface EffectsAPI {
+  triggerConfetti: (origin?: { x: number; y: number }) => void;
+  triggerSparks: (origin?: { x: number; y: number }) => void;
+  triggerPulse: (origin?: { x: number; y: number }, color?: string) => void;
+  triggerFireworks: () => void;
+}
 
 // Default emoji-based icons
 const DefaultCoinIcon = () => <span className="mr-1">🪙</span>;
@@ -17,6 +26,7 @@ interface GameScreenProps {
   gameState: UseGameStateReturn;
   audio: UseAudioReturn;
   theme: ThemeColors;
+  effects?: EffectsAPI;
 }
 
 export function GameScreen({
@@ -24,6 +34,7 @@ export function GameScreen({
   gameState,
   audio,
   theme,
+  effects,
 }: GameScreenProps) {
   const {
     currentQuestion,
@@ -47,17 +58,58 @@ export function GameScreen({
   const prizes = prizeLadder.values;
   const guaranteedPrizes = prizeLadder.guaranteed;
 
+  // Refs for answer index labels (A, B, C, D) to get their positions for effects
+  const answerIndexRefs = useRef<(HTMLSpanElement | null)[]>([]);
+
   // Get icons from config or use defaults
   const CoinIcon = config.icons?.coin || DefaultCoinIcon;
   const PhoneHintIcon = config.icons?.phoneHint || DefaultPhoneHintIcon;
   const AudienceHintIcon = config.icons?.audienceHint || DefaultAudienceHintIcon;
 
-  // Wrapped handlers with sound effects
-  const handleAnswerWithSound = async (displayIndex: number) => {
+  // Helper to get normalized coordinates from an element's center
+  const getElementCenterCoords = (
+    element: HTMLElement | null
+  ): { x: number; y: number } => {
+    if (!element) return { x: 0.5, y: 0.5 };
+    const rect = element.getBoundingClientRect();
+    return {
+      x: (rect.left + rect.width / 2) / window.innerWidth,
+      y: (rect.top + rect.height / 2) / window.innerHeight,
+    };
+  };
+
+  // Helper to convert screen coordinates to normalized (0-1) coordinates
+  const getNormalizedCoords = (e: React.MouseEvent): { x: number; y: number } => {
+    return {
+      x: e.clientX / window.innerWidth,
+      y: e.clientY / window.innerHeight,
+    };
+  };
+
+  // Check if answer is correct (without waiting for state update)
+  const isAnswerCorrect = (displayIndex: number): boolean => {
+    const originalIndex = shuffledAnswers[displayIndex];
+    return originalIndex === questionData.correct;
+  };
+
+  // Wrapped handlers with sound effects (called on click/mouseup)
+  const handleAnswerWithSound = async (
+    displayIndex: number,
+    _e: React.MouseEvent
+  ) => {
     audio.playSoundEffect('click');
+    
+    // Trigger sparks IMMEDIATELY on mouseup if answer is correct
+    if (isAnswerCorrect(displayIndex)) {
+      const indexCoords = getElementCenterCoords(
+        answerIndexRefs.current[displayIndex]
+      );
+      effects?.triggerSparks(indexCoords);
+    }
+    
+    // Wait for the reveal animation (2 sec) then play result sound
     const result = await handleAnswer(displayIndex);
     if (result === 'correct') {
-      // Play correct/next sound (oscillator if not defined in config)
       audio.playSoundEffect('correct');
     } else if (result === 'wrong') {
       audio.playSoundEffect('defeat');
@@ -65,14 +117,17 @@ export function GameScreen({
     }
   };
 
-  const handleFiftyFiftyWithSound = () => {
+  const handleFiftyFiftyWithSound = (e: React.MouseEvent) => {
     audio.playSoundEffect('hint');
+    effects?.triggerPulse(getNormalizedCoords(e), theme.primary || '#FFD700');
     useFiftyFifty();
   };
 
-  const handlePhoneAFriendWithSound = async () => {
+  const handlePhoneAFriendWithSound = async (e: React.MouseEvent) => {
+    const clickCoords = getNormalizedCoords(e);
     const companion = usePhoneAFriend();
     if (companion) {
+      effects?.triggerPulse(clickCoords, '#4ECDC4');
       // Try to play companion voice file first
       let voicePlayed = false;
       if (companion.voiceFile) {
@@ -85,13 +140,15 @@ export function GameScreen({
     }
   };
 
-  const handleAskAudienceWithSound = () => {
+  const handleAskAudienceWithSound = (e: React.MouseEvent) => {
     audio.playSoundEffect('vote');
+    effects?.triggerPulse(getNormalizedCoords(e), '#BB8FCE');
     useAskAudience();
   };
 
-  const handleTakeMoneyWithSound = () => {
+  const handleTakeMoneyWithSound = (e: React.MouseEvent) => {
     audio.playSoundEffect('money');
+    effects?.triggerConfetti(getNormalizedCoords(e));
     takeTheMoney();
   };
 
@@ -259,15 +316,18 @@ export function GameScreen({
             {shuffledAnswers.map((originalIndex, displayIndex) => (
               <button
                 key={displayIndex}
-                onClick={() => handleAnswerWithSound(displayIndex)}
+                onClick={(e) => handleAnswerWithSound(displayIndex, e)}
                 disabled={
                   selectedAnswer !== null ||
                   eliminatedAnswers.includes(displayIndex)
                 }
-                className={getAnswerStyle(displayIndex)}
+                className={`answer-btn ${getAnswerStyle(displayIndex)}`}
                 style={{ borderStyle: 'ridge' }}
               >
-                <span className={`${theme.textPrimary} mr-2 font-bold`}>
+                <span
+                  ref={(el) => { answerIndexRefs.current[displayIndex] = el; }}
+                  className={`${theme.textPrimary} mr-2 font-bold`}
+                >
                   [{['A', 'B', 'C', 'D'][displayIndex]}]
                 </span>
                 {questionData.answers[originalIndex]}

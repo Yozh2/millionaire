@@ -125,14 +125,15 @@ export function StartScreen({
           <button
             onClick={onStartGame}
             disabled={!selectedCampaign}
-            className={`px-8 py-3 font-bold text-lg tracking-wide border-4 transition-all transform font-serif ${
+            className={`action-btn px-8 py-3 font-bold text-lg tracking-wide border-4 font-serif ${
               selectedCampaign
-                ? `bg-gradient-to-b ${theme.bgButton} text-white ${theme.borderLight} ${theme.bgButtonHover} hover:scale-105`
+                ? `bg-gradient-to-b ${theme.bgButton} text-white ${theme.borderLight}`
                 : 'bg-gradient-to-b from-stone-700 via-stone-800 to-stone-900 text-stone-500 border-stone-600 cursor-not-allowed'
             }`}
             style={{
+              ['--btn-glow' as string]: theme.glow,
               boxShadow: selectedCampaign
-                ? `0 0 25px ${theme.glow}, inset 0 1px 0 rgba(255, 255, 255, 0.2)`
+                ? `0 5px 20px rgba(0, 0, 0, 0.3), 0 0 25px ${theme.glow}`
                 : 'none',
               borderStyle: 'ridge',
               textShadow: selectedCampaign ? '0 2px 4px rgba(0,0,0,0.8)' : 'none',
