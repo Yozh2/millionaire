@@ -80,7 +80,7 @@ export {
 } from './components';
 
 // Particle utils (for custom coin drawing)
-export { drawDefaultCoin, COIN_COLORS } from './components/ParticleCanvas';
+export { drawDefaultCoin } from './components/ParticleCanvas';
 
 // Context
 export { ThemeProvider, useTheme, defaultTheme } from './context';
