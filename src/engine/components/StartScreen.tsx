@@ -25,9 +25,9 @@ export function StartScreen({
   theme,
 }: StartScreenProps) {
   return (
-    <>
+    <div className="screen-transition">
       {/* Header */}
-      <Panel className="mb-4 p-1">
+      <Panel className="mb-4 p-1 animate-slide-in stagger-1">
         <PanelHeader>{config.strings.headerTitle}</PanelHeader>
         <div className="p-4 text-center">
           {/* Music Toggle */}
@@ -65,7 +65,7 @@ export function StartScreen({
       </Panel>
 
       {/* Campaign Selection Panel */}
-      <Panel className="p-1">
+      <Panel className="p-1 animate-slide-in stagger-2">
         <PanelHeader>{config.strings.selectPath}</PanelHeader>
         <div className="text-center py-8 px-4">
           <p className="text-amber-200 text-base mb-6 max-w-md mx-auto leading-relaxed font-serif">
@@ -143,7 +143,7 @@ export function StartScreen({
           </button>
         </div>
       </Panel>
-    </>
+    </div>
   );
 }
 

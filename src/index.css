@@ -13,6 +13,237 @@ body {
   background: #000;
 }
 
+/* ============================================
+   Screen Transition Animations
+   Beautiful transitions between game screens
+   ============================================ */
+
+/* Fade in with scale up from center */
+@keyframes screen-enter {
+  0% {
+    opacity: 0;
+    transform: scale(0.9) translateY(20px);
+    filter: blur(10px);
+  }
+  50% {
+    filter: blur(2px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    filter: blur(0);
+  }
+}
+
+/* Fade out with scale down */
+@keyframes screen-exit {
+  0% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    filter: blur(0);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.95) translateY(-20px);
+    filter: blur(8px);
+  }
+}
+
+/* Shimmer overlay during transition */
+@keyframes shimmer-overlay {
+  0% {
+    opacity: 0;
+    background-position: -100% 0;
+  }
+  30% {
+    opacity: 0.5;
+  }
+  70% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 0;
+    background-position: 200% 0;
+  }
+}
+
+/* Golden particles floating up */
+@keyframes float-up-particle {
+  0% {
+    opacity: 0;
+    transform: translateY(100px) scale(0);
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-100vh) scale(1) rotate(360deg);
+  }
+}
+
+/* Screen wrapper with enter animation */
+.screen-transition {
+  animation: screen-enter 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  position: relative;
+}
+
+/* Slower, more dramatic enter for end screens */
+.screen-transition-dramatic {
+  animation: screen-enter 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  position: relative;
+}
+
+/* Staggered element animations */
+@keyframes element-slide-in {
+  0% {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes element-slide-in-left {
+  0% {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes element-slide-in-right {
+  0% {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes element-pop-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  70% {
+    transform: scale(1.1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Glowing border animation for panels */
+@keyframes glow-pulse {
+  0%, 100% {
+    box-shadow:
+      0 0 20px rgba(255, 200, 0, 0.3),
+      inset 0 0 20px rgba(255, 200, 0, 0.1);
+  }
+  50% {
+    box-shadow:
+      0 0 40px rgba(255, 200, 0, 0.5),
+      0 0 60px rgba(255, 150, 0, 0.3),
+      inset 0 0 30px rgba(255, 200, 0, 0.2);
+  }
+}
+
+/* Stagger delay utilities - use with animate-* classes */
+.stagger-1 { animation-delay: 0.1s !important; }
+.stagger-2 { animation-delay: 0.2s !important; }
+.stagger-3 { animation-delay: 0.3s !important; }
+.stagger-4 { animation-delay: 0.4s !important; }
+.stagger-5 { animation-delay: 0.5s !important; }
+.stagger-6 { animation-delay: 0.6s !important; }
+
+.animate-slide-in {
+  animation: element-slide-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.animate-slide-left {
+  animation: element-slide-in-left 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.animate-slide-right {
+  animation: element-slide-in-right 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.animate-pop-in {
+  animation: element-pop-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.animate-glow-pulse {
+  animation: glow-pulse 2s ease-in-out infinite;
+}
+
+.animate-prize {
+  animation: prize-count-up 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+/* Special win/lose screen animations */
+@keyframes victory-zoom {
+  0% {
+    opacity: 0;
+    transform: scale(2) rotate(-10deg);
+    filter: blur(20px) brightness(2);
+  }
+  50% {
+    filter: blur(5px) brightness(1.5);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+    filter: blur(0) brightness(1);
+  }
+}
+
+@keyframes defeat-fade {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+    filter: grayscale(100%) blur(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+    filter: grayscale(0%) blur(0);
+  }
+}
+
+.screen-victory {
+  animation: victory-zoom 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.screen-defeat {
+  animation: defeat-fade 0.6s ease-out forwards;
+}
+
+/* Prize counter animation */
+@keyframes prize-count-up {
+  0% {
+    opacity: 0;
+    transform: scale(0.5) translateY(20px);
+  }
+  50% {
+    transform: scale(1.2) translateY(-5px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* ============================================ */
+
 /* Shine sweep animation for answer buttons */
 @keyframes shine-sweep {
   0% {

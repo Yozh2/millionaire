@@ -122,10 +122,15 @@ export function EndScreen({
     return `0 0 25px ${theme.glowColor}, 0 2px 8px #000`;
   };
 
+  // Determine screen animation class based on state
+  const screenClass = state === 'won' ? 'screen-victory' :
+                      state === 'lost' ? 'screen-defeat' :
+                      'screen-transition-dramatic';
+
   return (
-    <>
+    <div className={screenClass}>
       {/* Header */}
-      <Panel className="mb-4 p-1">
+      <Panel className="mb-4 p-1 animate-slide-in stagger-1">
         <PanelHeader>{config.strings.headerTitle}</PanelHeader>
         <div className="p-4 text-center">
           {/* Music Toggle */}
@@ -163,13 +168,15 @@ export function EndScreen({
       </Panel>
 
       {/* End Screen Panel */}
-      <Panel className="p-1">
+      <Panel className="p-1 animate-slide-in stagger-2">
         <PanelHeader>{getHeader()}</PanelHeader>
         <div className="text-center py-12 px-4">
-          {getIcon()}
+          <div className="animate-pop-in stagger-3">
+            {getIcon()}
+          </div>
 
           <h2
-            className={`text-2xl font-bold mt-4 mb-4 tracking-wide font-serif ${getTitleColor()}`}
+            className={`text-2xl font-bold mt-4 mb-4 tracking-wide font-serif animate-slide-in stagger-4 ${getTitleColor()}`}
             style={{ textShadow: getTextShadow() }}
           >
             {getTitle()}
@@ -179,7 +186,7 @@ export function EndScreen({
             {getText()}
           </p>
 
-          <div className="flex items-center justify-center gap-2 text-xl text-yellow-300 font-bold mb-6 font-serif">
+          <div className="flex items-center justify-center gap-2 text-xl text-yellow-300 font-bold mb-6 font-serif animate-prize stagger-5">
             {CoinIcon && <CoinIcon />}
             <span>
               {config.strings.prizeLabel} {wonPrize} {config.prizes.currency}
@@ -195,7 +202,7 @@ export function EndScreen({
 
           <button
             onClick={onNewGame}
-            className={`action-btn px-8 py-3 bg-gradient-to-b ${theme.bgButton} text-white font-bold tracking-wide border-4 ${theme.borderLight} font-serif`}
+            className={`action-btn px-8 py-3 bg-gradient-to-b ${theme.bgButton} text-white font-bold tracking-wide border-4 ${theme.borderLight} font-serif animate-pop-in stagger-6`}
             style={{
               ['--btn-glow' as string]: theme.glow,
               boxShadow: `0 5px 20px rgba(0, 0, 0, 0.3), 0 0 25px ${theme.glow}`,
@@ -207,7 +214,7 @@ export function EndScreen({
           </button>
         </div>
       </Panel>
-    </>
+    </div>
   );
 }
 

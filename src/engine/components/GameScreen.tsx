@@ -196,9 +196,9 @@ export function GameScreen({
   };
 
   return (
-    <>
+    <div className="screen-transition">
       {/* Header */}
-      <Panel className="mb-4 p-1">
+      <Panel className="mb-4 p-1 animate-slide-in stagger-1">
         <PanelHeader>{config.strings.headerTitle}</PanelHeader>
         <div className="p-4 text-center">
           {/* Music Toggle */}
@@ -266,7 +266,7 @@ export function GameScreen({
       </Panel>
 
       {/* Game Area */}
-      <div className="grid md:grid-cols-4 gap-3">
+      <div className="grid md:grid-cols-4 gap-3 animate-slide-in stagger-2">
         <div className="md:col-span-3 space-y-3">
           {/* Question Panel */}
           <Panel className="p-1">
@@ -523,7 +523,7 @@ export function GameScreen({
           </div>
         </Panel>
       </div>
-    </>
+    </div>
   );
 }
 
