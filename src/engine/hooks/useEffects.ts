@@ -111,7 +111,7 @@ export const useEffects = (): UseEffectsReturn => {
     (origin?: { x: number; y: number }) => {
       triggerEffect('coins', {
         origin: origin ?? { x: 0.5, y: 0.7 },
-        intensity: 1,
+        intensity: 0.8,
       });
     },
     [triggerEffect]

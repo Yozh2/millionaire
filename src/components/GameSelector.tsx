@@ -42,17 +42,18 @@ const GAMES: GameCardData[] = [
     borderColor: 'border-amber-500',
     available: true,
   },
-  {
-    id: 'transformers',
-    path: '/transformers',
-    title: 'TRANSFORMERS',
-    subtitle: 'IDW Comics Edition',
-    description: 'Викторина по комиксам IDW: Мегатрон и Автократия',
-    icon: '🤖',
-    gradient: 'from-purple-700 via-red-600 to-purple-800',
-    borderColor: 'border-purple-500',
-    available: true,
-  },
+  // Transformers game is hidden from menu but still accessible via /transformers URL
+  // {
+  //   id: 'transformers',
+  //   path: '/transformers',
+  //   title: 'TRANSFORMERS',
+  //   subtitle: 'IDW Comics Edition',
+  //   description: 'Викторина по комиксам IDW: Мегатрон и Автократия',
+  //   icon: '🤖',
+  //   gradient: 'from-purple-700 via-red-600 to-purple-800',
+  //   borderColor: 'border-purple-500',
+  //   available: true,
+  // },
 ];
 
 function GameCard({ game }: { game: GameCardData }) {

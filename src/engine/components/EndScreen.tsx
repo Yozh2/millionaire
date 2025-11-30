@@ -55,16 +55,30 @@ export function EndScreen({
 }: EndScreenProps) {
   const { gameState: state, wonPrize, currentQuestion, questions } = gameState;
 
-  // Trigger celebration effects on mount
+  // Trigger celebration effects - continuous coin bursts from trophy icon position
   useEffect(() => {
-    if (state === 'won') {
-      // Big win - coins rain!
-      effects?.triggerCoins({ x: 0.5, y: 0.3 });
-    } else if (state === 'took_money' && wonPrize > 0) {
-      // Took money with prize - coins
-      effects?.triggerCoins({ x: 0.5, y: 0.5 });
+    if (state === 'won' || (state === 'took_money' && wonPrize > 0)) {
+      // Trophy icon is roughly at x: 0.5, y: 0.28 (center, upper part of content panel)
+      const origin = { x: 0.5, y: 0.28 };
+
+      // Initial burst immediately
+      effects?.triggerCoins(origin);
+
+      // Continue with random interval bursts until component unmounts
+      const scheduleNextBurst = () => {
+        const delay = 500 + Math.random() * 1000; // 0.5-1.5 sec interval
+        return setTimeout(() => {
+          effects?.triggerCoins(origin);
+          intervalRef = scheduleNextBurst();
+        }, delay);
+      };
+
+      let intervalRef = scheduleNextBurst();
+
+      return () => clearTimeout(intervalRef);
     }
-  }, [state, wonPrize, effects]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state, wonPrize]); // effects intentionally omitted to prevent re-triggering
 
   // Get icons from config or use defaults
   const CoinIcon = config.icons?.coin || DefaultCoinIcon;
