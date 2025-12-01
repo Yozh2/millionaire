@@ -322,7 +322,7 @@ body {
   100% { transform: translateX(-100%) skewX(-25deg); }
 }
 
-/* Dust puff - outward glow burst */
+/* Dust puff - outward oval glow burst */
 @keyframes dust-puff {
   0% {
     box-shadow: 
@@ -332,21 +332,21 @@ body {
   15% {
     box-shadow: 
       0 2px 8px rgba(0, 0, 0, 0.5),
-      -20px 5px 15px var(--btn-glow, rgba(255, 200, 0, 0.6)),
-      20px 5px 15px var(--btn-glow, rgba(255, 200, 0, 0.6)),
-      -35px 0 10px var(--btn-glow, rgba(255, 200, 0, 0.4)),
-      35px 0 10px var(--btn-glow, rgba(255, 200, 0, 0.4)),
-      0 8px 20px var(--btn-glow, rgba(255, 200, 0, 0.5)),
+      -20px 4px 20px 2px var(--btn-glow, rgba(255, 200, 0, 0.6)),
+      20px 4px 20px 2px var(--btn-glow, rgba(255, 200, 0, 0.6)),
+      -38px 2px 15px 1px var(--btn-glow, rgba(255, 200, 0, 0.4)),
+      38px 2px 15px 1px var(--btn-glow, rgba(255, 200, 0, 0.4)),
+      0 6px 25px 3px var(--btn-glow, rgba(255, 200, 0, 0.5)),
       inset 0 2px 6px rgba(0, 0, 0, 0.3);
   }
   100% {
     box-shadow: 
       0 2px 8px rgba(0, 0, 0, 0.5),
-      -50px 10px 25px transparent,
-      50px 10px 25px transparent,
-      -70px 5px 20px transparent,
-      70px 5px 20px transparent,
-      0 15px 30px transparent,
+      -55px 8px 35px 4px transparent,
+      55px 8px 35px 4px transparent,
+      -80px 4px 28px 3px transparent,
+      80px 4px 28px 3px transparent,
+      0 12px 40px 5px transparent,
       inset 0 2px 6px rgba(0, 0, 0, 0.3);
   }
 }
@@ -396,7 +396,7 @@ body {
   }
 
   .action-btn:not(:disabled):hover::before {
-    animation: shine-sweep-action 0.5s ease-out forwards;
+    animation: shine-sweep-action 0.35s ease-out forwards;
   }
 }
 
