@@ -301,121 +301,132 @@ body {
 
 /* ============================================
    Action Buttons (Start Game, New Game)
-   "Lift towards camera" effect on hover
+   
+   States:
+   1. Rest: button at "ground level" (scale 1, normal brightness)
+   2. Hover/Touch: button lifts UP (scale 1.08), shine L→R, brighter
+   3. Active/Press: button SLAMS DOWN (scale 0.95), shine R→L, darker, dust puff
+   4. Release outside: returns to rest smoothly
+   5. Release inside: triggers click → next screen
    ============================================ */
 
-/* Keyframes for press down - scale back to normal */
-@keyframes heavy-slam {
-  0% {
-    transform: scale(1.12);
-  }
-  100% {
-    transform: scale(1);
-  }
+/* Shine sweep left to right (hover) */
+@keyframes shine-sweep-action {
+  0% { transform: translateX(-100%) skewX(-25deg); }
+  100% { transform: translateX(300%) skewX(-25deg); }
 }
 
-/* Reverse shine sweep (right to left) on slam */
-@keyframes shine-sweep-reverse {
-  0% {
-    left: 100%;
-  }
-  100% {
-    left: -100%;
-  }
+/* Shine sweep right to left (press/slam) */
+@keyframes shine-sweep-action-reverse {
+  0% { transform: translateX(300%) skewX(-25deg); }
+  100% { transform: translateX(-100%) skewX(-25deg); }
 }
 
-/* Impact glow burst */
-@keyframes impact-glow {
+/* Dust puff - outward glow burst */
+@keyframes dust-puff {
   0% {
-    box-shadow:
-      0 2px 8px rgba(0, 0, 0, 0.4),
-      0 0 30px var(--btn-glow, rgba(255, 200, 0, 0.8)),
-      0 0 60px var(--btn-glow, rgba(255, 200, 0, 0.6)),
-      0 0 100px var(--btn-glow, rgba(255, 200, 0, 0.4)),
-      inset 0 2px 10px rgba(0, 0, 0, 0.3);
+    box-shadow: 
+      0 2px 8px rgba(0, 0, 0, 0.5),
+      inset 0 2px 6px rgba(0, 0, 0, 0.3);
+  }
+  15% {
+    box-shadow: 
+      0 2px 8px rgba(0, 0, 0, 0.5),
+      -20px 5px 15px var(--btn-glow, rgba(255, 200, 0, 0.6)),
+      20px 5px 15px var(--btn-glow, rgba(255, 200, 0, 0.6)),
+      -35px 0 10px var(--btn-glow, rgba(255, 200, 0, 0.4)),
+      35px 0 10px var(--btn-glow, rgba(255, 200, 0, 0.4)),
+      0 8px 20px var(--btn-glow, rgba(255, 200, 0, 0.5)),
+      inset 0 2px 6px rgba(0, 0, 0, 0.3);
   }
   100% {
-    box-shadow:
-      0 2px 8px rgba(0, 0, 0, 0.4),
-      0 0 15px var(--btn-glow, rgba(255, 200, 0, 0.4)),
-      inset 0 2px 10px rgba(0, 0, 0, 0.3);
-  }
-}
-
-/* Crack lines expanding outward */
-@keyframes crack-expand {
-  0% {
-    transform: scaleX(0);
-    opacity: 0;
-  }
-  30% {
-    opacity: 1;
-  }
-  100% {
-    transform: scaleX(1);
-    opacity: 0.6;
+    box-shadow: 
+      0 2px 8px rgba(0, 0, 0, 0.5),
+      -50px 10px 25px transparent,
+      50px 10px 25px transparent,
+      -70px 5px 20px transparent,
+      70px 5px 20px transparent,
+      0 15px 30px transparent,
+      inset 0 2px 6px rgba(0, 0, 0, 0.3);
   }
 }
 
 .action-btn {
   position: relative;
   overflow: hidden; /* Keep shine inside button */
-  transform-style: preserve-3d;
   transform: scale(1);
   transform-origin: center center;
-  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
-              box-shadow 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  filter: brightness(1);
+  transition: 
+    transform 0.25s cubic-bezier(0.34, 1.2, 0.64, 1),
+    filter 0.25s ease-out,
+    box-shadow 0.25s ease-out;
   z-index: 10;
 }
 
-/* Shine effect on hover */
+/* Shine effect layer - centered, clipped by overflow:hidden */
 .action-btn::before {
   content: '';
   position: absolute;
   top: 0;
-  left: -100%;
-  width: 60%;
+  left: 0;
+  width: 40%;
   height: 100%;
   background: linear-gradient(
-    130deg,
+    90deg,
     transparent 0%,
-    transparent 25%,
-    rgba(255, 255, 255, 0.15) 40%,
-    rgba(255, 255, 255, 0.3) 50%,
-    rgba(255, 255, 255, 0.15) 60%,
-    transparent 75%,
+    rgba(255, 255, 255, 0.1) 20%,
+    rgba(255, 255, 255, 0.35) 50%,
+    rgba(255, 255, 255, 0.1) 80%,
     transparent 100%
   );
-  transform: skewX(-30deg);
-  filter: blur(2px);
+  transform: translateX(-100%) skewX(-25deg);
   pointer-events: none;
   z-index: 10;
 }
 
-.action-btn:not(:disabled):hover::before {
-  animation: shine-sweep 0.6s ease-out forwards;
+/* ---- STATE 2: HOVER (lifted, bright, shine L→R) ---- */
+@media (hover: hover) and (pointer: fine) {
+  .action-btn:not(:disabled):hover {
+    transform: scale(1.08);
+    filter: brightness(1.15);
+    box-shadow:
+      0 8px 25px rgba(0, 0, 0, 0.3),
+      0 0 40px var(--btn-glow, rgba(255, 200, 0, 0.3));
+  }
+
+  .action-btn:not(:disabled):hover::before {
+    animation: shine-sweep-action 0.5s ease-out forwards;
+  }
 }
 
-/* Reverse shine on active (slam down) */
-.action-btn:not(:disabled):active::before {
-  animation: shine-sweep-reverse 0.3s ease-out forwards;
+/* Touch devices: active state acts as hover+press combined */
+@media (hover: none) {
+  .action-btn:not(:disabled):active {
+    transform: scale(0.94);
+    filter: brightness(0.85);
+    animation: dust-puff 0.5s ease-out forwards;
+  }
+  
+  .action-btn:not(:disabled):active::before {
+    animation: shine-sweep-action-reverse 0.2s ease-out forwards;
+  }
 }
 
-/* HOVER - Lift towards camera (scale up from center) */
-.action-btn:not(:disabled):hover {
-  transform: scale(1.12);
-  box-shadow:
-    0 0 30px rgba(0, 0, 0, 0.4),
-    0 0 50px var(--btn-glow, rgba(255, 200, 0, 0.4)),
-    0 0 80px var(--btn-glow, rgba(255, 200, 0, 0.2));
-  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
-              box-shadow 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
+/* ---- STATE 3: ACTIVE/PRESS (slammed down, dark, shine R→L, dust puff) ---- */
+@media (hover: hover) and (pointer: fine) {
+  .action-btn:not(:disabled):active {
+    transform: scale(0.94);
+    filter: brightness(0.85);
+    animation: dust-puff 0.5s ease-out forwards;
+    transition: 
+      transform 0.08s ease-out,
+      filter 0.08s ease-out;
+  }
 
-/* ACTIVE/PRESSED - HEAVY SLAM DOWN with impact glow! */
-.action-btn:not(:disabled):active {
-  animation: heavy-slam 0.15s ease-out forwards,
-             impact-glow 0.4s ease-out forwards;
+  .action-btn:not(:disabled):active::before {
+    animation: shine-sweep-action-reverse 0.2s ease-out forwards;
+  }
 }
 
 /* ============================================
@@ -453,17 +464,20 @@ body {
   z-index: 10;
 }
 
-.lifeline-btn:not(:disabled):hover::before {
-  animation: shine-sweep 0.4s ease-out forwards;
-}
-
 /* Hover state - lift up and glow */
-.lifeline-btn:not(:disabled):hover {
-  transform: scale(1.05) translateY(-2px);
-  box-shadow:
-    0 6px 20px rgba(0, 0, 0, 0.3),
-    0 0 20px var(--lifeline-glow, rgba(255, 200, 0, 0.4));
-  filter: brightness(1.1);
+/* Only apply hover effects on devices with true hover capability */
+@media (hover: hover) and (pointer: fine) {
+  .lifeline-btn:not(:disabled):hover {
+    transform: scale(1.05) translateY(-2px);
+    box-shadow:
+      0 6px 20px rgba(0, 0, 0, 0.3),
+      0 0 20px var(--lifeline-glow, rgba(255, 200, 0, 0.4));
+    filter: brightness(1.1);
+  }
+
+  .lifeline-btn:not(:disabled):hover::before {
+    animation: shine-sweep 0.4s ease-out forwards;
+  }
 }
 
 /* Active/pressed state - push down */
