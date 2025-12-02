@@ -7,3 +7,4 @@ export { StartScreen } from './StartScreen';
 export { GameScreen } from './GameScreen';
 export { EndScreen } from './EndScreen';
 export { ParticleCanvas, type EffectType } from './ParticleCanvas';
+export { HeaderSlideshow } from './HeaderSlideshow';

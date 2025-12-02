@@ -2,11 +2,12 @@
  * GameScreen - Main gameplay screen with question, answers, lifelines
  */
 
-import { useRef } from 'react';
-import { GameConfig, ThemeColors } from '../types';
+import { useRef, useMemo } from 'react';
+import { GameConfig, ThemeColors, QuestionDifficulty } from '../types';
 import { UseGameStateReturn } from '../hooks/useGameState';
 import { UseAudioReturn } from '../hooks/useAudio';
 import { Panel, PanelHeader } from '../../components/ui';
+import { HeaderSlideshow } from './HeaderSlideshow';
 
 // Type for effects hook return
 interface EffectsAPI {
@@ -58,6 +59,14 @@ export function GameScreen({
   const questionData = questions[currentQuestion];
   const prizes = prizeLadder.values;
   const guaranteedPrizes = prizeLadder.guaranteed;
+
+  // Calculate difficulty level for slideshow
+  const difficultyLevel: QuestionDifficulty = useMemo(() => {
+    const progress = currentQuestion / totalQuestions;
+    if (progress < 1 / 3) return 'easy';
+    if (progress < 2 / 3) return 'medium';
+    return 'hard';
+  }, [currentQuestion, totalQuestions]);
 
   // Refs for answer index labels (A, B, C, D) to get their positions for effects
   const answerIndexRefs = useRef<(HTMLSpanElement | null)[]>([]);
@@ -198,9 +207,17 @@ export function GameScreen({
   return (
     <div className="screen-transition">
       {/* Header */}
-      <Panel className="mb-4 p-1 animate-slide-in stagger-1">
+      <Panel className="mb-4 p-1 animate-slide-in stagger-1 relative overflow-hidden">
+        {/* Optional Header Slideshow */}
+        {config.headerSlideshow && (
+          <HeaderSlideshow
+            config={config.headerSlideshow}
+            difficulty={difficultyLevel}
+            gameId={config.id}
+          />
+        )}
         <PanelHeader>{config.strings.headerTitle}</PanelHeader>
-        <div className="p-4 text-center">
+        <div className="p-4 text-center relative z-10">
           {/* Music Toggle */}
           <div className="flex justify-end mb-2">
             <button

@@ -21,9 +21,10 @@
     "vite": "^5.0.0"
   },
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
+    "dev": "npm run generate:manifests && vite",
+    "build": "npm run generate:manifests && vite build",
     "preview": "vite preview",
-    "deploy": "npm run build && gh-pages -d dist --no-history"
+    "deploy": "npm run build && gh-pages -d dist --no-history",
+    "generate:manifests": "node scripts/generate-image-manifest.js"
   }
 }

@@ -36,6 +36,8 @@ export type {
   Hint,
   GameConfig,
   DrawCoinFunction,
+  HeaderSlideshowConfig,
+  HeaderSlideshowImages,
 } from './types';
 
 // Hooks

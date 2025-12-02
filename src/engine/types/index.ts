@@ -343,6 +343,48 @@ export interface AudienceHint {
 export type Hint = PhoneHint | AudienceHint | null;
 
 // ============================================
+// Header Slideshow Types
+// ============================================
+
+/**
+ * Images for header slideshow, organized by difficulty.
+ * Images will be randomly selected based on current question difficulty.
+ */
+export interface HeaderSlideshowImages {
+  /** Images for easy questions (first ~1/3 of game) */
+  easy: string[];
+  /** Images for medium questions (middle ~1/3 of game) */
+  medium: string[];
+  /** Images for hard questions (final ~1/3 of game) */
+  hard: string[];
+}
+
+/**
+ * Configuration for the header slideshow effect.
+ * Images cross-fade with additive blend mode for dramatic effect.
+ *
+ * Two modes:
+ * 1. Explicit images: provide `images` object directly
+ * 2. Auto-manifest: set `enabled: true` and images will be loaded
+ *    from public/games/{gameId}/images/manifest.json
+ */
+export interface HeaderSlideshowConfig {
+  /**
+   * Enable slideshow (required for auto-manifest mode).
+   * If true and no images provided, will load from manifest.json.
+   */
+  enabled?: boolean;
+  /** Images organized by difficulty level (optional if using manifest) */
+  images?: HeaderSlideshowImages;
+  /** Transition duration in ms (default: 1500) */
+  transitionDuration?: number;
+  /** Time each image is shown in ms (default: 4000) */
+  displayDuration?: number;
+  /** Opacity of the slideshow overlay (default: 0.4) */
+  opacity?: number;
+}
+
+// ============================================
 // Main Game Config
 // ============================================
 
@@ -408,4 +450,10 @@ export interface GameConfig {
    * See drawDefaultCoin in ParticleCanvas for reference implementation.
    */
   drawCoinParticle?: DrawCoinFunction;
+
+  /**
+   * Header slideshow configuration (optional).
+   * Shows themed images in the header with additive blend mode.
+   */
+  headerSlideshow?: HeaderSlideshowConfig;
 }
