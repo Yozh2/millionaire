@@ -4,6 +4,7 @@
 
 import { GameConfig, Campaign, ThemeColors } from '../types';
 import { Panel, PanelHeader } from '../../components/ui';
+import { HeaderSlideshow } from './HeaderSlideshow';
 
 interface StartScreenProps {
   config: GameConfig;
@@ -27,9 +28,18 @@ export function StartScreen({
   return (
     <div className="screen-transition">
       {/* Header */}
-      <Panel className="mb-4 p-1 animate-slide-in stagger-1">
+      <Panel className="mb-4 p-1 animate-slide-in stagger-1 relative overflow-hidden">
+        {/* Optional Header Slideshow */}
+        {config.headerSlideshow && (
+          <HeaderSlideshow
+            config={config.headerSlideshow}
+            gameId={config.id}
+            campaignId={selectedCampaign?.id}
+            screen="start"
+          />
+        )}
         <PanelHeader>{config.strings.headerTitle}</PanelHeader>
-        <div className="p-4 text-center">
+        <div className="p-4 text-center relative z-10">
           {/* Music Toggle */}
           <div className="flex justify-end mb-2">
             <button

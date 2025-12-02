@@ -2,10 +2,11 @@
  * EndScreen - Game over screens (won, lost, took money)
  */
 
-import { useEffect, useRef, useCallback } from 'react';
-import { GameConfig, ThemeColors } from '../types';
+import { useEffect, useRef, useCallback, useMemo } from 'react';
+import { GameConfig, ThemeColors, SlideshowScreen } from '../types';
 import { UseGameStateReturn } from '../hooks/useGameState';
 import { Panel, PanelHeader } from '../../components/ui';
+import { HeaderSlideshow } from './HeaderSlideshow';
 
 // Type for effects hook return
 interface EffectsAPI {
@@ -168,12 +169,28 @@ export function EndScreen({
                       state === 'lost' ? 'screen-defeat' :
                       'screen-transition-dramatic';
 
+  // Map game state to slideshow screen type
+  const slideshowScreen: SlideshowScreen = useMemo(() => {
+    if (state === 'won') return 'won';
+    if (state === 'lost') return 'lost';
+    return 'took';
+  }, [state]);
+
   return (
     <div className={screenClass}>
       {/* Header */}
-      <Panel className="mb-4 p-1 animate-slide-in stagger-1">
+      <Panel className="mb-4 p-1 animate-slide-in stagger-1 relative overflow-hidden">
+        {/* Optional Header Slideshow */}
+        {config.headerSlideshow && (
+          <HeaderSlideshow
+            config={config.headerSlideshow}
+            gameId={config.id}
+            campaignId={gameState.selectedCampaign?.id}
+            screen={slideshowScreen}
+          />
+        )}
         <PanelHeader>{config.strings.headerTitle}</PanelHeader>
-        <div className="p-4 text-center">
+        <div className="p-4 text-center relative z-10">
           {/* Music Toggle */}
           <div className="flex justify-end mb-2">
             <button

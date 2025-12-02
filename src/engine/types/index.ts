@@ -346,36 +346,31 @@ export type Hint = PhoneHint | AudienceHint | null;
 // Header Slideshow Types
 // ============================================
 
-/**
- * Images for header slideshow, organized by difficulty.
- * Images will be randomly selected based on current question difficulty.
- */
-export interface HeaderSlideshowImages {
-  /** Images for easy questions (first ~1/3 of game) */
-  easy: string[];
-  /** Images for medium questions (middle ~1/3 of game) */
-  medium: string[];
-  /** Images for hard questions (final ~1/3 of game) */
-  hard: string[];
-}
+/** Screen context for slideshow image selection */
+export type SlideshowScreen =
+  | 'start'
+  | 'play'
+  | 'won'
+  | 'took'
+  | 'lost';
 
 /**
  * Configuration for the header slideshow effect.
  * Images cross-fade with additive blend mode for dramatic effect.
  *
- * Two modes:
- * 1. Explicit images: provide `images` object directly
- * 2. Auto-manifest: set `enabled: true` and images will be loaded
- *    from public/games/{gameId}/images/manifest.json
+ * Images are loaded automatically from manifest.json based on:
+ * - Game ID (e.g., 'bg3')
+ * - Campaign ID (e.g., 'hero')
+ * - Screen type ('start', 'play', 'won', 'took', 'lost')
+ * - Difficulty ('easy', 'medium', 'hard') for 'play' screen
+ *
+ * See README.md for full directory structure and fallback order.
  */
 export interface HeaderSlideshowConfig {
   /**
-   * Enable slideshow (required for auto-manifest mode).
-   * If true and no images provided, will load from manifest.json.
+   * Enable slideshow. Default: true if config exists.
    */
   enabled?: boolean;
-  /** Images organized by difficulty level (optional if using manifest) */
-  images?: HeaderSlideshowImages;
   /** Transition duration in ms (default: 1500) */
   transitionDuration?: number;
   /** Time each image is shown in ms (default: 4000) */

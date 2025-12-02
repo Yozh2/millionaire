@@ -37,7 +37,7 @@ export type {
   GameConfig,
   DrawCoinFunction,
   HeaderSlideshowConfig,
-  HeaderSlideshowImages,
+  SlideshowScreen,
 } from './types';
 
 // Hooks

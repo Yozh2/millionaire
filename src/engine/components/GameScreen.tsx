@@ -212,8 +212,10 @@ export function GameScreen({
         {config.headerSlideshow && (
           <HeaderSlideshow
             config={config.headerSlideshow}
-            difficulty={difficultyLevel}
             gameId={config.id}
+            campaignId={gameState.selectedCampaign?.id}
+            screen="play"
+            difficulty={difficultyLevel}
           />
         )}
         <PanelHeader>{config.strings.headerTitle}</PanelHeader>
