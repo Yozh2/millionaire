@@ -181,13 +181,6 @@ export const transformersConfig: GameConfig = {
 
   // Energon crystals instead of coins
   drawCoinParticle: drawEnergonCrystal,
-
-  // Page metadata for browser favicon and iOS home screen icon
-  meta: {
-    favicon: '/games/transformers/favicon.svg',
-    appleTouchIcon: '/games/transformers/apple-touch-icon.png',
-    themeColor: '#9333ea', // Purple/energon theme
-  },
 };
 
 export default transformersConfig;

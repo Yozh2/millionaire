@@ -322,7 +322,7 @@ body {
 
 /* ============================================
    Action Buttons (Start Game, New Game)
-
+   
    States:
    1. Rest: button at "ground level" (scale 1, normal brightness)
    2. Hover/Touch: button lifts UP (scale 1.08), shine L→R, brighter
@@ -346,12 +346,12 @@ body {
 /* Dust puff - outward oval glow burst */
 @keyframes dust-puff {
   0% {
-    box-shadow:
+    box-shadow: 
       0 2px 8px rgba(0, 0, 0, 0.5),
       inset 0 2px 6px rgba(0, 0, 0, 0.3);
   }
   15% {
-    box-shadow:
+    box-shadow: 
       0 2px 8px rgba(0, 0, 0, 0.5),
       -20px 4px 20px 2px var(--btn-glow, rgba(255, 200, 0, 0.6)),
       20px 4px 20px 2px var(--btn-glow, rgba(255, 200, 0, 0.6)),
@@ -361,7 +361,7 @@ body {
       inset 0 2px 6px rgba(0, 0, 0, 0.3);
   }
   100% {
-    box-shadow:
+    box-shadow: 
       0 2px 8px rgba(0, 0, 0, 0.5),
       -55px 8px 35px 4px transparent,
       55px 8px 35px 4px transparent,
@@ -378,7 +378,7 @@ body {
   transform: scale(1);
   transform-origin: center center;
   filter: brightness(1);
-  transition:
+  transition: 
     transform 0.25s cubic-bezier(0.34, 1.2, 0.64, 1),
     filter 0.25s ease-out,
     box-shadow 0.25s ease-out;
@@ -428,7 +428,7 @@ body {
     filter: brightness(0.85);
     animation: dust-puff 0.5s ease-out forwards;
   }
-
+  
   .action-btn:not(:disabled):active::before {
     animation: shine-sweep-action-reverse 0.2s ease-out forwards;
   }
@@ -440,7 +440,7 @@ body {
     transform: scale(0.94);
     filter: brightness(0.85);
     animation: dust-puff 0.5s ease-out forwards;
-    transition:
+    transition: 
       transform 0.08s ease-out,
       filter 0.08s ease-out;
   }

@@ -408,17 +408,4 @@ export interface GameConfig {
    * See drawDefaultCoin in ParticleCanvas for reference implementation.
    */
   drawCoinParticle?: DrawCoinFunction;
-
-  /**
-   * Page metadata for dynamic favicon, apple-touch-icon, and theme color.
-   * Each game can have its own unique icons for browser tabs and iOS home screen.
-   */
-  meta?: {
-    /** Path to favicon (SVG or PNG), e.g., "/games/bg3/favicon.svg" */
-    favicon?: string;
-    /** Path to apple-touch-icon (180x180 PNG for iOS), e.g., "/games/bg3/apple-touch-icon.png" */
-    appleTouchIcon?: string;
-    /** Theme color for browser chrome, e.g., "#d97706" */
-    themeColor?: string;
-  };
 }

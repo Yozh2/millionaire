@@ -130,13 +130,6 @@ export const pocConfig: GameConfig = {
     lost: FailIcon,
     tookMoney: MoneyIcon,
   },
-
-  // Page metadata - uses default icons from public root
-  meta: {
-    favicon: '/favicon.svg',
-    appleTouchIcon: '/apple-touch-icon.png',
-    themeColor: '#6366f1', // Indigo theme for POC
-  },
 };
 
 export default pocConfig;

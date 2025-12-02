@@ -235,13 +235,6 @@ export const bg3Config: GameConfig = {
 
   // Custom gold coin particles for win/take money effects
   drawCoinParticle: drawGoldCoin,
-
-  // Page metadata for browser favicon and iOS home screen icon
-  meta: {
-    favicon: '/games/bg3/favicon.svg',
-    appleTouchIcon: '/games/bg3/apple-touch-icon.png',
-    themeColor: '#d97706', // Amber/gold theme
-  },
 };
 
 export default bg3Config;
