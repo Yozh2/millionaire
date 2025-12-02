@@ -254,6 +254,16 @@ body {
   }
 }
 
+/* Reverse shine sweep (right to left) for press */
+@keyframes shine-sweep-reverse {
+  0% {
+    left: 200%;
+  }
+  100% {
+    left: -100%;
+  }
+}
+
 .answer-btn {
   position: relative;
   overflow: hidden;
@@ -283,20 +293,31 @@ body {
   z-index: 10;
 }
 
-.answer-btn:not(:disabled):hover::before {
-  animation: shine-sweep 0.5s ease-out forwards;
+/* Hover - shine left to right (button rising into light) */
+@media (hover: hover) and (pointer: fine) {
+  .answer-btn:not(:disabled):hover::before {
+    animation: shine-sweep 0.5s ease-out forwards;
+  }
+}
+
+/* Active/Press - shine right to left (button falling through light) */
+.answer-btn:not(:disabled):active::before {
+  animation: shine-sweep-reverse 0.2s ease-out forwards;
 }
 
 /* Hover effect - slight lift */
-.answer-btn:not(:disabled):hover {
-  transform: scale(1.02) translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+@media (hover: hover) and (pointer: fine) {
+  .answer-btn:not(:disabled):hover {
+    transform: scale(1.02) translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
 }
 
 /* Button press effect - "pushed in" */
 .answer-btn:not(:disabled):active {
   transform: scale(0.97) translateY(2px);
   box-shadow: inset 0 3px 8px rgba(0, 0, 0, 0.4);
+  transition: transform 0.05s ease-out, box-shadow 0.05s ease-out;
 }
 
 /* ============================================
