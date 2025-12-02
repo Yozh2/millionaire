@@ -139,9 +139,9 @@ export function GameScreen({
     useAskAudience();
   };
 
-  const handleTakeMoneyWithSound = (e: React.MouseEvent) => {
+  const handleTakeMoneyWithSound = () => {
     audio.playSoundEffect('money');
-    effects?.triggerCoins(getNormalizedCoords(e));
+    // Coins are now triggered from EndScreen at trophy icon position
     takeTheMoney();
   };
 

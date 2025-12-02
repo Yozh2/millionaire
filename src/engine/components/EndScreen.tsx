@@ -2,7 +2,7 @@
  * EndScreen - Game over screens (won, lost, took money)
  */
 
-import { useEffect } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 import { GameConfig, ThemeColors } from '../types';
 import { UseGameStateReturn } from '../hooks/useGameState';
 import { Panel, PanelHeader } from '../../components/ui';
@@ -55,30 +55,57 @@ export function EndScreen({
 }: EndScreenProps) {
   const { gameState: state, wonPrize, currentQuestion, questions } = gameState;
 
+  // Ref for the icon container to get its position for coin effects
+  const iconRef = useRef<HTMLDivElement>(null);
+
+  // Calculate icon center position as normalized coordinates (0-1) with random offset
+  const getIconOrigin = useCallback(() => {
+    // Small random offset (epsilon) to create variety in spawn positions
+    const epsilon = 0.005; // ~0.5% of screen size
+    const randomOffset = () => (Math.random() - 0.5) * 2 * epsilon;
+
+    if (iconRef.current) {
+      const rect = iconRef.current.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      return {
+        x: centerX / window.innerWidth + randomOffset(),
+        y: centerY / window.innerHeight + randomOffset(),
+      };
+    }
+    // Fallback if ref not available
+    return { x: 0.5 + randomOffset(), y: 0.3 + randomOffset() };
+  }, []);
+
   // Trigger celebration effects - continuous coin bursts from trophy icon position
   useEffect(() => {
-    if (state === 'won' || (state === 'took_money' && wonPrize > 0)) {
-      // Trophy icon is roughly at x: 0.5, y: 0.28 (center, upper part of content panel)
-      const origin = { x: 0.5, y: 0.28 };
+    if (state === 'won' || (state === 'took_money' && Number(wonPrize) > 0)) {
+      // Delay to ensure icon is rendered and positioned (0.5 sec for screen load)
+      const startDelay = setTimeout(() => {
+        // Initial burst from icon position
+        effects?.triggerCoins(getIconOrigin());
 
-      // Initial burst immediately
-      effects?.triggerCoins(origin);
+        // Continue with random interval bursts until component unmounts
+        const scheduleNextBurst = () => {
+          const delay = 500 + Math.random() * 3200; // 0.5-4 sec interval
+          return setTimeout(() => {
+            effects?.triggerCoins(getIconOrigin());
+            intervalRef = scheduleNextBurst();
+          }, delay);
+        };
 
-      // Continue with random interval bursts until component unmounts
-      const scheduleNextBurst = () => {
-        const delay = 500 + Math.random() * 1000; // 0.5-1.5 sec interval
-        return setTimeout(() => {
-          effects?.triggerCoins(origin);
-          intervalRef = scheduleNextBurst();
-        }, delay);
+        intervalRef = scheduleNextBurst();
+      }, 500);
+
+      let intervalRef: ReturnType<typeof setTimeout>;
+
+      return () => {
+        clearTimeout(startDelay);
+        clearTimeout(intervalRef);
       };
-
-      let intervalRef = scheduleNextBurst();
-
-      return () => clearTimeout(intervalRef);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state, wonPrize]); // effects intentionally omitted to prevent re-triggering
+  }, [state, wonPrize, getIconOrigin]); // effects intentionally omitted to prevent re-triggering
 
   // Get icons from config or use defaults
   const CoinIcon = config.icons?.coin || DefaultCoinIcon;
@@ -185,7 +212,7 @@ export function EndScreen({
       <Panel className="p-1 animate-slide-in stagger-2">
         <PanelHeader>{getHeader()}</PanelHeader>
         <div className="text-center py-12 px-4">
-          <div className="animate-pop-in stagger-3">
+          <div ref={iconRef} className="animate-pop-in stagger-3">
             {getIcon()}
           </div>
 

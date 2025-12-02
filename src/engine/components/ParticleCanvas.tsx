@@ -168,7 +168,7 @@ const createCoinParticle = (
   originY: number
 ): Particle => {
   const angle = -Math.PI / 2 + (Math.random() - 0.5) * Math.PI * 0.8; // Mostly upward
-  const speed = 8 + Math.random() * 10; // Faster initial speed
+  const speed = 8 + Math.random() * 12; // Faster initial speed
 
   return {
     x: originX * canvasWidth,
@@ -179,9 +179,9 @@ const createCoinParticle = (
     color: String(Math.floor(Math.random() * 3)),
     alpha: 1,
     rotation: Math.random() * Math.PI * 2,
-    rotationSpeed: (Math.random() - 0.5) * 0.1,
+    rotationSpeed: (Math.random() - 0.5) * 0.3,
     life: 0,
-    maxLife: 60 + Math.random() * 30, // Short life for fast animation
+    maxLife: 50 + Math.random() * 20, // Short life for fast animation
     type: 'coin',
   };
 };
