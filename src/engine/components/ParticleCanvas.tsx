@@ -168,13 +168,13 @@ const createCoinParticle = (
   originY: number
 ): Particle => {
   const angle = -Math.PI / 2 + (Math.random() - 0.5) * Math.PI * 0.8; // Mostly upward
-  const speed = 8 + Math.random() * 12; // Faster initial speed
+  const speed = 5.6 + Math.random() * 8.4; // 30% slower initial speed
 
   return {
     x: originX * canvasWidth,
     y: originY * canvasHeight,
     vx: Math.cos(angle) * speed,
-    vy: Math.sin(angle) * speed - 8, // Strong upward boost
+    vy: Math.sin(angle) * speed - 5.6, // 30% slower upward boost
     size: 18 + Math.random() * 10,
     color: String(Math.floor(Math.random() * 3)),
     alpha: 1,

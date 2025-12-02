@@ -235,6 +235,14 @@ export const bg3Config: GameConfig = {
 
   // Custom gold coin particles for win/take money effects
   drawCoinParticle: drawGoldCoin,
+
+  // Header slideshow - images loaded from manifest.json
+  headerSlideshow: {
+    enabled: true,
+    transitionDuration: 1500,
+    displayDuration: 4000,
+    opacity: 0.35,
+  },
 };
 
 export default bg3Config;

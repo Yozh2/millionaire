@@ -24,6 +24,7 @@ const PocGame = lazy(() => import('./pages/PocPage'));
 const BG3Game = lazy(() => import('./pages/BG3Page'));
 const TransformersGame = lazy(() => import('./pages/TransformersPage'));
 const EffectsSandbox = lazy(() => import('./pages/EffectsSandboxPage'));
+const SlideshowSandbox = lazy(() => import('./pages/SandboxPage'));
 
 /**
  * Loading spinner component
@@ -51,6 +52,7 @@ export default function App() {
         <Route path="/bg3" element={<BG3Game />} />
         <Route path="/transformers" element={<TransformersGame />} />
         <Route path="/sandbox" element={<EffectsSandbox />} />
+        <Route path="/slideshow" element={<SlideshowSandbox />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Suspense>

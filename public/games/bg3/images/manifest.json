@@ -1,0 +1,22 @@
+{
+  "campaigns": {
+    "darkUrge": {
+      "start": {
+        "images": [
+          "darkUrge.png"
+        ]
+      }
+    }
+  },
+  "end": {
+    "images": [
+      "EndingScreen.png"
+    ]
+  },
+  "start": {
+    "images": [
+      "BG3Wallpaper.png",
+      "BG3Wallpaper2.jpg"
+    ]
+  }
+}

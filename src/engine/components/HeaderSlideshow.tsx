@@ -78,37 +78,88 @@ async function loadManifest(basePath: string): Promise<ImageManifest | null> {
   }
 }
 
+/** Result from manifest extraction */
+interface ManifestResult {
+  images: string[];
+  subfolder: string;
+}
+
 /**
  * Extract images from manifest based on screen and difficulty.
+ * Returns both images and the subfolder they came from.
+ * Falls back to 'start' images if specific screen images are not found.
  */
 function getImagesFromManifest(
   manifest: ImageManifest | null,
   screen: SlideshowScreen,
   difficulty?: QuestionDifficulty
-): string[] {
-  if (!manifest) return [];
+): ManifestResult {
+  if (!manifest) return { images: [], subfolder: '' };
+
+  // Helper to get start images as fallback
+  const getStartFallback = (): ManifestResult => ({
+    images: manifest.start?.images || [],
+    subfolder: 'start',
+  });
 
   switch (screen) {
     case 'start':
-      return manifest.start?.images || [];
+      return {
+        images: manifest.start?.images || [],
+        subfolder: 'start',
+      };
 
-    case 'play':
-      if (difficulty && manifest.play?.[difficulty]?.images) {
-        return manifest.play[difficulty].images!;
+    case 'play': {
+      // Try difficulty-specific first
+      if (difficulty && manifest.play?.[difficulty]?.images?.length) {
+        return {
+          images: manifest.play[difficulty].images!,
+          subfolder: `play/${difficulty}`,
+        };
       }
-      return manifest.play?.images || [];
+      // Then general play
+      if (manifest.play?.images?.length) {
+        return {
+          images: manifest.play.images,
+          subfolder: 'play',
+        };
+      }
+      // Fallback to start
+      return getStartFallback();
+    }
 
     case 'won':
-      return manifest.end?.won?.images || [];
+      // Try specific won folder, then general end, then start
+      if (manifest.end?.won?.images?.length) {
+        return { images: manifest.end.won.images, subfolder: 'end/won' };
+      }
+      if (manifest.end?.images?.length) {
+        return { images: manifest.end.images, subfolder: 'end' };
+      }
+      return getStartFallback();
 
     case 'took':
-      return manifest.end?.took?.images || [];
+      // Try specific took folder, then general end, then start
+      if (manifest.end?.took?.images?.length) {
+        return { images: manifest.end.took.images, subfolder: 'end/took' };
+      }
+      if (manifest.end?.images?.length) {
+        return { images: manifest.end.images, subfolder: 'end' };
+      }
+      return getStartFallback();
 
     case 'lost':
-      return manifest.end?.lost?.images || [];
+      // Try specific lost folder, then general end, then start
+      if (manifest.end?.lost?.images?.length) {
+        return { images: manifest.end.lost.images, subfolder: 'end/lost' };
+      }
+      if (manifest.end?.images?.length) {
+        return { images: manifest.end.images, subfolder: 'end' };
+      }
+      return getStartFallback();
 
     default:
-      return [];
+      return { images: [], subfolder: '' };
   }
 }
 
@@ -133,11 +184,13 @@ export const HeaderSlideshow: React.FC<HeaderSlideshowProps> = ({
   // State for resolved images
   const [images, setImages] = useState<string[]>([]);
   const [basePath, setBasePath] = useState<string>('');
+  const [subfolder, setSubfolder] = useState<string>('');
   const [isLoading, setIsLoading] = useState(true);
 
   // Build fallback paths based on screen type
   const fallbackPaths = useMemo(() => {
     const paths: Array<{ path: string; campaignPath?: string }> = [];
+    const base = import.meta.env.BASE_URL;
 
     // For end screens (won, took, lost), we have 3-level fallback
     const isEndScreen = ['won', 'took', 'lost'].includes(screen);
@@ -145,18 +198,18 @@ export const HeaderSlideshow: React.FC<HeaderSlideshowProps> = ({
     if (campaignId) {
       // 1. Game + Campaign specific
       paths.push({
-        path: `/games/${gameId}/images`,
+        path: `${base}games/${gameId}/images`,
         campaignPath: `campaigns/${campaignId}`,
       });
     }
 
     if (isEndScreen) {
       // 2. Game fallback (for end screens)
-      paths.push({ path: `/games/${gameId}/images` });
+      paths.push({ path: `${base}games/${gameId}/images` });
     }
 
     // 3. Engine fallback
-    paths.push({ path: '/images' });
+    paths.push({ path: `${base}images` });
 
     return paths;
   }, [gameId, campaignId, screen]);
@@ -164,6 +217,7 @@ export const HeaderSlideshow: React.FC<HeaderSlideshowProps> = ({
   // Load images with fallback
   useEffect(() => {
     if (!enabled) {
+      console.log('[Slideshow] Disabled, skipping load');
       setIsLoading(false);
       return;
     }
@@ -171,23 +225,30 @@ export const HeaderSlideshow: React.FC<HeaderSlideshowProps> = ({
     let cancelled = false;
 
     async function resolveImages() {
+      console.log('[Slideshow] resolveImages starting, fallbackPaths:', fallbackPaths);
       for (const { path, campaignPath } of fallbackPaths) {
         if (cancelled) return;
 
         const manifest = await loadManifest(path);
+        console.log('[Slideshow] Loaded manifest from', path, ':', manifest);
         if (!manifest) continue;
 
         // Try campaign-specific first
         let resolvedImages: string[] = [];
+        let resolvedSubfolder = '';
         let resolvedBasePath = path;
 
         if (campaignPath && manifest.campaigns) {
           const campaignManifest = manifest.campaigns[campaignId!];
-          resolvedImages = getImagesFromManifest(
+          console.log('[Slideshow] Trying campaign manifest for', campaignId, ':', campaignManifest);
+          const result = getImagesFromManifest(
             campaignManifest,
             screen,
             difficulty
           );
+          resolvedImages = result.images;
+          resolvedSubfolder = result.subfolder;
+          console.log('[Slideshow] Campaign result:', result);
           if (resolvedImages.length > 0) {
             resolvedBasePath = `${path}/${campaignPath}`;
           }
@@ -195,13 +256,18 @@ export const HeaderSlideshow: React.FC<HeaderSlideshowProps> = ({
 
         // Fall back to root level of this manifest
         if (resolvedImages.length === 0) {
-          resolvedImages = getImagesFromManifest(manifest, screen, difficulty);
+          const result = getImagesFromManifest(manifest, screen, difficulty);
+          console.log('[Slideshow] Root level result for screen', screen, ':', result);
+          resolvedImages = result.images;
+          resolvedSubfolder = result.subfolder;
         }
 
         if (resolvedImages.length > 0) {
+          console.log('[Slideshow] Found images!', { resolvedImages, resolvedBasePath, resolvedSubfolder });
           if (!cancelled) {
             setImages(resolvedImages);
             setBasePath(resolvedBasePath);
+            setSubfolder(resolvedSubfolder);
             setIsLoading(false);
           }
           return;
@@ -209,6 +275,7 @@ export const HeaderSlideshow: React.FC<HeaderSlideshowProps> = ({
       }
 
       // No images found
+      console.log('[Slideshow] No images found in any fallback');
       if (!cancelled) {
         setImages([]);
         setIsLoading(false);
@@ -274,23 +341,18 @@ export const HeaderSlideshow: React.FC<HeaderSlideshowProps> = ({
   // Don't render if loading, disabled, or no images
   if (isLoading || !enabled || images.length === 0) return null;
 
-  // Build full image paths
+  // Build full image paths using resolved subfolder
   const getFullPath = (filename: string) => {
-    // Determine subfolder based on screen
-    let subfolder = '';
-    if (screen === 'start') {
-      subfolder = 'start';
-    } else if (screen === 'play') {
-      subfolder = difficulty ? `play/${difficulty}` : 'play';
-    } else {
-      subfolder = `end/${screen}`;
-    }
-    return `${basePath}/${subfolder}/${filename}`;
+    const path = `${basePath}/${subfolder}/${filename}`;
+    console.log('[Slideshow] getFullPath:', { basePath, subfolder, filename, path });
+    return path;
   };
 
   const currentImagePath = getFullPath(images[currentIndex]);
   const nextImagePath =
     nextIndex !== null ? getFullPath(images[nextIndex]) : null;
+
+  console.log('[Slideshow] Rendering:', { currentImagePath, nextImagePath, images });
 
   return (
     <div
