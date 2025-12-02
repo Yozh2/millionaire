@@ -239,7 +239,7 @@ export const bg3Config: GameConfig = {
   // Page metadata for browser favicon and iOS home screen icon
   meta: {
     favicon: '/games/bg3/favicon.svg',
-    appleTouchIcon: '/games/bg3/apple-touch-icon.svg',
+    appleTouchIcon: '/games/bg3/apple-touch-icon.png',
     themeColor: '#d97706', // Amber/gold theme
   },
 };

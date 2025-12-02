@@ -185,7 +185,7 @@ export const transformersConfig: GameConfig = {
   // Page metadata for browser favicon and iOS home screen icon
   meta: {
     favicon: '/games/transformers/favicon.svg',
-    appleTouchIcon: '/games/transformers/apple-touch-icon.svg',
+    appleTouchIcon: '/games/transformers/apple-touch-icon.png',
     themeColor: '#9333ea', // Purple/energon theme
   },
 };
