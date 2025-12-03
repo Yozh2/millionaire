@@ -1,17 +1,23 @@
 /**
  * Transformers Game Configuration
  *
- * Quiz game based on IDW Transformers comics:
+ * Quiz game based on The Transformers comics:
  * - Megatron: Origin (Мегатрон — Восхождение)
  * - Autocracy (Автократия)
+ * - Skybound (Земля)
  */
 
 import { GameConfig, Campaign, DrawCoinFunction } from '../../engine/types';
-import { decepticonTheme, autobotTheme } from './themes';
-import { megatronQuestionPool, autocracyQuestionPool } from './questions';
+import { decepticonTheme, autobotTheme, skyboundTheme } from './themes';
+import {
+  megatronQuestionPool,
+  autocracyQuestionPool,
+  skyboundQuestionPool,
+} from './questions';
 import {
   DecepticonIcon,
   AutobotIcon,
+  SkyboundIcon,
   MatrixIcon,
   DestroyedIcon,
   EnergonIcon,
@@ -66,6 +72,16 @@ const autocracyCampaign: Campaign = {
   selectSound: 'AutobotSelect.ogg',
 };
 
+const skyboundCampaign: Campaign = {
+  id: 'skybound',
+  name: 'SKYBOUND',
+  label: 'Земля',
+  icon: SkyboundIcon,
+  theme: skyboundTheme,
+  musicTrack: 'Skybound.ogg',
+  selectSound: 'SkyboundSelect.ogg',
+};
+
 // ============================================
 // Main Config
 // ============================================
@@ -73,35 +89,36 @@ const autocracyCampaign: Campaign = {
 export const transformersConfig: GameConfig = {
   id: 'transformers',
 
-  title: 'ТРАНСФОРМЕРЫ',
-  subtitle: 'IDW COMICS EDITION',
+  title: 'КТО ХОЧЕТ СТАТЬ МИЛЛИОНЕРОМ',
+  subtitle: 'THE TRANSFORMERS EDITION',
 
-  campaigns: [megatronCampaign, autocracyCampaign],
+  campaigns: [megatronCampaign, autocracyCampaign, skyboundCampaign],
 
   questionPools: {
     megatron: megatronQuestionPool,
     autocracy: autocracyQuestionPool,
+    skybound: skyboundQuestionPool,
   },
 
   companions: [
-    { id: 'soundwave', name: 'Саундвейв (связист)' },
-    { id: 'starscream', name: 'Старскрим (лётчик)' },
-    { id: 'shockwave', name: 'Шоквейв (учёный)' },
-    { id: 'ratchet', name: 'Рэтчет (медик)' },
-    { id: 'jazz', name: 'Джаз (разведчик)' },
+    { id: 'soundwave', name: 'Саундвейв' },
+    { id: 'starscream', name: 'Старскрим' },
+    { id: 'shockwave', name: 'Шоквейв' },
+    { id: 'ratchet', name: 'Рэтчет' },
+    { id: 'jazz', name: 'Джаз' },
   ],
 
   strings: {
     headerTitle: '⚡ ТРАНСФОРМЕРЫ ⚡',
 
     introText:
-      'Проверь свои знания о вселенной Трансформеров! Ответь на вопросы по комиксам IDW.',
-    selectPath: 'ВЫБЕРИ ФРАКЦИЮ',
-    startButton: '▶ НАЧАТЬ ИГРУ',
+      'Проверь свои знания о вселенной Трансформеров! Ответь на вопросы и заполучи весь энергон!',
+    selectPath: 'ВЫБЕРИ КОМИКС',
+    startButton: 'ПОКАТИЛИ',
 
     questionHeader: 'ВОПРОС #{n}',
-    difficultyLabel: 'СЛОЖНОСТЬ:',
-    progressLabel: 'Прогресс:',
+    difficultyLabel: 'СЛОЖНОСТЬ',
+    progressLabel: 'Прогресс',
 
     lifelinesHeader: 'ПОДСКАЗКИ',
     prizesHeader: 'ЭНЕРГОН',
@@ -124,16 +141,16 @@ export const transformersConfig: GameConfig = {
       ],
     },
 
-    wonTitle: '⚡ ПОБЕДА!',
+    wonTitle: '⚡ ПОБЕДА! ⚡',
     wonText: 'Ты достоин нести Матрицу Лидерства!',
     wonHeader: 'ТРИУМФ',
 
-    lostTitle: '💥 ПОРАЖЕНИЕ',
+    lostTitle: '💥 ПОРАЖЕНИЕ! 💥',
     lostText: 'Твоя искра погасла...',
     lostHeader: 'УНИЧТОЖЕН',
     correctAnswerLabel: 'Правильный ответ:',
 
-    tookMoneyTitle: '🔮 ЭНЕРГОН СОБРАН',
+    tookMoneyTitle: '🔮 ЭНЕРГОН СОБРАН 🔮',
     tookMoneyText: 'Мудрое решение — сохранить ресурсы!',
     tookMoneyHeader: 'ОТСТУПЛЕНИЕ',
 

@@ -7,11 +7,16 @@
  */
 
 export { transformersConfig, transformersConfig as default } from './config';
-export { megatronQuestionPool, autocracyQuestionPool } from './questions';
-export { decepticonTheme, autobotTheme } from './themes';
+export {
+  megatronQuestionPool,
+  autocracyQuestionPool,
+  skyboundQuestionPool,
+} from './questions';
+export { decepticonTheme, autobotTheme, skyboundTheme } from './themes';
 export {
   DecepticonIcon,
   AutobotIcon,
+  SkyboundIcon,
   MatrixIcon,
   DestroyedIcon,
   EnergonIcon,

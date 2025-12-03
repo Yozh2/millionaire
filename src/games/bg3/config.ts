@@ -116,7 +116,7 @@ export const bg3Config: GameConfig = {
       'Искатель приключений! Перед тобой испытание на знание Забытых Королевств. ' +
       '15 вопросов, 3 магические подсказки, 3,000,000 золотых на кону.',
     selectPath: '✦ ВЫБЕРИ ПУТЬ ✦',
-    startButton: '⚔ НАЧАТЬ ПРИКЛЮЧЕНИЕ ⚔',
+    startButton: 'В ПРИКЛЮЧЕНИЕ',
 
     // Game screen - Question panel
     questionHeader: '✦ ВОПРОС #{n} ✦',

@@ -59,7 +59,7 @@ export const pocConfig: GameConfig = {
     introText:
       'Проверь свои знания! Ответь на вопросы, чтобы выиграть главный приз.',
     selectPath: 'ВЫБЕРИТЕ СЛОЖНОСТЬ',
-    startButton: '▶ НАЧАТЬ ИГРУ',
+    startButton: 'НАЧАТЬ ИГРУ',
 
     questionHeader: 'ВОПРОС #{n}',
     difficultyLabel: 'СЛОЖНОСТЬ:',

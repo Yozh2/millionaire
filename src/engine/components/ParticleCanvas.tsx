@@ -168,13 +168,13 @@ const createCoinParticle = (
   originY: number
 ): Particle => {
   const angle = -Math.PI / 2 + (Math.random() - 0.5) * Math.PI * 0.8; // Mostly upward
-  const speed = 5.6 + Math.random() * 8.4; // 30% slower initial speed
+  const speed = 6 + Math.random() * 8; // Moderate initial speed
 
   return {
     x: originX * canvasWidth,
     y: originY * canvasHeight,
     vx: Math.cos(angle) * speed,
-    vy: Math.sin(angle) * speed - 5.6, // 30% slower upward boost
+    vy: Math.sin(angle) * speed - 8, // Stronger upward boost
     size: 18 + Math.random() * 10,
     color: String(Math.floor(Math.random() * 3)),
     alpha: 1,
@@ -329,8 +329,8 @@ export const ParticleCanvas: React.FC<ParticleCanvasProps> = ({
           break;
 
         case 'coins':
-          // Spawn coin burst (3-5 coins per burst for performance)
-          const coinCount = 3 + Math.floor(Math.random() * 3); // 3-5 coins
+          // Spawn coin burst (5-10 coins per burst)
+          const coinCount = 5 + Math.floor(Math.random() * 6); // 5-10 coins
           for (let i = 0; i < coinCount; i++) {
             particlesRef.current.push(
               createCoinParticle(width, height, origin.x, origin.y)
@@ -422,7 +422,8 @@ export const ParticleCanvas: React.FC<ParticleCanvasProps> = ({
       // Physics
       particle.x += particle.vx;
       particle.y += particle.vy;
-      particle.vy += 0.6; // Strong gravity for fast falling
+      // Reduced gravity for coins, normal for other particles
+      particle.vy += particle.type === 'coin' ? 0.25 : 0.6;
       particle.vx *= 0.99; // Air resistance
       particle.rotation += particle.rotationSpeed;
 

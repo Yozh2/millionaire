@@ -29,6 +29,28 @@ export const DecepticonIcon = () => (
 );
 
 /**
+ * Skybound icon - Combined faction symbol (modern era)
+ */
+export const SkyboundIcon = () => (
+  <div className="w-16 h-16 mx-auto flex items-center justify-center">
+    <svg viewBox="0 0 100 100" className="w-14 h-14">
+      {/* Autobot base */}
+      <path
+        d="M50 10 L65 25 L90 25 L75 45 L85 70 L50 50 L15 70 L25 45 L10 25 L35 25 Z"
+        className="fill-orange-500"
+      />
+      {/* Decepticon overlay */}
+      <path
+        d="M50 30 L60 40 L50 55 L40 40 Z"
+        className="fill-teal-400"
+      />
+      {/* Earth glow */}
+      <circle cx="50" cy="42" r="5" className="fill-white opacity-80" />
+    </svg>
+  </div>
+);
+
+/**
  * Victory icon - Matrix of Leadership
  */
 export const MatrixIcon = () => (

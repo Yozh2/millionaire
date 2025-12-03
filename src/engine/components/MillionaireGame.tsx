@@ -60,21 +60,34 @@ export function MillionaireGame({ config }: MillionaireGameProps) {
     gameState.selectCampaign(campaign);
   }, [audio, gameState]);
 
-  // Wrapper for startGame with sound and music switch
+  // Sound on button press (mousedown/touchstart) - synced with button landing animation
+  const handleButtonPress = useCallback(() => {
+    // Delay sound to sync with button landing animation (dust-puff at ~50ms)
+    setTimeout(() => {
+      audio.playSoundEffect('start');
+    }, 50);
+  }, [audio]);
+
+  // Wrapper for startGame with music switch
   const handleStartGame = useCallback(() => {
     if (!gameState.selectedCampaign) return;
 
-    audio.playSoundEffect('start');
     audio.playCampaignMusic(gameState.selectedCampaign);
     gameState.startGame();
   }, [audio, gameState]);
 
-  // Wrapper for newGame with sound and music switch
+  // Wrapper for newGame with music switch
   const handleNewGame = useCallback(() => {
-    audio.playSoundEffect('restart');
     audio.playMainMenu();
     gameState.newGame();
   }, [audio, gameState]);
+
+  // Sound on restart button press (mousedown/touchstart)
+  const handleRestartPress = useCallback(() => {
+    setTimeout(() => {
+      audio.playSoundEffect('restart');
+    }, 50);
+  }, [audio]);
 
   return (
     <ThemeProvider theme={theme}>
@@ -111,6 +124,7 @@ export function MillionaireGame({ config }: MillionaireGameProps) {
               selectedCampaign={gameState.selectedCampaign}
               onSelectCampaign={handleSelectCampaign}
               onStartGame={handleStartGame}
+              onButtonPress={handleButtonPress}
               isMusicPlaying={audio.isMusicPlaying}
               onToggleMusic={audio.toggleMusic}
               theme={theme}
@@ -136,6 +150,7 @@ export function MillionaireGame({ config }: MillionaireGameProps) {
               config={config}
               gameState={gameState}
               onNewGame={handleNewGame}
+              onButtonPress={handleRestartPress}
               isMusicPlaying={audio.isMusicPlaying}
               onToggleMusic={audio.toggleMusic}
               theme={theme}
