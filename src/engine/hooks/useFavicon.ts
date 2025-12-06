@@ -49,7 +49,7 @@ async function imageExists(url: string): Promise<boolean> {
   try {
     const response = await fetch(url, { method: 'HEAD' });
     if (!response.ok) return false;
-    
+
     // Check Content-Type to avoid SPA fallback (Vite returns HTML for missing files)
     const contentType = response.headers.get('Content-Type') || '';
     return contentType.startsWith('image/');

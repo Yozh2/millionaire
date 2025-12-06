@@ -1,0 +1,19 @@
+<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+  <!-- Small coin icon for inline use - fantasy gold with G -->
+  <!-- Coin base -->
+  <circle cx="12" cy="12" r="10" fill="#fbbf24" stroke="#b45309" stroke-width="1.5" />
+  <circle cx="12" cy="12" r="7" fill="#f59e0b" />
+  <!-- Stylized G -->
+  <text
+    x="12" y="16"
+    text-anchor="middle"
+    fill="#78350f"
+    font-size="11"
+    font-weight="bold"
+    font-family="Georgia, serif"
+  >
+    G
+  </text>
+  <!-- Shine -->
+  <ellipse cx="15" cy="8" rx="2" ry="1" fill="#fde68a" opacity="0.6" />
+</svg>

@@ -113,6 +113,10 @@ export function GameScreen({
     const result = await handleAnswer(displayIndex);
     if (result === 'correct') {
       audio.playSoundEffect('correct');
+    } else if (result === 'won') {
+      // Player won! Play victory sound and music
+      audio.playSoundEffect('victory');
+      audio.playVictory();
     } else if (result === 'wrong') {
       audio.playSoundEffect('defeat');
       audio.playGameOver();
@@ -150,6 +154,7 @@ export function GameScreen({
 
   const handleTakeMoneyWithSound = () => {
     audio.playSoundEffect('money');
+    audio.playTakeMoney();
     // Coins are now triggered from EndScreen at trophy icon position
     takeTheMoney();
   };

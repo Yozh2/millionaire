@@ -50,9 +50,9 @@ export const pocConfig: GameConfig = {
   },
 
   companions: [
-    { id: 'alexey', name: 'Алексей (эрудит)' },
-    { id: 'maria', name: 'Мария (учитель)' },
-    { id: 'sergey', name: 'Сергей (программист)' },
+    { id: 'alexey', name: 'Алексей' },
+    { id: 'maria', name: 'Мария' },
+    { id: 'sergey', name: 'Сергей' },
   ],
 
   strings: {
@@ -119,12 +119,8 @@ export const pocConfig: GameConfig = {
     musicVolume: 0.2,
     soundVolume: 1.0,
     voiceVolume: 1.0,
-    sounds: {
-      click: 'Click.mp3',
-      correct: 'Correct.mp3',
-      money: 'Money.mp3',
-      defeat: 'Defeat.mp3',
-    },
+    // No music/sound files - uses oscillator fallbacks only
+    sounds: {},
   },
 
   endIcons: {

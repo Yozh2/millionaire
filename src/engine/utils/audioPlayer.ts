@@ -135,15 +135,29 @@ const OSCILLATOR_SOUNDS: Record<string, OscillatorSoundConfig> = {
     delayBetween: 0.06,
   },
 
-  // Money - victory / take money coin sounds
+  // Money - take money coin sounds (pragmatic, coins clinking)
   money: {
     tones: [
-      { frequency: 523, duration: 0.15, type: 'triangle', volume: 0.3 },
-      { frequency: 659, duration: 0.15, type: 'triangle', volume: 0.3 },
-      { frequency: 784, duration: 0.15, type: 'triangle', volume: 0.3 },
-      { frequency: 1047, duration: 0.4, type: 'triangle', volume: 0.35 },
+      { frequency: 523, duration: 0.12, type: 'triangle', volume: 0.25 },
+      { frequency: 659, duration: 0.12, type: 'triangle', volume: 0.25 },
+      { frequency: 784, duration: 0.12, type: 'triangle', volume: 0.25 },
+      { frequency: 1047, duration: 0.3, type: 'triangle', volume: 0.3 },
     ],
-    delayBetween: 0.12,
+    delayBetween: 0.1,
+  },
+
+  // Victory - epic fanfare for winning the game
+  victory: {
+    tones: [
+      // Triumphant brass-like fanfare (C major chord arpeggio)
+      { frequency: 523, duration: 0.2, type: 'sawtooth', volume: 0.25 },
+      { frequency: 659, duration: 0.2, type: 'sawtooth', volume: 0.28 },
+      { frequency: 784, duration: 0.2, type: 'sawtooth', volume: 0.3 },
+      { frequency: 1047, duration: 0.25, type: 'sawtooth', volume: 0.32 },
+      // Final triumphant chord (sustained)
+      { frequency: 1047, duration: 0.5, type: 'triangle', volume: 0.35 },
+    ],
+    delayBetween: 0.15,
   },
 
   // Restart - new game refresh sound
@@ -323,6 +337,7 @@ const SOUND_TYPE_MAP: Record<string, string> = {
   Call: 'call',
   Vote: 'vote',
   Money: 'money',
+  Victory: 'victory',
   Restart: 'restart',
   Fail: 'defeat',
   Correct: 'correct',

@@ -1,0 +1,26 @@
+<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <!-- Money/coin icon for took money screen - stack of fantasy gold coins -->
+  <!-- Bottom coins in stack -->
+  <ellipse cx="32" cy="40" rx="22" ry="10" fill="#b45309" />
+  <ellipse cx="32" cy="38" rx="22" ry="10" fill="#d97706" />
+  <ellipse cx="32" cy="34" rx="22" ry="10" fill="#b45309" />
+  <ellipse cx="32" cy="32" rx="22" ry="10" fill="#fbbf24" />
+  <!-- Top coin -->
+  <ellipse cx="32" cy="28" rx="22" ry="10" fill="#b45309" />
+  <ellipse cx="32" cy="26" rx="22" ry="10" fill="#fbbf24" />
+  <ellipse cx="32" cy="26" rx="17" ry="7" fill="#f59e0b" />
+  <!-- Stylized G letter -->
+  <text
+    x="32" y="30"
+    text-anchor="middle"
+    fill="#78350f"
+    font-size="14"
+    font-weight="bold"
+    font-family="Georgia, serif"
+    font-style="italic"
+  >
+    G
+  </text>
+  <!-- Coin shine -->
+  <ellipse cx="40" cy="22" rx="5" ry="2" fill="#fde68a" opacity="0.5" />
+</svg>

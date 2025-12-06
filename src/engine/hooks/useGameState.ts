@@ -96,7 +96,7 @@ export interface GameStateActions {
   /** Handle answer click */
   handleAnswer: (
     displayIndex: number
-  ) => Promise<'correct' | 'wrong' | 'ignored'>;
+  ) => Promise<'correct' | 'wrong' | 'won' | 'ignored'>;
 
   /** Take current winnings and leave */
   takeTheMoney: () => void;
@@ -260,7 +260,9 @@ export const useGameState = (config: GameConfig): UseGameStateReturn => {
   }, [resetState]);
 
   const handleAnswer = useCallback(
-    async (displayIndex: number): Promise<'correct' | 'wrong' | 'ignored'> => {
+    async (
+      displayIndex: number
+    ): Promise<'correct' | 'wrong' | 'won' | 'ignored'> => {
       // Ignore if already answered or eliminated
       if (selectedAnswer !== null || eliminatedAnswers.includes(displayIndex)) {
         return 'ignored';
@@ -281,14 +283,15 @@ export const useGameState = (config: GameConfig): UseGameStateReturn => {
               // Won the game!
               setWonPrize(prizeLadder.values[currentQuestion]);
               setGameState('won');
+              resolve('won');  // Player won - for victory music
             } else {
               // Move to next question
               setCurrentQuestion((prev) => prev + 1);
               setSelectedAnswer(null);
               setEliminatedAnswers([]);
               shuffleCurrentAnswers();
+              resolve('correct');  // Just correct, continue playing
             }
-            resolve('correct');
           } else {
             // Wrong answer - get guaranteed prize
             const guaranteedPrize = getGuaranteedPrize(

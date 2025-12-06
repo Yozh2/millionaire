@@ -13,7 +13,7 @@ const ICONS_PATH = `${import.meta.env.BASE_URL}games/transformers/icons`;
 export const AutobotIcon = () => (
   <div className="w-16 h-16 mx-auto flex items-center justify-center">
     <img
-      src={`${ICONS_PATH}/autobot.svg`}
+      src={`${ICONS_PATH}/autobot.webp`}
       alt="Autobot"
       className="w-14 h-14"
     />
@@ -26,7 +26,7 @@ export const AutobotIcon = () => (
 export const DecepticonIcon = () => (
   <div className="w-16 h-16 mx-auto flex items-center justify-center">
     <img
-      src={`${ICONS_PATH}/decepticon.svg`}
+      src={`${ICONS_PATH}/decepticon.webp`}
       alt="Decepticon"
       className="w-14 h-14"
     />

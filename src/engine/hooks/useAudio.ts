@@ -45,8 +45,30 @@ export interface UseAudioReturn {
   /** Play main menu music */
   playMainMenu: () => void;
 
-  /** Play game over music */
+  /**
+   * Play game over music (player lost).
+   * Fallback: GameOver.ogg > oscillator
+   */
   playGameOver: () => void;
+
+  /**
+   * Play victory music (player won all questions).
+   * Fallback: Victory.ogg > GameOver.ogg > oscillator
+   */
+  playVictory: () => void;
+
+  /**
+   * Play take money music (player took money early).
+   * Fallback: TakeMoney.ogg > Victory.ogg > GameOver.ogg > oscillator
+   */
+  playTakeMoney: () => void;
+
+  /**
+   * Play end game music based on game state.
+   * Automatically selects the correct track with fallbacks.
+   * @param state - 'won' | 'lost' | 'took_money'
+   */
+  playEndMusic: (state: 'won' | 'lost' | 'took_money') => void;
 
   /** Play campaign-specific music */
   playCampaignMusic: (campaign: Campaign) => void;
@@ -251,11 +273,145 @@ export const useAudio = (
     switchMusicTrack(config.audio.mainMenuTrack, shouldAutoPlay);
   }, [config.audio.mainMenuTrack, switchMusicTrack]);
 
-  const playGameOver = useCallback(() => {
-    // Auto-play if music was ever enabled by user
-    const shouldAutoPlay = musicEverEnabled.current && !userDisabledMusic.current;
-    switchMusicTrack(config.audio.gameOverTrack, shouldAutoPlay);
-  }, [config.audio.gameOverTrack, switchMusicTrack]);
+  /**
+   * Try to play a track with fallback chain.
+   * Returns true if a track was found and playback was initiated.
+   */
+  const tryPlayTrackWithFallback = useCallback(
+    async (trackFiles: (string | undefined)[]): Promise<boolean> => {
+      for (const trackFile of trackFiles) {
+        if (!trackFile) continue;
+
+        const trackPath = await loadTrack(trackFile);
+        if (trackPath) {
+          const audio = getAudioElement();
+          if (!audio) return false;
+
+          // Check if it's actually a different track
+          const currentFileName = audio.src.split('/').pop();
+          const newFileName = trackPath.split('/').pop();
+
+          if (currentFileName === newFileName && !audio.paused) {
+            return true; // Same track, already playing
+          }
+
+          audio.src = trackPath;
+          audio.volume = config.audio.musicVolume;
+          setCurrentTrack(trackPath);
+
+          const shouldPlay =
+            musicEverEnabled.current && !userDisabledMusic.current;
+
+          if (shouldPlay) {
+            const handleCanPlay = () => {
+              audio
+                .play()
+                .then(() => setIsMusicPlaying(true))
+                .catch((err) => console.log('Track play failed:', err));
+              audio.removeEventListener('canplay', handleCanPlay);
+            };
+            audio.addEventListener('canplay', handleCanPlay);
+            audio.load();
+          } else {
+            audio.load();
+          }
+          return true;
+        }
+      }
+      return false;
+    },
+    [config.audio.musicVolume, getAudioElement, loadTrack]
+  );
+
+  /**
+   * Play game over music (player lost).
+   * Fallback: GameOver.ogg > oscillator (via switchMusicTrack with undefined)
+   */
+  const playGameOver = useCallback(async () => {
+    const found = await tryPlayTrackWithFallback([config.audio.gameOverTrack]);
+    if (!found) {
+      // No track found - stop music, oscillators will handle sounds
+      const audio = getAudioElement();
+      if (audio) {
+        audio.pause();
+        audio.src = '';
+        setCurrentTrack('');
+      }
+    }
+  }, [config.audio.gameOverTrack, tryPlayTrackWithFallback, getAudioElement]);
+
+  /**
+   * Play victory music (player won all questions).
+   * Fallback: Victory.ogg > GameOver.ogg > oscillator
+   */
+  const playVictory = useCallback(async () => {
+    const found = await tryPlayTrackWithFallback([
+      config.audio.victoryTrack,
+      config.audio.gameOverTrack,
+    ]);
+    if (!found) {
+      // No track found - stop music, oscillators will handle sounds
+      const audio = getAudioElement();
+      if (audio) {
+        audio.pause();
+        audio.src = '';
+        setCurrentTrack('');
+      }
+    }
+  }, [
+    config.audio.victoryTrack,
+    config.audio.gameOverTrack,
+    tryPlayTrackWithFallback,
+    getAudioElement,
+  ]);
+
+  /**
+   * Play take money music (player took money early).
+   * Fallback: TakeMoney.ogg > Victory.ogg > GameOver.ogg > oscillator
+   */
+  const playTakeMoney = useCallback(async () => {
+    const found = await tryPlayTrackWithFallback([
+      config.audio.takeMoneyTrack,
+      config.audio.victoryTrack,
+      config.audio.gameOverTrack,
+    ]);
+    if (!found) {
+      // No track found - stop music, oscillators will handle sounds
+      const audio = getAudioElement();
+      if (audio) {
+        audio.pause();
+        audio.src = '';
+        setCurrentTrack('');
+      }
+    }
+  }, [
+    config.audio.takeMoneyTrack,
+    config.audio.victoryTrack,
+    config.audio.gameOverTrack,
+    tryPlayTrackWithFallback,
+    getAudioElement,
+  ]);
+
+  /**
+   * Play end game music based on game state.
+   * Automatically selects the correct track with fallbacks.
+   */
+  const playEndMusic = useCallback(
+    (state: 'won' | 'lost' | 'took_money') => {
+      switch (state) {
+        case 'won':
+          playVictory();
+          break;
+        case 'lost':
+          playGameOver();
+          break;
+        case 'took_money':
+          playTakeMoney();
+          break;
+      }
+    },
+    [playVictory, playGameOver, playTakeMoney]
+  );
 
   const playCampaignMusic = useCallback(
     (campaign: Campaign) => {
@@ -283,6 +439,9 @@ export const useAudio = (
     switchMusicTrack,
     playMainMenu,
     playGameOver,
+    playVictory,
+    playTakeMoney,
+    playEndMusic,
     playCampaignMusic,
     stopMusic,
   };

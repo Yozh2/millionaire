@@ -226,8 +226,10 @@ export interface SoundEffects {
   call?: string;
   /** Vote - ask the audience lifeline sound */
   vote?: string;
-  /** Money - victory or take money sound */
+  /** Money - take money sound (pragmatic coin sounds) */
   money?: string;
+  /** Victory - winning the game sound (epic fanfare) */
+  victory?: string;
   /** Restart - new game / return to menu sound */
   restart?: string;
   /** Defeat - wrong answer / game over sound */
@@ -250,8 +252,14 @@ export interface AudioConfig {
   /** Main menu music track filename (optional) */
   mainMenuTrack?: string;
 
-  /** Game over music track filename (optional) */
+  /** Game over music track filename (optional) - fallback for all end states */
   gameOverTrack?: string;
+
+  /** Victory music track filename (optional) - plays when player wins */
+  victoryTrack?: string;
+
+  /** Take money music track filename (optional) - plays when player takes money */
+  takeMoneyTrack?: string;
 
   /** Sound effects mapping */
   sounds: SoundEffects;
