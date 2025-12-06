@@ -24,7 +24,7 @@
     "dev": "npm run generate:manifests && vite",
     "build": "npm run generate:manifests && vite build",
     "preview": "vite preview",
-    "deploy": "npm run build && gh-pages -d dist --no-history",
+    "deploy": "npm run build && printf '# Override global gitignore\\n!*\\n!**/*\\n' > dist/.gitignore && gh-pages -d dist --no-history --dotfiles",
     "generate:manifests": "node scripts/generate-image-manifest.js"
   }
 }

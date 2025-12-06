@@ -19,3 +19,12 @@ Thumbs.db
 # Environment
 .env
 .env.local
+
+# Force include images in public/ (override global gitignore)
+!public/**/*.png
+!public/**/*.jpg
+!public/**/*.jpeg
+!public/**/*.gif
+!public/**/*.svg
+!public/**/*.ico
+!public/**/*.webp
