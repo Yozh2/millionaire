@@ -72,14 +72,11 @@ async function findFavicon(basePaths: string[]): Promise<string | null> {
   for (const basePath of basePaths) {
     for (const name of FAVICON_NAMES) {
       const url = `${basePath}/${name}`;
-      console.log('[useFavicon] Checking:', url);
       if (await imageExists(url)) {
-        console.log('[useFavicon] Found:', url);
         return url;
       }
     }
   }
-  console.log('[useFavicon] No favicon found in paths:', basePaths);
   return null;
 }
 
@@ -130,8 +127,6 @@ function updateLinkElement(
     link.setAttribute('sizes', sizes);
   }
   document.head.appendChild(link);
-
-  console.log(`[useFavicon] Set ${rel}:`, finalHref.substring(0, 80));
 }
 
 /**
