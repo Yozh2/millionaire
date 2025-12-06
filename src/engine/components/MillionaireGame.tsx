@@ -54,6 +54,10 @@ export function MillionaireGame({ config }: MillionaireGameProps) {
 
   // Wrapper for selectCampaign with sound
   const handleSelectCampaign = useCallback((campaign: Campaign) => {
+    // Enable sound on first campaign selection (user interaction)
+    if (!audio.isMusicPlaying) {
+      audio.toggleMusic();
+    }
     // Play campaign-specific select sound if defined, otherwise generic click
     if (campaign.selectSound) {
       audio.playSoundFile(campaign.selectSound);
@@ -116,7 +120,6 @@ export function MillionaireGame({ config }: MillionaireGameProps) {
           id="bg-music"
           loop
           preload="none"
-          src={audio.currentTrack}
         />
 
         <div className="max-w-4xl mx-auto">

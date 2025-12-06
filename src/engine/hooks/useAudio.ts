@@ -17,6 +17,30 @@ import {
 import { getAssetPaths, checkFileExists } from '../utils/assetLoader';
 
 // ============================================
+// LocalStorage helpers
+// ============================================
+
+const SOUND_ENABLED_KEY = 'millionaire_sound_enabled';
+
+const getSavedSoundPreference = (): boolean | null => {
+  try {
+    const saved = localStorage.getItem(SOUND_ENABLED_KEY);
+    if (saved === null) return null;
+    return saved === 'true';
+  } catch {
+    return null;
+  }
+};
+
+const saveSoundPreference = (enabled: boolean): void => {
+  try {
+    localStorage.setItem(SOUND_ENABLED_KEY, String(enabled));
+  } catch {
+    // Ignore storage errors
+  }
+};
+
+// ============================================
 // Types
 // ============================================
 
@@ -92,11 +116,26 @@ export const useAudio = (
   const musicEverEnabled = useRef(false);
   // Track if user manually disabled music
   const userDisabledMusic = useRef(false);
+  // Track if we've already tried to restore sound on first interaction
+  const hasTriedRestore = useRef(false);
 
   // Set game ID for asset resolution on mount
   useEffect(() => {
     setGameId(config.id);
   }, [config.id]);
+
+  // Restore sound preference from localStorage
+  useEffect(() => {
+    const savedPreference = getSavedSoundPreference();
+    if (savedPreference === true) {
+      // User previously enabled sound - mark as enabled but don't play yet
+      musicEverEnabled.current = true;
+      userDisabledMusic.current = false;
+      setEngineSoundEnabled(true);
+      // Show as "on" for UI - music will start on first interaction
+      setIsMusicPlaying(true);
+    }
+  }, []);
 
   // Load main menu track on mount
   useEffect(() => {
@@ -119,6 +158,44 @@ export const useAudio = (
   const getAudioElement = useCallback((): HTMLAudioElement | null => {
     return document.getElementById(audioElementId) as HTMLAudioElement | null;
   }, [audioElementId]);
+
+  // Try to play music on first user interaction if sound was previously enabled
+  useEffect(() => {
+    // Only setup listener if user previously had sound enabled
+    const savedPreference = getSavedSoundPreference();
+    if (savedPreference !== true) return;
+    // Wait for currentTrack to be loaded
+    if (!currentTrack) return;
+
+    const tryPlayMusic = () => {
+      if (hasTriedRestore.current) return;
+      hasTriedRestore.current = true;
+
+      const audio = document.getElementById(audioElementId) as HTMLAudioElement;
+      if (audio) {
+        audio.src = currentTrack;
+        audio.volume = config.audio.musicVolume;
+        audio.play().catch((err) => {
+          console.log('Auto-play failed on interaction:', err);
+        });
+      }
+
+      // Remove listeners after first interaction
+      document.removeEventListener('click', tryPlayMusic);
+      document.removeEventListener('keydown', tryPlayMusic);
+      document.removeEventListener('touchstart', tryPlayMusic);
+    };
+
+    document.addEventListener('click', tryPlayMusic);
+    document.addEventListener('keydown', tryPlayMusic);
+    document.addEventListener('touchstart', tryPlayMusic);
+
+    return () => {
+      document.removeEventListener('click', tryPlayMusic);
+      document.removeEventListener('keydown', tryPlayMusic);
+      document.removeEventListener('touchstart', tryPlayMusic);
+    };
+  }, [audioElementId, currentTrack, config.audio.musicVolume]);
 
   // Resolve and load a music track
   const loadTrack = useCallback(
@@ -145,8 +222,12 @@ export const useAudio = (
   // Switch to a new track
   const switchMusicTrack = useCallback(
     async (trackFile: string | undefined, autoPlay: boolean = false) => {
+      console.log('[Audio] switchMusicTrack called:', { trackFile, autoPlay, musicEverEnabled: musicEverEnabled.current, userDisabledMusic: userDisabledMusic.current });
       const audio = getAudioElement();
-      if (!audio) return;
+      if (!audio) {
+        console.log('[Audio] No audio element found');
+        return;
+      }
 
       const trackPath = await loadTrack(trackFile);
 
@@ -172,21 +253,48 @@ export const useAudio = (
       audio.volume = config.audio.musicVolume;
       setCurrentTrack(trackPath);
 
-      // Only play if user has explicitly enabled music before
-      // autoPlay just means "play if user already enabled sound"
-      const shouldPlay = musicEverEnabled.current && !userDisabledMusic.current;
+      // Play if:
+      // 1. User hasn't explicitly disabled sound, AND
+      // 2. Either autoPlay is true (user action) OR user previously enabled music
+      const shouldPlay = !userDisabledMusic.current && (autoPlay || musicEverEnabled.current);
+      console.log('[Audio] shouldPlay:', shouldPlay, { trackPath });
 
       if (shouldPlay) {
-        const handleCanPlay = () => {
+        // If autoPlay, mark music as enabled for future track switches
+        if (autoPlay) {
+          musicEverEnabled.current = true;
+          setEngineSoundEnabled(true);
+          saveSoundPreference(true);
+        }
+
+        const tryPlay = () => {
+          console.log('[Audio] tryPlay called, readyState:', audio.readyState);
           audio
             .play()
-            .then(() => setIsMusicPlaying(true))
-            .catch((err) => console.log('Track play failed:', err));
-          audio.removeEventListener('canplay', handleCanPlay);
+            .then(() => {
+              console.log('[Audio] play() succeeded');
+              setIsMusicPlaying(true);
+            })
+            .catch((err) => console.log('[Audio] Track play failed:', err));
         };
-        audio.addEventListener('canplay', handleCanPlay);
-        audio.load();
+
+        // If audio is already ready, play immediately
+        // readyState >= 3 means HAVE_FUTURE_DATA or HAVE_ENOUGH_DATA
+        if (audio.readyState >= 3) {
+          console.log('[Audio] Audio already ready, playing immediately');
+          tryPlay();
+        } else {
+          console.log('[Audio] Waiting for canplay event');
+          const handleCanPlay = () => {
+            console.log('[Audio] canplay event fired');
+            tryPlay();
+            audio.removeEventListener('canplay', handleCanPlay);
+          };
+          audio.addEventListener('canplay', handleCanPlay);
+          audio.load();
+        }
       } else {
+        console.log('[Audio] Not playing - shouldPlay is false');
         audio.load();
       }
     },
@@ -195,6 +303,7 @@ export const useAudio = (
 
   // Toggle music
   const toggleMusic = useCallback(() => {
+    console.log('[Audio] toggleMusic called, isMusicPlaying:', isMusicPlaying, 'currentTrack:', currentTrack);
     const audio = getAudioElement();
 
     if (isMusicPlaying) {
@@ -205,31 +314,33 @@ export const useAudio = (
       setIsMusicPlaying(false);
       userDisabledMusic.current = true;
       setEngineSoundEnabled(false);
+      saveSoundPreference(false);
     } else {
       // Turn on sounds first
       musicEverEnabled.current = true;
       userDisabledMusic.current = false;
       setEngineSoundEnabled(true);
+      saveSoundPreference(true);
 
       // Try to play music if there's a track
       if (audio && currentTrack) {
-        // Set src if not already set
-        if (!audio.src) {
-          audio.src = currentTrack;
-        }
-        // Set volume before playing
+        console.log('[Audio] toggleMusic: trying to play', currentTrack);
+        // Always set src to ensure it's correct
+        audio.src = currentTrack;
         audio.volume = config.audio.musicVolume;
         audio
           .play()
           .then(() => {
+            console.log('[Audio] toggleMusic play() succeeded');
             setIsMusicPlaying(true);
           })
           .catch((err) => {
             // Music failed but sounds are still enabled
-            console.log('Music play failed (sounds still enabled):', err);
+            console.log('[Audio] toggleMusic play failed:', err);
             setIsMusicPlaying(true); // Show as "on" for sound effects
           });
       } else {
+        console.log('[Audio] toggleMusic: no track, just enabling sounds');
         // No music track, but sounds are enabled
         setIsMusicPlaying(true); // Show as "on" for sound effects
       }
@@ -278,7 +389,7 @@ export const useAudio = (
    * Returns true if a track was found and playback was initiated.
    */
   const tryPlayTrackWithFallback = useCallback(
-    async (trackFiles: (string | undefined)[]): Promise<boolean> => {
+    async (trackFiles: (string | undefined)[], autoPlay: boolean = false): Promise<boolean> => {
       for (const trackFile of trackFiles) {
         if (!trackFile) continue;
 
@@ -299,10 +410,19 @@ export const useAudio = (
           audio.volume = config.audio.musicVolume;
           setCurrentTrack(trackPath);
 
+          // Play if:
+          // 1. User hasn't explicitly disabled sound, AND
+          // 2. Either autoPlay is true OR user previously enabled music
           const shouldPlay =
-            musicEverEnabled.current && !userDisabledMusic.current;
+            !userDisabledMusic.current && (autoPlay || musicEverEnabled.current);
 
           if (shouldPlay) {
+            // If autoPlay, mark music as enabled for future track switches
+            if (autoPlay) {
+              musicEverEnabled.current = true;
+              setEngineSoundEnabled(true);
+              saveSoundPreference(true);
+            }
             const handleCanPlay = () => {
               audio
                 .play()
