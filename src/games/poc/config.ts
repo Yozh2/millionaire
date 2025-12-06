@@ -40,6 +40,8 @@ export const pocConfig: GameConfig = {
   title: 'КТО ХОЧЕТ СТАТЬ МИЛЛИОНЕРОМ',
   subtitle: 'ТЕСТ ДВИЖКА',
 
+  emoji: '⚙️',
+
   campaigns: [easyCampaign, hardCampaign],
 
   questionPools: {

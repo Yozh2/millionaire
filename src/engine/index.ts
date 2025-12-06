@@ -86,3 +86,11 @@ export { drawDefaultCoin } from './components/ParticleCanvas';
 
 // Context
 export { ThemeProvider, useTheme, defaultTheme } from './context';
+
+// Hooks
+export {
+  useFavicon,
+  useGameIcon,
+  resolveGameIcon,
+  resolveSharedIcon,
+} from './hooks';

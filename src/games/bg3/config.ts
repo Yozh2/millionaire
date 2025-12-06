@@ -97,6 +97,8 @@ export const bg3Config: GameConfig = {
   title: 'КТО ХОЧЕТ СТАТЬ МИЛЛИОНЕРОМ',
   subtitle: "BALDUR'S GATE 3 EDITION",
 
+  emoji: '⚔️',
+
   campaigns: [heroCampaign, mindFlayerCampaign, darkUrgeCampaign],
 
   questionPools: {

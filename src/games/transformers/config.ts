@@ -92,6 +92,8 @@ export const transformersConfig: GameConfig = {
   title: 'КТО ХОЧЕТ СТАТЬ МИЛЛИОНЕРОМ',
   subtitle: 'THE TRANSFORMERS EDITION',
 
+  emoji: '🤖',
+
   campaigns: [megatronCampaign, autocracyCampaign, skyboundCampaign],
 
   questionPools: {

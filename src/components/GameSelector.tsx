@@ -6,6 +6,7 @@
  */
 
 import { Link } from 'react-router-dom';
+import { useFavicon, useGameIcon } from '../engine/hooks';
 
 interface GameCardData {
   id: string;
@@ -13,7 +14,7 @@ interface GameCardData {
   title: string;
   subtitle: string;
   description: string;
-  icon: string;
+  emoji: string;
   gradient: string;
   borderColor: string;
   available: boolean;
@@ -26,7 +27,7 @@ const GAMES: GameCardData[] = [
     title: 'PROOF OF CONCEPT',
     subtitle: 'Тестовая игра',
     description: 'Минимальная демонстрация движка без внешних ассетов',
-    icon: '⚙️',
+    emoji: '⚙️',
     gradient: 'from-slate-700 via-slate-600 to-slate-800',
     borderColor: 'border-slate-500',
     available: true,
@@ -37,7 +38,7 @@ const GAMES: GameCardData[] = [
     title: "BALDUR'S GATE 3",
     subtitle: 'Forgotten Realms Edition',
     description: 'Викторина по вселенной BG3 и D&D с атмосферной музыкой',
-    icon: '⚔️',
+    emoji: '⚔️',
     gradient: 'from-amber-700 via-amber-600 to-amber-800',
     borderColor: 'border-amber-500',
     available: true,
@@ -49,12 +50,33 @@ const GAMES: GameCardData[] = [
   //   title: 'TRANSFORMERS',
   //   subtitle: 'IDW Comics Edition',
   //   description: 'Викторина по комиксам IDW: Мегатрон и Автократия',
-  //   icon: '🤖',
+  //   emoji: '🤖',
   //   gradient: 'from-purple-700 via-red-600 to-purple-800',
   //   borderColor: 'border-purple-500',
   //   available: true,
   // },
 ];
+
+/**
+ * Game icon component that loads favicon with fallback to emoji.
+ */
+function GameIcon({ gameId, fallbackEmoji }: { gameId: string; fallbackEmoji: string }) {
+  const { iconUrl, isEmoji, emoji } = useGameIcon(gameId, fallbackEmoji);
+
+  if (isEmoji || !iconUrl) {
+    // Show emoji (either as fallback or while loading)
+    return <span className="text-5xl">{emoji}</span>;
+  }
+
+  // Image favicon
+  return (
+    <img
+      src={iconUrl}
+      alt={`${gameId} icon`}
+      className="w-12 h-12 object-contain"
+    />
+  );
+}
 
 function GameCard({ game }: { game: GameCardData }) {
   const CardContent = (
@@ -70,7 +92,9 @@ function GameCard({ game }: { game: GameCardData }) {
       `}
     >
       {/* Icon */}
-      <div className="text-5xl mb-2">{game.icon}</div>
+      <div className="mb-2">
+        <GameIcon gameId={game.id} fallbackEmoji={game.emoji} />
+      </div>
 
       {/* Title */}
       <div>
@@ -103,6 +127,9 @@ function GameCard({ game }: { game: GameCardData }) {
 }
 
 export function GameSelector() {
+  // Set page favicon (shared icons → default emoji)
+  useFavicon(null);
+
   return (
     <div
       className="min-h-screen p-8"

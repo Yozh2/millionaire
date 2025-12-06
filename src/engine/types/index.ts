@@ -394,6 +394,9 @@ export interface GameConfig {
   /** Subtitle (edition name) */
   subtitle: string;
 
+  /** Fallback emoji icon for the game (used when no favicon found) */
+  emoji?: string;
+
   /** Available campaigns/difficulties (2-N) */
   campaigns: Campaign[];
 

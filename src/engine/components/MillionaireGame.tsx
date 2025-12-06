@@ -11,7 +11,7 @@
 import { useEffect, useCallback } from 'react';
 import { ThemeProvider } from '../context';
 import { GameConfig, ThemeColors, Campaign } from '../types';
-import { useGameState, useAudio, useEffects } from '../hooks';
+import { useGameState, useAudio, useEffects, useFavicon } from '../hooks';
 import { StartScreen } from './StartScreen';
 import { GameScreen } from './GameScreen';
 import { EndScreen } from './EndScreen';
@@ -30,6 +30,9 @@ export function MillionaireGame({ config }: MillionaireGameProps) {
   const gameState = useGameState(config);
   const audio = useAudio(config);
   const effects = useEffects();
+
+  // Set game-specific favicon with emoji fallback
+  useFavicon(config.id, config.emoji);
 
   // Preload audio on mount
   useEffect(() => {
