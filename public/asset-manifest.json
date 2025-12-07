@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generated": "2025-12-07T23:20:36.585Z",
+  "generated": "2025-12-07T23:57:42.428Z",
   "engine": {
     "icons": [
       "/icons/favicon.svg"
@@ -139,6 +139,7 @@
           "/games/transformers/icons/BrokenSpark.png",
           "/games/transformers/icons/Energon.png",
           "/games/transformers/icons/MatrixTrophy.png",
+          "/games/transformers/icons/MatrixTrophyShine.png",
           "/games/transformers/icons/Megatron.png",
           "/games/transformers/icons/Skybound.png",
           "/games/transformers/icons/favicon.png",

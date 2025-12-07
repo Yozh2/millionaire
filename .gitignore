@@ -20,6 +20,9 @@ Thumbs.db
 .env
 .env.local
 
+# Design sources
+*.pxd
+
 # Force include images in public/ (override global gitignore)
 !public/**/*.png
 !public/**/*.jpg

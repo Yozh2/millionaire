@@ -50,8 +50,12 @@ export const SkyboundIcon = () => (
  * Victory icon - Matrix of Leadership
  */
 export const MatrixIcon = () => (
-  <div className="w-24 h-24 mx-auto flex items-center justify-center text-6xl animate-pulse">
-    ✨
+  <div className="w-28 h-28 mx-auto flex items-center justify-center">
+    <img
+      src={`${ICONS_PATH}/MatrixTrophyShine.png`}
+      alt="Matrix of Leadership"
+      className="h-28 w-auto animate-pulse"
+    />
   </div>
 );
 
