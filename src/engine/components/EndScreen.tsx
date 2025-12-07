@@ -3,20 +3,10 @@
  */
 
 import { useEffect, useRef, useCallback, useMemo } from 'react';
-import { GameConfig, ThemeColors, SlideshowScreen } from '../types';
+import { GameConfig, ThemeColors, SlideshowScreen, EffectsAPI } from '../types';
 import { UseGameStateReturn } from '../hooks/useGameState';
 import { Panel, PanelHeader } from '../../components/ui';
 import { HeaderSlideshow } from './HeaderSlideshow';
-
-// Type for effects hook return
-interface EffectsAPI {
-  triggerConfetti: (origin?: { x: number; y: number }) => void;
-  triggerCoins: (origin?: { x: number; y: number }) => void;
-  triggerSparks: (origin?: { x: number; y: number }) => void;
-  triggerLostSparks: (origin?: { x: number; y: number }) => void;
-  triggerPulse: (origin?: { x: number; y: number }, color?: string) => void;
-  triggerFireworks: () => void;
-}
 
 // Default emoji-based icons
 const DefaultTrophyIcon = () => (

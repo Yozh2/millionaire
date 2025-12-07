@@ -38,6 +38,8 @@ export type {
   DrawCoinFunction,
   HeaderSlideshowConfig,
   SlideshowScreen,
+  EffectOrigin,
+  EffectsAPI,
 } from './types';
 
 // Hooks

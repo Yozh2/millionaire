@@ -489,3 +489,32 @@ export interface GameConfig {
    */
   headerSlideshow?: HeaderSlideshowConfig;
 }
+
+// ============================================
+// Effects API Types
+// ============================================
+
+/** Coordinates for effect origin (normalized 0-1) */
+export interface EffectOrigin {
+  x: number;
+  y: number;
+}
+
+/**
+ * API for triggering particle effects.
+ * Returned by useEffects hook.
+ */
+export interface EffectsAPI {
+  /** Trigger confetti effect (for wins) */
+  triggerConfetti: (origin?: EffectOrigin) => void;
+  /** Trigger coins effect (for wins/taking money) */
+  triggerCoins: (origin?: EffectOrigin) => void;
+  /** Trigger sparks effect (for correct answers) */
+  triggerSparks: (origin?: EffectOrigin) => void;
+  /** Trigger lost sparks effect (for defeat screen) */
+  triggerLostSparks: (origin?: EffectOrigin) => void;
+  /** Trigger pulse effect (for hints) */
+  triggerPulse: (origin?: EffectOrigin, color?: string) => void;
+  /** Trigger fireworks effect (for big wins) */
+  triggerFireworks: () => void;
+}
