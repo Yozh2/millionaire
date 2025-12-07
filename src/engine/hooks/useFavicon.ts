@@ -140,6 +140,22 @@ function getFaviconType(url: string): string {
 }
 
 /**
+ * Debug switch: enable verbose favicon logs by setting
+ *   localStorage.faviconDebug = 'true'
+ */
+const isDebug = (): boolean =>
+  import.meta.env.DEV ||
+  (typeof localStorage !== 'undefined' &&
+    localStorage.getItem('faviconDebug') === 'true');
+
+const logDebug = (...args: unknown[]) => {
+  if (isDebug()) {
+    // eslint-disable-next-line no-console
+    console.debug('[favicon]', ...args);
+  }
+};
+
+/**
  * Resolve game icon URL with fallback cascade.
  *
  * @param gameId - Game identifier
@@ -151,8 +167,27 @@ export async function resolveGameIcon(
   gameEmoji?: string
 ): Promise<string> {
   const baseUrl = getBaseUrl();
-  // Current deployments use shared SVG only; avoid network probes/flicker.
-  return `${baseUrl}icons/favicon.svg`;
+  const gameBase = `${baseUrl}games/${gameId}/icons`;
+  const sharedBase = `${baseUrl}icons`;
+
+  // 1) Try game-specific icons (svg/png/ico)
+  const gameIcon = await findFavicon([gameBase]);
+  if (gameIcon) {
+    logDebug('game icon found', gameIcon);
+    return gameIcon;
+  }
+
+  // 2) Try shared icons
+  const sharedIcon = await findFavicon([sharedBase]);
+  if (sharedIcon) {
+    logDebug('shared icon found', sharedIcon);
+    return sharedIcon;
+  }
+
+  // 3) Fallback to emoji (game emoji first)
+  const emoji = gameEmoji || DEFAULT_ENGINE_EMOJI;
+  logDebug('fallback to emoji', emoji);
+  return createEmojiFavicon(emoji);
 }
 
 /**
@@ -162,8 +197,16 @@ export async function resolveGameIcon(
  */
 export async function resolveSharedIcon(): Promise<string> {
   const baseUrl = getBaseUrl();
-  // Use known shared svg directly; skip probing to prevent 404 noise/flicker
-  return `${baseUrl}icons/favicon.svg`;
+  const sharedBase = `${baseUrl}icons`;
+
+  const sharedIcon = await findFavicon([sharedBase]);
+  if (sharedIcon) {
+    logDebug('shared icon found', sharedIcon);
+    return sharedIcon;
+  }
+
+  logDebug('fallback to default emoji');
+  return createEmojiFavicon(DEFAULT_ENGINE_EMOJI);
 }
 
 /**
