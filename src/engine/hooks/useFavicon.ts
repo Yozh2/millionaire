@@ -151,17 +151,27 @@ export async function resolveGameIcon(
   gameEmoji?: string
 ): Promise<string> {
   const baseUrl = getBaseUrl();
-  const searchPaths = [
-    `${baseUrl}games/${gameId}/icons`,
-    `${baseUrl}icons`,
-  ];
+  const gameIconBase = `${baseUrl}games/${gameId}/icons`;
+  const sharedIconBase = `${baseUrl}icons`;
 
-  const faviconUrl = await findFavicon(searchPaths);
+  // Fast-path: try known svg locations without HEAD probing to avoid 404 spam
+  const directGameSvg = `${gameIconBase}/favicon.svg`;
+  const directSharedSvg = `${sharedIconBase}/favicon.svg`;
+
+  if (await imageExists(directGameSvg)) {
+    return directGameSvg;
+  }
+  if (await imageExists(directSharedSvg)) {
+    return directSharedSvg;
+  }
+
+  // Slow-path: probe other formats if ever added
+  const faviconUrl = await findFavicon([gameIconBase, sharedIconBase]);
   if (faviconUrl) {
     return faviconUrl;
   }
 
-  // Fallback to emoji
+  // Fallback to emoji (game emoji first, then default)
   const emoji = gameEmoji || DEFAULT_ENGINE_EMOJI;
   return createEmojiFavicon(emoji);
 }
@@ -173,22 +183,8 @@ export async function resolveGameIcon(
  */
 export async function resolveSharedIcon(): Promise<string> {
   const baseUrl = getBaseUrl();
-  // Use known shared svg directly to avoid HEAD probes/404 noise
-  const directUrl = `${baseUrl}icons/favicon.svg`;
-
-  // Try direct SVG first (fast path)
-  if (await imageExists(directUrl)) {
-    return directUrl;
-  }
-
-  // Fallback search (if png/ico are ever added)
-  const searchPaths = [`${baseUrl}icons`];
-  const faviconUrl = await findFavicon(searchPaths);
-  if (faviconUrl) {
-    return faviconUrl;
-  }
-
-  return createEmojiFavicon(DEFAULT_ENGINE_EMOJI);
+  // Use known shared svg directly; skip probing to prevent 404 noise/flicker
+  return `${baseUrl}icons/favicon.svg`;
 }
 
 /**
