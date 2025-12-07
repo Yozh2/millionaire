@@ -3,7 +3,7 @@
  */
 
 import { GameConfig, Campaign, ThemeColors } from '../types';
-import { Panel, PanelHeader } from '../../components/ui';
+import { Panel, PanelHeader } from './ui';
 import { HeaderSlideshow } from './HeaderSlideshow';
 
 interface StartScreenProps {

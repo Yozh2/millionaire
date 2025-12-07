@@ -21,6 +21,7 @@ import type {
   LoadLevel,
   ProgressCallback,
 } from './types';
+import { logger } from './logger';
 import { preDecodeAudio } from '../utils/audioPlayer';
 import { getBasePath } from '../utils/assetLoader';
 
@@ -96,8 +97,8 @@ class AssetLoader {
       })
       .then((data: AssetManifest) => {
         this.manifest = data;
-        console.log(
-          `[AssetLoader] Manifest loaded: ${Object.keys(data.games).length} games`
+        logger.assetLoader.info(
+          `Manifest loaded: ${Object.keys(data.games).length} games`
         );
         return data;
       });
@@ -180,7 +181,7 @@ class AssetLoader {
 
       case 'level1':
         if (!gameId) {
-          console.warn('[AssetLoader] level1 requires gameId');
+          logger.assetLoader.warn('level1 requires gameId');
           break;
         }
 
@@ -207,7 +208,7 @@ class AssetLoader {
 
       case 'level1_1':
         if (!gameId || !campaignId) {
-          console.warn('[AssetLoader] level1_1 requires gameId and campaignId');
+          logger.assetLoader.warn('level1_1 requires gameId and campaignId');
           break;
         }
 
@@ -237,7 +238,7 @@ class AssetLoader {
 
       case 'level2':
         if (!gameId || !campaignId) {
-          console.warn('[AssetLoader] level2 requires gameId and campaignId');
+          logger.assetLoader.warn('level2 requires gameId and campaignId');
           break;
         }
 
@@ -348,7 +349,7 @@ class AssetLoader {
         loaded++;
         onProgress?.(loaded, total);
       } catch (error) {
-        console.warn(`[AssetLoader] Failed to load: ${url}`, error);
+        logger.assetLoader.warn(`Failed to load: ${url}`, { error });
         this.state.failed.add(url);
 
         if (!continueOnError) {
@@ -533,7 +534,7 @@ class AssetLoader {
     campaignId?: string
   ): void {
     this.loadLevel(level, gameId, campaignId).catch((error) => {
-      console.warn('[AssetLoader] Background preload failed:', error);
+      logger.assetLoader.warn('Background preload failed', { error });
     });
   }
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useTheme } from '../../engine/context';
+import { useTheme } from '../../context';
 
 interface PanelHeaderProps {
   children: React.ReactNode;

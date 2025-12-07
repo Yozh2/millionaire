@@ -6,7 +6,7 @@ import { useRef, useMemo } from 'react';
 import { GameConfig, ThemeColors, QuestionDifficulty, EffectsAPI } from '../types';
 import { UseGameStateReturn } from '../hooks/useGameState';
 import { UseAudioReturn } from '../hooks/useAudio';
-import { Panel, PanelHeader } from '../../components/ui';
+import { Panel, PanelHeader } from './ui';
 import { HeaderSlideshow } from './HeaderSlideshow';
 import {
   DefaultCoinIcon,

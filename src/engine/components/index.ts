@@ -22,3 +22,4 @@ export {
   DefaultMoneyIcon,
 } from './DefaultIcons';
 export { ErrorBoundary } from './ErrorBoundary';
+export { Panel, PanelHeader } from './ui';

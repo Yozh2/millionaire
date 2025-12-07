@@ -14,3 +14,5 @@ export type {
   LoadLevel,
   ProgressCallback,
 } from './types';
+export { createLogger, configureLogger, logger } from './logger';
+export type { LogLevel } from './logger';

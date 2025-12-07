@@ -1,5 +1,6 @@
 /**
  * UI components barrel export.
+ * Re-exports from engine for backward compatibility.
+ * @deprecated Import from 'src/engine/components/ui' instead.
  */
-export { Panel } from './Panel';
-export { PanelHeader } from './PanelHeader';
+export { Panel, PanelHeader } from '../../engine/components/ui';

@@ -5,7 +5,7 @@
 import { useEffect, useRef, useCallback, useMemo } from 'react';
 import { GameConfig, ThemeColors, SlideshowScreen, EffectsAPI } from '../types';
 import { UseGameStateReturn } from '../hooks/useGameState';
-import { Panel, PanelHeader } from '../../components/ui';
+import { Panel, PanelHeader } from './ui';
 import { HeaderSlideshow } from './HeaderSlideshow';
 import {
   DefaultCoinIcon,

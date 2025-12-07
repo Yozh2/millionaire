@@ -19,7 +19,7 @@ import {
   useFavicon,
   useAssetPreloader,
 } from '../hooks';
-import { assetLoader } from '../services';
+import { assetLoader, logger } from '../services';
 import { GameConfig, ThemeColors, Campaign, DEFAULT_FONT_FAMILY } from '../types';
 import { EndScreen } from './EndScreen';
 import { GameScreen } from './GameScreen';
@@ -71,7 +71,7 @@ export function MillionaireGame({ config }: MillionaireGameProps) {
           setLevel11Progress(progress);
         },
       })
-      .catch((err) => console.warn('[MillionaireGame] Level 1.1 preload:', err));
+      .catch((err) => logger.millionaireGame.warn('Level 1.1 preload', { error: err }));
   }, [gameState.selectedCampaign?.id, config.id, preloadingCampaign]);
 
   // Start Level 2 background loading when game starts
@@ -145,7 +145,7 @@ export function MillionaireGame({ config }: MillionaireGameProps) {
           },
         });
       } catch (err) {
-        console.warn('[MillionaireGame] Level 1.1 load error:', err);
+        logger.millionaireGame.warn('Level 1.1 load error', { error: err });
       }
 
       setIsWaitingForLevel11(false);

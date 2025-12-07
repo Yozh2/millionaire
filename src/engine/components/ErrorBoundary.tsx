@@ -6,6 +6,7 @@
  */
 
 import { Component, ErrorInfo, ReactNode } from 'react';
+import { logger } from '../services';
 
 interface ErrorBoundaryProps {
   /** Child components to wrap */
@@ -87,9 +88,10 @@ export class ErrorBoundary extends Component<
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    // Log error to console in development
-    console.error('[ErrorBoundary] Caught error:', error);
-    console.error('[ErrorBoundary] Component stack:', errorInfo.componentStack);
+    // Log error
+    logger.errorBoundary.error('Caught error:', error, {
+      componentStack: errorInfo.componentStack,
+    });
 
     // Call optional error handler
     this.props.onError?.(error, errorInfo);
