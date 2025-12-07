@@ -13,3 +13,11 @@ export {
   LoadingIndicator,
   type LoadingScreenProps,
 } from './LoadingScreen';
+export {
+  DefaultCoinIcon,
+  DefaultPhoneHintIcon,
+  DefaultAudienceHintIcon,
+  DefaultTrophyIcon,
+  DefaultFailIcon,
+  DefaultMoneyIcon,
+} from './DefaultIcons';

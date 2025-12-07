@@ -8,11 +8,11 @@ import { UseGameStateReturn } from '../hooks/useGameState';
 import { UseAudioReturn } from '../hooks/useAudio';
 import { Panel, PanelHeader } from '../../components/ui';
 import { HeaderSlideshow } from './HeaderSlideshow';
-
-// Default emoji-based icons
-const DefaultCoinIcon = () => <span className="mr-1">🪙</span>;
-const DefaultPhoneHintIcon = () => <span className="inline-block">📞</span>;
-const DefaultAudienceHintIcon = () => <span className="inline-block">📊</span>;
+import {
+  DefaultCoinIcon,
+  DefaultPhoneHintIcon,
+  DefaultAudienceHintIcon,
+} from './DefaultIcons';
 
 interface GameScreenProps {
   config: GameConfig;

@@ -7,24 +7,12 @@ import { GameConfig, ThemeColors, SlideshowScreen, EffectsAPI } from '../types';
 import { UseGameStateReturn } from '../hooks/useGameState';
 import { Panel, PanelHeader } from '../../components/ui';
 import { HeaderSlideshow } from './HeaderSlideshow';
-
-// Default emoji-based icons
-const DefaultTrophyIcon = () => (
-  <div className="w-24 h-24 mx-auto flex items-center justify-center text-6xl animate-bounce">
-    🏆
-  </div>
-);
-const DefaultFailIcon = () => (
-  <div className="w-24 h-24 mx-auto flex items-center justify-center text-6xl">
-    ❌
-  </div>
-);
-const DefaultMoneyIcon = () => (
-  <div className="w-24 h-24 mx-auto flex items-center justify-center text-6xl">
-    💰
-  </div>
-);
-const DefaultCoinIcon = () => <span className="mr-1">🪙</span>;
+import {
+  DefaultCoinIcon,
+  DefaultTrophyIcon,
+  DefaultFailIcon,
+  DefaultMoneyIcon,
+} from './DefaultIcons';
 
 interface EndScreenProps {
   config: GameConfig;

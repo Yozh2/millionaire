@@ -22,9 +22,7 @@ import type {
   ProgressCallback,
 } from './types';
 import { preDecodeAudio } from '../utils/audioPlayer';
-
-/** Base path for assets (handles GitHub Pages deployment) */
-const BASE_PATH = import.meta.env.BASE_URL || '/';
+import { getBasePath } from '../utils/assetLoader';
 
 /** Cached assets by URL */
 interface AssetCache {
@@ -89,7 +87,7 @@ class AssetLoader {
       return this.manifestPromise;
     }
 
-    this.manifestPromise = fetch(`${BASE_PATH}asset-manifest.json`)
+    this.manifestPromise = fetch(`${getBasePath()}asset-manifest.json`)
       .then((res) => {
         if (!res.ok) {
           throw new Error(`Failed to load asset manifest: ${res.status}`);
@@ -488,7 +486,7 @@ class AssetLoader {
 
     // Remove leading slash for joining
     const cleanPath = path.startsWith('/') ? path.slice(1) : path;
-    return `${BASE_PATH}${cleanPath}`;
+    return `${getBasePath()}${cleanPath}`;
   }
 
   // ============================================
