@@ -45,9 +45,8 @@ src/
 │   ├── BG3Page.tsx
 │   ├── TransformersPage.tsx
 │   └── PocPage.tsx
-├── components/                # Shared UI components
-│   ├── GameSelector.tsx           # Game selection cards
-│   └── ui/Panel.tsx               # Styled panel component
+├── app/components/            # App-level components
+│   └── GameSelector.tsx           # Game selection cards
 └── App.tsx                    # Router with lazy-loaded pages
 ```
 

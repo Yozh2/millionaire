@@ -71,9 +71,8 @@ millionaire/
 │   │   ├── BG3Page.tsx
 │   │   └── PocPage.tsx
 │   │
-│   ├── components/               # Общие компоненты
-│   │   ├── GameSelector.tsx      # Выбор игры
-│   │   └── ui/                   # Panel, PanelHeader
+│   ├── app/components/           # Компоненты приложения (селектор, тестовые страницы)
+│   │   └── GameSelector.tsx      # Выбор игры
 │   │
 │   └── App.tsx                   # Роутер
 ```
@@ -166,7 +165,7 @@ export default function MyGamePage() {
 ```
 public/
 ├── icons/                                  # Favicon fallback для движка
-│   └── favicon.ico
+│   └── favicon.svg
 │
 ├── images/                                 # Fallback изображения для движка
 │   ├── start/                              # Стартовый экран
@@ -189,7 +188,7 @@ public/
 └── games/
     └── bg3/                                # Пример игры BG3
         ├── icons/                          # Иконки игры
-        │   └── favicon.ico
+        │   └── favicon.svg
         │
         ├── images/
         │   ├── start/                      # Стартовый экран игры (fallback)

@@ -14,7 +14,7 @@
  * 2. Default engine emoji: 🎯
  */
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
 /** Default engine emoji favicon */
 const DEFAULT_ENGINE_EMOJI = '🎯';
@@ -192,17 +192,22 @@ export async function resolveGameIcon(
     return gameIcon;
   }
 
-  // 2) Try shared icons
+  // 2) Try game emoji from config
+  if (gameEmoji) {
+    logDebug('fallback to game emoji', gameEmoji);
+    return createEmojiFavicon(gameEmoji);
+  }
+
+  // 3) Try shared icons
   const sharedIcon = await findFavicon([sharedBase]);
   if (sharedIcon) {
     logDebug('shared icon found', sharedIcon);
     return sharedIcon;
   }
 
-  // 3) Fallback to emoji (game emoji first)
-  const emoji = gameEmoji || DEFAULT_ENGINE_EMOJI;
-  logDebug('fallback to emoji', emoji);
-  return createEmojiFavicon(emoji);
+  // 4) Final fallback to default emoji
+  logDebug('fallback to default emoji', DEFAULT_ENGINE_EMOJI);
+  return createEmojiFavicon(DEFAULT_ENGINE_EMOJI);
 }
 
 /**
@@ -234,8 +239,12 @@ export function useFavicon(
   gameId: string | null,
   gameEmoji?: string
 ): void {
+  const updateCounter = useRef(0);
+
   useEffect(() => {
     const updateIcons = async () => {
+      const runId = ++updateCounter.current;
+
       const baseUrl = getBaseUrl();
       let faviconUrl: string;
 
@@ -245,6 +254,12 @@ export function useFavicon(
       } else {
         // Selector page: shared icons → default emoji
         faviconUrl = await resolveSharedIcon();
+      }
+
+      // Bail out if a newer update started
+      if (runId !== updateCounter.current) {
+        logDebug('favicon update skipped (stale)', { gameId, runId });
+        return;
       }
 
       // Set favicon with proper size attribute for Safari
@@ -275,6 +290,11 @@ export function useFavicon(
       searchPaths.push(`${baseUrl}icons`);
 
       const appleTouchIconUrl = await findAppleTouchIcon(searchPaths);
+      if (runId !== updateCounter.current) {
+        logDebug('apple icon update skipped (stale)', { gameId, runId });
+        return;
+      }
+
       if (appleTouchIconUrl) {
         updateLinkElement('apple-touch-icon', appleTouchIconUrl);
       }
