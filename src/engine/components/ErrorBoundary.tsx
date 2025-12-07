@@ -25,6 +25,7 @@ interface ErrorBoundaryState {
 /**
  * Default fallback UI shown when an error occurs.
  */
+// eslint-disable-next-line react-refresh/only-export-components
 function DefaultFallback({ error }: { error: Error | null }) {
   return (
     <div className="min-h-screen bg-gray-900 flex items-center justify-center p-4">

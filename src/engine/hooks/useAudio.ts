@@ -7,6 +7,7 @@
 
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { GameConfig, Campaign } from '../types';
+import { logger } from '../services';
 import {
   setGameId,
   setSoundEnabled as setEngineSoundEnabled,
@@ -18,6 +19,7 @@ import {
 } from '../utils/audioPlayer';
 import { getAssetPaths, checkFileExists } from '../utils/assetLoader';
 import { STORAGE_KEY_SOUND_ENABLED } from '../constants';
+import type { OscillatorSoundKey } from '../utils/audioPlayer';
 
 // ============================================
 // LocalStorage helpers
@@ -177,7 +179,7 @@ export const useAudio = (
         audio.src = currentTrack;
         audio.volume = config.audio.musicVolume;
         audio.play().catch((err) => {
-          console.log('Auto-play failed on interaction:', err);
+          logger.audioPlayer.warn('Auto-play failed on interaction', { error: err });
         });
       }
 
@@ -340,7 +342,7 @@ export const useAudio = (
         playSound(soundFile, config.audio.soundVolume);
       } else {
         // Try to play oscillator by key name
-        playSoundByType(key as any);
+        playSoundByType(key as OscillatorSoundKey);
       }
     },
     [config.audio.sounds, config.audio.soundVolume]
@@ -412,7 +414,9 @@ export const useAudio = (
               audio
                 .play()
                 .then(() => setIsMusicPlaying(true))
-                .catch((err) => console.log('Track play failed:', err));
+                .catch((err) => {
+                  logger.audioPlayer.warn('Track play failed', { error: err });
+                });
               audio.removeEventListener('canplay', handleCanPlay);
             };
             audio.addEventListener('canplay', handleCanPlay);

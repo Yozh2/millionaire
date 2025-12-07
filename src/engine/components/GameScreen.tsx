@@ -41,9 +41,9 @@ export function GameScreen({
     lifelines,
     currentDifficulty,
     handleAnswer,
-    useFiftyFifty,
-    usePhoneAFriend,
-    useAskAudience,
+    useFiftyFifty: lifelineFiftyFifty,
+    usePhoneAFriend: lifelinePhoneAFriend,
+    useAskAudience: lifelineAskAudience,
     takeTheMoney,
   } = gameState;
 
@@ -67,30 +67,12 @@ export function GameScreen({
   const PhoneHintIcon = config.icons?.phoneHint || DefaultPhoneHintIcon;
   const AudienceHintIcon = config.icons?.audienceHint || DefaultAudienceHintIcon;
 
-  // Helper to get normalized coordinates from an element's center
-  const getElementCenterCoords = (
-    element: HTMLElement | null
-  ): { x: number; y: number } => {
-    if (!element) return { x: 0.5, y: 0.5 };
-    const rect = element.getBoundingClientRect();
-    return {
-      x: (rect.left + rect.width / 2) / window.innerWidth,
-      y: (rect.top + rect.height / 2) / window.innerHeight,
-    };
-  };
-
   // Helper to convert screen coordinates to normalized (0-1) coordinates
   const getNormalizedCoords = (e: React.MouseEvent): { x: number; y: number } => {
     return {
       x: e.clientX / window.innerWidth,
       y: e.clientY / window.innerHeight,
     };
-  };
-
-  // Check if answer is correct (without waiting for state update)
-  const isAnswerCorrect = (displayIndex: number): boolean => {
-    const originalIndex = shuffledAnswers[displayIndex];
-    return originalIndex === questionData.correct;
   };
 
   // Wrapped handlers with sound effects (called on click/mouseup)
@@ -117,12 +99,12 @@ export function GameScreen({
   const handleFiftyFiftyWithSound = (e: React.MouseEvent) => {
     audio.playSoundEffect('hintReduceButton');
     effects?.triggerPulse(getNormalizedCoords(e), theme.primary || '#FFD700');
-    useFiftyFifty();
+    lifelineFiftyFifty();
   };
 
   const handlePhoneAFriendWithSound = async (e: React.MouseEvent) => {
     const clickCoords = getNormalizedCoords(e);
-    const companion = usePhoneAFriend();
+    const companion = lifelinePhoneAFriend();
     if (companion) {
       effects?.triggerPulse(clickCoords, '#4ECDC4');
       // Try to play companion voice file first
@@ -140,7 +122,7 @@ export function GameScreen({
   const handleAskAudienceWithSound = (e: React.MouseEvent) => {
     audio.playSoundEffect('hintVoteButton');
     effects?.triggerPulse(getNormalizedCoords(e), '#BB8FCE');
-    useAskAudience();
+    lifelineAskAudience();
   };
 
   const handleTakeMoneyWithSound = () => {

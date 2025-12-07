@@ -35,7 +35,7 @@ export function EndScreen({
   theme,
   effects,
 }: EndScreenProps) {
-  const { gameState: state, wonPrize, currentQuestion, questions } = gameState;
+  const { gameState: state, wonPrize } = gameState;
 
   // Ref for the icon container to get its position for coin effects
   const iconRef = useRef<HTMLDivElement>(null);

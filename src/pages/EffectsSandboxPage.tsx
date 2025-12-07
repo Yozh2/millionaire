@@ -48,7 +48,7 @@ function CanvasDemoCard({ title, description, demoId }: CanvasDemoCardProps) {
     // Effect-specific drawing functions
     const drawEffects: Record<DemoId, (progress: number) => void> = {
       // Lightning effect
-      lightning: (progress) => {
+      lightning: (_progress) => {
         ctx.fillStyle = 'rgba(10, 10, 30, 0.3)';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -367,7 +367,7 @@ function CanvasDemoCard({ title, description, demoId }: CanvasDemoCardProps) {
     ctx.fillStyle = 'rgba(20, 20, 30, 1)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     animate();
-  }, [demoId, stopAnimation]);
+  }, [demoId]);
 
   useEffect(() => {
     return () => stopAnimation();

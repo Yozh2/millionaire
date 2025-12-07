@@ -12,12 +12,7 @@
  * 3. Silent (no playback)
  */
 
-import {
-  getBasePath,
-  getAssetPaths,
-  checkFileExists,
-  AssetType,
-} from './assetLoader';
+import { getAssetPaths, checkFileExists } from './assetLoader';
 
 // ============================================
 // Types
@@ -262,6 +257,8 @@ const OSCILLATOR_SOUNDS: Record<string, OscillatorSoundConfig> = {
     delayBetween: 0.06,
   },
 };
+
+export type OscillatorSoundKey = keyof typeof OSCILLATOR_SOUNDS;
 
 // ============================================
 // Web Audio API

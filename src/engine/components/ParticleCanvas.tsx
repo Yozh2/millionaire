@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 /**
  * Canvas-based particle animation system for visual effects.
  * Supports confetti, sparks, pulse, fireworks, and coins effects.
@@ -504,7 +505,7 @@ export const ParticleCanvas: React.FC<ParticleCanvasProps> = ({
       animationRef.current = null;
       onComplete?.();
     }
-  }, [onComplete]);
+  }, [onComplete, drawCoin]);
 
   // Handle effect changes
   useEffect(() => {
