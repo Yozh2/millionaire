@@ -46,7 +46,7 @@ npm run deploy   # Build and deploy to GitHub Pages
    ```
    public/games/{gameId}/
    ├── music/      # Background music per campaign
-   ├── sounds/     # Sound effects (Click.ogg, etc.)
+   ├── sounds/     # Sound effects (see Sound Terminology below)
    └── voices/     # Companion voice lines
    ```
 
@@ -81,9 +81,24 @@ interface Question {
 
 ## Asset Loading (Priority)
 
-1. Game-specific: `/games/{gameId}/sounds/Click.ogg`
-2. Shared fallback: `/games/shared/sounds/Click.ogg`
+1. Game-specific: `/games/{gameId}/sounds/AnswerClick.ogg`
+2. Shared fallback: `/games/shared/sounds/AnswerClick.ogg`
 3. Oscillator tone (sounds only)
+
+## Sound Terminology
+
+Three button types with unified naming:
+
+| Button Type | Config Key | OGG File | Description |
+|-------------|------------|----------|-------------|
+| **AnswerButton** | `answerButton` | `AnswerClick.ogg` | Answer option click |
+| **BigButton** | `bigButton` | `BigButtonPress.ogg` | Start game / Restart |
+| **HintButton** | `hintReduceButton` | `HintReduce.ogg` | 50:50 lifeline |
+| | `hintCallButton` | `HintCall.ogg` | Phone a friend |
+| | `hintVoteButton` | `HintVote.ogg` | Ask the audience |
+| | `hintTakeMoneyButton` | `HintTakeMoney.ogg` | Take money |
+
+Other sounds: `correct`, `victory`, `defeat` (game events, not buttons).
 
 ## Conventions
 

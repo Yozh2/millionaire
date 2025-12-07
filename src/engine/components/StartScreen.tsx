@@ -11,7 +11,7 @@ interface StartScreenProps {
   selectedCampaign: Campaign | null;
   onSelectCampaign: (campaign: Campaign) => void;
   onStartGame: () => void;
-  onButtonPress: () => void;
+  onBigButtonPress: () => void;
   isMusicPlaying: boolean;
   onToggleMusic: () => void;
   theme: ThemeColors;
@@ -22,7 +22,7 @@ export function StartScreen({
   selectedCampaign,
   onSelectCampaign,
   onStartGame,
-  onButtonPress,
+  onBigButtonPress,
   isMusicPlaying,
   onToggleMusic,
   theme,
@@ -136,8 +136,8 @@ export function StartScreen({
           {/* Start Button */}
           <button
             onClick={onStartGame}
-            onMouseDown={() => selectedCampaign && onButtonPress()}
-            onTouchStart={() => selectedCampaign && onButtonPress()}
+            onMouseDown={() => selectedCampaign && onBigButtonPress()}
+            onTouchStart={() => selectedCampaign && onBigButtonPress()}
             disabled={!selectedCampaign}
             className={`action-btn px-8 py-3 font-bold text-lg tracking-wide border-4 font-serif ${
               selectedCampaign

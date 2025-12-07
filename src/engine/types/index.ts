@@ -216,22 +216,20 @@ export interface PrizeLadder {
 
 /** Sound effect mapping - logical name to filename */
 export interface SoundEffects {
-  /** Click - default button click sound */
-  click?: string;
-  /** Start - campaign start button */
-  start?: string;
-  /** Hint - 50:50 lifeline sound */
-  hint?: string;
-  /** Call - phone a friend lifeline sound */
-  call?: string;
-  /** Vote - ask the audience lifeline sound */
-  vote?: string;
-  /** Money - take money sound (pragmatic coin sounds) */
-  money?: string;
+  /** Answer button click sound */
+  answerButton?: string;
+  /** Big button press (start game / restart) */
+  bigButton?: string;
+  /** 50:50 lifeline - reduce answers */
+  hintReduceButton?: string;
+  /** Phone a friend lifeline */
+  hintCallButton?: string;
+  /** Ask the audience lifeline */
+  hintVoteButton?: string;
+  /** Take money lifeline */
+  hintTakeMoneyButton?: string;
   /** Victory - winning the game sound (epic fanfare) */
   victory?: string;
-  /** Restart - new game / return to menu sound */
-  restart?: string;
   /** Defeat - wrong answer / game over sound */
   defeat?: string;
   /** Correct - correct answer, proceed to next question */

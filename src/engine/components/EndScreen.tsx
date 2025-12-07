@@ -39,7 +39,7 @@ interface EndScreenProps {
   config: GameConfig;
   gameState: UseGameStateReturn;
   onNewGame: () => void;
-  onButtonPress: () => void;
+  onBigButtonPress: () => void;
   isMusicPlaying: boolean;
   onToggleMusic: () => void;
   theme: ThemeColors;
@@ -50,7 +50,7 @@ export function EndScreen({
   config,
   gameState,
   onNewGame,
-  onButtonPress,
+  onBigButtonPress,
   isMusicPlaying,
   onToggleMusic,
   theme,
@@ -264,8 +264,8 @@ export function EndScreen({
           <div className="animate-pop-in stagger-6">
             <button
               onClick={onNewGame}
-              onMouseDown={onButtonPress}
-              onTouchStart={onButtonPress}
+              onMouseDown={onBigButtonPress}
+              onTouchStart={onBigButtonPress}
               className={`action-btn px-8 py-3 bg-gradient-to-b ${theme.bgButton} text-white font-bold text-lg tracking-wide border-4 ${theme.borderLight} font-serif`}
               style={{
                 ['--btn-glow' as string]: theme.glow,

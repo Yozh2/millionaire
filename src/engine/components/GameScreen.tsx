@@ -107,7 +107,7 @@ export function GameScreen({
     displayIndex: number,
     _e: React.MouseEvent
   ) => {
-    audio.playSoundEffect('click');
+    audio.playSoundEffect('answerButton');
 
     // Wait for the reveal animation (2 sec) then play result sound
     const result = await handleAnswer(displayIndex);
@@ -124,7 +124,7 @@ export function GameScreen({
   };
 
   const handleFiftyFiftyWithSound = (e: React.MouseEvent) => {
-    audio.playSoundEffect('hint');
+    audio.playSoundEffect('hintReduceButton');
     effects?.triggerPulse(getNormalizedCoords(e), theme.primary || '#FFD700');
     useFiftyFifty();
   };
@@ -141,19 +141,19 @@ export function GameScreen({
       }
       // Fall back to oscillator call sound if no voice file found
       if (!voicePlayed) {
-        audio.playSoundEffect('call');
+        audio.playSoundEffect('hintCallButton');
       }
     }
   };
 
   const handleAskAudienceWithSound = (e: React.MouseEvent) => {
-    audio.playSoundEffect('vote');
+    audio.playSoundEffect('hintVoteButton');
     effects?.triggerPulse(getNormalizedCoords(e), '#BB8FCE');
     useAskAudience();
   };
 
   const handleTakeMoneyWithSound = () => {
-    audio.playSoundEffect('money');
+    audio.playSoundEffect('hintTakeMoneyButton');
     audio.playTakeMoney();
     // Coins are now triggered from EndScreen at trophy icon position
     takeTheMoney();

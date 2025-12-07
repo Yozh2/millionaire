@@ -62,16 +62,16 @@ export function MillionaireGame({ config }: MillionaireGameProps) {
     if (campaign.selectSound) {
       audio.playSoundFile(campaign.selectSound);
     } else {
-      audio.playSoundEffect('click');
+      audio.playSoundEffect('answerButton');
     }
     gameState.selectCampaign(campaign);
   }, [audio, gameState]);
 
   // Sound on button press (mousedown/touchstart) - synced with button landing animation
-  const handleButtonPress = useCallback(() => {
+  const handleBigButtonPress = useCallback(() => {
     // Delay sound to sync with button landing animation (dust-puff at ~50ms)
     setTimeout(() => {
-      audio.playSoundEffect('start');
+      audio.playSoundEffect('bigButton');
     }, 50);
   }, [audio]);
 
@@ -88,13 +88,6 @@ export function MillionaireGame({ config }: MillionaireGameProps) {
     audio.playMainMenu();
     gameState.newGame();
   }, [audio, gameState]);
-
-  // Sound on restart button press (mousedown/touchstart)
-  const handleRestartPress = useCallback(() => {
-    setTimeout(() => {
-      audio.playSoundEffect('restart');
-    }, 50);
-  }, [audio]);
 
   return (
     <ThemeProvider theme={theme}>
@@ -130,7 +123,7 @@ export function MillionaireGame({ config }: MillionaireGameProps) {
               selectedCampaign={gameState.selectedCampaign}
               onSelectCampaign={handleSelectCampaign}
               onStartGame={handleStartGame}
-              onButtonPress={handleButtonPress}
+              onBigButtonPress={handleBigButtonPress}
               isMusicPlaying={audio.isMusicPlaying}
               onToggleMusic={audio.toggleMusic}
               theme={theme}
@@ -156,7 +149,7 @@ export function MillionaireGame({ config }: MillionaireGameProps) {
               config={config}
               gameState={gameState}
               onNewGame={handleNewGame}
-              onButtonPress={handleRestartPress}
+              onBigButtonPress={handleBigButtonPress}
               isMusicPlaying={audio.isMusicPlaying}
               onToggleMusic={audio.toggleMusic}
               theme={theme}

@@ -58,8 +58,8 @@ const megatronCampaign: Campaign = {
   label: 'Восхождение',
   icon: DecepticonIcon,
   theme: decepticonTheme,
-  musicTrack: 'Decepticon.ogg',
-  selectSound: 'DecepticonSelect.ogg',
+  musicTrack: 'Megatron.ogg',
+  selectSound: 'CampaignMegatron.ogg',
 };
 
 const autocracyCampaign: Campaign = {
@@ -68,8 +68,8 @@ const autocracyCampaign: Campaign = {
   label: 'Орион Пакс',
   icon: AutobotIcon,
   theme: autobotTheme,
-  musicTrack: 'Autobot.ogg',
-  selectSound: 'AutobotSelect.ogg',
+  musicTrack: 'Autocracy.ogg',
+  selectSound: 'CampaignAutocracy.ogg',
 };
 
 const skyboundCampaign: Campaign = {
@@ -78,8 +78,8 @@ const skyboundCampaign: Campaign = {
   label: 'Земля',
   icon: SkyboundIcon,
   theme: skyboundTheme,
-  musicTrack: 'Skybound.ogg',
-  selectSound: 'SkyboundSelect.ogg',
+  musicTrack: 'SkyBound.ogg',
+  selectSound: 'CampaignSkybound.ogg',
 };
 
 // ============================================
@@ -103,11 +103,10 @@ export const transformersConfig: GameConfig = {
   },
 
   companions: [
-    { id: 'soundwave', name: 'Саундвейв' },
-    { id: 'starscream', name: 'Старскрим' },
-    { id: 'shockwave', name: 'Шоквейв' },
-    { id: 'ratchet', name: 'Рэтчет' },
-    { id: 'jazz', name: 'Джаз' },
+    { id: 'optimus', name: 'Оптимус Прайм', voiceFile: 'Optimus.ogg' },
+    { id: 'megatron', name: 'Мегатрон', voiceFile: 'Megatron.ogg' },
+    { id: 'bumblebee', name: 'Бамблби', voiceFile: 'Bumblebee.ogg' },
+    { id: 'ironhide', name: 'Айронхайд', voiceFile: 'Ironhide.ogg' },
   ],
 
   strings: {
@@ -132,14 +131,18 @@ export const transformersConfig: GameConfig = {
 
     companionPhrases: {
       confident: [
-        'Мои сенсоры показывают — это "{answer}"',
-        'Логический анализ указывает на "{answer}"',
-        'Без сомнений, ответ: "{answer}"',
+        'Мои сенсоры не ошибаются — это "{answer}"',
+        'Автоботы, вперёд! Ответ: "{answer}"',
+        'Матрица подсказывает — "{answer}"',
+        'Я сканировал все данные. Это "{answer}"',
+        'Трансформируйся и побеждай! Ответ — "{answer}"',
       ],
       uncertain: [
-        'Возможно, это "{answer}"...',
-        'Мои данные неполны, но думаю "{answer}"',
-        'Предполагаю "{answer}", но не уверен',
+        'Мой процессор перегружен, но думаю "{answer}"',
+        'Сигнал слабый... Возможно, "{answer}"',
+        'Энергон на исходе, но рискну — "{answer}"',
+        'Десептиконы глушат связь... Кажется, "{answer}"',
+        'Данные повреждены, предполагаю "{answer}"',
       ],
     },
 
@@ -184,11 +187,16 @@ export const transformersConfig: GameConfig = {
     voiceVolume: 1.0,
     mainMenuTrack: 'MainMenu.ogg',
     gameOverTrack: 'GameOver.ogg',
+    victoryTrack: 'Victory.ogg',
+    takeMoneyTrack: 'TookMoney.ogg',
     sounds: {
-      click: 'Click.ogg',
-      correct: 'Correct.ogg',
-      money: 'Money.ogg',
-      defeat: 'Defeat.ogg',
+      answerButton: 'AnswerClick.ogg',
+      bigButton: 'BigButtonPress.ogg',
+      hintReduceButton: 'HintReduce.ogg',
+      hintCallButton: 'HintCall.ogg',
+      hintVoteButton: 'HintVote.ogg',
+      correct: 'Next.ogg',
+      defeat: 'Fail.ogg',
     },
   },
 

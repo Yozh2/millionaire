@@ -90,13 +90,13 @@ export const isSoundEnabled = (): boolean => {
  * Fallback oscillator sounds for when files are missing
  */
 const OSCILLATOR_SOUNDS: Record<string, OscillatorSoundConfig> = {
-  // Click sound - short blip
-  click: {
+  // Answer button click - short blip
+  answerButton: {
     tones: [{ frequency: 800, duration: 0.08, type: 'sine', volume: 0.2 }],
   },
 
-  // Start - epic horn for campaign start
-  start: {
+  // Big button press - epic horn for start/restart
+  bigButton: {
     tones: [
       { frequency: 294, duration: 0.2, type: 'sawtooth', volume: 0.2 },
       { frequency: 392, duration: 0.2, type: 'sawtooth', volume: 0.25 },
@@ -105,8 +105,8 @@ const OSCILLATOR_SOUNDS: Record<string, OscillatorSoundConfig> = {
     delayBetween: 0.15,
   },
 
-  // Hint - 50:50 lifeline magical zap
-  hint: {
+  // 50:50 lifeline - reduce answers magical zap
+  hintReduceButton: {
     tones: [
       { frequency: 1200, duration: 0.05, type: 'square', volume: 0.15 },
       { frequency: 800, duration: 0.05, type: 'square', volume: 0.15 },
@@ -115,8 +115,8 @@ const OSCILLATOR_SOUNDS: Record<string, OscillatorSoundConfig> = {
     delayBetween: 0.04,
   },
 
-  // Call - phone a friend
-  call: {
+  // Phone a friend lifeline
+  hintCallButton: {
     tones: [
       { frequency: 600, duration: 0.1, type: 'sine', volume: 0.2 },
       { frequency: 800, duration: 0.1, type: 'sine', volume: 0.2 },
@@ -125,8 +125,8 @@ const OSCILLATOR_SOUNDS: Record<string, OscillatorSoundConfig> = {
     delayBetween: 0.08,
   },
 
-  // Vote - ask the audience
-  vote: {
+  // Ask the audience lifeline
+  hintVoteButton: {
     tones: [
       { frequency: 300, duration: 0.1, type: 'triangle', volume: 0.2 },
       { frequency: 400, duration: 0.1, type: 'triangle', volume: 0.2 },
@@ -135,8 +135,8 @@ const OSCILLATOR_SOUNDS: Record<string, OscillatorSoundConfig> = {
     delayBetween: 0.06,
   },
 
-  // Money - take money coin sounds (pragmatic, coins clinking)
-  money: {
+  // Take money lifeline - coin sounds
+  hintTakeMoneyButton: {
     tones: [
       { frequency: 523, duration: 0.12, type: 'triangle', volume: 0.25 },
       { frequency: 659, duration: 0.12, type: 'triangle', volume: 0.25 },
@@ -158,16 +158,6 @@ const OSCILLATOR_SOUNDS: Record<string, OscillatorSoundConfig> = {
       { frequency: 1047, duration: 0.5, type: 'triangle', volume: 0.35 },
     ],
     delayBetween: 0.15,
-  },
-
-  // Restart - new game refresh sound
-  restart: {
-    tones: [
-      { frequency: 800, duration: 0.1, type: 'sine', volume: 0.2 },
-      { frequency: 600, duration: 0.1, type: 'sine', volume: 0.2 },
-      { frequency: 800, duration: 0.15, type: 'sine', volume: 0.25 },
-    ],
-    delayBetween: 0.08,
   },
 
   // Defeat - dramatic descending
@@ -331,14 +321,16 @@ const tryPlayFile = async (
  * Map sound type names to oscillator keys
  */
 const SOUND_TYPE_MAP: Record<string, string> = {
-  Click: 'click',
-  Start: 'start',
-  Hint: 'hint',
-  Call: 'call',
-  Vote: 'vote',
-  Money: 'money',
+  // Button sounds
+  AnswerClick: 'answerButton',
+  BigButtonPress: 'bigButton',
+  // Hint button sounds
+  HintReduce: 'hintReduceButton',
+  HintCall: 'hintCallButton',
+  HintVote: 'hintVoteButton',
+  HintTakeMoney: 'hintTakeMoneyButton',
+  // Game event sounds
   Victory: 'victory',
-  Restart: 'restart',
   Fail: 'defeat',
   Correct: 'correct',
   Next: 'correct',
