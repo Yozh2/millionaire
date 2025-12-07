@@ -8,7 +8,7 @@
  * - /         → Game selector
  * - /poc      → PoC game (no external assets)
  * - /bg3      → Baldur's Gate 3 Edition
- * - /transformers → Transformers IDW Comics Edition
+ * - /transformers → Transformers Edition
  * - /sandbox  → Effects demo page
  *
  * @author Yozh2

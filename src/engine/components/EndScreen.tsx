@@ -13,6 +13,7 @@ interface EffectsAPI {
   triggerConfetti: (origin?: { x: number; y: number }) => void;
   triggerCoins: (origin?: { x: number; y: number }) => void;
   triggerSparks: (origin?: { x: number; y: number }) => void;
+  triggerLostSparks: (origin?: { x: number; y: number }) => void;
   triggerPulse: (origin?: { x: number; y: number }, color?: string) => void;
   triggerFireworks: () => void;
 }
@@ -109,6 +110,37 @@ export function EndScreen({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state, wonPrize, getIconOrigin]); // effects intentionally omitted to prevent re-triggering
+
+  // Trigger lost sparks effect - continuous tiny spark bursts from broken icon
+  // Only enabled when config.enableLostSparks is true
+  useEffect(() => {
+    if (state === 'lost' && config.enableLostSparks) {
+      // Delay to ensure icon is rendered and positioned (0.5 sec for screen load)
+      const startDelay = setTimeout(() => {
+        // Initial burst from icon position
+        effects?.triggerLostSparks(getIconOrigin());
+
+        // Continue with random interval bursts until component unmounts
+        const scheduleNextBurst = () => {
+          const delay = 400 + Math.random() * 2500; // 0.4-3 sec interval
+          return setTimeout(() => {
+            effects?.triggerLostSparks(getIconOrigin());
+            intervalRef = scheduleNextBurst();
+          }, delay);
+        };
+
+        intervalRef = scheduleNextBurst();
+      }, 500);
+
+      let intervalRef: ReturnType<typeof setTimeout>;
+
+      return () => {
+        clearTimeout(startDelay);
+        clearTimeout(intervalRef);
+      };
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state, getIconOrigin]); // effects intentionally omitted to prevent re-triggering
 
   // Get icons from config or use defaults
   const CoinIcon = config.icons?.coin || DefaultCoinIcon;
@@ -252,13 +284,6 @@ export function EndScreen({
               {config.strings.prizeLabel} {wonPrize} {config.prizes.currency}
             </span>
           </div>
-
-          {state === 'lost' && questions[currentQuestion] && (
-            <p className="text-amber-400 mb-6 text-sm font-serif italic">
-              {config.strings.correctAnswerLabel}{' '}
-              {questions[currentQuestion].answers[questions[currentQuestion].correct]}
-            </p>
-          )}
 
           {/* New Game Button */}
           <div className="animate-pop-in stagger-6">

@@ -23,6 +23,8 @@ interface UseEffectsReturn {
   triggerCoins: (origin?: { x: number; y: number }) => void;
   /** Trigger sparks effect (for correct answers) */
   triggerSparks: (origin?: { x: number; y: number }) => void;
+  /** Trigger lost sparks effect (for defeat screen - tiny scattered sparks) */
+  triggerLostSparks: (origin?: { x: number; y: number }) => void;
   /** Trigger pulse effect (for hints) */
   triggerPulse: (
     origin?: { x: number; y: number },
@@ -129,6 +131,16 @@ export const useEffects = (): UseEffectsReturn => {
     [triggerEffect]
   );
 
+  const triggerLostSparks = useCallback(
+    (origin?: { x: number; y: number }) => {
+      triggerEffect('lostSparks', {
+        origin: origin ?? { x: 0.5, y: 0.3 },
+        intensity: 0.8,
+      });
+    },
+    [triggerEffect]
+  );
+
   const triggerPulse = useCallback(
     (origin?: { x: number; y: number }, color?: string) => {
       triggerEffect('pulse', {
@@ -153,6 +165,7 @@ export const useEffects = (): UseEffectsReturn => {
     triggerConfetti,
     triggerCoins,
     triggerSparks,
+    triggerLostSparks,
     triggerPulse,
     triggerFireworks,
     clearEffect,

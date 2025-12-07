@@ -10,7 +10,7 @@ import type { DrawCoinFunction } from '../types';
 // Types
 // ============================================================================
 
-export type EffectType = 'confetti' | 'sparks' | 'pulse' | 'fireworks' | 'coins';
+export type EffectType = 'confetti' | 'sparks' | 'pulse' | 'fireworks' | 'coins' | 'lostSparks';
 
 // Re-export DrawCoinFunction for convenience
 export type { DrawCoinFunction };
@@ -55,6 +55,8 @@ interface ParticleCanvasProps {
   intensity?: number;
   /** Custom coin drawing function for 'coins' effect */
   drawCoin?: DrawCoinFunction;
+  /** Custom colors for lostSparks effect */
+  lostSparkColors?: string[];
 }
 
 // ============================================================================
@@ -186,6 +188,36 @@ const createCoinParticle = (
   };
 };
 
+/**
+ * Creates a tiny spark particle for defeat screen effect.
+ * These are small, fast-moving sparks that scatter from the broken icon.
+ */
+const createLostSparkParticle = (
+  canvasWidth: number,
+  canvasHeight: number,
+  originX: number,
+  originY: number,
+  colors: string[]
+): Particle => {
+  const angle = Math.random() * Math.PI * 2; // All directions
+  const speed = 2 + Math.random() * 5; // Moderate speed, slower than coins
+
+  return {
+    x: originX * canvasWidth,
+    y: originY * canvasHeight,
+    vx: Math.cos(angle) * speed,
+    vy: Math.sin(angle) * speed - 2, // Slight upward bias
+    size: 2 + Math.random() * 3, // Very small sparks
+    color: colors[Math.floor(Math.random() * colors.length)],
+    alpha: 1,
+    rotation: 0,
+    rotationSpeed: 0,
+    life: 0,
+    maxLife: 40 + Math.random() * 30, // Short life
+    type: 'circle',
+  };
+};
+
 // ============================================================================
 // Drawing utilities
 // ============================================================================
@@ -303,6 +335,7 @@ export const ParticleCanvas: React.FC<ParticleCanvasProps> = ({
   onComplete,
   intensity = 1,
   drawCoin = drawDefaultCoin,
+  lostSparkColors,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const particlesRef = useRef<Particle[]>([]);
@@ -346,6 +379,18 @@ export const ParticleCanvas: React.FC<ParticleCanvasProps> = ({
             );
           }
           break;
+
+        case 'lostSparks': {
+          // Spawn tiny spark particles for defeat screen (5-10 per burst)
+          const sparkCount = 5 + Math.floor(Math.random() * 6);
+          const colors = lostSparkColors || SPARK_COLORS;
+          for (let i = 0; i < sparkCount; i++) {
+            particlesRef.current.push(
+              createLostSparkParticle(width, height, origin.x, origin.y, colors)
+            );
+          }
+          break;
+        }
 
         case 'pulse':
           // Create expanding pulse wave
@@ -403,7 +448,7 @@ export const ParticleCanvas: React.FC<ParticleCanvasProps> = ({
           break;
       }
     },
-    [origin, primaryColor, secondaryColor, intensity]
+    [origin, primaryColor, secondaryColor, intensity, lostSparkColors]
   );
 
   // Animation loop

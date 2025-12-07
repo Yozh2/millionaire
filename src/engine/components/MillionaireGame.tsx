@@ -6,16 +6,26 @@
  * - Manages game flow between screens (start, playing, end)
  * - Provides theme context to child components
  * - Handles audio integration
+ * - Manages asset preloading across loading levels
  */
 
-import { useEffect, useCallback } from 'react';
+import { useEffect, useCallback, useState } from 'react';
+
 import { ThemeProvider } from '../context';
+import {
+  useGameState,
+  useAudio,
+  useEffects,
+  useFavicon,
+  useAssetPreloader,
+} from '../hooks';
+import { assetLoader } from '../services';
 import { GameConfig, ThemeColors, Campaign } from '../types';
-import { useGameState, useAudio, useEffects, useFavicon } from '../hooks';
-import { StartScreen } from './StartScreen';
-import { GameScreen } from './GameScreen';
 import { EndScreen } from './EndScreen';
+import { GameScreen } from './GameScreen';
+import { LoadingScreen } from './LoadingScreen';
 import { ParticleCanvas } from './ParticleCanvas';
+import { StartScreen } from './StartScreen';
 
 interface MillionaireGameProps {
   /** Game configuration - defines modes, questions, themes, etc. */
@@ -34,14 +44,54 @@ export function MillionaireGame({ config }: MillionaireGameProps) {
   // Set game-specific favicon with emoji fallback
   useFavicon(config.id, config.emoji);
 
-  // Preload audio on mount
+  // === Asset Preloading ===
+
+  // Level 1: Load game assets (icons, sounds, start images)
+  const level1Preload = useAssetPreloader('level1', config.id);
+
+  // Track which campaign is being preloaded for level 1.1
+  const [preloadingCampaign, setPreloadingCampaign] = useState<string | null>(
+    null
+  );
+  const [level11Progress, setLevel11Progress] = useState(0);
+  const [isWaitingForLevel11, setIsWaitingForLevel11] = useState(false);
+
+  // Preload campaign assets when campaign is selected (background)
   useEffect(() => {
-    // Audio preloading is handled by the useAudio hook
-  }, []);
+    const campaignId = gameState.selectedCampaign?.id;
+    if (!campaignId || preloadingCampaign === campaignId) return;
+
+    setPreloadingCampaign(campaignId);
+    setLevel11Progress(0);
+
+    assetLoader
+      .loadLevel('level1_1', config.id, campaignId, {
+        onProgress: (loaded, total) => {
+          const progress = total > 0 ? Math.round((loaded / total) * 100) : 100;
+          setLevel11Progress(progress);
+        },
+      })
+      .catch((err) => console.warn('[MillionaireGame] Level 1.1 preload:', err));
+  }, [gameState.selectedCampaign?.id, config.id, preloadingCampaign]);
+
+  // Start Level 2 background loading when game starts
+  useEffect(() => {
+    if (
+      gameState.gameState === 'playing' &&
+      gameState.selectedCampaign
+    ) {
+      assetLoader.preloadInBackground(
+        'level2',
+        config.id,
+        gameState.selectedCampaign.id
+      );
+    }
+  }, [gameState.gameState, gameState.selectedCampaign, config.id]);
 
   // Get current theme based on selected campaign
   const currentCampaign = gameState.selectedCampaign;
-  const theme: ThemeColors = currentCampaign?.theme || config.campaigns[0].theme;
+  const theme: ThemeColors =
+    currentCampaign?.theme || config.campaigns[0].theme;
 
   // Get background style based on mode
   const getBackgroundStyle = () => {
@@ -76,12 +126,34 @@ export function MillionaireGame({ config }: MillionaireGameProps) {
   }, [audio]);
 
   // Wrapper for startGame with music switch
-  const handleStartGame = useCallback(() => {
+  const handleStartGame = useCallback(async () => {
     if (!gameState.selectedCampaign) return;
+
+    const campaignId = gameState.selectedCampaign.id;
+
+    // Check if level 1.1 is loaded, if not show loading
+    if (!assetLoader.isLevelLoaded('level1_1', config.id, campaignId)) {
+      setIsWaitingForLevel11(true);
+
+      try {
+        await assetLoader.loadLevel('level1_1', config.id, campaignId, {
+          onProgress: (loaded, total) => {
+            const progress = total > 0
+              ? Math.round((loaded / total) * 100)
+              : 100;
+            setLevel11Progress(progress);
+          },
+        });
+      } catch (err) {
+        console.warn('[MillionaireGame] Level 1.1 load error:', err);
+      }
+
+      setIsWaitingForLevel11(false);
+    }
 
     audio.playCampaignMusic(gameState.selectedCampaign);
     gameState.startGame();
-  }, [audio, gameState]);
+  }, [audio, gameState, config.id]);
 
   // Wrapper for newGame with music switch
   const handleNewGame = useCallback(() => {
@@ -98,6 +170,23 @@ export function MillionaireGame({ config }: MillionaireGameProps) {
           fontFamily: 'Georgia, serif',
         }}
       >
+        {/* Loading Screen for Level 1 */}
+        {level1Preload.isLoading && (
+          <LoadingScreen
+            progress={level1Preload.progress}
+            title={`Загрузка ${config.title}...`}
+            subtitle="Подготавливаем игру"
+          />
+        )}
+
+        {/* Loading Screen for Level 1.1 (waiting for campaign assets) */}
+        {isWaitingForLevel11 && !level1Preload.isLoading && (
+          <LoadingScreen
+            progress={level11Progress}
+            title="Подготовка кампании..."
+            subtitle={gameState.selectedCampaign?.name}
+          />
+        )}
         {/* Particle Effects Layer */}
         <ParticleCanvas
           effect={effects.effectState.effect}
@@ -106,6 +195,7 @@ export function MillionaireGame({ config }: MillionaireGameProps) {
           secondaryColor={effects.effectState.secondaryColor}
           intensity={effects.effectState.intensity}
           drawCoin={config.drawCoinParticle}
+          lostSparkColors={config.lostSparkColors}
         />
 
         {/* Background Music */}
@@ -117,7 +207,9 @@ export function MillionaireGame({ config }: MillionaireGameProps) {
 
         <div className="max-w-4xl mx-auto">
           {/* Start Screen */}
-          {gameState.gameState === 'start' && (
+          {gameState.gameState === 'start' &&
+            !level1Preload.isLoading &&
+            !isWaitingForLevel11 && (
             <StartScreen
               config={config}
               selectedCampaign={gameState.selectedCampaign}

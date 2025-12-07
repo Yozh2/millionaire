@@ -456,6 +456,20 @@ export interface GameConfig {
   drawCoinParticle?: DrawCoinFunction;
 
   /**
+   * Custom colors for lost spark particles on defeat screen (optional).
+   * Array of CSS color strings. If not provided, default spark colors are used.
+   * Example: ['#FF6B6B', '#FF4444', '#CC0000']
+   */
+  lostSparkColors?: string[];
+
+  /**
+   * Enable lost spark particle effect on defeat screen (optional).
+   * When true, tiny sparks will emanate from the defeat icon.
+   * Default: false
+   */
+  enableLostSparks?: boolean;
+
+  /**
    * Header slideshow configuration (optional).
    * Shows themed images in the header with additive blend mode.
    */

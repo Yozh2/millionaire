@@ -11,3 +11,10 @@ export {
   resolveGameIcon,
   resolveSharedIcon,
 } from './useFavicon';
+export {
+  useAssetPreloader,
+  useBackgroundPreload,
+  useEnsureAssetsLoaded,
+  type PreloadState,
+  type UseAssetPreloaderOptions,
+} from './useAssetPreloader';

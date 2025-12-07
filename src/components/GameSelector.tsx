@@ -6,7 +6,9 @@
  */
 
 import { Link } from 'react-router-dom';
-import { useFavicon, useGameIcon } from '../engine/hooks';
+
+import { LoadingScreen } from '../engine/components/LoadingScreen';
+import { useFavicon, useGameIcon, useAssetPreloader } from '../engine/hooks';
 
 interface GameCardData {
   id: string;
@@ -37,24 +39,23 @@ const GAMES: GameCardData[] = [
     path: '/bg3',
     title: "BALDUR'S GATE 3",
     subtitle: 'Forgotten Realms Edition',
-    description: 'Викторина по вселенной BG3 и D&D с атмосферной музыкой',
+    description: 'Викторина по вселенной Baldur\'s Gate 3',
     emoji: '⚔️',
     gradient: 'from-amber-700 via-amber-600 to-amber-800',
     borderColor: 'border-amber-500',
     available: true,
   },
-  // Transformers game is hidden from menu but still accessible via /transformers URL
-  // {
-  //   id: 'transformers',
-  //   path: '/transformers',
-  //   title: 'TRANSFORMERS',
-  //   subtitle: 'IDW Comics Edition',
-  //   description: 'Викторина по комиксам IDW: Мегатрон и Автократия',
-  //   emoji: '🤖',
-  //   gradient: 'from-purple-700 via-red-600 to-purple-800',
-  //   borderColor: 'border-purple-500',
-  //   available: true,
-  // },
+  {
+    id: 'transformers',
+    path: '/transformers',
+    title: 'TRANSFORMERS',
+    subtitle: 'COMICS EDITION',
+    description: 'Викторина по комиксам про Трансформеров',
+    emoji: '🤖',
+    gradient: 'from-purple-700 via-red-600 to-purple-800',
+    borderColor: 'border-purple-500',
+    available: true,
+  },
 ];
 
 /**
@@ -129,6 +130,20 @@ function GameCard({ game }: { game: GameCardData }) {
 export function GameSelector() {
   // Set page favicon (shared icons → default emoji)
   useFavicon(null);
+
+  // Preload Level 0 assets (engine + game card icons)
+  const { isLoading, progress } = useAssetPreloader('level0');
+
+  // Show loading screen while preloading
+  if (isLoading) {
+    return (
+      <LoadingScreen
+        progress={progress}
+        title="Загрузка игр..."
+        subtitle="Подготавливаем викторину"
+      />
+    );
+  }
 
   return (
     <div

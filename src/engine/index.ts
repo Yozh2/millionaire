@@ -93,4 +93,11 @@ export {
   useGameIcon,
   resolveGameIcon,
   resolveSharedIcon,
+  useAssetPreloader,
+  useBackgroundPreload,
+  useEnsureAssetsLoaded,
+  type PreloadState,
 } from './hooks';
+
+// Services
+export { assetLoader, type LoadLevel, type AssetManifest } from './services';

@@ -14,8 +14,8 @@ export {
 } from './questions';
 export { decepticonTheme, autobotTheme, skyboundTheme } from './themes';
 export {
-  DecepticonIcon,
-  AutobotIcon,
+  MegatronIcon,
+  AutocracyIcon,
   SkyboundIcon,
   MatrixIcon,
   DestroyedIcon,

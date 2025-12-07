@@ -15,12 +15,13 @@ import {
   skyboundQuestionPool,
 } from './questions';
 import {
-  DecepticonIcon,
-  AutobotIcon,
+  MegatronIcon,
+  AutocracyIcon,
   SkyboundIcon,
   MatrixIcon,
-  DestroyedIcon,
+  BrokenSparkIcon,
   EnergonIcon,
+  EnergonCoinIcon,
 } from './icons';
 
 // ============================================
@@ -56,7 +57,7 @@ const megatronCampaign: Campaign = {
   id: 'megatron',
   name: 'МЕГАТРОН',
   label: 'Восхождение',
-  icon: DecepticonIcon,
+  icon: MegatronIcon,
   theme: decepticonTheme,
   musicTrack: 'Megatron.ogg',
   selectSound: 'CampaignMegatron.ogg',
@@ -66,7 +67,7 @@ const autocracyCampaign: Campaign = {
   id: 'autocracy',
   name: 'АВТОКРАТИЯ',
   label: 'Орион Пакс',
-  icon: AutobotIcon,
+  icon: AutocracyIcon,
   theme: autobotTheme,
   musicTrack: 'Autocracy.ogg',
   selectSound: 'CampaignAutocracy.ogg',
@@ -202,12 +203,23 @@ export const transformersConfig: GameConfig = {
 
   endIcons: {
     won: MatrixIcon,
-    lost: DestroyedIcon,
+    lost: BrokenSparkIcon,
     tookMoney: EnergonIcon,
+  },
+
+  // Small energon crystal for prize display
+  icons: {
+    coin: EnergonCoinIcon,
   },
 
   // Energon crystals instead of coins
   drawCoinParticle: drawEnergonCrystal,
+
+  // Enable lost spark effect on defeat screen
+  enableLostSparks: true,
+
+  // Lost spark particle colors (cyan/blue spark fragments)
+  lostSparkColors: ['#00BFFF', '#87CEEB', '#00CED1', '#1E90FF'],
 };
 
 export default transformersConfig;
