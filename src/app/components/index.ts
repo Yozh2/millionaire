@@ -1,5 +1,4 @@
 /**
- * Components barrel export.
+ * App-level components barrel export.
  */
-export * from './ui';
 export { GameSelector } from './GameSelector';

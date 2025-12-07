@@ -8,7 +8,8 @@
  */
 
 import { useState, useEffect } from 'react';
-import { Panel, PanelHeader } from '../components/ui';
+import { Panel, PanelHeader } from '../engine/components/ui';
+import { logger } from '../engine/services';
 
 // Types
 type SlideshowScreen = 'start' | 'play' | 'won' | 'took' | 'lost';
@@ -59,7 +60,9 @@ export default function SandboxPage() {
         }
         const data = await response.json();
         setManifest(data);
-        console.log('Loaded manifest:', data);
+        logger.assetLoader.info('Loaded manifest for SandboxPage', {
+          games: Object.keys(data?.games ?? {}),
+        });
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Unknown error');
       } finally {

@@ -9,6 +9,7 @@
  */
 
 import { useState, useCallback, useMemo } from 'react';
+import { logger } from '../services';
 import {
   GameConfig,
   GameState,
@@ -197,7 +198,7 @@ export const useGameState = (config: GameConfig): UseGameStateReturn => {
     (campaign: Campaign) => {
       const pool = config.questionPools[campaign.id];
       if (!pool) {
-        console.warn(`No question pool found for campaign: ${campaign.id}`);
+        logger.gameState.warn(`No question pool found for campaign: ${campaign.id}`);
         setQuestions([]);
         setPrizeLadder({ values: [], guaranteed: [] });
         return;

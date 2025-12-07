@@ -13,6 +13,7 @@
  */
 
 import { getAssetPaths, checkFileExists } from './assetLoader';
+import { logger } from '../services/logger';
 
 // ============================================
 // Types
@@ -279,14 +280,14 @@ const getAudioContext = (): AudioContext | null => {
 
       if (!AudioContextClass) {
         audioSupported = false;
-        console.warn('Web Audio API is not supported');
+        logger.audioPlayer.warn('Web Audio API is not supported');
         return null;
       }
 
       audioContext = new AudioContextClass();
     } catch (error) {
       audioSupported = false;
-      console.warn('Failed to create AudioContext:', error);
+      logger.audioPlayer.warn('Failed to create AudioContext', { error });
       return null;
     }
   }
@@ -337,7 +338,7 @@ const decodeAndCacheAudio = async (
       audioBufferCache.set(path, buffer);
       return buffer;
     } catch (err) {
-      console.warn(`Failed to decode audio: ${path}`, err);
+      logger.audioPlayer.warn(`Failed to decode audio: ${path}`, { error: err });
       return null;
     } finally {
       pendingDecodes.delete(path);
@@ -458,7 +459,7 @@ const tryPlayFile = async (
       return true;
     }
   } catch (err) {
-    console.warn(`Failed to load audio: ${path}`, err);
+    logger.audioPlayer.warn(`Failed to load audio: ${path}`, { error: err });
   }
 
   // Fallback to HTMLAudioElement (higher latency but more compatible)
@@ -475,7 +476,7 @@ const tryPlayFile = async (
     await clone.play();
     return true;
   } catch (err) {
-    console.warn(`Failed to play ${path}:`, err);
+    logger.audioPlayer.warn(`Failed to play ${path}`, { error: err });
     return false;
   }
 };
@@ -554,7 +555,7 @@ export const playSound = async (
     return 'oscillator';
   }
 
-  console.warn(`No sound available for: ${filename}`);
+  logger.audioPlayer.warn(`No sound available for: ${filename}`);
   return 'none';
 };
 

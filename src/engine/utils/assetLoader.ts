@@ -8,6 +8,8 @@
  * 4. Silent (music/voices)
  */
 
+import { logger } from '../services/logger';
+
 /** Get base path for assets */
 export const getBasePath = (): string => {
   return import.meta.env.BASE_URL || '/';
@@ -112,7 +114,7 @@ export const preloadAssets = async (
         const audio = await preloadAudioFile(resolution.path);
         cache.set(filename, audio);
       } catch (err) {
-        console.warn(`Failed to preload ${type}/${filename}:`, err);
+        logger.assetLoader.warn(`Failed to preload ${type}/${filename}`, { error: err });
       }
     }
   });

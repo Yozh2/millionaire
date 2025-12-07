@@ -7,8 +7,8 @@
 
 import { Link } from 'react-router-dom';
 
-import { LoadingScreen } from '../engine/components/LoadingScreen';
-import { useFavicon, useGameIcon, useAssetPreloader } from '../engine/hooks';
+import { LoadingScreen } from '../../engine/components/LoadingScreen';
+import { useFavicon, useGameIcon, useAssetPreloader } from '../../engine/hooks';
 
 interface GameCardData {
   id: string;

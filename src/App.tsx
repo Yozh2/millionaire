@@ -17,7 +17,7 @@
 
 import { lazy, Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { GameSelector } from './components/GameSelector';
+import { GameSelector } from './app/components/GameSelector';
 
 // Lazy load game configs for code splitting
 const PocGame = lazy(() => import('./pages/PocPage'));
