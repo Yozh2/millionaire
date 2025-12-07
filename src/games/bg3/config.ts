@@ -99,6 +99,9 @@ export const bg3Config: GameConfig = {
 
   emoji: '⚔️',
 
+  // Georgia - классический шрифт для фэнтези-тематики
+  fontFamily: 'Georgia, "Times New Roman", serif',
+
   campaigns: [heroCampaign, mindFlayerCampaign, darkUrgeCampaign],
 
   questionPools: {

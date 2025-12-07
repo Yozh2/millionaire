@@ -95,6 +95,9 @@ export const transformersConfig: GameConfig = {
 
   emoji: '🤖',
 
+  // Neuropol X RG — футуристический технологичный шрифт
+  fontFamily: '"Neuropol X Rg", "Roboto", "Helvetica Neue", sans-serif',
+
   campaigns: [megatronCampaign, autocracyCampaign, skyboundCampaign],
 
   questionPools: {

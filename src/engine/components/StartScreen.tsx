@@ -80,13 +80,13 @@ export function StartScreen({
       <Panel className="p-1 animate-slide-in stagger-2">
         <PanelHeader>{config.strings.selectPath}</PanelHeader>
         <div className="text-center py-8 px-4">
-          <p className="text-amber-200 text-base mb-6 max-w-md mx-auto leading-relaxed font-serif">
+          <p className="text-amber-200 text-base mb-6 max-w-md mx-auto leading-relaxed">
             {config.strings.introText}
           </p>
 
           {/* Mode Selection */}
           <div className="mb-8">
-            <p className="text-amber-400 text-sm mb-4 font-serif tracking-wide">
+            <p className="text-amber-400 text-sm mb-4 tracking-wide">
               {config.strings.selectPath}
             </p>
             <div className="flex justify-center gap-4 md:gap-6 flex-wrap">
@@ -119,12 +119,12 @@ export function StartScreen({
                   >
                     <CampaignIcon />
                     <span
-                      className="text-sm font-serif font-bold"
+                      className="text-sm font-bold"
                       style={{ color: isSelected ? campaign.theme.glowColor : campaign.theme.glowSecondary }}
                     >
                       {campaign.name}
                     </span>
-                    <span className="text-xs text-stone-500 font-serif">
+                    <span className="text-xs text-stone-500">
                       {campaign.label}
                     </span>
                   </button>
@@ -139,7 +139,7 @@ export function StartScreen({
             onMouseDown={() => selectedCampaign && onBigButtonPress()}
             onTouchStart={() => selectedCampaign && onBigButtonPress()}
             disabled={!selectedCampaign}
-            className={`action-btn px-8 py-3 font-bold text-lg tracking-wide border-4 font-serif ${
+            className={`action-btn px-8 py-3 font-bold text-lg tracking-wide border-4 ${
               selectedCampaign
                 ? `bg-gradient-to-b ${theme.bgButton} text-white ${theme.borderLight}`
                 : 'bg-gradient-to-b from-stone-700 via-stone-800 to-stone-900 text-stone-500 border-stone-600 cursor-not-allowed'

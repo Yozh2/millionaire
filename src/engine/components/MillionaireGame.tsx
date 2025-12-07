@@ -20,7 +20,7 @@ import {
   useAssetPreloader,
 } from '../hooks';
 import { assetLoader } from '../services';
-import { GameConfig, ThemeColors, Campaign } from '../types';
+import { GameConfig, ThemeColors, Campaign, DEFAULT_FONT_FAMILY } from '../types';
 import { EndScreen } from './EndScreen';
 import { GameScreen } from './GameScreen';
 import { LoadingScreen } from './LoadingScreen';
@@ -167,7 +167,7 @@ export function MillionaireGame({ config }: MillionaireGameProps) {
         className="min-h-screen p-4 transition-all duration-500 relative overflow-hidden"
         style={{
           background: getBackgroundStyle(),
-          fontFamily: 'Georgia, serif',
+          fontFamily: config.fontFamily || DEFAULT_FONT_FAMILY,
         }}
       >
         {/* Loading Screen for Level 1 */}
@@ -250,7 +250,7 @@ export function MillionaireGame({ config }: MillionaireGameProps) {
           )}
 
           {/* Footer */}
-          <div className="text-center mt-4 text-xs tracking-wide font-serif italic text-amber-400/70">
+          <div className="text-center mt-4 text-xs tracking-wide italic text-amber-400/70">
             {config.strings.footer}
           </div>
         </div>

@@ -45,17 +45,17 @@ const GAMES: GameCardData[] = [
     borderColor: 'border-amber-500',
     available: true,
   },
-  {
-    id: 'transformers',
-    path: '/transformers',
-    title: 'TRANSFORMERS',
-    subtitle: 'COMICS EDITION',
-    description: 'Викторина по комиксам про Трансформеров',
-    emoji: '🤖',
-    gradient: 'from-purple-700 via-red-600 to-purple-800',
-    borderColor: 'border-purple-500',
-    available: true,
-  },
+  // {
+  //   id: 'transformers',
+  //   path: '/transformers',
+  //   title: 'TRANSFORMERS',
+  //   subtitle: 'COMICS EDITION',
+  //   description: 'Викторина по комиксам про Трансформеров',
+  //   emoji: '🤖',
+  //   gradient: 'from-purple-700 via-red-600 to-purple-800',
+  //   borderColor: 'border-purple-500',
+  //   available: true,
+  // },
 ];
 
 /**

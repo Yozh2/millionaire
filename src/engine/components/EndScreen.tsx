@@ -268,17 +268,17 @@ export function EndScreen({
           </div>
 
           <h2
-            className={`text-2xl font-bold mt-4 mb-4 tracking-wide font-serif animate-slide-in stagger-4 ${getTitleColor()}`}
+            className={`text-2xl font-bold mt-4 mb-4 tracking-wide animate-slide-in stagger-4 ${getTitleColor()}`}
             style={{ textShadow: getTextShadow() }}
           >
             {getTitle()}
           </h2>
 
-          <p className={`${theme.textSecondary} text-lg mb-2 font-serif`}>
+          <p className={`${theme.textSecondary} text-lg mb-2`}>
             {getText()}
           </p>
 
-          <div className="flex items-center justify-center gap-2 text-xl text-yellow-300 font-bold mb-6 font-serif animate-prize stagger-5">
+          <div className="flex items-center justify-center gap-2 text-xl text-yellow-300 font-bold mb-6 animate-prize stagger-5">
             {CoinIcon && <CoinIcon />}
             <span>
               {config.strings.prizeLabel} {wonPrize} {config.prizes.currency}
@@ -291,7 +291,7 @@ export function EndScreen({
               onClick={onNewGame}
               onMouseDown={onBigButtonPress}
               onTouchStart={onBigButtonPress}
-              className={`action-btn px-8 py-3 bg-gradient-to-b ${theme.bgButton} text-white font-bold text-lg tracking-wide border-4 ${theme.borderLight} font-serif`}
+              className={`action-btn px-8 py-3 bg-gradient-to-b ${theme.bgButton} text-white font-bold text-lg tracking-wide border-4 ${theme.borderLight}`}
               style={{
                 ['--btn-glow' as string]: theme.glow,
                 boxShadow: `0 5px 20px rgba(0, 0, 0, 0.3), 0 0 25px ${theme.glow}`,

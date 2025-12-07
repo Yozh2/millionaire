@@ -163,7 +163,7 @@ export function GameScreen({
   const getAnswerStyle = (displayIndex: number): string => {
     const base =
       'relative px-4 py-3 text-left transition-all duration-300 ' +
-      'cursor-pointer text-sm font-serif border-4 ';
+      'cursor-pointer text-sm border-4 ';
 
     // Eliminated by 50:50
     if (eliminatedAnswers.includes(displayIndex)) {
@@ -276,7 +276,7 @@ export function GameScreen({
                   >
                     <CampaignIcon />
                     <span
-                      className="text-xs font-serif"
+                      className="text-xs"
                       style={{ color: campaign.theme.glowColor }}
                     >
                       {campaign.name}
@@ -309,19 +309,19 @@ export function GameScreen({
             </PanelHeader>
             <div className="p-4">
               <div className="flex justify-between items-center mb-3">
-                <span className="text-amber-400 text-xs font-serif italic">
+                <span className="text-amber-400 text-xs italic">
                   {config.strings.progressLabel}: {currentQuestion + 1}/
                   {totalQuestions}
                 </span>
                 <span
-                  className={`${theme.textPrimary} font-bold flex items-center font-serif`}
+                  className={`${theme.textPrimary} font-bold flex items-center`}
                 >
                   <CoinIcon />
                   {prizes[currentQuestion]}
                 </span>
               </div>
               <p
-                className={`${theme.textAccent} text-base leading-relaxed font-serif`}
+                className={`${theme.textAccent} text-base leading-relaxed`}
               >
                 {questionData.question}
               </p>
@@ -363,18 +363,18 @@ export function GameScreen({
               <div className="p-3">
                 {hint.type === 'phone' && (
                   <div>
-                    <p className="text-amber-400 text-xs mb-1 font-serif italic">
+                    <p className="text-amber-400 text-xs mb-1 italic">
                       <PhoneHintIcon /> {config.strings.hintSenderLabel}{' '}
                       {hint.name}
                     </p>
-                    <p className="text-amber-300 italic font-serif">
+                    <p className="text-amber-300 italic">
                       "{hint.text}"
                     </p>
                   </div>
                 )}
                 {hint.type === 'audience' && (
                   <div>
-                    <p className="text-amber-400 text-xs mb-2 font-serif italic">
+                    <p className="text-amber-400 text-xs mb-2 italic">
                       <AudienceHintIcon /> {config.strings.hintAudienceLabel}
                     </p>
                     <div className="grid grid-cols-4 gap-2">
@@ -390,7 +390,7 @@ export function GameScreen({
                             />
                           </div>
                           <span
-                            className={`text-xs ${theme.textPrimary} font-serif`}
+                            className={`text-xs ${theme.textPrimary}`}
                           >
                             [{['A', 'B', 'C', 'D'][i]}] {p}%
                           </span>
@@ -410,7 +410,7 @@ export function GameScreen({
               <button
                 onClick={handleFiftyFiftyWithSound}
                 disabled={!lifelines.fiftyFifty || selectedAnswer !== null}
-                className={`lifeline-btn px-4 py-2 text-sm border-3 font-serif ${
+                className={`lifeline-btn px-4 py-2 text-sm border-3 ${
                   lifelines.fiftyFifty && selectedAnswer === null
                     ? 'bg-gradient-to-b from-orange-700 to-orange-900 border-orange-500 text-orange-100'
                     : 'bg-stone-950 border-stone-800 text-stone-600 cursor-not-allowed'
@@ -429,7 +429,7 @@ export function GameScreen({
               <button
                 onClick={handlePhoneAFriendWithSound}
                 disabled={!lifelines.phoneAFriend || selectedAnswer !== null}
-                className={`lifeline-btn px-4 py-2 text-sm border-3 font-serif ${
+                className={`lifeline-btn px-4 py-2 text-sm border-3 ${
                   lifelines.phoneAFriend && selectedAnswer === null
                     ? 'bg-gradient-to-b from-blue-700 to-blue-900 border-blue-500 text-blue-100'
                     : 'bg-stone-950 border-stone-800 text-stone-600 cursor-not-allowed'
@@ -449,7 +449,7 @@ export function GameScreen({
               <button
                 onClick={handleAskAudienceWithSound}
                 disabled={!lifelines.askAudience || selectedAnswer !== null}
-                className={`lifeline-btn px-4 py-2 text-sm border-3 font-serif ${
+                className={`lifeline-btn px-4 py-2 text-sm border-3 ${
                   lifelines.askAudience && selectedAnswer === null
                     ? 'bg-gradient-to-b from-teal-700 to-teal-900 border-teal-500 text-teal-100'
                     : 'bg-stone-950 border-stone-800 text-stone-600 cursor-not-allowed'
@@ -469,7 +469,7 @@ export function GameScreen({
               <button
                 onClick={handleTakeMoneyWithSound}
                 disabled={currentQuestion === 0 || selectedAnswer !== null}
-                className={`lifeline-btn px-4 py-2 text-sm border-3 font-serif ${
+                className={`lifeline-btn px-4 py-2 text-sm border-3 ${
                   currentQuestion > 0 && selectedAnswer === null
                     ? 'bg-gradient-to-b from-yellow-700 to-yellow-900 border-yellow-600 text-yellow-100'
                     : 'bg-stone-950 border-stone-800 text-stone-600 cursor-not-allowed'
@@ -509,7 +509,7 @@ export function GameScreen({
               return (
                 <div
                   key={index}
-                  className={`text-xs px-2 py-1 flex justify-between items-center font-serif transition-all border-l-4 ${
+                  className={`text-xs px-2 py-1 flex justify-between items-center transition-all border-l-4 ${
                     isCurrent
                       ? `${theme.bgPrizeCurrent} ${theme.textSecondary} ${theme.borderLight} shadow-lg`
                       : isPassed

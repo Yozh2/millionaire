@@ -389,6 +389,12 @@ export interface HeaderSlideshowConfig {
 // Main Game Config
 // ============================================
 
+/**
+ * Default font family for the engine.
+ * Uses standard system fonts available on all platforms.
+ */
+export const DEFAULT_FONT_FAMILY = 'Arial, Helvetica, sans-serif';
+
 /** Complete game configuration */
 export interface GameConfig {
   /** Unique game identifier (used for asset paths) */
@@ -402,6 +408,14 @@ export interface GameConfig {
 
   /** Fallback emoji icon for the game (used when no favicon found) */
   emoji?: string;
+
+  /**
+   * Font family for the game UI (CSS font-family value).
+   * Should include fallbacks.
+   * Default: Roboto with system fallbacks.
+   * @example '"Orbitron", "Roboto", sans-serif'
+   */
+  fontFamily?: string;
 
   /** Available campaigns/difficulties (2-N) */
   campaigns: Campaign[];
