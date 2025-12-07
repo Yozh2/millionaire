@@ -21,3 +21,4 @@ export {
   DefaultFailIcon,
   DefaultMoneyIcon,
 } from './DefaultIcons';
+export { ErrorBoundary } from './ErrorBoundary';

@@ -10,20 +10,28 @@
     "react-router-dom": "^7.9.6"
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.1",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
     "@vitejs/plugin-react": "^4.2.0",
     "autoprefixer": "^10.4.16",
+    "eslint": "^9.39.1",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-refresh": "^0.4.24",
     "gh-pages": "^6.3.0",
+    "globals": "^16.5.0",
     "postcss": "^8.4.32",
     "tailwindcss": "^3.4.0",
     "typescript": "^5.3.0",
+    "typescript-eslint": "^8.48.1",
     "vite": "^5.0.0"
   },
   "scripts": {
     "dev": "npm run generate:manifests && vite",
     "build": "npm run generate:manifests && vite build",
     "preview": "vite preview",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "deploy": "npm run build && printf '# Override global gitignore\\n!*\\n!**/*\\n' > dist/.gitignore && gh-pages -d dist --no-history --dotfiles",
     "generate:manifests": "node scripts/generate-image-manifest.js && node scripts/generate-asset-manifest.js",
     "generate:assets": "node scripts/generate-asset-manifest.js"

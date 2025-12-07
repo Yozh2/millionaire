@@ -17,16 +17,15 @@ import {
   warmUpAudioContext,
 } from '../utils/audioPlayer';
 import { getAssetPaths, checkFileExists } from '../utils/assetLoader';
+import { STORAGE_KEY_SOUND_ENABLED } from '../constants';
 
 // ============================================
 // LocalStorage helpers
 // ============================================
 
-const SOUND_ENABLED_KEY = 'millionaire_sound_enabled';
-
 const getSavedSoundPreference = (): boolean | null => {
   try {
-    const saved = localStorage.getItem(SOUND_ENABLED_KEY);
+    const saved = localStorage.getItem(STORAGE_KEY_SOUND_ENABLED);
     if (saved === null) return null;
     return saved === 'true';
   } catch {
@@ -36,7 +35,7 @@ const getSavedSoundPreference = (): boolean | null => {
 
 const saveSoundPreference = (enabled: boolean): void => {
   try {
-    localStorage.setItem(SOUND_ENABLED_KEY, String(enabled));
+    localStorage.setItem(STORAGE_KEY_SOUND_ENABLED, String(enabled));
   } catch {
     // Ignore storage errors
   }

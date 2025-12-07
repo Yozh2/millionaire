@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import App from './App';
+import { ErrorBoundary } from './engine/components';
 import './index.css';
 
 // Handle GitHub Pages 404 redirect
@@ -17,8 +18,10 @@ if (redirectPath) {
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <BrowserRouter basename="/millionaire">
-      <App />
-    </BrowserRouter>
+    <ErrorBoundary>
+      <BrowserRouter basename="/millionaire">
+        <App />
+      </BrowserRouter>
+    </ErrorBoundary>
   </React.StrictMode>
 );

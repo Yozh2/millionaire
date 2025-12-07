@@ -11,16 +11,7 @@ import {
   PrizesConfig,
   PrizeLadder,
 } from '../types';
-
-// ============================================
-// Constants
-// ============================================
-
-/** Maximum questions to select from each difficulty tier */
-const MAX_QUESTIONS_PER_TIER = 5;
-
-/** Difficulty tiers in order */
-const DIFFICULTY_TIERS: (keyof QuestionPool)[] = ['easy', 'medium', 'hard'];
+import { MAX_QUESTIONS_PER_TIER, DIFFICULTY_TIERS } from '../constants';
 
 /**
  * Classic "Who Wants to Be a Millionaire" prize multipliers.
