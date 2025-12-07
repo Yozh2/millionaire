@@ -151,29 +151,8 @@ export async function resolveGameIcon(
   gameEmoji?: string
 ): Promise<string> {
   const baseUrl = getBaseUrl();
-  const gameIconBase = `${baseUrl}games/${gameId}/icons`;
-  const sharedIconBase = `${baseUrl}icons`;
-
-  // Fast-path: try known svg locations without HEAD probing to avoid 404 spam
-  const directGameSvg = `${gameIconBase}/favicon.svg`;
-  const directSharedSvg = `${sharedIconBase}/favicon.svg`;
-
-  if (await imageExists(directGameSvg)) {
-    return directGameSvg;
-  }
-  if (await imageExists(directSharedSvg)) {
-    return directSharedSvg;
-  }
-
-  // Slow-path: probe other formats if ever added
-  const faviconUrl = await findFavicon([gameIconBase, sharedIconBase]);
-  if (faviconUrl) {
-    return faviconUrl;
-  }
-
-  // Fallback to emoji (game emoji first, then default)
-  const emoji = gameEmoji || DEFAULT_ENGINE_EMOJI;
-  return createEmojiFavicon(emoji);
+  // Current deployments use shared SVG only; avoid network probes/flicker.
+  return `${baseUrl}icons/favicon.svg`;
 }
 
 /**
