@@ -95,16 +95,25 @@ async function findAppleTouchIcon(
   return null;
 }
 
+let currentFaviconHref: string | null = null;
+let currentAppleHref: string | null = null;
+
 /**
  * Update or create a link element in the document head.
- * Forces browser to update by removing and recreating the element.
+ * Skips work if href is unchanged to avoid flicker and double-set (StrictMode).
  */
 function updateLinkElement(
-  rel: string,
+  rel: 'icon' | 'apple-touch-icon',
   href: string,
   type?: string,
   sizes?: string
 ): void {
+  const prevHref = rel === 'icon' ? currentFaviconHref : currentAppleHref;
+  if (prevHref === href) {
+    logDebug(`${rel} unchanged`, href);
+    return;
+  }
+
   // Remove existing link to force browser refresh (Safari workaround)
   const existingLinks = document.querySelectorAll(
     `link[rel="${rel}"], link[rel="shortcut icon"]`
@@ -127,6 +136,12 @@ function updateLinkElement(
     link.setAttribute('sizes', sizes);
   }
   document.head.appendChild(link);
+
+  if (rel === 'icon') {
+    currentFaviconHref = href;
+  } else {
+    currentAppleHref = href;
+  }
 }
 
 /**
