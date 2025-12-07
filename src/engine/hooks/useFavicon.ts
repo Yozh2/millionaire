@@ -173,8 +173,16 @@ export async function resolveGameIcon(
  */
 export async function resolveSharedIcon(): Promise<string> {
   const baseUrl = getBaseUrl();
-  const searchPaths = [`${baseUrl}icons`];
+  // Use known shared svg directly to avoid HEAD probes/404 noise
+  const directUrl = `${baseUrl}icons/favicon.svg`;
 
+  // Try direct SVG first (fast path)
+  if (await imageExists(directUrl)) {
+    return directUrl;
+  }
+
+  // Fallback search (if png/ico are ever added)
+  const searchPaths = [`${baseUrl}icons`];
   const faviconUrl = await findFavicon(searchPaths);
   if (faviconUrl) {
     return faviconUrl;
