@@ -2,103 +2,235 @@
 
 ## Project Overview
 
-A reusable "Who Wants to Be a Millionaire" quiz game engine supporting multiple themed games. Currently features BG3 (Baldur's Gate 3) edition with plans for Transformers and other themes.
+A reusable "Who Wants to Be a Millionaire" quiz game engine supporting multiple themed games. Currently features BG3 (Baldur's Gate 3) and Transformers editions.
 
-## Architecture
-
-**Engine-Game Separation**: The codebase separates reusable engine logic from game-specific content:
+## Source Code Structure
 
 ```
 src/
-├── engine/              # Reusable quiz game engine
-│   ├── components/      # MillionaireGame, StartScreen, GameScreen, EndScreen
-│   ├── hooks/           # useGameState (logic), useAudio (sound management)
-│   ├── context/         # ThemeProvider for dynamic theming
-│   ├── types/           # GameConfig, Question, Campaign, ThemeColors interfaces
-│   └── utils/           # Asset loading with fallback support
-├── games/               # Game configurations
-│   ├── bg3/             # BG3: config, questions, themes, icons
-│   └── poc/             # Proof of Concept test game (no external assets)
-├── pages/               # Route components (BG3Page, PocPage)
-├── components/          # Shared UI (GameSelector, Panel)
-└── App.tsx              # Router with lazy-loaded game pages
+├── engine/                    # Reusable quiz game engine
+│   ├── components/            # React components
+│   │   ├── MillionaireGame.tsx    # Main game wrapper
+│   │   ├── StartScreen.tsx        # Campaign selection
+│   │   ├── GameScreen.tsx         # Question/answer gameplay
+│   │   ├── EndScreen.tsx          # Win/lose/took money screens
+│   │   ├── HeaderSlideshow.tsx    # Background image slideshow
+│   │   ├── LoadingScreen.tsx      # Asset loading progress bar
+│   │   └── ParticleCanvas.tsx     # Visual effects
+│   ├── hooks/
+│   │   ├── useGameState.ts        # Game logic state machine
+│   │   ├── useAudio.ts            # Music/sound management
+│   │   ├── useAssetPreloader.ts   # React hook for asset loading
+│   │   └── useEffects.ts          # Visual effects hook
+│   ├── services/
+│   │   ├── AssetLoader.ts         # Singleton for asset preloading/caching
+│   │   └── types.ts               # AssetManifest, LoadLevel types
+│   ├── context/
+│   │   └── ThemeContext.tsx       # Dynamic theme provider
+│   ├── types/
+│   │   └── index.ts               # GameConfig, Question, Campaign, etc.
+│   └── utils/
+│       ├── assetLoader.ts         # Legacy asset path resolution
+│       ├── audioPlayer.ts         # Web Audio API + HTMLAudioElement
+│       └── questionGenerator.ts   # Question selection logic
+├── games/                     # Game configurations (TypeScript)
+│   ├── bg3/                       # Baldur's Gate 3
+│   │   ├── config.ts              # GameConfig export
+│   │   ├── questions.ts           # Questions per campaign
+│   │   ├── themes.ts              # ThemeColors per campaign
+│   │   └── icons.tsx              # SVG icon components
+│   ├── transformers/              # Transformers edition
+│   └── poc/                       # Proof of Concept (no assets)
+├── pages/                     # Route page components
+│   ├── BG3Page.tsx
+│   ├── TransformersPage.tsx
+│   └── PocPage.tsx
+├── components/                # Shared UI components
+│   ├── GameSelector.tsx           # Game selection cards
+│   └── ui/Panel.tsx               # Styled panel component
+└── App.tsx                    # Router with lazy-loaded pages
 ```
 
-**Data Flow**: `App.tsx` → `pages/*Page.tsx` → `<MillionaireGame config={gameConfig} />` → engine hooks manage state/audio
+## Public Assets Structure
+
+```
+public/
+├── asset-manifest.json        # Generated: all assets indexed by level
+├── images/
+│   └── manifest.json          # Engine fallback images (empty)
+└── games/
+    ├── bg3/                   # BG3 game assets
+    │   ├── icons/
+    │   │   └── favicon.svg
+    │   ├── images/
+    │   │   ├── manifest.json  # Generated: image paths
+    │   │   ├── start/         # StartScreen backgrounds
+    │   │   ├── play/          # GameScreen backgrounds
+    │   │   │   ├── easy/
+    │   │   │   ├── medium/
+    │   │   │   └── hard/
+    │   │   ├── end/           # EndScreen backgrounds
+    │   │   │   ├── won/
+    │   │   │   ├── lost/
+    │   │   │   └── took/
+    │   │   └── campaigns/     # Per-campaign overrides
+    │   │       └── {campaignId}/
+    │   ├── music/
+    │   │   ├── MainMenu.ogg
+    │   │   ├── GameOver.ogg
+    │   │   ├── Victory.ogg
+    │   │   ├── TakeMoney.ogg
+    │   │   └── {CampaignId}.ogg
+    │   ├── sounds/            # Sound effects (Web Audio API)
+    │   │   ├── AnswerClick.ogg
+    │   │   ├── BigButtonPress.ogg
+    │   │   ├── HintReduce.ogg
+    │   │   ├── HintCall.ogg
+    │   │   ├── HintVote.ogg
+    │   │   └── HintTakeMoney.ogg
+    │   └── voices/            # Companion voice lines
+    │       └── {CompanionId}/
+    │           ├── Greeting.ogg
+    │           └── ...
+    └── transformers/          # Same structure as bg3
+```
+
+## Asset Loading System
+
+### Overview
+
+Assets are loaded progressively to minimize initial load time while ensuring smooth gameplay. The system uses:
+- **AssetLoader** singleton service for caching and level-based loading
+- **useAssetPreloader** React hook for progress tracking
+- **LoadingScreen** component for visual feedback
+
+### Loading Levels
+
+| Level | When | What | Blocking |
+|-------|------|------|----------|
+| **Level 0** | GameSelector mount | Engine assets, game favicons | Yes (shows loading bar) |
+| **Level 1** | Game page mount | StartScreen: sounds, icons, main menu music, start images | Yes (shows loading bar) |
+| **Level 1.1** | Campaign button press | Campaign music, easy play images | Background (no UI block) |
+| **Level 2** | Game starts | Medium/hard images, end images, end music | Background |
+
+### Asset Manifest
+
+Generated by `scripts/generate-asset-manifest.js` at build time:
+
+```json
+{
+  "version": "1.0",
+  "generated": "2024-12-07T...",
+  "engine": { "icons": [], "images": [], "sounds": [] },
+  "games": {
+    "bg3": {
+      "cardAssets": { "favicon": "...", "logo": null },
+      "level1": { "sounds": [...], "icons": [...], "mainMenuMusic": "..." },
+      "level2": { "gameOverMusic": "...", "endImages": {...} },
+      "voices": [...],
+      "campaigns": {
+        "hero": {
+          "level1_1": { "music": "...", "playImages": { "easy": [...] } },
+          "level2": { "playImages": { "medium": [...], "hard": [...] }, "endImages": {...} }
+        }
+      }
+    }
+  }
+}
+```
+
+### Audio System
+
+Two playback methods for different latency requirements:
+
+| Type | API | Latency | Pre-decode | Use Case |
+|------|-----|---------|------------|----------|
+| **Sounds** | Web Audio API (AudioBuffer) | ~0ms | Yes, during Level 1 load | Button clicks, feedback |
+| **Music/Voices** | HTMLAudioElement | ~100-300ms | No (streaming) | Background music, voices |
+
+**iOS/Safari optimization:**
+- `warmUpAudioContext()` called on first user interaction
+- All sounds pre-decoded to AudioBuffer during asset loading
+- AudioContext created/resumed on user gesture
+
+### Key Files
+
+- `src/engine/services/AssetLoader.ts` - Singleton, loads assets by level, caches in memory
+- `src/engine/services/types.ts` - TypeScript types for manifest structure
+- `src/engine/hooks/useAssetPreloader.ts` - React hook with progress callback
+- `src/engine/utils/audioPlayer.ts` - `playSound()`, `preDecodeAudio()`, `warmUpAudioContext()`
+- `scripts/generate-asset-manifest.js` - Scans /public/ and generates manifest
+
+### Usage Example
+
+```tsx
+// In MillionaireGame.tsx
+const { isLoading, progress } = useAssetPreloader(
+  'level1',
+  config.id,
+  undefined, // campaignId
+  true       // wait for completion
+);
+
+if (isLoading) {
+  return <LoadingScreen progress={progress} message="Loading..." />;
+}
+```
 
 ## Development Commands
 
 ```bash
-npm run dev      # Start dev server (http://localhost:5173)
-npm run build    # Build for production → /dist
-npm run deploy   # Build and deploy to GitHub Pages
+npm run dev              # Start dev server (http://localhost:5173)
+npm run build            # Generate manifests + Vite build → /dist
+npm run deploy           # Build and deploy to GitHub Pages
+npm run generate:manifests  # Regenerate asset-manifest.json + image manifests
 ```
 
 ## Creating a New Game
 
-1. Create folder `src/games/{gameId}/` with:
-   - `config.ts` - Export `GameConfig` object (see `src/engine/types/index.ts`)
-   - `questions.ts` - Questions array per campaign
-   - `themes.ts` - `ThemeColors` per campaign
-   - `icons.tsx` - SVG icon components
-
-2. Add assets to `public/games/{gameId}/`:
-   ```
-   public/games/{gameId}/
-   ├── music/      # Background music per campaign
-   ├── sounds/     # Sound effects (see Sound Terminology below)
-   └── voices/     # Companion voice lines
-   ```
-
-3. Create page in `src/pages/{GameId}Page.tsx`
-4. Add route in `src/App.tsx`
-5. Add card to `src/components/GameSelector.tsx`
+1. **Config**: Create `src/games/{gameId}/` with config.ts, questions.ts, themes.ts, icons.tsx
+2. **Assets**: Add to `public/games/{gameId}/` (music/, sounds/, voices/, images/)
+3. **Page**: Create `src/pages/{GameId}Page.tsx`
+4. **Route**: Add to `src/App.tsx`
+5. **Card**: Add to `src/components/GameSelector.tsx`
+6. **Manifest**: Run `npm run generate:manifests`
 
 ## Key Interfaces
 
 ```typescript
-// Complete game config (src/engine/types/index.ts)
 interface GameConfig {
-  id: string;                          // Asset path prefix
+  id: string;                          // Used in asset paths: /games/{id}/
   title: string; subtitle: string;
-  campaigns: Campaign[];               // Difficulty modes
+  campaigns: Campaign[];               // Selectable game modes
   questions: Record<string, Question[]>;
   companions: Companion[];
-  strings: GameStrings;                // All UI text
+  strings: GameStrings;                // All UI text (Russian)
   lifelines: LifelinesConfig;
   prizes: PrizesConfig;
   audio: AudioConfig;
 }
 
-// Question format
 interface Question {
   question: string;
   answers: string[];      // Exactly 4 answers
   correct: number;        // Index 0-3
   difficulty: number;     // 1-3 stars
 }
+
+type LoadLevel = 'level0' | 'level1' | 'level1_1' | 'level2';
+type GameState = 'start' | 'playing' | 'won' | 'lost' | 'took_money';
 ```
-
-## Asset Loading (Priority)
-
-1. Game-specific: `/games/{gameId}/sounds/AnswerClick.ogg`
-2. Shared fallback: `/games/shared/sounds/AnswerClick.ogg`
-3. Oscillator tone (sounds only)
 
 ## Sound Terminology
 
-Three button types with unified naming:
-
 | Button Type | Config Key | OGG File | Description |
 |-------------|------------|----------|-------------|
-| **AnswerButton** | `answerButton` | `AnswerClick.ogg` | Answer option click |
-| **BigButton** | `bigButton` | `BigButtonPress.ogg` | Start game / Restart |
-| **HintButton** | `hintReduceButton` | `HintReduce.ogg` | 50:50 lifeline |
+| AnswerButton | `answerButton` | `AnswerClick.ogg` | Answer option click |
+| BigButton | `bigButton` | `BigButtonPress.ogg` | Start/Restart button |
+| HintButton | `hintReduceButton` | `HintReduce.ogg` | 50:50 lifeline |
 | | `hintCallButton` | `HintCall.ogg` | Phone a friend |
 | | `hintVoteButton` | `HintVote.ogg` | Ask the audience |
 | | `hintTakeMoneyButton` | `HintTakeMoney.ogg` | Take money |
-
-Other sounds: `correct`, `victory`, `defeat` (game events, not buttons).
 
 ## Conventions
 
@@ -106,21 +238,17 @@ Other sounds: `correct`, `victory`, `defeat` (game events, not buttons).
 - **Types**: All types in `src/engine/types/index.ts`, use barrel exports
 - **Styling**: Tailwind CSS with theme-aware classes from `ThemeColors`
 - **State**: Game logic in `useGameState` hook, audio in `useAudio` hook
-- **Components**: Functional components with JSDoc, props interfaces
-
-## Game States
-
-`GameState = 'start' | 'playing' | 'won' | 'lost' | 'took_money'`
+- **Exports**: Use barrel exports (index.ts) for clean imports
 
 ## Theming
 
-Access current theme via `useTheme()` hook. Theme includes ~40 Tailwind class strings for consistent styling across campaigns. Example from `src/games/bg3/themes.ts`:
+Access via `useTheme()` hook. Theme includes ~40 Tailwind class strings:
 
 ```typescript
 const heroTheme: ThemeColors = {
   primary: 'amber',
   textPrimary: 'text-amber-100',
   bgButton: 'from-amber-600 via-amber-700 to-amber-800',
-  // ... (see ThemeColors interface for all properties)
+  // ... see src/engine/types/index.ts for full interface
 };
 ```

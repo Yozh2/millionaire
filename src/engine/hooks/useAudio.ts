@@ -13,6 +13,8 @@ import {
   playSound,
   playVoice,
   playSoundByType,
+  ensureAudioContext,
+  warmUpAudioContext,
 } from '../utils/audioPlayer';
 import { getAssetPaths, checkFileExists } from '../utils/assetLoader';
 
@@ -307,6 +309,10 @@ export const useAudio = (
       userDisabledMusic.current = false;
       setEngineSoundEnabled(true);
       saveSoundPreference(true);
+
+      // Ensure AudioContext is ready and warm it up (critical for iOS)
+      ensureAudioContext();
+      warmUpAudioContext();
 
       // Try to play music if there's a track
       if (audio && currentTrack) {

@@ -51,8 +51,14 @@ let audioSupported = true;
 // Sound is disabled by default until user enables music
 let soundEnabled = false;
 
-// Cache for preloaded audio elements
+// Cache for preloaded audio elements (for music/voice - HTMLAudioElement)
 const audioCache: Map<string, HTMLAudioElement> = new Map();
+
+// Cache for decoded AudioBuffers (for sound effects - Web Audio API)
+const audioBufferCache: Map<string, AudioBuffer> = new Map();
+
+// Pending decode promises to avoid duplicate decoding
+const pendingDecodes: Map<string, Promise<AudioBuffer | null>> = new Map();
 
 // Current game ID for asset resolution
 let currentGameId: string = '';
@@ -80,6 +86,73 @@ export const setSoundEnabled = (enabled: boolean): void => {
  */
 export const isSoundEnabled = (): boolean => {
   return soundEnabled;
+};
+
+/**
+ * Get or create AudioContext (for external use)
+ */
+export const getOrCreateAudioContext = (): AudioContext | null => {
+  return getAudioContext();
+};
+
+/**
+ * Pre-decode an ArrayBuffer into AudioBuffer and cache it.
+ * Call this during asset loading for instant playback later.
+ */
+export const preDecodeAudio = async (
+  path: string,
+  arrayBuffer: ArrayBuffer
+): Promise<boolean> => {
+  // Check if already cached
+  if (audioBufferCache.has(path)) {
+    return true;
+  }
+
+  // Need AudioContext for decoding - create it if needed
+  // Note: This may fail on iOS before user interaction, which is OK
+  // The buffer will be decoded on first play instead
+  const ctx = getAudioContext();
+  if (!ctx) {
+    // Store raw buffer for later decoding
+    return false;
+  }
+
+  try {
+    const buffer = await ctx.decodeAudioData(arrayBuffer.slice(0));
+    audioBufferCache.set(path, buffer);
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+/**
+ * Check if an audio buffer is pre-decoded and ready for instant playback.
+ */
+export const isAudioDecoded = (path: string): boolean => {
+  return audioBufferCache.has(path);
+};
+
+/**
+ * "Warm up" AudioContext by playing a silent buffer.
+ * Call this on first user interaction for iOS.
+ * This unlocks the AudioContext and reduces latency for subsequent sounds.
+ */
+export const warmUpAudioContext = (): void => {
+  const ctx = getAudioContext();
+  if (!ctx) return;
+
+  // Resume if suspended (iOS requirement)
+  if (ctx.state === 'suspended') {
+    ctx.resume().catch(() => {});
+  }
+
+  // Play a very short silent buffer to fully unlock audio
+  const silentBuffer = ctx.createBuffer(1, 1, ctx.sampleRate);
+  const source = ctx.createBufferSource();
+  source.buffer = silentBuffer;
+  source.connect(ctx.destination);
+  source.start(0);
 };
 
 // ============================================
@@ -221,7 +294,82 @@ const getAudioContext = (): AudioContext | null => {
     }
   }
 
+  // Resume AudioContext if suspended (iOS requirement)
+  if (audioContext.state === 'suspended') {
+    audioContext.resume().catch(() => {
+      // Ignore resume errors - will retry on next interaction
+    });
+  }
+
   return audioContext;
+};
+
+/**
+ * Ensure AudioContext is ready (call on user interaction for iOS)
+ */
+export const ensureAudioContext = (): void => {
+  const ctx = getAudioContext();
+  if (ctx && ctx.state === 'suspended') {
+    ctx.resume().catch(() => {});
+  }
+};
+
+/**
+ * Decode audio data and cache the AudioBuffer
+ */
+const decodeAndCacheAudio = async (
+  path: string,
+  arrayBuffer: ArrayBuffer
+): Promise<AudioBuffer | null> => {
+  const ctx = getAudioContext();
+  if (!ctx) return null;
+
+  // Check if already cached
+  const cached = audioBufferCache.get(path);
+  if (cached) return cached;
+
+  // Check if already decoding
+  const pending = pendingDecodes.get(path);
+  if (pending) return pending;
+
+  // Start decoding
+  const decodePromise = (async () => {
+    try {
+      // Clone buffer since decodeAudioData consumes it
+      const buffer = await ctx.decodeAudioData(arrayBuffer.slice(0));
+      audioBufferCache.set(path, buffer);
+      return buffer;
+    } catch (err) {
+      console.warn(`Failed to decode audio: ${path}`, err);
+      return null;
+    } finally {
+      pendingDecodes.delete(path);
+    }
+  })();
+
+  pendingDecodes.set(path, decodePromise);
+  return decodePromise;
+};
+
+/**
+ * Play an AudioBuffer with Web Audio API (low latency)
+ */
+const playAudioBuffer = (
+  buffer: AudioBuffer,
+  volume: number = 1.0
+): void => {
+  const ctx = getAudioContext();
+  if (!ctx) return;
+
+  const source = ctx.createBufferSource();
+  const gainNode = ctx.createGain();
+
+  source.buffer = buffer;
+  source.connect(gainNode);
+  gainNode.connect(ctx.destination);
+  gainNode.gain.value = volume;
+
+  source.start(0);
 };
 
 /**
@@ -282,25 +430,47 @@ const playOscillatorSound = (config: OscillatorSoundConfig): void => {
 // ============================================
 
 /**
- * Try to play an audio file, returns true if successful
+ * Try to play a sound using Web Audio API (low latency)
+ * Falls back to HTMLAudioElement if buffer not available
  */
 const tryPlayFile = async (
   path: string,
   volume: number
 ): Promise<boolean> => {
-  // Check cache first
+  // Check AudioBuffer cache first (fastest path)
+  const cachedBuffer = audioBufferCache.get(path);
+  if (cachedBuffer) {
+    playAudioBuffer(cachedBuffer, volume);
+    return true;
+  }
+
+  // Check if file exists
+  const exists = await checkFileExists(path);
+  if (!exists) return false;
+
+  // Try to load and decode for Web Audio API
+  try {
+    const response = await fetch(path);
+    if (!response.ok) return false;
+
+    const arrayBuffer = await response.arrayBuffer();
+    const audioBuffer = await decodeAndCacheAudio(path, arrayBuffer);
+
+    if (audioBuffer) {
+      playAudioBuffer(audioBuffer, volume);
+      return true;
+    }
+  } catch (err) {
+    console.warn(`Failed to load audio: ${path}`, err);
+  }
+
+  // Fallback to HTMLAudioElement (higher latency but more compatible)
   let audio = audioCache.get(path);
-
   if (!audio) {
-    // Try to load the file
-    const exists = await checkFileExists(path);
-    if (!exists) return false;
-
     audio = new Audio(path);
     audioCache.set(path, audio);
   }
 
-  // Clone for overlapping plays
   const clone = audio.cloneNode() as HTMLAudioElement;
   clone.volume = volume;
 
@@ -469,13 +639,14 @@ export const playVoice = async (
 };
 
 /**
- * Preload sound files for a game
+ * Preload and decode sound files for a game (optimized for low latency)
  */
 export const preloadSounds = async (
   filenames: string[],
   gameId: string
 ): Promise<void> => {
-  const basePath = getBasePath();
+  // Ensure AudioContext exists for decoding
+  getAudioContext();
 
   for (const filename of filenames) {
     const paths = getAssetPaths('sounds', filename, gameId);
@@ -485,10 +656,12 @@ export const preloadSounds = async (
       try {
         const exists = await checkFileExists(path);
         if (exists) {
-          const audio = new Audio();
-          audio.preload = 'auto';
-          audio.src = path;
-          audioCache.set(path, audio);
+          // Fetch and decode for Web Audio API
+          const response = await fetch(path);
+          if (response.ok) {
+            const arrayBuffer = await response.arrayBuffer();
+            await decodeAndCacheAudio(path, arrayBuffer);
+          }
           break;
         }
       } catch {
@@ -503,4 +676,6 @@ export const preloadSounds = async (
  */
 export const clearAudioCache = (): void => {
   audioCache.clear();
+  audioBufferCache.clear();
+  pendingDecodes.clear();
 };

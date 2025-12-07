@@ -63,6 +63,10 @@ export {
   playVoice,
   preloadSounds,
   clearAudioCache,
+  ensureAudioContext,
+  preDecodeAudio,
+  warmUpAudioContext,
+  isAudioDecoded,
 } from './utils/audioPlayer';
 
 export {

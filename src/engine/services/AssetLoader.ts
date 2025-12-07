@@ -21,6 +21,7 @@ import type {
   LoadLevel,
   ProgressCallback,
 } from './types';
+import { preDecodeAudio } from '../utils/audioPlayer';
 
 /** Base path for assets (handles GitHub Pages deployment) */
 const BASE_PATH = import.meta.env.BASE_URL || '/';
@@ -429,7 +430,7 @@ class AssetLoader {
   }
 
   /**
-   * Load an audio asset.
+   * Load an audio asset and pre-decode it for low-latency playback.
    */
   private loadAudio(fullUrl: string, cacheKey: string): Promise<void> {
     return fetch(fullUrl)
@@ -439,9 +440,15 @@ class AssetLoader {
         }
         return res.arrayBuffer();
       })
-      .then((buffer) => {
+      .then(async (buffer) => {
         this.cache.audio.set(cacheKey, buffer);
         this.state.loaded.add(cacheKey);
+
+        // Pre-decode sound effects for instant playback
+        // This is critical for low-latency audio on mobile
+        if (cacheKey.includes('/sounds/')) {
+          await preDecodeAudio(cacheKey, buffer);
+        }
       });
   }
 

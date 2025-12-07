@@ -217,7 +217,6 @@ export const HeaderSlideshow: React.FC<HeaderSlideshowProps> = ({
   // Load images with fallback
   useEffect(() => {
     if (!enabled) {
-      console.log('[Slideshow] Disabled, skipping load');
       setIsLoading(false);
       return;
     }
@@ -225,12 +224,10 @@ export const HeaderSlideshow: React.FC<HeaderSlideshowProps> = ({
     let cancelled = false;
 
     async function resolveImages() {
-      console.log('[Slideshow] resolveImages starting, fallbackPaths:', fallbackPaths);
       for (const { path, campaignPath } of fallbackPaths) {
         if (cancelled) return;
 
         const manifest = await loadManifest(path);
-        console.log('[Slideshow] Loaded manifest from', path, ':', manifest);
         if (!manifest) continue;
 
         // Try campaign-specific first
@@ -240,7 +237,6 @@ export const HeaderSlideshow: React.FC<HeaderSlideshowProps> = ({
 
         if (campaignPath && manifest.campaigns) {
           const campaignManifest = manifest.campaigns[campaignId!];
-          console.log('[Slideshow] Trying campaign manifest for', campaignId, ':', campaignManifest);
           const result = getImagesFromManifest(
             campaignManifest,
             screen,
@@ -248,7 +244,6 @@ export const HeaderSlideshow: React.FC<HeaderSlideshowProps> = ({
           );
           resolvedImages = result.images;
           resolvedSubfolder = result.subfolder;
-          console.log('[Slideshow] Campaign result:', result);
           if (resolvedImages.length > 0) {
             resolvedBasePath = `${path}/${campaignPath}`;
           }
@@ -257,13 +252,11 @@ export const HeaderSlideshow: React.FC<HeaderSlideshowProps> = ({
         // Fall back to root level of this manifest
         if (resolvedImages.length === 0) {
           const result = getImagesFromManifest(manifest, screen, difficulty);
-          console.log('[Slideshow] Root level result for screen', screen, ':', result);
           resolvedImages = result.images;
           resolvedSubfolder = result.subfolder;
         }
 
         if (resolvedImages.length > 0) {
-          console.log('[Slideshow] Found images!', { resolvedImages, resolvedBasePath, resolvedSubfolder });
           if (!cancelled) {
             setImages(resolvedImages);
             setBasePath(resolvedBasePath);
@@ -275,7 +268,6 @@ export const HeaderSlideshow: React.FC<HeaderSlideshowProps> = ({
       }
 
       // No images found
-      console.log('[Slideshow] No images found in any fallback');
       if (!cancelled) {
         setImages([]);
         setIsLoading(false);
@@ -343,16 +335,12 @@ export const HeaderSlideshow: React.FC<HeaderSlideshowProps> = ({
 
   // Build full image paths using resolved subfolder
   const getFullPath = (filename: string) => {
-    const path = `${basePath}/${subfolder}/${filename}`;
-    console.log('[Slideshow] getFullPath:', { basePath, subfolder, filename, path });
-    return path;
+    return `${basePath}/${subfolder}/${filename}`;
   };
 
   const currentImagePath = getFullPath(images[currentIndex]);
   const nextImagePath =
     nextIndex !== null ? getFullPath(images[nextIndex]) : null;
-
-  console.log('[Slideshow] Rendering:', { currentImagePath, nextImagePath, images });
 
   return (
     <div
