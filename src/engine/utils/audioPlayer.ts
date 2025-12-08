@@ -53,11 +53,46 @@ const audioCache: Map<string, HTMLAudioElement> = new Map();
 // Cache for decoded AudioBuffers (for sound effects - Web Audio API)
 const audioBufferCache: Map<string, AudioBuffer> = new Map();
 
+// Raw preloaded audio data so playback can avoid refetching
+const preloadedAudioData: Map<string, ArrayBuffer> = new Map();
+
+// Blob URLs created from preloaded buffers (for HTMLAudioElement fallback)
+const preloadedBlobUrls: Map<string, string> = new Map();
+
 // Pending decode promises to avoid duplicate decoding
 const pendingDecodes: Map<string, Promise<AudioBuffer | null>> = new Map();
 
 // Current game ID for asset resolution
 let currentGameId: string = '';
+
+// ============================================
+// Helpers
+// ============================================
+
+const normalizeAudioPath = (path: string): string => {
+  try {
+    return new URL(path, window.location.href).href;
+  } catch {
+    return path;
+  }
+};
+
+const getMimeTypeForPath = (path: string): string => {
+  if (/\.mp3$/i.test(path)) return 'audio/mpeg';
+  if (/\.wav$/i.test(path)) return 'audio/wav';
+  if (/\.m4a$/i.test(path)) return 'audio/mp4';
+  return 'audio/ogg';
+};
+
+const getOrCreateBlobUrl = (key: string, buffer: ArrayBuffer): string => {
+  const existing = preloadedBlobUrls.get(key);
+  if (existing) return existing;
+
+  const blob = new Blob([buffer], { type: getMimeTypeForPath(key) });
+  const url = URL.createObjectURL(blob);
+  preloadedBlobUrls.set(key, url);
+  return url;
+};
 
 // ============================================
 // Configuration
@@ -99,8 +134,11 @@ export const preDecodeAudio = async (
   path: string,
   arrayBuffer: ArrayBuffer
 ): Promise<boolean> => {
+  const key = normalizeAudioPath(path);
+  preloadedAudioData.set(key, arrayBuffer.slice(0));
+
   // Check if already cached
-  if (audioBufferCache.has(path)) {
+  if (audioBufferCache.has(key)) {
     return true;
   }
 
@@ -109,13 +147,12 @@ export const preDecodeAudio = async (
   // The buffer will be decoded on first play instead
   const ctx = getAudioContext();
   if (!ctx) {
-    // Store raw buffer for later decoding
     return false;
   }
 
   try {
     const buffer = await ctx.decodeAudioData(arrayBuffer.slice(0));
-    audioBufferCache.set(path, buffer);
+    audioBufferCache.set(key, buffer);
     return true;
   } catch {
     return false;
@@ -123,10 +160,32 @@ export const preDecodeAudio = async (
 };
 
 /**
+ * Register a preloaded audio buffer without decoding it.
+ * This lets playback reuse the already-downloaded data instead of refetching.
+ */
+export const registerPreloadedAudioBuffer = (
+  path: string,
+  arrayBuffer: ArrayBuffer
+): void => {
+  const key = normalizeAudioPath(path);
+  preloadedAudioData.set(key, arrayBuffer.slice(0));
+};
+
+/**
+ * Get a reusable blob URL for a preloaded audio buffer (if available).
+ */
+export const getPreloadedAudioSrc = (path: string): string | null => {
+  const key = normalizeAudioPath(path);
+  const buffer = preloadedAudioData.get(key);
+  if (!buffer) return null;
+  return getOrCreateBlobUrl(key, buffer);
+};
+
+/**
  * Check if an audio buffer is pre-decoded and ready for instant playback.
  */
 export const isAudioDecoded = (path: string): boolean => {
-  return audioBufferCache.has(path);
+  return audioBufferCache.has(normalizeAudioPath(path));
 };
 
 /**
@@ -319,15 +378,18 @@ const decodeAndCacheAudio = async (
   path: string,
   arrayBuffer: ArrayBuffer
 ): Promise<AudioBuffer | null> => {
+  const key = normalizeAudioPath(path);
+  preloadedAudioData.set(key, arrayBuffer.slice(0));
+
   const ctx = getAudioContext();
   if (!ctx) return null;
 
   // Check if already cached
-  const cached = audioBufferCache.get(path);
+  const cached = audioBufferCache.get(key);
   if (cached) return cached;
 
   // Check if already decoding
-  const pending = pendingDecodes.get(path);
+  const pending = pendingDecodes.get(key);
   if (pending) return pending;
 
   // Start decoding
@@ -335,17 +397,17 @@ const decodeAndCacheAudio = async (
     try {
       // Clone buffer since decodeAudioData consumes it
       const buffer = await ctx.decodeAudioData(arrayBuffer.slice(0));
-      audioBufferCache.set(path, buffer);
+      audioBufferCache.set(key, buffer);
       return buffer;
     } catch (err) {
-      logger.audioPlayer.warn(`Failed to decode audio: ${path}`, { error: err });
+      logger.audioPlayer.warn(`Failed to decode audio: ${key}`, { error: err });
       return null;
     } finally {
-      pendingDecodes.delete(path);
+      pendingDecodes.delete(key);
     }
   })();
 
-  pendingDecodes.set(path, decodePromise);
+  pendingDecodes.set(key, decodePromise);
   return decodePromise;
 };
 
@@ -423,6 +485,34 @@ const playOscillatorSound = (config: OscillatorSoundConfig): void => {
   });
 };
 
+const playHtmlAudio = async (
+  key: string,
+  src: string,
+  volume: number
+): Promise<boolean> => {
+  let audio = audioCache.get(key);
+  if (!audio) {
+    audio = new Audio();
+    audio.preload = 'auto';
+    audioCache.set(key, audio);
+  }
+
+  if (audio.src !== src) {
+    audio.src = src;
+  }
+
+  const clone = audio.cloneNode() as HTMLAudioElement;
+  clone.volume = volume;
+
+  try {
+    await clone.play();
+    return true;
+  } catch (err) {
+    logger.audioPlayer.warn(`Failed to play ${src}`, { error: err });
+    return false;
+  }
+};
+
 // ============================================
 // File Playback
 // ============================================
@@ -435,50 +525,52 @@ const tryPlayFile = async (
   path: string,
   volume: number
 ): Promise<boolean> => {
+  const key = normalizeAudioPath(path);
+
   // Check AudioBuffer cache first (fastest path)
-  const cachedBuffer = audioBufferCache.get(path);
+  const cachedBuffer = audioBufferCache.get(key);
   if (cachedBuffer) {
     playAudioBuffer(cachedBuffer, volume);
     return true;
   }
 
+  // Use preloaded data if available to avoid network round-trips
+  const preloadedBuffer = preloadedAudioData.get(key);
+  if (preloadedBuffer) {
+    const audioBuffer = await decodeAndCacheAudio(key, preloadedBuffer);
+    if (audioBuffer) {
+      playAudioBuffer(audioBuffer, volume);
+      return true;
+    }
+
+    const blobUrl = getOrCreateBlobUrl(key, preloadedBuffer);
+    return playHtmlAudio(key, blobUrl, volume);
+  }
+
   // Check if file exists
-  const exists = await checkFileExists(path);
+  const exists = await checkFileExists(key);
   if (!exists) return false;
 
   // Try to load and decode for Web Audio API
   try {
-    const response = await fetch(path);
+    const response = await fetch(key);
     if (!response.ok) return false;
 
     const arrayBuffer = await response.arrayBuffer();
-    const audioBuffer = await decodeAndCacheAudio(path, arrayBuffer);
+    const audioBuffer = await decodeAndCacheAudio(key, arrayBuffer);
 
     if (audioBuffer) {
       playAudioBuffer(audioBuffer, volume);
       return true;
     }
+
+    const blobUrl = getOrCreateBlobUrl(key, arrayBuffer);
+    return playHtmlAudio(key, blobUrl, volume);
   } catch (err) {
-    logger.audioPlayer.warn(`Failed to load audio: ${path}`, { error: err });
+    logger.audioPlayer.warn(`Failed to load audio: ${key}`, { error: err });
   }
 
-  // Fallback to HTMLAudioElement (higher latency but more compatible)
-  let audio = audioCache.get(path);
-  if (!audio) {
-    audio = new Audio(path);
-    audioCache.set(path, audio);
-  }
-
-  const clone = audio.cloneNode() as HTMLAudioElement;
-  clone.volume = volume;
-
-  try {
-    await clone.play();
-    return true;
-  } catch (err) {
-    logger.audioPlayer.warn(`Failed to play ${path}`, { error: err });
-    return false;
-  }
+  return false;
 };
 
 // ============================================
@@ -675,5 +767,8 @@ export const preloadSounds = async (
 export const clearAudioCache = (): void => {
   audioCache.clear();
   audioBufferCache.clear();
+  preloadedAudioData.clear();
+  preloadedBlobUrls.forEach((url) => URL.revokeObjectURL(url));
+  preloadedBlobUrls.clear();
   pendingDecodes.clear();
 };

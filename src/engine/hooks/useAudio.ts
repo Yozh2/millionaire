@@ -16,6 +16,7 @@ import {
   playSoundByType,
   ensureAudioContext,
   warmUpAudioContext,
+  getPreloadedAudioSrc,
 } from '../utils/audioPlayer';
 import { getAssetPaths, checkFileExists } from '../utils/assetLoader';
 import { STORAGE_KEY_SOUND_ENABLED } from '../constants';
@@ -147,20 +148,32 @@ export const useAudio = (
         const paths = getAssetPaths('music', config.audio.mainMenuTrack, config.id);
 
         // Try specific path first
-        if (await checkFileExists(paths.specific)) {
+        if (getPreloadedAudioSrc(paths.specific) || (await checkFileExists(paths.specific))) {
           setCurrentTrack(paths.specific);
-        } else if (await checkFileExists(paths.fallback)) {
+        } else if (
+          getPreloadedAudioSrc(paths.fallback) ||
+          (await checkFileExists(paths.fallback))
+        ) {
           setCurrentTrack(paths.fallback);
         }
       }
     };
     loadInitialTrack();
-  }, [config.id, config.audio.mainMenuTrack]);
+  }, [config.id, config.audio.mainMenuTrack, getPreloadedAudioSrc]);
 
   // Get audio element
   const getAudioElement = useCallback((): HTMLAudioElement | null => {
     return document.getElementById(audioElementId) as HTMLAudioElement | null;
   }, [audioElementId]);
+
+  const setAudioSource = useCallback(
+    (audio: HTMLAudioElement, logicalPath: string) => {
+      const cachedSrc = getPreloadedAudioSrc(logicalPath);
+      audio.src = cachedSrc ?? logicalPath;
+      audio.dataset.logicalSrc = logicalPath;
+    },
+    [getPreloadedAudioSrc]
+  );
 
   // Try to play music on first user interaction if sound was previously enabled
   useEffect(() => {
@@ -176,7 +189,7 @@ export const useAudio = (
 
       const audio = document.getElementById(audioElementId) as HTMLAudioElement;
       if (audio) {
-        audio.src = currentTrack;
+        setAudioSource(audio, currentTrack);
         audio.volume = config.audio.musicVolume;
         audio.play().catch((err) => {
           logger.audioPlayer.warn('Auto-play failed on interaction', { error: err });
@@ -198,7 +211,7 @@ export const useAudio = (
       document.removeEventListener('keydown', tryPlayMusic);
       document.removeEventListener('touchstart', tryPlayMusic);
     };
-  }, [audioElementId, currentTrack, config.audio.musicVolume]);
+  }, [audioElementId, currentTrack, config.audio.musicVolume, setAudioSource]);
 
   // Resolve and load a music track
   const loadTrack = useCallback(
@@ -207,9 +220,17 @@ export const useAudio = (
 
       const paths = getAssetPaths('music', trackFile, config.id);
 
+      if (getPreloadedAudioSrc(paths.specific)) {
+        return paths.specific;
+      }
+
       // Try specific path first
       if (await checkFileExists(paths.specific)) {
         return paths.specific;
+      }
+
+      if (getPreloadedAudioSrc(paths.fallback)) {
+        return paths.fallback;
       }
 
       // Try fallback
@@ -219,7 +240,7 @@ export const useAudio = (
 
       return null;
     },
-    [config.id]
+    [config.id, getPreloadedAudioSrc]
   );
 
   // Switch to a new track
@@ -234,6 +255,7 @@ export const useAudio = (
         // No track available - stop music playback but keep sound enabled state
         audio.pause();
         audio.src = '';
+        audio.dataset.logicalSrc = '';
         setCurrentTrack('');
         // Don't reset isMusicPlaying if user has sound enabled
         // This allows oscillator sounds to continue working
@@ -241,14 +263,15 @@ export const useAudio = (
       }
 
       // Check if it's actually a different track
-      const currentFileName = audio.src.split('/').pop();
+      const currentLogicalSrc = audio.dataset.logicalSrc || audio.src;
+      const currentFileName = currentLogicalSrc.split('/').pop();
       const newFileName = trackPath.split('/').pop();
 
       if (currentFileName === newFileName && !audio.paused) {
         return; // Same track, already playing
       }
 
-      audio.src = trackPath;
+      setAudioSource(audio, trackPath);
       audio.volume = config.audio.musicVolume;
       setCurrentTrack(trackPath);
 
@@ -288,7 +311,7 @@ export const useAudio = (
         audio.load();
       }
     },
-    [config.audio.musicVolume, getAudioElement, loadTrack]
+    [config.audio.musicVolume, getAudioElement, loadTrack, setAudioSource]
   );
 
   // Toggle music
@@ -318,7 +341,7 @@ export const useAudio = (
       // Try to play music if there's a track
       if (audio && currentTrack) {
         // Always set src to ensure it's correct
-        audio.src = currentTrack;
+        setAudioSource(audio, currentTrack);
         audio.volume = config.audio.musicVolume;
         audio
           .play()
@@ -332,7 +355,7 @@ export const useAudio = (
         setIsMusicPlaying(true); // Show as "on" for sound effects
       }
     }
-  }, [isMusicPlaying, config.audio.musicVolume, getAudioElement, currentTrack]);
+  }, [isMusicPlaying, config.audio.musicVolume, getAudioElement, currentTrack, setAudioSource]);
 
   // Play sound effect
   const playSoundEffect = useCallback(
@@ -386,14 +409,15 @@ export const useAudio = (
           if (!audio) return false;
 
           // Check if it's actually a different track
-          const currentFileName = audio.src.split('/').pop();
+          const currentLogicalSrc = audio.dataset.logicalSrc || audio.src;
+          const currentFileName = currentLogicalSrc.split('/').pop();
           const newFileName = trackPath.split('/').pop();
 
           if (currentFileName === newFileName && !audio.paused) {
             return true; // Same track, already playing
           }
 
-          audio.src = trackPath;
+          setAudioSource(audio, trackPath);
           audio.volume = config.audio.musicVolume;
           setCurrentTrack(trackPath);
 
@@ -429,7 +453,7 @@ export const useAudio = (
       }
       return false;
     },
-    [config.audio.musicVolume, getAudioElement, loadTrack]
+    [config.audio.musicVolume, getAudioElement, loadTrack, setAudioSource]
   );
 
   /**
@@ -444,6 +468,7 @@ export const useAudio = (
       if (audio) {
         audio.pause();
         audio.src = '';
+        audio.dataset.logicalSrc = '';
         setCurrentTrack('');
       }
     }
@@ -464,6 +489,7 @@ export const useAudio = (
       if (audio) {
         audio.pause();
         audio.src = '';
+        audio.dataset.logicalSrc = '';
         setCurrentTrack('');
       }
     }
@@ -490,6 +516,7 @@ export const useAudio = (
       if (audio) {
         audio.pause();
         audio.src = '';
+        audio.dataset.logicalSrc = '';
         setCurrentTrack('');
       }
     }

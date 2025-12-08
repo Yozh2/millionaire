@@ -22,7 +22,10 @@ import type {
   ProgressCallback,
 } from './types';
 import { logger } from './logger';
-import { preDecodeAudio } from '../utils/audioPlayer';
+import {
+  preDecodeAudio,
+  registerPreloadedAudioBuffer,
+} from '../utils/audioPlayer';
 import { getBasePath } from '../utils/assetLoader';
 
 /** Cached assets by URL */
@@ -443,10 +446,13 @@ class AssetLoader {
         this.cache.audio.set(cacheKey, buffer);
         this.state.loaded.add(cacheKey);
 
+        // Store with resolved URL so playback can reuse the preloaded data
+        registerPreloadedAudioBuffer(fullUrl, buffer);
+
         // Pre-decode sound effects for instant playback
         // This is critical for low-latency audio on mobile
         if (cacheKey.includes('/sounds/')) {
-          await preDecodeAudio(cacheKey, buffer);
+          await preDecodeAudio(fullUrl, buffer);
         }
       });
   }
