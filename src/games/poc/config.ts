@@ -56,16 +56,12 @@ export const pocConfig: GameConfig = {
   ],
 
   strings: {
-    headerTitle: '★ ВИКТОРИНА ★',
-
     introText:
       'Проверь свои знания! Ответь на вопросы, чтобы выиграть главный приз.',
     selectPath: 'ВЫБЕРИТЕ СЛОЖНОСТЬ',
     startButton: 'НАЧАТЬ ИГРУ',
 
-    questionHeader: 'ВОПРОС #{n}',
-    difficultyLabel: 'СЛОЖНОСТЬ:',
-    progressLabel: 'Прогресс:',
+    questionHeader: '#{n}',
 
     lifelinesHeader: 'ПОДСКАЗКИ',
     prizesHeader: 'ПРИЗЫ',

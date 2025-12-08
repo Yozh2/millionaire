@@ -114,16 +114,12 @@ export const transformersConfig: GameConfig = {
   ],
 
   strings: {
-    headerTitle: '⚡ ТРАНСФОРМЕРЫ ⚡',
-
     introText:
       'Проверь свои знания о вселенной Трансформеров! Ответь на вопросы и заполучи весь энергон!',
     selectPath: 'ВЫБЕРИ КОМИКС',
     startButton: 'ПОКАТИЛИ',
 
-    questionHeader: 'ВОПРОС #{n}',
-    difficultyLabel: 'СЛОЖНОСТЬ',
-    progressLabel: 'Прогресс',
+    questionHeader: '#{n}',
 
     lifelinesHeader: 'ПОДСКАЗКИ',
     prizesHeader: 'ЭНЕРГОН',

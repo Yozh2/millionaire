@@ -39,7 +39,6 @@ export function GameScreen({
     selectedAnswer,
     hint,
     lifelines,
-    currentDifficulty,
     handleAnswer,
     useFiftyFifty: lifelineFiftyFifty,
     usePhoneAFriend: lifelinePhoneAFriend,
@@ -182,10 +181,24 @@ export function GameScreen({
     );
   };
 
+  const questionNumber = currentQuestion + 1;
+  const formattedQuestionNumber = String(questionNumber).padStart(2, '0');
+  const questionHeaderText = config.strings.questionHeader.replace(
+    '{n}',
+    formattedQuestionNumber
+  );
+
+  const lifelineBase =
+    'lifeline-btn px-4 py-2 text-sm border-3 w-full sm:w-44 h-12 ' +
+    'flex items-center justify-center gap-2 text-center';
+
   return (
     <div className="screen-transition">
       {/* Header */}
-      <Panel className="mb-4 p-1 animate-slide-in stagger-1 relative overflow-hidden">
+      <Panel
+        className="mb-4 p-1 animate-slide-in stagger-1 relative overflow-hidden"
+        variant="headless"
+      >
         {/* Optional Header Slideshow */}
         {config.headerSlideshow && (
           <HeaderSlideshow
@@ -196,7 +209,6 @@ export function GameScreen({
             difficulty={difficultyLevel}
           />
         )}
-        <PanelHeader>{config.strings.headerTitle}</PanelHeader>
         <div className="p-4 text-center relative z-10">
           {/* Music Toggle */}
           <div className="flex justify-end mb-2">
@@ -218,7 +230,6 @@ export function GameScreen({
             className={`text-2xl md:text-3xl font-bold tracking-wider mb-1 transition-colors duration-500 ${theme.textPrimary}`}
             style={{
               textShadow: `0 0 15px ${theme.glowColor}, 0 0 30px ${theme.glowSecondary}, 2px 2px 4px #000`,
-              fontFamily: 'Georgia, serif',
             }}
           >
             {config.title}
@@ -227,7 +238,6 @@ export function GameScreen({
             className={`text-lg tracking-wide transition-colors duration-500 ${theme.textPrimary}`}
             style={{
               lineHeight: '1.5',
-              fontFamily: 'Arial, sans-serif',
               fontStyle: 'italic',
             }}
           >
@@ -268,31 +278,17 @@ export function GameScreen({
           {/* Question Panel */}
           <Panel className="p-1">
             <PanelHeader align="between">
-              <span>
-                {config.strings.questionHeader.replace(
-                  '{n}',
-                  String(currentQuestion + 1)
-                )}
+              <span className="flex items-baseline gap-2 font-semibold uppercase tracking-wide">
+                {questionHeaderText}
               </span>
-              <span>
-                {config.strings.difficultyLabel}:{' '}
-                {'★'.repeat(currentDifficulty)}
-                {'☆'.repeat(3 - currentDifficulty)}
+              <span
+                className={`${theme.textPrimary} font-bold flex items-center gap-1`}
+              >
+                <CoinIcon />
+                {prizes[currentQuestion]}
               </span>
             </PanelHeader>
             <div className="p-4">
-              <div className="flex justify-between items-center mb-3">
-                <span className="text-amber-400 text-xs italic">
-                  {config.strings.progressLabel}: {currentQuestion + 1}/
-                  {totalQuestions}
-                </span>
-                <span
-                  className={`${theme.textPrimary} font-bold flex items-center`}
-                >
-                  <CoinIcon />
-                  {prizes[currentQuestion]}
-                </span>
-              </div>
               <p
                 className={`${theme.textAccent} text-base leading-relaxed`}
               >
@@ -383,7 +379,7 @@ export function GameScreen({
               <button
                 onClick={handleFiftyFiftyWithSound}
                 disabled={!lifelines.fiftyFifty || selectedAnswer !== null}
-                className={`lifeline-btn px-4 py-2 text-sm border-3 ${
+                className={`${lifelineBase} ${
                   lifelines.fiftyFifty && selectedAnswer === null
                     ? 'bg-gradient-to-b from-orange-700 to-orange-900 border-orange-500 text-orange-100'
                     : 'bg-stone-950 border-stone-800 text-stone-600 cursor-not-allowed'
@@ -402,7 +398,7 @@ export function GameScreen({
               <button
                 onClick={handlePhoneAFriendWithSound}
                 disabled={!lifelines.phoneAFriend || selectedAnswer !== null}
-                className={`lifeline-btn px-4 py-2 text-sm border-3 ${
+                className={`${lifelineBase} ${
                   lifelines.phoneAFriend && selectedAnswer === null
                     ? 'bg-gradient-to-b from-blue-700 to-blue-900 border-blue-500 text-blue-100'
                     : 'bg-stone-950 border-stone-800 text-stone-600 cursor-not-allowed'
@@ -422,7 +418,7 @@ export function GameScreen({
               <button
                 onClick={handleAskAudienceWithSound}
                 disabled={!lifelines.askAudience || selectedAnswer !== null}
-                className={`lifeline-btn px-4 py-2 text-sm border-3 ${
+                className={`${lifelineBase} ${
                   lifelines.askAudience && selectedAnswer === null
                     ? 'bg-gradient-to-b from-teal-700 to-teal-900 border-teal-500 text-teal-100'
                     : 'bg-stone-950 border-stone-800 text-stone-600 cursor-not-allowed'
@@ -442,7 +438,7 @@ export function GameScreen({
               <button
                 onClick={handleTakeMoneyWithSound}
                 disabled={currentQuestion === 0 || selectedAnswer !== null}
-                className={`lifeline-btn px-4 py-2 text-sm border-3 ${
+                className={`${lifelineBase} ${
                   currentQuestion > 0 && selectedAnswer === null
                     ? 'bg-gradient-to-b from-yellow-700 to-yellow-900 border-yellow-600 text-yellow-100'
                     : 'bg-stone-950 border-stone-800 text-stone-600 cursor-not-allowed'
@@ -508,7 +504,7 @@ export function GameScreen({
                     {isGuaranteed && (
                       <span
                         className="text-yellow-500"
-                        title={`${config.strings.difficultyLabel} ${difficultyLevel}★`}
+                        title={`${difficultyLevel}★`}
                       >
                         {'★'.repeat(difficultyLevel)}
                       </span>

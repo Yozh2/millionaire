@@ -269,18 +269,14 @@ export interface AudioConfig {
 
 /** All UI text strings for localization */
 export interface GameStrings {
-  // Header
-  headerTitle: string;
-
   // Start screen
   introText: string;
   selectPath: string;
   startButton: string;
 
   // Game screen - Question panel
+  /** Template for question numbering (use {n} placeholder) */
   questionHeader: string;
-  difficultyLabel: string;
-  progressLabel: string;
 
   // Game screen - Lifelines
   lifelinesHeader: string;

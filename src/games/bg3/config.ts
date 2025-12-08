@@ -113,9 +113,6 @@ export const bg3Config: GameConfig = {
   companions,
 
   strings: {
-    // Header
-    headerTitle: '✦ ДРЕВНИЙ СВИТОК ✦ СРОЧНЫЙ КВЕСТ ✦',
-
     // Start screen
     introText:
       'Искатель приключений! Перед тобой испытание на знание Забытых Королевств. ' +
@@ -124,9 +121,7 @@ export const bg3Config: GameConfig = {
     startButton: 'В ПРИКЛЮЧЕНИЕ',
 
     // Game screen - Question panel
-    questionHeader: '✦ ВОПРОС #{n} ✦',
-    difficultyLabel: 'СЛОЖНОСТЬ:',
-    progressLabel: 'Прогресс:',
+    questionHeader: '✦ #{n} ✦',
 
     // Game screen - Lifelines
     lifelinesHeader: '✦ МАГИЧЕСКИЕ СПОСОБНОСТИ ✦',

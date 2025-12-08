@@ -30,7 +30,10 @@ export function StartScreen({
   return (
     <div className="screen-transition">
       {/* Header */}
-      <Panel className="mb-4 p-1 animate-slide-in stagger-1 relative overflow-hidden">
+      <Panel
+        className="mb-4 p-1 animate-slide-in stagger-1 relative overflow-hidden"
+        variant="headless"
+      >
         {/* Optional Header Slideshow */}
         {config.headerSlideshow && (
           <HeaderSlideshow
@@ -40,7 +43,6 @@ export function StartScreen({
             screen="start"
           />
         )}
-        <PanelHeader>{config.strings.headerTitle}</PanelHeader>
         <div className="p-4 text-center relative z-10">
           {/* Music Toggle */}
           <div className="flex justify-end mb-2">
@@ -58,7 +60,6 @@ export function StartScreen({
             className={`text-2xl md:text-3xl font-bold tracking-wider mb-1 transition-colors duration-500 ${theme.textPrimary}`}
             style={{
               textShadow: `0 0 15px ${theme.glowColor}, 0 0 30px ${theme.glowSecondary}, 2px 2px 4px #000`,
-              fontFamily: 'Georgia, serif',
             }}
           >
             {config.title}
@@ -67,7 +68,6 @@ export function StartScreen({
             className={`text-lg tracking-wide transition-colors duration-500 ${theme.textPrimary}`}
             style={{
               lineHeight: '1.5',
-              fontFamily: 'Arial, sans-serif',
               fontStyle: 'italic',
             }}
           >
@@ -86,9 +86,6 @@ export function StartScreen({
 
           {/* Mode Selection */}
           <div className="mb-8">
-            <p className="text-amber-400 text-sm mb-4 tracking-wide">
-              {config.strings.selectPath}
-            </p>
             <div className="flex justify-center gap-4 md:gap-6 flex-wrap">
               {config.campaigns.map((campaign) => {
                 const isSelected = selectedCampaign?.id === campaign.id;
