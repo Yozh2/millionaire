@@ -44,6 +44,33 @@ export function MillionaireGame({ config }: MillionaireGameProps) {
   // Set game-specific favicon with emoji fallback
   useFavicon(config.id, config.emoji);
 
+  // Dev-only cheat command to jump straight to victory screen from browser console
+  const { forceWin, prizeLadder, wonPrize } = gameState;
+  const { playVictory } = audio;
+  const { triggerCoins } = effects;
+
+  useEffect(() => {
+    if (!import.meta.env.DEV) return;
+
+    const devWindow = window as typeof window & { sans?: () => string };
+
+    devWindow.sans = () => {
+      const prize =
+        prizeLadder.values[prizeLadder.values.length - 1] ??
+        wonPrize ??
+        '0';
+
+      forceWin(prize);
+      playVictory();
+      triggerCoins({ x: 0.5, y: 0.35 });
+      return 'sans: instant victory triggered';
+    };
+
+    return () => {
+      delete devWindow.sans;
+    };
+  }, [forceWin, playVictory, prizeLadder.values, triggerCoins, wonPrize]);
+
   // === Asset Preloading ===
 
   // Level 1: Load game assets (icons, sounds, start images)

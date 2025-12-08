@@ -91,6 +91,9 @@ export interface GameStateActions {
   /** Start the game */
   startGame: () => void;
 
+  /** Instantly mark the game as won (dev/debug helper) */
+  forceWin: (prizeOverride?: string) => void;
+
   /** Return to start screen */
   newGame: () => void;
 
@@ -251,6 +254,24 @@ export const useGameState = (config: GameConfig): UseGameStateReturn => {
     initializeGame(selectedCampaign);
     setGameState('playing');
   }, [selectedCampaign, resetState, initializeGame]);
+
+  const forceWin = useCallback(
+    (prizeOverride?: string) => {
+      // Prefer provided prize, otherwise use final ladder prize or current
+      const finalPrize =
+        prizeOverride ??
+        prizeLadder.values[prizeLadder.values.length - 1] ??
+        prizeLadder.values[currentQuestion] ??
+        '0';
+
+      setSelectedAnswer(null);
+      setEliminatedAnswers([]);
+      setHint(null);
+      setWonPrize(finalPrize);
+      setGameState('won');
+    },
+    [currentQuestion, prizeLadder.values]
+  );
 
   const newGame = useCallback(() => {
     setGameState('start');
@@ -434,6 +455,7 @@ export const useGameState = (config: GameConfig): UseGameStateReturn => {
     // Actions
     selectCampaign,
     startGame,
+    forceWin,
     newGame,
     handleAnswer,
     takeTheMoney,
