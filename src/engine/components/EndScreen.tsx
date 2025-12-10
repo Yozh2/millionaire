@@ -19,7 +19,7 @@ interface EndScreenProps {
   config: GameConfig;
   gameState: UseGameStateReturn;
   onNewGame: () => void;
-  onBigButtonPress: (e?: MouseEvent | TouchEvent) => void;
+  onBigButtonPress: (e?: MouseEvent<Element> | TouchEvent<Element>) => void;
   isMusicPlaying: boolean;
   onToggleMusic: () => void;
   theme: ThemeColors;

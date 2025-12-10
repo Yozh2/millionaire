@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "generated": "2025-12-10T01:44:06.723Z",
+  "generated": "2025-12-10T11:25:34.146Z",
   "engine": {
     "icons": [
       "/icons/favicon.svg"
@@ -183,7 +183,6 @@
           "/games/transformers/images/start/transformers-dark-of-the-moon.png",
           "/games/transformers/images/start/transformers-fall-of-cybertron.jpg",
           "/games/transformers/images/start/transformers-fall-of-cybertron.png",
-          "/games/transformers/images/start/transformers-fall-of-cybertron2.jpg",
           "/games/transformers/images/start/transformers-revenge-of-the-fallen.png",
           "/games/transformers/images/start/transformers-war-for-cybertron.png",
           "/games/transformers/images/start/transformers_the_game.png",
@@ -205,7 +204,8 @@
         "/games/transformers/voices/Bumblebee.ogg",
         "/games/transformers/voices/Ironhide.ogg",
         "/games/transformers/voices/Megatron.ogg",
-        "/games/transformers/voices/Optimus.ogg"
+        "/games/transformers/voices/Optimus.ogg",
+        "/games/transformers/voices/Soundwave.mp3"
       ],
       "campaigns": {
         "autocracy": {

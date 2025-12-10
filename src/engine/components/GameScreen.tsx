@@ -11,7 +11,6 @@ import { HeaderPanel } from './HeaderPanel';
 import {
   DefaultCoinIcon,
   DefaultPhoneHintIcon,
-  DefaultAudienceHintIcon,
 } from './DefaultIcons';
 
 interface GameScreenProps {
@@ -64,7 +63,6 @@ export function GameScreen({
   // Get icons from config or use defaults
   const CoinIcon = config.icons?.coin || DefaultCoinIcon;
   const PhoneHintIcon = config.icons?.phoneHint || DefaultPhoneHintIcon;
-  const AudienceHintIcon = config.icons?.audienceHint || DefaultAudienceHintIcon;
 
   const getButtonCenterOrigin = (target: HTMLElement): { x: number; y: number } => {
     const rect = target.getBoundingClientRect();
@@ -216,13 +214,9 @@ export function GameScreen({
   };
 
   useEffect(() => {
-    let timeout: ReturnType<typeof setTimeout> | undefined;
-
     if (hintsEqual(hint, displayedHint)) {
       setHintExiting(false);
-      return () => {
-        if (timeout) clearTimeout(timeout);
-      };
+      return;
     }
 
     if (!displayedHint) {
@@ -230,20 +224,16 @@ export function GameScreen({
         setDisplayedHint(hint);
       }
       setHintExiting(false);
-      return () => {
-        if (timeout) clearTimeout(timeout);
-      };
+      return;
     }
 
     setHintExiting(true);
-    timeout = setTimeout(() => {
+    const timeout = setTimeout(() => {
       setDisplayedHint(hint);
       setHintExiting(false);
     }, HINT_EXIT_MS);
 
-    return () => {
-      if (timeout) clearTimeout(timeout);
-    };
+    return () => clearTimeout(timeout);
   }, [hint, displayedHint]);
 
   return (

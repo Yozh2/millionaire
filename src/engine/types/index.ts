@@ -146,7 +146,13 @@ export interface Companion {
   /** Display name */
   name: string;
 
-  /** Voice file for this companion (optional) */
+  /** Description (optional) */
+  desc?: string;
+
+  /** Meta-information (optional) */
+  meta?: string;
+
+  /** Voice file (optional) */
   voiceFile?: string;
 }
 

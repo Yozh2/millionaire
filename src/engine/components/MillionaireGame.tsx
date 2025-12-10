@@ -147,25 +147,13 @@ export function MillionaireGame({ config }: MillionaireGameProps) {
 
   // Sound on button press (mousedown/touchstart) - synced with button landing animation
   const handleBigButtonPress = useCallback(
-    (e?: MouseEvent<HTMLElement> | TouchEvent<HTMLElement>) => {
-      const getNormalizedCenter = () => {
-        if (!e) return { x: 0.5, y: 0.7 };
-        const target = e.currentTarget as HTMLElement | null;
-        if (!target) return { x: 0.5, y: 0.7 };
-        const rect = target.getBoundingClientRect();
-        return {
-          x: (rect.left + rect.width / 2) / window.innerWidth,
-          y: (rect.top + rect.height / 2) / window.innerHeight,
-        };
-      };
-
+    (_e?: MouseEvent<Element> | TouchEvent<Element>) => {
       // Sync with button landing/dust puff (~50ms)
       setTimeout(() => {
         audio.playSoundEffect('bigButton');
-        // effects.triggerSparks(getNormalizedCenter());
-      }, 50);
+      }, 100);
     },
-    [audio, effects]
+    [audio]
   );
 
   // Wrapper for startGame with music switch

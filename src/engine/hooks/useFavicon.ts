@@ -165,7 +165,6 @@ const isDebug = (): boolean =>
 
 const logDebug = (...args: unknown[]) => {
   if (isDebug()) {
-    // eslint-disable-next-line no-console
     console.debug('[favicon]', ...args);
   }
 };

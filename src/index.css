@@ -1,6 +1,8 @@
+/* stylelint-disable at-rule-no-unknown */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+/* stylelint-enable at-rule-no-unknown */
 
 /* ============================================
    Custom Fonts (local TTF files)
@@ -363,14 +365,14 @@ body {
     left: -100%;
   }
   100% {
-    left: 200%;
+    left: 150%;
   }
 }
 
 /* Reverse shine sweep (right to left) for press */
 @keyframes shine-sweep-reverse {
   0% {
-    left: 00%;
+    left: 150%;
   }
   100% {
     left: -100%;
