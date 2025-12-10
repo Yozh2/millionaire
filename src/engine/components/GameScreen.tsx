@@ -2,12 +2,12 @@
  * GameScreen - Main gameplay screen with question, answers, lifelines
  */
 
-import { useRef, useMemo } from 'react';
-import { GameConfig, ThemeColors, QuestionDifficulty, EffectsAPI } from '../types';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { GameConfig, ThemeColors, QuestionDifficulty, EffectsAPI, Hint } from '../types';
 import { UseGameStateReturn } from '../hooks/useGameState';
 import { UseAudioReturn } from '../hooks/useAudio';
 import { Panel, PanelHeader } from './ui';
-import { HeaderSlideshow } from './HeaderSlideshow';
+import { HeaderPanel } from './HeaderPanel';
 import {
   DefaultCoinIcon,
   DefaultPhoneHintIcon,
@@ -66,12 +66,16 @@ export function GameScreen({
   const PhoneHintIcon = config.icons?.phoneHint || DefaultPhoneHintIcon;
   const AudienceHintIcon = config.icons?.audienceHint || DefaultAudienceHintIcon;
 
-  // Helper to convert screen coordinates to normalized (0-1) coordinates
-  const getNormalizedCoords = (e: React.MouseEvent): { x: number; y: number } => {
+  const getButtonCenterOrigin = (target: HTMLElement): { x: number; y: number } => {
+    const rect = target.getBoundingClientRect();
     return {
-      x: e.clientX / window.innerWidth,
-      y: e.clientY / window.innerHeight,
+      x: (rect.left + rect.width / 2) / window.innerWidth,
+      y: (rect.top + rect.height / 2) / window.innerHeight,
     };
+  };
+
+  const triggerLifelinePulse = (target: HTMLElement, color: string) => {
+    effects?.triggerPulse(getButtonCenterOrigin(target), color);
   };
 
   // Wrapped handlers with sound effects (called on click/mouseup)
@@ -95,17 +99,16 @@ export function GameScreen({
     }
   };
 
-  const handleFiftyFiftyWithSound = (e: React.MouseEvent) => {
+  const handleFiftyFiftyWithSound = (e: React.MouseEvent<HTMLButtonElement>) => {
     audio.playSoundEffect('hintReduceButton');
-    effects?.triggerPulse(getNormalizedCoords(e), theme.primary || '#FFD700');
+    triggerLifelinePulse(e.currentTarget, '#f97316');
     lifelineFiftyFifty();
   };
 
-  const handlePhoneAFriendWithSound = async (e: React.MouseEvent) => {
-    const clickCoords = getNormalizedCoords(e);
+  const handlePhoneAFriendWithSound = async (e: React.MouseEvent<HTMLButtonElement>) => {
     const companion = lifelinePhoneAFriend();
     if (companion) {
-      effects?.triggerPulse(clickCoords, '#4ECDC4');
+      triggerLifelinePulse(e.currentTarget, '#3b82f6');
       // Try to play companion voice file first
       let voicePlayed = false;
       if (companion.voiceFile) {
@@ -118,13 +121,13 @@ export function GameScreen({
     }
   };
 
-  const handleAskAudienceWithSound = (e: React.MouseEvent) => {
+  const handleAskAudienceWithSound = (e: React.MouseEvent<HTMLButtonElement>) => {
     audio.playSoundEffect('hintVoteButton');
-    effects?.triggerPulse(getNormalizedCoords(e), '#BB8FCE');
+    triggerLifelinePulse(e.currentTarget, '#14b8a6');
     lifelineAskAudience();
   };
 
-  const handleTakeMoneyWithSound = () => {
+  const handleTakeMoneyWithSound = (_e: React.MouseEvent<HTMLButtonElement>) => {
     audio.playSoundEffect('hintTakeMoneyButton');
     audio.playTakeMoney();
     // Coins are now triggered from EndScreen at trophy icon position
@@ -185,92 +188,76 @@ export function GameScreen({
   const formattedQuestionNumber = String(questionNumber).padStart(2, '0');
   const questionHeaderText = config.strings.questionHeader.replace(
     '{n}',
-    formattedQuestionNumber
+    `\u00A0${formattedQuestionNumber}`
   );
 
   const lifelineBase =
-    'lifeline-btn px-4 py-2 text-sm border-3 w-full sm:w-44 h-12 ' +
-    'flex items-center justify-center gap-2 text-center';
+    'lifeline-btn px-3 py-2 text-sm border-3 h-12 w-full min-w-[132px] ' +
+    'flex items-center justify-center gap-2';
+
+  // Animate hint panel in/out so it doesn't pop abruptly
+  const HINT_EXIT_MS = 140;
+  const [displayedHint, setDisplayedHint] = useState<Hint>(hint);
+  const [hintExiting, setHintExiting] = useState(false);
+  const hintsEqual = (a: Hint, b: Hint) => {
+    if (!a && !b) return true;
+    if (!a || !b) return false;
+    if (a.type !== b.type) return false;
+    if (a.type === 'phone' && b.type === 'phone') {
+      return a.name === b.name && a.text === b.text;
+    }
+    if (a.type === 'audience' && b.type === 'audience') {
+      return (
+        a.percentages.length === b.percentages.length &&
+        a.percentages.every((value, idx) => value === b.percentages[idx])
+      );
+    }
+    return false;
+  };
+
+  useEffect(() => {
+    let timeout: ReturnType<typeof setTimeout> | undefined;
+
+    if (hintsEqual(hint, displayedHint)) {
+      setHintExiting(false);
+      return () => {
+        if (timeout) clearTimeout(timeout);
+      };
+    }
+
+    if (!displayedHint) {
+      if (hint) {
+        setDisplayedHint(hint);
+      }
+      setHintExiting(false);
+      return () => {
+        if (timeout) clearTimeout(timeout);
+      };
+    }
+
+    setHintExiting(true);
+    timeout = setTimeout(() => {
+      setDisplayedHint(hint);
+      setHintExiting(false);
+    }, HINT_EXIT_MS);
+
+    return () => {
+      if (timeout) clearTimeout(timeout);
+    };
+  }, [hint, displayedHint]);
 
   return (
     <div className="screen-transition">
       {/* Header */}
-      <Panel
-        className="mb-4 p-1 animate-slide-in stagger-1 relative overflow-hidden"
-        variant="headless"
-      >
-        {/* Optional Header Slideshow */}
-        {config.headerSlideshow && (
-          <HeaderSlideshow
-            config={config.headerSlideshow}
-            gameId={config.id}
-            campaignId={gameState.selectedCampaign?.id}
-            screen="play"
-            difficulty={difficultyLevel}
-          />
-        )}
-        <div className="p-4 text-center relative z-10">
-          {/* Music Toggle */}
-          <div className="flex justify-end mb-2">
-            <button
-              onClick={audio.toggleMusic}
-              className="text-2xl hover:scale-110 transition-transform"
-              title={
-                audio.isMusicPlaying
-                  ? config.strings.musicOn
-                  : config.strings.musicOff
-              }
-            >
-              {audio.isMusicPlaying ? '🔊' : '🔇'}
-            </button>
-          </div>
-
-          {/* Title */}
-          <h1
-            className={`text-2xl md:text-3xl font-bold tracking-wider mb-1 transition-colors duration-500 ${theme.textPrimary}`}
-            style={{
-              textShadow: `0 0 15px ${theme.glowColor}, 0 0 30px ${theme.glowSecondary}, 2px 2px 4px #000`,
-            }}
-          >
-            {config.title}
-          </h1>
-          <h2
-            className={`text-lg tracking-wide transition-colors duration-500 ${theme.textPrimary}`}
-            style={{
-              lineHeight: '1.5',
-              fontStyle: 'italic',
-            }}
-          >
-            {config.subtitle}
-          </h2>
-
-          {/* Campaign Icons */}
-          {gameState.selectedCampaign && (
-            <div className="flex justify-center gap-4 md:gap-6 mt-3 flex-wrap">
-              {config.campaigns.map((campaign) => {
-                const CampaignIcon = campaign.icon;
-                const isActive = campaign.id === gameState.selectedCampaign?.id;
-                return (
-                  <div
-                    key={campaign.id}
-                    className={`flex items-center gap-1 transition-opacity ${
-                      isActive ? 'opacity-100' : 'opacity-30'
-                    }`}
-                  >
-                    <CampaignIcon />
-                    <span
-                      className="text-xs"
-                      style={{ color: campaign.theme.glowColor }}
-                    >
-                      {campaign.name}
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
-          )}
-        </div>
-      </Panel>
+      <HeaderPanel
+        config={config}
+        theme={theme}
+        slideshowScreen="play"
+        campaignId={gameState.selectedCampaign?.id}
+        difficulty={difficultyLevel}
+        isMusicPlaying={audio.isMusicPlaying}
+        onToggleMusic={audio.toggleMusic}
+      />
 
       {/* Game Area */}
       <div className="grid md:grid-cols-4 gap-3 animate-slide-in stagger-2">
@@ -282,7 +269,7 @@ export function GameScreen({
                 {questionHeaderText}
               </span>
               <span
-                className={`${theme.textPrimary} font-bold flex items-center gap-1`}
+                className={`${theme.textSecondary} font-bold flex items-center gap-1`}
               >
                 <CoinIcon />
                 {prizes[currentQuestion]}
@@ -321,33 +308,138 @@ export function GameScreen({
             ))}
           </div>
 
+          {/* Lifelines Panel */}
+          <Panel className="p-1 mt-1 animate-slide-in stagger-3">
+            <div
+              className="grid gap-2 p-3 justify-center w-full grid-cols-1 sm:grid-cols-2 lg:grid-cols-4"
+            >
+              <button
+                onClick={handleFiftyFiftyWithSound}
+                disabled={!lifelines.fiftyFifty || selectedAnswer !== null}
+                className={`${lifelineBase} ${
+                  lifelines.fiftyFifty && selectedAnswer === null
+                    ? 'bg-gradient-to-b from-orange-700 to-orange-900 border-orange-500 text-orange-100'
+                    : 'bg-stone-950 border-stone-800 text-stone-600 cursor-not-allowed'
+                }`}
+                style={{
+                  borderStyle: 'ridge',
+                  ['--lifeline-glow' as string]: 'rgba(249, 115, 22, 0.5)',
+                  boxShadow:
+                    lifelines.fiftyFifty && selectedAnswer === null
+                      ? '0 0 15px rgba(249, 115, 22, 0.4)'
+                      : 'none',
+                }}
+              >
+                <span className="flex items-center gap-2 justify-center">
+                  <span className="w-6 h-6 flex items-center justify-center">
+                    {config.lifelines.fiftyFifty.icon}
+                  </span>
+                  <span className="text-left">{config.lifelines.fiftyFifty.name}</span>
+                </span>
+              </button>
+              <button
+                onClick={handlePhoneAFriendWithSound}
+                disabled={!lifelines.phoneAFriend || selectedAnswer !== null}
+                className={`${lifelineBase} ${
+                  lifelines.phoneAFriend && selectedAnswer === null
+                    ? 'bg-gradient-to-b from-blue-700 to-blue-900 border-blue-500 text-blue-100'
+                    : 'bg-stone-950 border-stone-800 text-stone-600 cursor-not-allowed'
+                }`}
+                style={{
+                  borderStyle: 'ridge',
+                  ['--lifeline-glow' as string]: 'rgba(59, 130, 246, 0.5)',
+                  boxShadow:
+                    lifelines.phoneAFriend && selectedAnswer === null
+                      ? '0 0 15px rgba(59, 130, 246, 0.4)'
+                      : 'none',
+                }}
+              >
+                <span className="flex items-center gap-2 justify-center">
+                  <span className="w-6 h-6 flex items-center justify-center">
+                    {config.lifelines.phoneAFriend.icon}
+                  </span>
+                  <span className="text-left">{config.lifelines.phoneAFriend.name}</span>
+                </span>
+              </button>
+              <button
+                onClick={handleAskAudienceWithSound}
+                disabled={!lifelines.askAudience || selectedAnswer !== null}
+                className={`${lifelineBase} ${
+                  lifelines.askAudience && selectedAnswer === null
+                    ? 'bg-gradient-to-b from-teal-700 to-teal-900 border-teal-500 text-teal-100'
+                    : 'bg-stone-950 border-stone-800 text-stone-600 cursor-not-allowed'
+                }`}
+                style={{
+                  borderStyle: 'ridge',
+                  ['--lifeline-glow' as string]: 'rgba(20, 184, 166, 0.5)',
+                  boxShadow:
+                    lifelines.askAudience && selectedAnswer === null
+                      ? '0 0 15px rgba(20, 184, 166, 0.4)'
+                      : 'none',
+                }}
+              >
+                <span className="flex items-center gap-2 justify-center">
+                  <span className="w-6 h-6 flex items-center justify-center">
+                    {config.lifelines.askAudience.icon}
+                  </span>
+                  <span className="text-left">{config.lifelines.askAudience.name}</span>
+                </span>
+              </button>
+              <button
+                onClick={handleTakeMoneyWithSound}
+                disabled={currentQuestion === 0 || selectedAnswer !== null}
+                className={`${lifelineBase} ${
+                  currentQuestion > 0 && selectedAnswer === null
+                    ? 'bg-gradient-to-b from-yellow-700 to-yellow-900 border-yellow-600 text-yellow-100'
+                    : 'bg-stone-950 border-stone-800 text-stone-600 cursor-not-allowed'
+                }`}
+                style={{
+                  borderStyle: 'ridge',
+                  ['--lifeline-glow' as string]: 'rgba(234, 179, 8, 0.5)',
+                  boxShadow:
+                    currentQuestion > 0 && selectedAnswer === null
+                      ? '0 0 15px rgba(234, 179, 8, 0.4)'
+                      : 'none',
+                }}
+              >
+                <span className="flex items-center gap-2 justify-center">
+                  <span className="w-6 h-6 flex items-center justify-center">
+                    {config.lifelines.takeMoney.icon}
+                  </span>
+                  <span className="text-left">{config.lifelines.takeMoney.name}</span>
+                </span>
+              </button>
+            </div>
+          </Panel>
+
           {/* Hint Display */}
-          {hint && (
-            <Panel className="p-1">
+          {displayedHint && (
+            <Panel
+              className={`p-1 mt-1 ${
+                hintExiting ? 'animate-dust-out' : 'animate-slide-in stagger-4'
+              }`}
+            >
               <PanelHeader>
-                {hint.type === 'phone'
+                {displayedHint.type === 'phone'
                   ? config.strings.hintPhoneHeader
                   : config.strings.hintAudienceHeader}
               </PanelHeader>
               <div className="p-3">
-                {hint.type === 'phone' && (
+                {displayedHint.type === 'phone' && (
                   <div>
                     <p className="text-amber-400 text-xs mb-1 italic">
                       <PhoneHintIcon /> {config.strings.hintSenderLabel}{' '}
-                      {hint.name}
+                      {displayedHint.name}
                     </p>
                     <p className="text-amber-300 italic">
-                      "{hint.text}"
+                      {displayedHint.text}
                     </p>
                   </div>
                 )}
-                {hint.type === 'audience' && (
+                {displayedHint.type === 'audience' && (
                   <div>
-                    <p className="text-amber-400 text-xs mb-2 italic">
-                      <AudienceHintIcon /> {config.strings.hintAudienceLabel}
-                    </p>
                     <div className="grid grid-cols-4 gap-2">
-                      {hint.percentages.map((p, i) => (
+                      {displayedHint.percentages.map((p, i) => (
                         <div key={i} className="text-center">
                           <div
                             className={`h-16 bg-black border-2 ${theme.border} relative overflow-hidden`}
@@ -372,91 +464,6 @@ export function GameScreen({
             </Panel>
           )}
 
-          {/* Lifelines Panel */}
-          <Panel className="p-1">
-            <PanelHeader>{config.strings.lifelinesHeader}</PanelHeader>
-            <div className="flex flex-wrap gap-2 p-3 justify-center">
-              <button
-                onClick={handleFiftyFiftyWithSound}
-                disabled={!lifelines.fiftyFifty || selectedAnswer !== null}
-                className={`${lifelineBase} ${
-                  lifelines.fiftyFifty && selectedAnswer === null
-                    ? 'bg-gradient-to-b from-orange-700 to-orange-900 border-orange-500 text-orange-100'
-                    : 'bg-stone-950 border-stone-800 text-stone-600 cursor-not-allowed'
-                }`}
-                style={{
-                  borderStyle: 'ridge',
-                  ['--lifeline-glow' as string]: 'rgba(249, 115, 22, 0.5)',
-                  boxShadow:
-                    lifelines.fiftyFifty && selectedAnswer === null
-                      ? '0 0 15px rgba(249, 115, 22, 0.4)'
-                      : 'none',
-                }}
-              >
-                {config.lifelines.fiftyFifty.icon} {config.lifelines.fiftyFifty.name}
-              </button>
-              <button
-                onClick={handlePhoneAFriendWithSound}
-                disabled={!lifelines.phoneAFriend || selectedAnswer !== null}
-                className={`${lifelineBase} ${
-                  lifelines.phoneAFriend && selectedAnswer === null
-                    ? 'bg-gradient-to-b from-blue-700 to-blue-900 border-blue-500 text-blue-100'
-                    : 'bg-stone-950 border-stone-800 text-stone-600 cursor-not-allowed'
-                }`}
-                style={{
-                  borderStyle: 'ridge',
-                  ['--lifeline-glow' as string]: 'rgba(59, 130, 246, 0.5)',
-                  boxShadow:
-                    lifelines.phoneAFriend && selectedAnswer === null
-                      ? '0 0 15px rgba(59, 130, 246, 0.4)'
-                      : 'none',
-                }}
-              >
-                {config.lifelines.phoneAFriend.icon}{' '}
-                {config.lifelines.phoneAFriend.name}
-              </button>
-              <button
-                onClick={handleAskAudienceWithSound}
-                disabled={!lifelines.askAudience || selectedAnswer !== null}
-                className={`${lifelineBase} ${
-                  lifelines.askAudience && selectedAnswer === null
-                    ? 'bg-gradient-to-b from-teal-700 to-teal-900 border-teal-500 text-teal-100'
-                    : 'bg-stone-950 border-stone-800 text-stone-600 cursor-not-allowed'
-                }`}
-                style={{
-                  borderStyle: 'ridge',
-                  ['--lifeline-glow' as string]: 'rgba(20, 184, 166, 0.5)',
-                  boxShadow:
-                    lifelines.askAudience && selectedAnswer === null
-                      ? '0 0 15px rgba(20, 184, 166, 0.4)'
-                      : 'none',
-                }}
-              >
-                {config.lifelines.askAudience.icon}{' '}
-                {config.lifelines.askAudience.name}
-              </button>
-              <button
-                onClick={handleTakeMoneyWithSound}
-                disabled={currentQuestion === 0 || selectedAnswer !== null}
-                className={`${lifelineBase} ${
-                  currentQuestion > 0 && selectedAnswer === null
-                    ? 'bg-gradient-to-b from-yellow-700 to-yellow-900 border-yellow-600 text-yellow-100'
-                    : 'bg-stone-950 border-stone-800 text-stone-600 cursor-not-allowed'
-                }`}
-                style={{
-                  borderStyle: 'ridge',
-                  ['--lifeline-glow' as string]: 'rgba(234, 179, 8, 0.5)',
-                  boxShadow:
-                    currentQuestion > 0 && selectedAnswer === null
-                      ? '0 0 15px rgba(234, 179, 8, 0.4)'
-                      : 'none',
-                }}
-              >
-                {config.lifelines.takeMoney.icon}{' '}
-                {config.lifelines.takeMoney.name}
-              </button>
-            </div>
-          </Panel>
         </div>
 
         {/* Prize Ladder */}
@@ -478,15 +485,17 @@ export function GameScreen({
               return (
                 <div
                   key={index}
-                  className={`text-xs px-2 py-1 flex justify-between items-center transition-all border-l-4 ${
+                  className={`text-xs px-2 py-1 relative transition-all border-l-4 prize-row ${
                     isCurrent
-                      ? `${theme.bgPrizeCurrent} ${theme.textSecondary} ${theme.borderLight} shadow-lg`
+                      ? `${theme.bgPrizeCurrent} ${theme.textSecondary} ${theme.borderLight} shadow-lg prize-row-current`
                       : isPassed
                         ? `${theme.bgPrizePassed} ${theme.textMuted} ${theme.border}`
                         : isGuaranteed
                           ? 'bg-yellow-950/40 text-yellow-600 border-yellow-700'
                           : 'text-stone-300 border-stone-700'
                   }`}
+                  data-active={isCurrent ? 'true' : 'false'}
+                  data-passed={isPassed ? 'true' : 'false'}
                   style={
                     isCurrent
                       ? {
@@ -496,11 +505,13 @@ export function GameScreen({
                       : { borderStyle: 'solid' }
                   }
                 >
-                  <span>{String(questionNumber).padStart(2, '0')}</span>
-                  <span className="flex-1 flex justify-center">
-                    <span className="w-20 text-right">{prize}</span>
+                  <span className="prize-number font-mono">
+                    {String(questionNumber).padStart(2, '0')}
                   </span>
-                  <span className="w-8 text-right">
+                  <span className="prize-value font-mono">
+                    {prize}
+                  </span>
+                  <span className="prize-stars">
                     {isGuaranteed && (
                       <span
                         className="text-yellow-500"
@@ -508,7 +519,7 @@ export function GameScreen({
                       >
                         {'★'.repeat(difficultyLevel)}
                       </span>
-                    )}
+                    ) || <span className="opacity-0">★★★</span>}
                   </span>
                 </div>
               );

@@ -377,7 +377,7 @@ export interface HeaderSlideshowConfig {
   transitionDuration?: number;
   /** Time each image is shown in ms (default: 4000) */
   displayDuration?: number;
-  /** Opacity of the slideshow overlay (default: 0.4) */
+  /** Opacity of the slideshow overlay (default: 1) */
   opacity?: number;
 }
 

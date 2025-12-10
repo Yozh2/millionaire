@@ -13,7 +13,7 @@ export {
 export {
   MindFlayerIcon,
   DarkUrgeIcon,
-  SwordIcon,
+  HeroIcon as SwordIcon,
   TrophyIcon,
   MoneyIcon,
   CriticalFailIcon,

@@ -10,27 +10,27 @@ const ICONS_PATH = `${import.meta.env.BASE_URL}games/bg3/icons`;
 /** Mind Flayer (Illithid) icon - represents the tadpole storyline */
 export const MindFlayerIcon = () => (
   <img
-    src={`${ICONS_PATH}/mind-flayer.svg`}
+    src={`${ICONS_PATH}/mind-flayer.png`}
     alt="Mind Flayer"
-    className="w-16 h-16 mx-auto"
+    className="w-24 h-24 mx-auto"
   />
 );
 
 /** Dark Urge icon - represents the Bhaalspawn origin */
 export const DarkUrgeIcon = () => (
   <img
-    src={`${ICONS_PATH}/dark-urge.svg`}
+    src={`${ICONS_PATH}/dark-urge.png`}
     alt="Dark Urge"
-    className="w-16 h-16 mx-auto"
+    className="w-24 h-24 mx-auto"
   />
 );
 
-/** Sword icon - represents the Hero origin */
-export const SwordIcon = () => (
+/** Hero icon - represents the Hero origin */
+export const HeroIcon = () => (
   <img
-    src={`${ICONS_PATH}/sword.svg`}
-    alt="Sword"
-    className="w-16 h-16 mx-auto"
+    src={`${ICONS_PATH}/heroes.png`}
+    alt="Hero"
+    className="w-24 h-24 mx-auto"
   />
 );
 

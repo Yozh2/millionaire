@@ -7,7 +7,7 @@
 import { GameConfig, Campaign, Companion, DrawCoinFunction } from '../../engine/types';
 import { heroTheme, mindFlayerTheme, darkUrgeTheme } from './themes';
 import {
-  SwordIcon,
+  HeroIcon,
   MindFlayerIcon,
   DarkUrgeIcon,
   TrophyIcon,
@@ -50,7 +50,7 @@ const heroCampaign: Campaign = {
   id: 'hero',
   name: 'ГЕРОЙ',
   label: 'Легко',
-  icon: SwordIcon,
+  icon: HeroIcon,
   theme: heroTheme,
   musicTrack: 'Hero.ogg',
   selectSound: 'CampaignHero.ogg',
@@ -95,7 +95,7 @@ export const bg3Config: GameConfig = {
   id: 'bg3',
 
   title: 'КТО ХОЧЕТ СТАТЬ МИЛЛИОНЕРОМ',
-  subtitle: "BALDUR'S GATE 3 EDITION",
+  subtitle: "Baldur's Gate III Edition",
 
   emoji: '⚔️',
 
@@ -116,18 +116,18 @@ export const bg3Config: GameConfig = {
     // Start screen
     introText:
       'Искатель приключений! Перед тобой испытание на знание Забытых Королевств. ' +
-      '15 вопросов, 3 магические подсказки, 3,000,000 золотых на кону.',
+      '15 вопросов, 3 магические подсказки, 3 000 000 золотых на кону.',
     selectPath: '✦ ВЫБЕРИ ПУТЬ ✦',
     startButton: 'В ПРИКЛЮЧЕНИЕ',
 
     // Game screen - Question panel
-    questionHeader: '✦ #{n} ✦',
+    questionHeader: '#{n}',
 
     // Game screen - Lifelines
     lifelinesHeader: '✦ МАГИЧЕСКИЕ СПОСОБНОСТИ ✦',
 
     // Game screen - Prize ladder
-    prizesHeader: '✦ СПИСОК НАГРАД ✦',
+    prizesHeader: '✦ СОКРОВИЩЕ ✦',
 
     // Hints
     hintPhoneHeader: '✦ МАГИЧЕСКОЕ ПОСЛАНИЕ ✦',
@@ -150,24 +150,24 @@ export const bg3Config: GameConfig = {
     },
 
     // End screens
-    wonTitle: '⚔ ЛЕГЕНДАРНЫЙ ГЕРОЙ ⚔',
+    wonTitle: '🏆 ЛЕГЕНДАРНЫЙ ГЕРОЙ 🏆',
     wonText: 'Вы завоевали величайшее сокровище Фаэруна!',
-    wonHeader: '✦ КВЕСТ ЗАВЕРШЁН ✦',
+    wonHeader: 'КВЕСТ ЗАВЕРШЁН',
 
     lostTitle: '💀 КРИТИЧЕСКИЙ ПРОВАЛ 💀',
     lostText: 'Кость брошена. Неверный ответ.',
-    lostHeader: '✦ КВЕСТ ПРОВАЛЕН ✦',
+    lostHeader: 'КВЕСТ ПРОВАЛЕН',
     correctAnswerLabel: 'Правильный ответ:',
 
     tookMoneyTitle: '✨ МУДРЫЙ ВЫБОР ✨',
-    tookMoneyText: 'Мудрое решение, искатель приключений.',
-    tookMoneyHeader: '✦ НАГРАДА ПОЛУЧЕНА ✦',
+    tookMoneyText: 'Разумное решение, искатель приключений',
+    tookMoneyHeader: 'НАГРАДА ПОЛУЧЕНА',
 
-    prizeLabel: 'НАГРАДА:',
-    newGameButton: '⚔ НОВОЕ ПРИКЛЮЧЕНИЕ ⚔',
+    prizeLabel: 'ПОЛУЧЕНО:',
+    newGameButton: 'В ЛАГЕРЬ',
 
     // Footer
-    footer: "✦ By Mystra's Grace ✦ For the Realms ✦ Gather Your Party ✦",
+    footer: "✦ By Mystra's Grace ✦",
 
     // Music toggle
     musicOn: 'Выключить музыку',
@@ -240,7 +240,7 @@ export const bg3Config: GameConfig = {
     enabled: true,
     transitionDuration: 1500,
     displayDuration: 4000,
-    opacity: 0.35,
+    opacity: 1,
   },
 };
 

@@ -3,10 +3,11 @@
  */
 
 import { useEffect, useRef, useCallback, useMemo } from 'react';
+import type { MouseEvent, TouchEvent } from 'react';
 import { GameConfig, ThemeColors, SlideshowScreen, EffectsAPI } from '../types';
 import { UseGameStateReturn } from '../hooks/useGameState';
 import { Panel, PanelHeader } from './ui';
-import { HeaderSlideshow } from './HeaderSlideshow';
+import { HeaderPanel } from './HeaderPanel';
 import {
   DefaultCoinIcon,
   DefaultTrophyIcon,
@@ -18,7 +19,7 @@ interface EndScreenProps {
   config: GameConfig;
   gameState: UseGameStateReturn;
   onNewGame: () => void;
-  onBigButtonPress: () => void;
+  onBigButtonPress: (e?: MouseEvent | TouchEvent) => void;
   isMusicPlaying: boolean;
   onToggleMusic: () => void;
   theme: ThemeColors;
@@ -191,51 +192,14 @@ export function EndScreen({
   return (
     <div className={screenClass}>
       {/* Header */}
-      <Panel
-        className="mb-4 p-1 animate-slide-in stagger-1 relative overflow-hidden"
-        variant="headless"
-      >
-        {/* Optional Header Slideshow */}
-        {config.headerSlideshow && (
-          <HeaderSlideshow
-            config={config.headerSlideshow}
-            gameId={config.id}
-            campaignId={gameState.selectedCampaign?.id}
-            screen={slideshowScreen}
-          />
-        )}
-        <div className="p-4 text-center relative z-10">
-          {/* Music Toggle */}
-          <div className="flex justify-end mb-2">
-            <button
-              onClick={onToggleMusic}
-              className="text-2xl hover:scale-110 transition-transform"
-              title={isMusicPlaying ? config.strings.musicOn : config.strings.musicOff}
-            >
-              {isMusicPlaying ? '🔊' : '🔇'}
-            </button>
-          </div>
-
-          {/* Title */}
-          <h1
-            className={`text-2xl md:text-3xl font-bold tracking-wider mb-1 transition-colors duration-500 ${theme.textPrimary}`}
-            style={{
-              textShadow: `0 0 15px ${theme.glowColor}, 0 0 30px ${theme.glowSecondary}, 2px 2px 4px #000`,
-            }}
-          >
-            {config.title}
-          </h1>
-          <h2
-            className={`text-lg tracking-wide transition-colors duration-500 ${theme.textPrimary}`}
-            style={{
-              lineHeight: '1.5',
-              fontStyle: 'italic',
-            }}
-          >
-            {config.subtitle}
-          </h2>
-        </div>
-      </Panel>
+      <HeaderPanel
+        config={config}
+        theme={theme}
+        slideshowScreen={slideshowScreen}
+        campaignId={gameState.selectedCampaign?.id}
+        isMusicPlaying={isMusicPlaying}
+        onToggleMusic={onToggleMusic}
+      />
 
       {/* End Screen Panel */}
       <Panel className="p-1 animate-slide-in stagger-2">
@@ -267,8 +231,8 @@ export function EndScreen({
           <div className="animate-pop-in stagger-6">
             <button
               onClick={onNewGame}
-              onMouseDown={onBigButtonPress}
-              onTouchStart={onBigButtonPress}
+              onMouseDown={(e) => onBigButtonPress(e)}
+              onTouchStart={(e) => onBigButtonPress(e)}
               className={`action-btn px-8 py-3 bg-gradient-to-b ${theme.bgButton} text-white font-bold text-lg tracking-wide border-4 ${theme.borderLight}`}
               style={{
                 ['--btn-glow' as string]: theme.glow,

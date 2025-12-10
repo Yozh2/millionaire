@@ -90,7 +90,7 @@ export const pocConfig: GameConfig = {
     tookMoneyHeader: 'ПРИЗ ПОЛУЧЕН',
 
     prizeLabel: 'ПРИЗ:',
-    newGameButton: '▶ ИГРАТЬ СНОВА',
+    newGameButton: 'ИГРАТЬ СНОВА',
 
     footer: '★ Тестовый движок викторины ★',
 

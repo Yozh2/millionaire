@@ -2,16 +2,17 @@
  * StartScreen - Campaign selection and game start screen
  */
 
+import type { MouseEvent, TouchEvent } from 'react';
 import { GameConfig, Campaign, ThemeColors } from '../types';
 import { Panel, PanelHeader } from './ui';
-import { HeaderSlideshow } from './HeaderSlideshow';
+import { HeaderPanel } from './HeaderPanel';
 
 interface StartScreenProps {
   config: GameConfig;
   selectedCampaign: Campaign | null;
   onSelectCampaign: (campaign: Campaign) => void;
   onStartGame: () => void;
-  onBigButtonPress: () => void;
+  onBigButtonPress: (e?: MouseEvent | TouchEvent) => void;
   isMusicPlaying: boolean;
   onToggleMusic: () => void;
   theme: ThemeColors;
@@ -30,51 +31,14 @@ export function StartScreen({
   return (
     <div className="screen-transition">
       {/* Header */}
-      <Panel
-        className="mb-4 p-1 animate-slide-in stagger-1 relative overflow-hidden"
-        variant="headless"
-      >
-        {/* Optional Header Slideshow */}
-        {config.headerSlideshow && (
-          <HeaderSlideshow
-            config={config.headerSlideshow}
-            gameId={config.id}
-            campaignId={selectedCampaign?.id}
-            screen="start"
-          />
-        )}
-        <div className="p-4 text-center relative z-10">
-          {/* Music Toggle */}
-          <div className="flex justify-end mb-2">
-            <button
-              onClick={onToggleMusic}
-              className="text-2xl hover:scale-110 transition-transform"
-              title={isMusicPlaying ? config.strings.musicOn : config.strings.musicOff}
-            >
-              {isMusicPlaying ? '🔊' : '🔇'}
-            </button>
-          </div>
-
-          {/* Title */}
-          <h1
-            className={`text-2xl md:text-3xl font-bold tracking-wider mb-1 transition-colors duration-500 ${theme.textPrimary}`}
-            style={{
-              textShadow: `0 0 15px ${theme.glowColor}, 0 0 30px ${theme.glowSecondary}, 2px 2px 4px #000`,
-            }}
-          >
-            {config.title}
-          </h1>
-          <h2
-            className={`text-lg tracking-wide transition-colors duration-500 ${theme.textPrimary}`}
-            style={{
-              lineHeight: '1.5',
-              fontStyle: 'italic',
-            }}
-          >
-            {config.subtitle}
-          </h2>
-        </div>
-      </Panel>
+      <HeaderPanel
+        config={config}
+        theme={theme}
+        slideshowScreen="start"
+        campaignId={selectedCampaign?.id}
+        isMusicPlaying={isMusicPlaying}
+        onToggleMusic={onToggleMusic}
+      />
 
       {/* Campaign Selection Panel */}
       <Panel className="p-1 animate-slide-in stagger-2">
@@ -133,8 +97,8 @@ export function StartScreen({
           {/* Start Button */}
           <button
             onClick={onStartGame}
-            onMouseDown={() => selectedCampaign && onBigButtonPress()}
-            onTouchStart={() => selectedCampaign && onBigButtonPress()}
+            onMouseDown={(e) => selectedCampaign && onBigButtonPress(e)}
+            onTouchStart={(e) => selectedCampaign && onBigButtonPress(e)}
             disabled={!selectedCampaign}
             className={`action-btn px-8 py-3 font-bold text-lg tracking-wide border-4 ${
               selectedCampaign

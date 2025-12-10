@@ -125,7 +125,7 @@ export const useEffects = (): UseEffectsReturn => {
         origin: origin ?? { x: 0.5, y: 0.5 },
         primaryColor: '#FFD700',
         secondaryColor: '#FFFFFF',
-        intensity: 1,
+        intensity: 1.8,
       });
     },
     [triggerEffect]
@@ -143,10 +143,11 @@ export const useEffects = (): UseEffectsReturn => {
 
   const triggerPulse = useCallback(
     (origin?: { x: number; y: number }, color?: string) => {
+      const pulseColor = color ?? '#4ECDC4';
       triggerEffect('pulse', {
         origin: origin ?? { x: 0.5, y: 0.5 },
-        primaryColor: color ?? '#4ECDC4',
-        secondaryColor: color ?? '#45B7D1',
+        primaryColor: pulseColor,
+        secondaryColor: pulseColor,
         intensity: 1,
       });
     },

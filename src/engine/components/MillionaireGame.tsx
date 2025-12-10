@@ -10,6 +10,7 @@
  */
 
 import { useEffect, useCallback, useState } from 'react';
+import type { MouseEvent, TouchEvent } from 'react';
 
 import { ThemeProvider } from '../context';
 import {
@@ -145,12 +146,27 @@ export function MillionaireGame({ config }: MillionaireGameProps) {
   }, [audio, gameState]);
 
   // Sound on button press (mousedown/touchstart) - synced with button landing animation
-  const handleBigButtonPress = useCallback(() => {
-    // Delay sound to sync with button landing animation (dust-puff at ~50ms)
-    setTimeout(() => {
-      audio.playSoundEffect('bigButton');
-    }, 50);
-  }, [audio]);
+  const handleBigButtonPress = useCallback(
+    (e?: MouseEvent<HTMLElement> | TouchEvent<HTMLElement>) => {
+      const getNormalizedCenter = () => {
+        if (!e) return { x: 0.5, y: 0.7 };
+        const target = e.currentTarget as HTMLElement | null;
+        if (!target) return { x: 0.5, y: 0.7 };
+        const rect = target.getBoundingClientRect();
+        return {
+          x: (rect.left + rect.width / 2) / window.innerWidth,
+          y: (rect.top + rect.height / 2) / window.innerHeight,
+        };
+      };
+
+      // Sync with button landing/dust puff (~50ms)
+      setTimeout(() => {
+        audio.playSoundEffect('bigButton');
+        // effects.triggerSparks(getNormalizedCenter());
+      }, 50);
+    },
+    [audio, effects]
+  );
 
   // Wrapper for startGame with music switch
   const handleStartGame = useCallback(async () => {
@@ -191,7 +207,7 @@ export function MillionaireGame({ config }: MillionaireGameProps) {
   return (
     <ThemeProvider theme={theme}>
       <div
-        className="min-h-screen p-4 transition-all duration-500 relative overflow-hidden"
+        className="min-h-screen p-4 transition-all duration-500 relative overflow-hidden flex flex-col"
         style={{
           background: getBackgroundStyle(),
           fontFamily: config.fontFamily || DEFAULT_FONT_FAMILY,
@@ -232,49 +248,51 @@ export function MillionaireGame({ config }: MillionaireGameProps) {
           preload="none"
         />
 
-        <div className="max-w-4xl mx-auto">
-          {/* Start Screen */}
-          {gameState.gameState === 'start' &&
-            !level1Preload.isLoading &&
-            !isWaitingForLevel11 && (
-            <StartScreen
-              config={config}
-              selectedCampaign={gameState.selectedCampaign}
-              onSelectCampaign={handleSelectCampaign}
-              onStartGame={handleStartGame}
-              onBigButtonPress={handleBigButtonPress}
-              isMusicPlaying={audio.isMusicPlaying}
-              onToggleMusic={audio.toggleMusic}
-              theme={theme}
-            />
-          )}
+        <div className="max-w-4xl mx-auto w-full flex-1 flex flex-col">
+          <div className="flex-1 flex flex-col">
+            {/* Start Screen */}
+            {gameState.gameState === 'start' &&
+              !level1Preload.isLoading &&
+              !isWaitingForLevel11 && (
+              <StartScreen
+                config={config}
+                selectedCampaign={gameState.selectedCampaign}
+                onSelectCampaign={handleSelectCampaign}
+                onStartGame={handleStartGame}
+                onBigButtonPress={handleBigButtonPress}
+                isMusicPlaying={audio.isMusicPlaying}
+                onToggleMusic={audio.toggleMusic}
+                theme={theme}
+              />
+            )}
 
-          {/* Game Screen */}
-          {gameState.gameState === 'playing' && gameState.questions.length > 0 && (
-            <GameScreen
-              config={config}
-              gameState={gameState}
-              audio={audio}
-              theme={theme}
-              effects={effects}
-            />
-          )}
+            {/* Game Screen */}
+            {gameState.gameState === 'playing' && gameState.questions.length > 0 && (
+              <GameScreen
+                config={config}
+                gameState={gameState}
+                audio={audio}
+                theme={theme}
+                effects={effects}
+              />
+            )}
 
-          {/* End Screen */}
-          {(gameState.gameState === 'won' ||
-            gameState.gameState === 'lost' ||
-            gameState.gameState === 'took_money') && (
-            <EndScreen
-              config={config}
-              gameState={gameState}
-              onNewGame={handleNewGame}
-              onBigButtonPress={handleBigButtonPress}
-              isMusicPlaying={audio.isMusicPlaying}
-              onToggleMusic={audio.toggleMusic}
-              theme={theme}
-              effects={effects}
-            />
-          )}
+            {/* End Screen */}
+            {(gameState.gameState === 'won' ||
+              gameState.gameState === 'lost' ||
+              gameState.gameState === 'took_money') && (
+              <EndScreen
+                config={config}
+                gameState={gameState}
+                onNewGame={handleNewGame}
+                onBigButtonPress={handleBigButtonPress}
+                isMusicPlaying={audio.isMusicPlaying}
+                onToggleMusic={audio.toggleMusic}
+                theme={theme}
+                effects={effects}
+              />
+            )}
+          </div>
 
           {/* Footer */}
           <div className="text-center mt-4 text-xs tracking-wide italic text-amber-400/70">

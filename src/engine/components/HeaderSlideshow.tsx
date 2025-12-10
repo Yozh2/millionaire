@@ -178,7 +178,7 @@ export const HeaderSlideshow: React.FC<HeaderSlideshowProps> = ({
     enabled = true,
     transitionDuration = 1500,
     displayDuration = 4000,
-    opacity = 0.4,
+    opacity = 1,
   } = config;
 
   // State for resolved images
@@ -373,12 +373,13 @@ export const HeaderSlideshow: React.FC<HeaderSlideshowProps> = ({
         />
       )}
 
-      {/* Gradient overlay for text readability */}
+      {/* Oval vignette */}
       <div
-        className="absolute inset-0"
+        className="pointer-events-none absolute inset-0"
         style={{
           background:
-            'linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.6) 100%)',
+            'radial-gradient(ellipse at center, rgba(0,0,0,0) 0%, rgba(0,0,0,0.18) 55%, rgba(0,0,0,0.5) 95%, rgba(0,0,0,0.6) 110%)',
+          mixBlendMode: 'multiply',
         }}
       />
     </div>

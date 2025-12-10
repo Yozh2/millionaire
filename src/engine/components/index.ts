@@ -8,6 +8,7 @@ export { GameScreen } from './GameScreen';
 export { EndScreen } from './EndScreen';
 export { ParticleCanvas, type EffectType } from './ParticleCanvas';
 export { HeaderSlideshow } from './HeaderSlideshow';
+export { HeaderPanel } from './HeaderPanel';
 export {
   LoadingScreen,
   LoadingIndicator,

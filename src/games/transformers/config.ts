@@ -160,7 +160,7 @@ export const transformersConfig: GameConfig = {
     tookMoneyHeader: 'ОТСТУПЛЕНИЕ',
 
     prizeLabel: 'ЭНЕРГОН:',
-    newGameButton: '▶ ТРАНСФОРМАЦИЯ',
+    newGameButton: 'ТРАНСФОРМАЦИЯ',
 
     footer: '⚡ Till All Are One ⚡',
 
