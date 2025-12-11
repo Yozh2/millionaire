@@ -2,7 +2,7 @@
  * StartScreen - Campaign selection and game start screen
  */
 
-import type { MouseEvent, TouchEvent } from 'react';
+import type { PointerEvent } from 'react';
 import { GameConfig, Campaign, ThemeColors } from '../types';
 import { Panel, PanelHeader } from './ui';
 import { HeaderPanel } from './HeaderPanel';
@@ -12,7 +12,7 @@ interface StartScreenProps {
   selectedCampaign: Campaign | null;
   onSelectCampaign: (campaign: Campaign) => void;
   onStartGame: () => void;
-  onBigButtonPress: (e?: MouseEvent<Element> | TouchEvent<Element>) => void;
+  onBigButtonPress: (e?: PointerEvent<Element>) => void;
   isMusicPlaying: boolean;
   onToggleMusic: () => void;
   theme: ThemeColors;
@@ -97,8 +97,7 @@ export function StartScreen({
           {/* Start Button */}
           <button
             onClick={onStartGame}
-            onMouseDown={(e) => selectedCampaign && onBigButtonPress(e)}
-            onTouchStart={(e) => selectedCampaign && onBigButtonPress(e)}
+            onPointerDown={(e) => selectedCampaign && onBigButtonPress(e)}
             disabled={!selectedCampaign}
             className={`action-btn px-8 py-3 font-bold text-lg tracking-wide border-4 ${
               selectedCampaign

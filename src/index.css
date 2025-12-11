@@ -37,6 +37,12 @@ body {
   background: #000;
 }
 
+:root {
+  --shine-rest: -150%;
+  --shine-start: -150%;
+  --shine-end: 150%;
+}
+
 /* ============================================
    Screen Transition Animations
    Beautiful transitions between game screens
@@ -362,20 +368,20 @@ body {
 /* Shine sweep animation for answer buttons */
 @keyframes shine-sweep {
   0% {
-    left: -150%;
+    left: var(--shine-start, -150%);
   }
   100% {
-    left: 150%;
+    left: var(--shine-end, 150%);
   }
 }
 
 /* Reverse shine sweep (right to left) for press */
 @keyframes shine-sweep-reverse {
   0% {
-    left: 150%;
+    left: var(--shine-end, 150%);
   }
   100% {
-    left: -150%;
+    left: var(--shine-start, -150%);
   }
 }
 
@@ -383,13 +389,15 @@ body {
   position: relative;
   overflow: hidden;
   transition: transform 0.1s ease-out, box-shadow 0.1s ease-out;
+  --shine-duration: 0.45s;
+  --shine-press-duration: 0.25s;
 }
 
 .answer-btn::before {
   content: '';
   position: absolute;
   top: 0;
-  left: -100%;
+  left: var(--shine-rest, -150%);
   width: 60%;
   height: 100%;
   background: linear-gradient(
@@ -411,13 +419,13 @@ body {
 /* Hover - shine left to right (button rising into light) */
 @media (hover: hover) and (pointer: fine) {
   .answer-btn:not(:disabled):hover::before {
-    animation: shine-sweep 0.5s ease-out forwards;
+    animation: shine-sweep var(--shine-duration, 0.5s) ease-out forwards;
   }
 }
 
 /* Active/Press - shine right to left (button falling through light) */
 .answer-btn:not(:disabled):active::before {
-  animation: shine-sweep-reverse 0.2s ease-out forwards;
+  animation: shine-sweep-reverse var(--shine-press-duration, 0.2s) ease-out forwards;
 }
 
 /* Hover effect - slight lift */
@@ -486,6 +494,8 @@ body {
     filter 0.25s ease-out,
     box-shadow 0.25s ease-out;
   z-index: 10;
+  --shine-duration: 0.35s;
+  --shine-press-duration: 0.2s;
 }
 
 /* Shine effect layer - centered, clipped by overflow:hidden */
@@ -493,7 +503,7 @@ body {
   content: '';
   position: absolute;
   top: 0;
-  left: 0;
+  left: var(--shine-rest, -150%);
   width: 40%;
   height: 100%;
   background: linear-gradient(
@@ -504,7 +514,7 @@ body {
     rgba(255, 255, 255, 0.1) 80%,
     transparent 100%
   );
-  transform: translateX(-100%) skewX(-25deg);
+  transform: skewX(-25deg);
   pointer-events: none;
   z-index: 10;
 }
@@ -520,7 +530,7 @@ body {
   }
 
   .action-btn:not(:disabled):hover::before {
-    animation: shine-sweep 0.5s ease-out forwards;
+    animation: shine-sweep var(--shine-duration, 0.5s) ease-out forwards;
   }
 }
 
@@ -533,7 +543,7 @@ body {
   }
 
   .action-btn:not(:disabled):active::before {
-    animation: shine-sweep-reverse 0.2s ease-out forwards;
+    animation: shine-sweep-reverse var(--shine-press-duration, 0.2s) ease-out forwards;
   }
 }
 
@@ -549,7 +559,7 @@ body {
   }
 
   .action-btn:not(:disabled):active::before {
-    animation: shine-sweep-reverse 0.2s ease-out forwards;
+    animation: shine-sweep-reverse var(--shine-press-duration, 0.2s) ease-out forwards;
   }
 }
 
@@ -562,6 +572,8 @@ body {
   overflow: hidden;
   transform: scale(1) translateY(0);
   transition: transform 0.12s ease-out, box-shadow 0.12s ease-out, filter 0.12s ease-out;
+  --shine-duration: 0.3s;
+  --shine-press-duration: 0.2s;
 }
 
 /* Shine effect on hover */
@@ -569,21 +581,18 @@ body {
   content: '';
   position: absolute;
   top: 0;
-  left: -100%;
-  width: 60%;
+  left: var(--shine-rest, -150%);
+  width: 30%;
   height: 100%;
   background: linear-gradient(
-    130deg,
+    90deg,
     transparent 0%,
-    transparent 25%,
-    rgba(255, 255, 255, 0.15) 40%,
-    rgba(255, 255, 255, 0.3) 50%,
-    rgba(255, 255, 255, 0.15) 60%,
-    transparent 75%,
+    rgba(255, 255, 255, 0.1) 20%,
+    rgba(255, 255, 255, 0.35) 50%,
+    rgba(255, 255, 255, 0.1) 80%,
     transparent 100%
   );
-  transform: skewX(-30deg);
-  filter: blur(1px);
+  transform: skewX(-25deg);
   pointer-events: none;
   z-index: 10;
 }
@@ -600,7 +609,7 @@ body {
   }
 
   .lifeline-btn:not(:disabled):hover::before {
-    animation: shine-sweep 0.5s ease-out forwards;
+    animation: shine-sweep var(--shine-duration, 0.5s) ease-out forwards;
   }
 }
 
@@ -615,5 +624,5 @@ body {
 }
 
 .lifeline-btn:not(:disabled):active::before {
-  animation: shine-sweep-reverse 0.2s ease-out forwards;
+  animation: shine-sweep-reverse var(--shine-press-duration, 0.2s) ease-out forwards;
 }

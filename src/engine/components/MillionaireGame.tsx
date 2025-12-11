@@ -10,7 +10,7 @@
  */
 
 import { useEffect, useCallback, useState } from 'react';
-import type { MouseEvent, TouchEvent } from 'react';
+import type { PointerEvent } from 'react';
 
 import { ThemeProvider } from '../context';
 import {
@@ -138,7 +138,7 @@ export function MillionaireGame({ config }: MillionaireGameProps) {
     }
     // Play campaign-specific select sound if defined, otherwise generic click
     if (campaign.selectSound) {
-      audio.playSoundFile(campaign.selectSound);
+      audio.playCampaignSelectSound(campaign.selectSound);
     } else {
       audio.playSoundEffect('answerButton');
     }
@@ -147,7 +147,7 @@ export function MillionaireGame({ config }: MillionaireGameProps) {
 
   // Sound on button press (mousedown/touchstart) - synced with button landing animation
   const handleBigButtonPress = useCallback(
-    (_e?: MouseEvent<Element> | TouchEvent<Element>) => {
+    (_e?: PointerEvent<Element>) => {
       // Sync with button landing/dust puff (~50ms)
       setTimeout(() => {
         audio.playSoundEffect('bigButton');

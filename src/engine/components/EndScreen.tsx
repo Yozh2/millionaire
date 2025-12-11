@@ -3,7 +3,7 @@
  */
 
 import { useEffect, useRef, useCallback, useMemo } from 'react';
-import type { MouseEvent, TouchEvent } from 'react';
+import type { PointerEvent } from 'react';
 import { GameConfig, ThemeColors, SlideshowScreen, EffectsAPI } from '../types';
 import { UseGameStateReturn } from '../hooks/useGameState';
 import { Panel, PanelHeader } from './ui';
@@ -19,7 +19,7 @@ interface EndScreenProps {
   config: GameConfig;
   gameState: UseGameStateReturn;
   onNewGame: () => void;
-  onBigButtonPress: (e?: MouseEvent<Element> | TouchEvent<Element>) => void;
+  onBigButtonPress: (e?: PointerEvent<Element>) => void;
   isMusicPlaying: boolean;
   onToggleMusic: () => void;
   theme: ThemeColors;
@@ -229,15 +229,14 @@ export function EndScreen({
 
           {/* New Game Button */}
           <div className="animate-pop-in stagger-6">
-            <button
-              onClick={onNewGame}
-              onMouseDown={(e) => onBigButtonPress(e)}
-              onTouchStart={(e) => onBigButtonPress(e)}
-              className={`action-btn px-8 py-3 bg-gradient-to-b ${theme.bgButton} text-white font-bold text-lg tracking-wide border-4 ${theme.borderLight}`}
-              style={{
-                ['--btn-glow' as string]: theme.glow,
-                boxShadow: `0 5px 20px rgba(0, 0, 0, 0.3), 0 0 25px ${theme.glow}`,
-                borderStyle: 'ridge',
+          <button
+            onClick={onNewGame}
+            onPointerDown={(e) => onBigButtonPress(e)}
+            className={`action-btn px-8 py-3 bg-gradient-to-b ${theme.bgButton} text-white font-bold text-lg tracking-wide border-4 ${theme.borderLight}`}
+            style={{
+              ['--btn-glow' as string]: theme.glow,
+              boxShadow: `0 5px 20px rgba(0, 0, 0, 0.3), 0 0 25px ${theme.glow}`,
+              borderStyle: 'ridge',
                 textShadow: '0 2px 4px rgba(0,0,0,0.8)',
               }}
             >

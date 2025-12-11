@@ -17,6 +17,7 @@ import {
   ensureAudioContext,
   warmUpAudioContext,
   getPreloadedAudioSrc,
+  isSoundEnabled,
 } from '../utils/audioPlayer';
 import { getAssetPaths, checkFileExists } from '../utils/assetLoader';
 import { STORAGE_KEY_SOUND_ENABLED } from '../constants';
@@ -63,6 +64,9 @@ export interface UseAudioReturn {
 
   /** Play a sound effect by filename directly */
   playSoundFile: (filename: string) => void;
+
+  /** Play campaign selection sound, interrupting any previous one */
+  playCampaignSelectSound: (filename: string) => void;
 
   /** Play a companion voice line, returns true if voice was played */
   playCompanionVoice: (voiceFile: string) => Promise<boolean>;
@@ -122,6 +126,12 @@ export const useAudio = (
   const userDisabledMusic = useRef(false);
   // Track if we've already tried to restore sound on first interaction
   const hasTriedRestore = useRef(false);
+  // Track if we've warmed the AudioContext for effects
+  const hasWarmedContext = useRef(false);
+  // Track currently playing campaign select sound
+  const campaignSelectAudioRef = useRef<HTMLAudioElement | null>(null);
+  // Track latest play request to avoid race conditions on rapid clicks
+  const campaignSelectRequestId = useRef(0);
 
   // Set game ID for asset resolution on mount
   useEffect(() => {
@@ -174,6 +184,18 @@ export const useAudio = (
     },
     [getPreloadedAudioSrc]
   );
+
+  const stopCampaignSelectSound = useCallback(() => {
+    // Invalidate any in-flight play requests and stop current playback
+    campaignSelectRequestId.current += 1;
+    const current = campaignSelectAudioRef.current;
+    if (current) {
+      current.pause();
+      current.currentTime = 0;
+      current.onended = null;
+      current.onerror = null;
+    }
+  }, []);
 
   // Try to play music on first user interaction if sound was previously enabled
   useEffect(() => {
@@ -323,6 +345,7 @@ export const useAudio = (
       if (audio) {
         audio.pause();
       }
+      stopCampaignSelectSound();
       setIsMusicPlaying(false);
       userDisabledMusic.current = true;
       setEngineSoundEnabled(false);
@@ -355,11 +378,17 @@ export const useAudio = (
         setIsMusicPlaying(true); // Show as "on" for sound effects
       }
     }
-  }, [isMusicPlaying, config.audio.musicVolume, getAudioElement, currentTrack, setAudioSource]);
+  }, [isMusicPlaying, config.audio.musicVolume, getAudioElement, currentTrack, setAudioSource, stopCampaignSelectSound]);
 
   // Play sound effect
   const playSoundEffect = useCallback(
     (key: keyof GameConfig['audio']['sounds']) => {
+      if (!hasWarmedContext.current) {
+        ensureAudioContext();
+        warmUpAudioContext();
+        hasWarmedContext.current = true;
+      }
+
       const soundFile = config.audio.sounds[key];
       if (soundFile) {
         playSound(soundFile, config.audio.soundVolume);
@@ -377,6 +406,105 @@ export const useAudio = (
       playSound(filename, config.audio.soundVolume);
     },
     [config.audio.soundVolume]
+  );
+
+  // Play campaign select sound, stopping any previous long track
+  const playCampaignSelectSound = useCallback(
+    (filename: string) => {
+      if (!filename) return;
+
+      // Stop any existing playback and invalidate pending requests
+      stopCampaignSelectSound();
+      const requestId = ++campaignSelectRequestId.current;
+
+      if (!isSoundEnabled()) return;
+
+      if (!hasWarmedContext.current) {
+        ensureAudioContext();
+        warmUpAudioContext();
+        hasWarmedContext.current = true;
+      }
+
+      const loadAndPlay = async () => {
+        const paths = getAssetPaths('sounds', filename, config.id);
+        const primarySrc = getPreloadedAudioSrc(paths.specific) || paths.specific;
+        const fallbackSrc = getPreloadedAudioSrc(paths.fallback) || paths.fallback;
+
+        const audioEl =
+          campaignSelectAudioRef.current ?? new Audio();
+        audioEl.preload = 'auto';
+        audioEl.volume = config.audio.soundVolume;
+        campaignSelectAudioRef.current = audioEl;
+
+        let triedFallback = false;
+
+        const cleanup = () => {
+          if (campaignSelectAudioRef.current === audioEl) {
+            campaignSelectAudioRef.current = null;
+          }
+          audioEl.onended = null;
+          audioEl.onerror = null;
+        };
+
+        audioEl.onended = cleanup;
+        audioEl.onerror = () => {
+          // Avoid continuing if a newer request was started
+          if (campaignSelectRequestId.current !== requestId) return;
+
+          if (!triedFallback && fallbackSrc && fallbackSrc !== audioEl.src) {
+            triedFallback = true;
+            audioEl.src = fallbackSrc;
+            audioEl.currentTime = 0;
+            void audioEl.play().catch(cleanup);
+            return;
+          }
+          cleanup();
+          playSoundEffect('answerButton');
+        };
+
+        campaignSelectAudioRef.current = audioEl;
+
+        const tryPlaySrc = async (src: string | null) => {
+          if (!src) {
+            cleanup();
+            playSoundEffect('answerButton');
+            return;
+          }
+
+          // Abort if a newer play request started while setting up
+          if (campaignSelectRequestId.current !== requestId) return;
+
+          if (audioEl.src !== src) {
+            audioEl.src = src;
+          }
+          audioEl.currentTime = 0;
+
+          try {
+            await audioEl.play();
+          } catch (err) {
+            if (!triedFallback && fallbackSrc && fallbackSrc !== src) {
+              triedFallback = true;
+              tryPlaySrc(fallbackSrc);
+              return;
+            }
+            cleanup();
+            logger.audioPlayer.warn('Campaign select sound failed', { error: err });
+            playSoundEffect('answerButton');
+          }
+        };
+
+        await tryPlaySrc(primarySrc);
+      };
+
+      void loadAndPlay();
+    },
+    [
+      config.audio.soundVolume,
+      config.id,
+      getPreloadedAudioSrc,
+      playSoundEffect,
+      stopCampaignSelectSound,
+    ]
   );
 
   // Play companion voice, returns true if voice file was found and played
@@ -563,7 +691,14 @@ export const useAudio = (
       audio.pause();
       setIsMusicPlaying(false);
     }
-  }, [getAudioElement]);
+    stopCampaignSelectSound();
+  }, [getAudioElement, stopCampaignSelectSound]);
+
+  useEffect(() => {
+    return () => {
+      stopCampaignSelectSound();
+    };
+  }, [stopCampaignSelectSound]);
 
   return {
     isMusicPlaying,
@@ -571,6 +706,7 @@ export const useAudio = (
     toggleMusic,
     playSoundEffect,
     playSoundFile,
+    playCampaignSelectSound,
     playCompanionVoice,
     switchMusicTrack,
     playMainMenu,
