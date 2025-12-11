@@ -362,7 +362,7 @@ body {
 /* Shine sweep animation for answer buttons */
 @keyframes shine-sweep {
   0% {
-    left: -100%;
+    left: -150%;
   }
   100% {
     left: 150%;
@@ -375,7 +375,7 @@ body {
     left: 150%;
   }
   100% {
-    left: -100%;
+    left: -150%;
   }
 }
 
@@ -600,7 +600,7 @@ body {
   }
 
   .lifeline-btn:not(:disabled):hover::before {
-    animation: shine-sweep 0.4s ease-out forwards;
+    animation: shine-sweep 0.5s ease-out forwards;
   }
 }
 
@@ -615,5 +615,5 @@ body {
 }
 
 .lifeline-btn:not(:disabled):active::before {
-  animation: shine-sweep-reverse 0.18s ease-out forwards;
+  animation: shine-sweep-reverse 0.2s ease-out forwards;
 }

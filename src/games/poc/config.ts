@@ -89,7 +89,6 @@ export const pocConfig: GameConfig = {
     tookMoneyText: 'Умный выбор!',
     tookMoneyHeader: 'ПРИЗ ПОЛУЧЕН',
 
-    prizeLabel: 'ПРИЗ:',
     newGameButton: 'ИГРАТЬ СНОВА',
 
     footer: '★ Тестовый движок викторины ★',

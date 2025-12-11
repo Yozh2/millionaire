@@ -223,7 +223,7 @@ export function EndScreen({
           <div className="flex items-center justify-center gap-2 text-xl text-yellow-300 font-bold mb-6 animate-prize stagger-5">
             {CoinIcon && <CoinIcon />}
             <span>
-              {config.strings.prizeLabel} {wonPrize} {config.prizes.currency}
+              {wonPrize} {config.prizes.currency}
             </span>
           </div>
 

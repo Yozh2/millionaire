@@ -316,7 +316,6 @@ export interface GameStrings {
   tookMoneyText: string;
   tookMoneyHeader: string;
 
-  prizeLabel: string;
   newGameButton: string;
 
   // Footer
