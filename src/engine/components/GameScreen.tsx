@@ -66,9 +66,23 @@ export function GameScreen({
 
   const getButtonCenterOrigin = (target: HTMLElement): { x: number; y: number } => {
     const rect = target.getBoundingClientRect();
+    const effectsCanvas = document.getElementById('effects-canvas');
+    const reference = effectsCanvas?.getBoundingClientRect();
+
+    const baseWidth = reference?.width || window.innerWidth || 1;
+    const baseHeight = reference?.height || window.innerHeight || 1;
+    const offsetX = reference?.left || 0;
+    const offsetY = reference?.top || 0;
+
     return {
-      x: (rect.left + rect.width / 2) / window.innerWidth,
-      y: (rect.top + rect.height / 2) / window.innerHeight,
+      x: Math.min(
+        1,
+        Math.max(0, (rect.left + rect.width / 2 - offsetX) / baseWidth)
+      ),
+      y: Math.min(
+        1,
+        Math.max(0, (rect.top + rect.height / 2 - offsetY) / baseHeight)
+      ),
     };
   };
 

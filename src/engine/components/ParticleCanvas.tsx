@@ -350,7 +350,9 @@ export const ParticleCanvas: React.FC<ParticleCanvasProps> = ({
       const canvas = canvasRef.current;
       if (!canvas) return;
 
-      const { width, height } = canvas;
+      const width = canvas.clientWidth;
+      const height = canvas.clientHeight;
+      const maxVisibleRadius = Math.min(width, height);
 
       switch (effectType) {
         case 'confetti':
@@ -399,7 +401,7 @@ export const ParticleCanvas: React.FC<ParticleCanvasProps> = ({
             x: origin.x * width,
             y: origin.y * height,
             radius: 10,
-            maxRadius: Math.max(width, height) * 0.6,
+            maxRadius: maxVisibleRadius * 0.5,
             alpha: 0.8,
             color: primaryColor,
             lineWidth: 4,
@@ -410,7 +412,7 @@ export const ParticleCanvas: React.FC<ParticleCanvasProps> = ({
               x: origin.x * width,
               y: origin.y * height,
               radius: 10,
-              maxRadius: Math.max(width, height) * 0.5,
+              maxRadius: maxVisibleRadius * 0.4,
               alpha: 0.6,
               color: secondaryColor,
               lineWidth: 2,
@@ -458,8 +460,11 @@ export const ParticleCanvas: React.FC<ParticleCanvasProps> = ({
     const ctx = canvas?.getContext('2d');
     if (!canvas || !ctx) return;
 
+    const width = canvas.clientWidth;
+    const height = canvas.clientHeight;
+
     // Clear canvas
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.clearRect(0, 0, width, height);
 
     // Update and draw particles
     particlesRef.current = particlesRef.current.filter((particle) => {
@@ -531,10 +536,18 @@ export const ParticleCanvas: React.FC<ParticleCanvasProps> = ({
 
     const resizeCanvas = () => {
       const parent = canvas.parentElement;
-      if (parent) {
-        canvas.width = parent.clientWidth;
-        canvas.height = parent.clientHeight;
-      }
+      if (!parent) return;
+
+      const rect = parent.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+
+      canvas.style.width = `${rect.width}px`;
+      canvas.style.height = `${rect.height}px`;
+      canvas.width = Math.round(rect.width * dpr);
+      canvas.height = Math.round(rect.height * dpr);
+
+      const ctx = canvas.getContext('2d');
+      ctx?.setTransform(dpr, 0, 0, dpr, 0, 0);
     };
 
     resizeCanvas();
@@ -551,6 +564,7 @@ export const ParticleCanvas: React.FC<ParticleCanvasProps> = ({
   return (
     <canvas
       ref={canvasRef}
+      id="effects-canvas"
       className="absolute inset-0 pointer-events-none z-50"
       style={{ width: '100%', height: '100%' }}
     />
