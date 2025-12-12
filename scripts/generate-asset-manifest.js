@@ -340,7 +340,6 @@ function generateManifest() {
 
   const manifest = {
     version: '1.0.0',
-    generated: new Date().toISOString(),
     engine: scanEngineAssets(),
     games: scanGames(),
   };

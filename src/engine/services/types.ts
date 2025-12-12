@@ -80,7 +80,6 @@ export interface EngineAssets {
 /** Complete asset manifest structure */
 export interface AssetManifest {
   version: string;
-  generated: string;
   engine: EngineAssets;
   games: Record<string, GameAssets>;
 }
