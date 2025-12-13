@@ -28,6 +28,7 @@ export function StartScreen({
   onToggleMusic,
   theme,
 }: StartScreenProps) {
+  const isLightTheme = !!theme.isLight;
   return (
     <div className="screen-transition">
       {/* Header */}
@@ -44,7 +45,7 @@ export function StartScreen({
       <Panel className="p-1 animate-slide-in stagger-2">
         <PanelHeader>{config.strings.selectPath}</PanelHeader>
         <div className="text-center py-8 px-4">
-          <p className="text-amber-200 text-base mb-6 max-w-md mx-auto leading-relaxed">
+          <p className={`${theme.textSecondary} text-base mb-6 max-w-md mx-auto leading-relaxed`}>
             {config.strings.introText}
           </p>
 
@@ -59,7 +60,7 @@ export function StartScreen({
                   <button
                     key={campaign.id}
                     onClick={() => onSelectCampaign(campaign)}
-                    className="flex flex-col items-center gap-2 p-3 md:p-4 border-4 transition-all transform hover:scale-105 bg-stone-950/50"
+                    className={`flex flex-col items-center gap-2 p-3 md:p-4 border-4 transition-all transform hover:scale-105 ${isLightTheme ? 'bg-white/35' : 'bg-stone-950/50'}`}
                     style={{
                       borderStyle: 'ridge',
                       borderColor: isSelected ? campaign.theme.glowColor : '#44403c',

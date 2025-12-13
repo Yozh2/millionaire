@@ -54,6 +54,9 @@ export interface ThemeColors {
   // Primary color name (for reference)
   primary: string;
 
+  /** Whether this theme targets light surfaces (used for shadow/backdrop defaults). */
+  isLight?: boolean;
+
   // Background gradient for the entire screen
   bgGradient?: string;
 
@@ -62,6 +65,11 @@ export interface ThemeColors {
   textSecondary: string;
   textMuted: string;
   textAccent: string;
+
+  /** Optional text color for the big header title/subtitle (falls back to textPrimary). */
+  textTitle?: string;
+  /** Optional text color for PanelHeader (falls back to textSecondary). */
+  textHeader?: string;
 
   // Border colors
   border: string;
@@ -78,6 +86,13 @@ export interface ThemeColors {
   bgHeader: string;
   bgHeaderVia: string;
   headerBorderColor: string;
+
+  /** Optional text shadow for the big header title/subtitle (falls back to defaults). */
+  headerTextShadow?: string;
+  /** Optional backdrop gradient behind big header text (falls back to defaults). */
+  headerTextBackdrop?: string;
+  /** Optional text shadow for PanelHeader (falls back to defaults). */
+  panelHeaderTextShadow?: string;
 
   // Buttons
   bgButton: string;
@@ -489,6 +504,19 @@ export interface GameConfig {
    * Shows themed images in the header with additive blend mode.
    */
   headerSlideshow?: HeaderSlideshowConfig;
+
+  /**
+   * Optional engine-level UI strings that are not part of the main game localization.
+   * Useful for per-game exceptions (e.g., English-only editions).
+   */
+  systemStrings?: {
+    /** Loading title shown while preloading game assets. Use "{title}" placeholder. */
+    loadingGameTitle?: string;
+    /** Loading subtitle shown while preloading game assets. */
+    loadingGameSubtitle?: string;
+    /** Loading title shown while preloading campaign assets. */
+    loadingCampaignTitle?: string;
+  };
 }
 
 // ============================================

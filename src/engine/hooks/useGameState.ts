@@ -8,7 +8,7 @@
  * automatic prize ladder calculation.
  */
 
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, useEffect } from 'react';
 import { logger } from '../services';
 import {
   GameConfig,
@@ -246,6 +246,14 @@ export const useGameState = (config: GameConfig): UseGameStateReturn => {
     },
     [initializeGame]
   );
+
+  // Convenience: if a game has exactly one campaign, auto-select it.
+  useEffect(() => {
+    if (config.campaigns.length !== 1) return;
+    if (gameState !== 'start') return;
+    if (selectedCampaign) return;
+    selectCampaign(config.campaigns[0]);
+  }, [config.campaigns, gameState, selectCampaign, selectedCampaign]);
 
   const startGame = useCallback(() => {
     if (!selectedCampaign) return;

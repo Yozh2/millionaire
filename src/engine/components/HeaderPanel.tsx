@@ -35,6 +35,21 @@ export const HeaderPanel: React.FC<HeaderPanelProps> = ({
   children,
   className = '',
 }) => {
+  const isLightTheme = !!theme.isLight;
+  const titleTextClass = theme.textTitle ?? theme.textPrimary;
+
+  const defaultTitleShadow = isLightTheme
+    ? `0 4px 18px rgba(15, 23, 42, 0.20), 0 0 26px ${theme.glowColor}55`
+    : `0 4px 18px rgba(0,0,0,0.8), 0 0 32px rgba(0,0,0,0.7), 0 0 30px ${theme.glowColor}`;
+
+  const titleShadow = theme.headerTextShadow ?? defaultTitleShadow;
+
+  const defaultBackdrop = isLightTheme
+    ? 'radial-gradient(ellipse at center, rgba(255,255,255,0.85) 20%, rgba(255,255,255,0.35) 55%, rgba(255,255,255,0) 78%)'
+    : 'radial-gradient(ellipse at center, rgba(0,0,0,0.5) 25%, rgba(0,0,0,0.25) 50%, rgba(0,0,0,0) 75%)';
+
+  const backdrop = theme.headerTextBackdrop ?? defaultBackdrop;
+
   return (
     <Panel
       className={`mb-4 p-1 animate-slide-in stagger-1 relative overflow-hidden min-h-[200px] ${className}`}
@@ -64,34 +79,27 @@ export const HeaderPanel: React.FC<HeaderPanelProps> = ({
           <div
             className="pointer-events-none absolute inset-x-6 top-2 h-32"
             style={{
-              background:
-                'radial-gradient(ellipse at center, rgba(0,0,0,0.5) 25%, rgba(0,0,0,0.25) 50%, rgba(0,0,0,0) 75%)',
+              background: backdrop,
               filter: 'blur(18px)',
-              opacity: 0.95,
+              opacity: isLightTheme ? 0.9 : 0.95,
             }}
             aria-hidden="true"
           />
           <div className="relative z-10 space-y-1">
             <h1
-              className={`text-2xl md:text-3xl font-bold tracking-wider transition-colors duration-500 ${theme.textPrimary}`}
+              className={`text-2xl md:text-3xl font-bold tracking-wider transition-colors duration-500 ${titleTextClass}`}
               style={{
-                textShadow:
-                  `0 4px 18px rgba(0,0,0,0.8), ` +
-                  `0 0 32px rgba(0,0,0,0.7), ` +
-                  `0 0 30px ${theme.glowColor}`,
+                textShadow: titleShadow,
               }}
             >
               {config.title}
             </h1>
             <h2
-              className={`text-lg tracking-wide transition-colors duration-500 ${theme.textPrimary}`}
+              className={`text-lg tracking-wide transition-colors duration-500 ${titleTextClass}`}
               style={{
                 lineHeight: '1.5',
                 fontStyle: 'italic',
-                textShadow:
-                  `0 4px 18px rgba(0,0,0,0.8), ` +
-                  `0 0 32px rgba(0,0,0,0.7), ` +
-                  `0 0 30px ${theme.glowColor}`,
+                textShadow: titleShadow,
               }}
             >
               {config.subtitle}
