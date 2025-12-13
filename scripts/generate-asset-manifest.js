@@ -14,7 +14,7 @@
  * Or:  npm run generate:assets
  */
 
-import { readdirSync, writeFileSync, existsSync, statSync } from 'fs';
+import { readdirSync, writeFileSync, existsSync, statSync, mkdirSync } from 'fs';
 import { join, extname, relative } from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
@@ -337,6 +337,11 @@ function scanGameAssets(gameDir, gameId) {
  */
 function generateManifest() {
   console.log('🎮 Generating asset manifest...\n');
+
+  // Ensure /public exists so dev/build can run without it committed.
+  if (!existsSync(PUBLIC_DIR)) {
+    mkdirSync(PUBLIC_DIR, { recursive: true });
+  }
 
   const manifest = {
     version: '1.0.0',

@@ -26,7 +26,13 @@ import {
   preDecodeAudio,
   registerPreloadedAudioBuffer,
 } from '../utils/audioPlayer';
-import { getBasePath } from '../utils/assetLoader';
+import { getBasePath } from '../assets/paths';
+
+const EMPTY_MANIFEST: AssetManifest = {
+  version: '0.0.0',
+  engine: { icons: [], images: [], sounds: [] },
+  games: {},
+};
 
 /** Cached assets by URL */
 interface AssetCache {
@@ -91,14 +97,23 @@ class AssetLoader {
       return this.manifestPromise;
     }
 
-    this.manifestPromise = fetch(`${getBasePath()}asset-manifest.json`)
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error(`Failed to load asset manifest: ${res.status}`);
-        }
-        return res.json();
+    const manifestUrl = `${getBasePath()}asset-manifest.json`;
+
+    this.manifestPromise = fetch(manifestUrl)
+      .then(async (res) => {
+        if (!res.ok) return null;
+        return (await res.json()) as AssetManifest;
       })
-      .then((data: AssetManifest) => {
+      .catch(() => null)
+      .then((data) => {
+        if (!data) {
+          this.manifest = EMPTY_MANIFEST;
+          logger.assetLoader.warn('Asset manifest not found; continuing without preloading', {
+            url: manifestUrl,
+          });
+          return this.manifest;
+        }
+
         this.manifest = data;
         logger.assetLoader.info(
           `Manifest loaded: ${Object.keys(data.games).length} games`

@@ -9,11 +9,9 @@
  */
 
 import { logger } from '../services/logger';
+import { getBasePath } from '../assets/paths';
 
-/** Get base path for assets */
-export const getBasePath = (): string => {
-  return import.meta.env.BASE_URL || '/';
-};
+export { getBasePath };
 
 /** Asset types */
 export type AssetType = 'sounds' | 'music' | 'voices';

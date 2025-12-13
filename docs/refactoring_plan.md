@@ -787,7 +787,7 @@ PoC и базовый engine должны запускаться без `public/
   - Переименовать “hint” SFX в “lifeline” (с алиасами).
   - Acceptance: `playCampaignSelectSound` становится частным случаем (tagged sound), stop работает.
 
-- ⬜ **Этап 6. Assets: единая система путей + устойчивость без public/**
+- ✅ **Этап 6. Assets: единая система путей + устойчивость без public/**
   - Вынести `paths.ts` как единую точку `baseUrl` и построения путей.
   - `AssetLoader` умеет работать с отсутствующим манифестом.
   - Скрипты генерации манифестов устойчивы без `public/`.
@@ -820,6 +820,7 @@ PoC и базовый engine должны запускаться без `public/
 - 2025‑12‑13 (codex): ✅ Этап 3: введены панели (`QuestionPanel`, `AnswersPanel`, `LifelinesPanel`, `PrizeLadderPanel`, `LifelineResultPanel`), добавлены `CampaignSelectionPanel` + `CampaignCard`, `takeMoney` переехал в низ `PrizeLadderPanel`, `EndScreen` переведён на `ResultPanel(variant)`.
 - 2025‑12‑13 (codex): ✅ Этап 4: `LifelinePhonePanel` и `LifelineAudiencePanel` вынесены в отдельные компоненты, анимация и общий механизм показа результата lifeline перенесены в `LifelineResultPanel`; Transformers активирован в `GameRegistry`.
 - 2025‑12‑13 (codex): ✅ Этап 5: аудио разделено на `useMusicPlayer` и `useSoundPlayer` (`src/engine/audio/*`), `useAudio` стал фасадом, `playCampaignSelectSound` реализован как tagged‑sound с мгновенной остановкой, алиасы `hint* → lifeline*` сохранены.
+- 2025‑12‑13 (codex): ✅ Этап 6: добавлен `src/engine/assets/paths.ts` (единый `getBasePath`), `AssetLoader.loadManifest()` стал устойчивым к отсутствующему `asset-manifest.json`, `scripts/generate-asset-manifest.js` создаёт `public/` при необходимости.
 
 ---
 
