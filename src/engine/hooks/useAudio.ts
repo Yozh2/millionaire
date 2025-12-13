@@ -68,6 +68,9 @@ export interface UseAudioReturn {
   /** Play campaign selection sound, interrupting any previous one */
   playCampaignSelectSound: (filename: string) => void;
 
+  /** Stop campaign selection sound immediately */
+  stopCampaignSelectSound: () => void;
+
   /** Play a companion voice line, returns true if voice was played */
   playCompanionVoice: (voiceFile: string) => Promise<boolean>;
 
@@ -707,6 +710,7 @@ export const useAudio = (
     playSoundEffect,
     playSoundFile,
     playCampaignSelectSound,
+    stopCampaignSelectSound,
     playCompanionVoice,
     switchMusicTrack,
     playMainMenu,

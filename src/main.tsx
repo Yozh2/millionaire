@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import App from './App';
 import { ErrorBoundary } from './engine/components';
+import './tailwind.css';
 import './index.css';
 
 // Handle GitHub Pages 404 redirect

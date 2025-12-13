@@ -15,7 +15,7 @@ export const DefaultAudienceHintIcon = () => (
 
 // End Screen Icons
 export const DefaultTrophyIcon = () => (
-  <div className="w-24 h-24 mx-auto flex items-center justify-center text-6xl animate-bounce">
+  <div className="w-24 h-24 mx-auto flex items-center justify-center text-6xl">
     🏆
   </div>
 );

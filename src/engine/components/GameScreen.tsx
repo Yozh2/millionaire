@@ -204,7 +204,7 @@ export function GameScreen({
   );
 
   const lifelineBase =
-    'lifeline-btn px-3 py-2 text-sm border-3 h-12 w-full min-w-[132px] ' +
+    'shine-button lifeline-btn px-3 py-2 text-sm border-3 h-12 w-full min-w-[132px] ' +
     'flex items-center justify-center gap-2';
 
   // Animate hint panel in/out so it doesn't pop abruptly
@@ -298,7 +298,7 @@ export function GameScreen({
                   selectedAnswer !== null ||
                   eliminatedAnswers.includes(displayIndex)
                 }
-                className={`answer-btn ${getAnswerStyle(displayIndex)}`}
+                className={`shine-button answer-btn ${getAnswerStyle(displayIndex)}`}
                 style={{ borderStyle: 'ridge' }}
               >
                 <span

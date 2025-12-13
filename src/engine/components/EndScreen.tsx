@@ -189,6 +189,8 @@ export function EndScreen({
     return 'took';
   }, [state]);
 
+  const iconClassName = 'animate-pop-in stagger-3';
+
   return (
     <div className={screenClass}>
       {/* Header */}
@@ -205,7 +207,7 @@ export function EndScreen({
       <Panel className="p-1 animate-slide-in stagger-2">
         <PanelHeader>{getHeader()}</PanelHeader>
         <div className="text-center py-12 px-4">
-          <div ref={iconRef} className="animate-pop-in stagger-3">
+          <div ref={iconRef} className={iconClassName}>
             {getIcon()}
           </div>
 
@@ -232,7 +234,7 @@ export function EndScreen({
           <button
             onClick={onNewGame}
             onPointerDown={(e) => onBigButtonPress(e)}
-            className={`action-btn px-8 py-3 bg-gradient-to-b ${theme.bgButton} text-white font-bold text-lg tracking-wide border-4 ${theme.borderLight}`}
+            className={`shine-button action-btn px-8 py-3 bg-gradient-to-b ${theme.bgButton} text-white font-bold text-lg tracking-wide border-4 ${theme.borderLight}`}
             style={{
               ['--btn-glow' as string]: theme.glow,
               boxShadow: `0 5px 20px rgba(0, 0, 0, 0.3), 0 0 25px ${theme.glow}`,

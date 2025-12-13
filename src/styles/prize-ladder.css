@@ -1,0 +1,68 @@
+/* Shine effect for current prize row */
+.prize-row {
+  position: relative;
+  overflow: hidden;
+  --ladder-number-width: 0rem;
+  --ladder-value-width: 5.5rem;
+  --ladder-stars-width: 1.8rem;
+  display: grid;
+  grid-template-columns:
+    var(--ladder-number-width)
+    minmax(0, 1fr)
+    var(--ladder-value-width)
+    minmax(0, 1fr)
+    var(--ladder-stars-width);
+  align-items: center;
+  gap: 0rem;
+}
+
+.prize-number {
+  grid-column: 1;
+  width: 100%;
+  text-align: left;
+  display: inline-flex;
+  justify-content: flex-start;
+}
+
+.prize-stars {
+  grid-column: 5;
+  width: 100%;
+  text-align: left;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.prize-value {
+  grid-column: 3;
+  width: 100%;
+  text-align: right;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: clip;
+  display: inline-flex;
+  justify-content: flex-end;
+}
+
+.prize-row-current::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -120%;
+  width: 60%;
+  height: 100%;
+  --shine-end: 420%;
+  background: linear-gradient(
+    130deg,
+    transparent 0%,
+    transparent 30%,
+    rgba(255, 255, 255, 0.1) 45%,
+    rgba(255, 255, 255, 0.25) 55%,
+    rgba(255, 255, 255, 0.1) 65%,
+    transparent 80%,
+    transparent 100%
+  );
+  transform: skewX(-25deg);
+  filter: blur(1px);
+  pointer-events: none;
+  animation: shine-sweep 1.2s ease-in-out forwards;
+}

@@ -160,6 +160,9 @@ export function MillionaireGame({ config }: MillionaireGameProps) {
   const handleStartGame = useCallback(async () => {
     if (!gameState.selectedCampaign) return;
 
+    // Stop any lingering campaign select sound when starting the game
+    audio.stopCampaignSelectSound();
+
     const campaignId = gameState.selectedCampaign.id;
 
     // Check if level 1.1 is loaded, if not show loading

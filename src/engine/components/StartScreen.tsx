@@ -99,7 +99,7 @@ export function StartScreen({
             onClick={onStartGame}
             onPointerDown={(e) => selectedCampaign && onBigButtonPress(e)}
             disabled={!selectedCampaign}
-            className={`action-btn px-8 py-3 font-bold text-lg tracking-wide border-4 ${
+            className={`shine-button action-btn px-8 py-3 font-bold text-lg tracking-wide border-4 ${
               selectedCampaign
                 ? `bg-gradient-to-b ${theme.bgButton} text-white ${theme.borderLight}`
                 : 'bg-gradient-to-b from-stone-700 via-stone-800 to-stone-900 text-stone-500 border-stone-600 cursor-not-allowed'
