@@ -765,7 +765,7 @@ PoC и базовый engine должны запускаться без `public/
   - Добавить `rewardKind` (`trophy|money|defeat`) и привести EndScreen/ResultPanel контракт к этому.
   - Acceptance: диздок актуален, типы не ломаются, есть список deprecated алиасов.
 
-- ⬜ **Этап 2. GameRegistry**
+- ✅ **Этап 2. GameRegistry**
   - Ввести `GameRegistry` и перевести `App.tsx`/селектор на него.
   - Маркировать devOnly страницы (EffectsSandbox/SandboxPage) и скрывать в UI.
   - Acceptance: добавление новой игры = одна запись в registry.
@@ -816,6 +816,7 @@ PoC и базовый engine должны запускаться без `public/
 - 2025‑12‑13 (codex): добавлена таблица миграции `hint* → lifeline*`, предложена явная модель `GameState` (v0), зафиксированы решения: `takeMoney`=action в `PrizeLadderPanel`, `glare`=CSS‑примитив, `systemStrings`=часть `GameConfig`.
 - 2025‑12‑13 (codex): старт реализации: `refactoring` синхронизирован с `main` (Sky‑CotL), поправлен тест `GameSelector`.
 - 2025‑12‑13 (codex): ✅ Этап 1: введены `LifelineKind/LifelineResult/RewardKind`, добавлены алиасы `hint* → lifeline*` (types + audio), `GameScreen` переведён на новые ключи SFX и новые имена (с fallback на старые строки/иконки/ключи).
+- 2025‑12‑13 (codex): ✅ Этап 2: введён `GameRegistry` (routes + карточки), `App.tsx` и `GameSelector` переведены на registry; per‑game `*Page.tsx` удалены; devOnly ссылки скрыты вне `import.meta.env.DEV`.
 
 ---
 

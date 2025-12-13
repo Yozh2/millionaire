@@ -9,65 +9,7 @@ import { Link } from 'react-router-dom';
 
 import { LoadingScreen } from '../../engine/components/LoadingScreen';
 import { useFavicon, useGameIcon, useAssetPreloader } from '../../engine/hooks';
-
-interface GameCardData {
-  id: string;
-  path: string;
-  title: string;
-  subtitle: string;
-  description: string;
-  emoji: string;
-  gradient: string;
-  borderColor: string;
-  available: boolean;
-}
-
-const GAMES: GameCardData[] = [
-  {
-    id: 'poc',
-    path: '/poc',
-    title: 'PROOF OF CONCEPT',
-    subtitle: 'Тестовая игра',
-    description: 'Минимальная демонстрация движка без внешних ассетов',
-    emoji: '⚙️',
-    gradient: 'from-slate-700 via-slate-600 to-slate-800',
-    borderColor: 'border-slate-500',
-    available: true,
-  },
-  {
-    id: 'bg3',
-    path: '/bg3',
-    title: "BALDUR'S GATE 3",
-    subtitle: 'Forgotten Realms Edition',
-    description: 'Викторина по вселенной Baldur\'s Gate 3',
-    emoji: '⚔️',
-    gradient: 'from-amber-700 via-amber-600 to-amber-800',
-    borderColor: 'border-amber-500',
-    available: true,
-  },
-  {
-    id: 'sky-cotl',
-    path: '/sky-cotl',
-    title: 'SKY',
-    subtitle: 'Children of the Light Edition',
-    description: 'A 15-question quiz about Sky: Children of the Light (English-only)',
-    emoji: '☁️',
-    gradient: 'from-sky-500 via-sky-400 to-emerald-500',
-    borderColor: 'border-sky-300',
-    available: true,
-  },
-  // {
-  //   id: 'transformers',
-  //   path: '/transformers',
-  //   title: 'TRANSFORMERS',
-  //   subtitle: 'COMICS EDITION',
-  //   description: 'Викторина по комиксам про Трансформеров',
-  //   emoji: '🤖',
-  //   gradient: 'from-purple-700 via-red-600 to-purple-800',
-  //   borderColor: 'border-purple-500',
-  //   available: true,
-  // },
-];
+import { getSelectorEntries, type GameRegistryEntry } from '../registry';
 
 /**
  * Game icon component that loads favicon with fallback to emoji.
@@ -90,7 +32,8 @@ function GameIcon({ gameId, fallbackEmoji }: { gameId: string; fallbackEmoji: st
   );
 }
 
-function GameCard({ game }: { game: GameCardData }) {
+function GameCard({ entry }: { entry: GameRegistryEntry }) {
+  const game = entry.card;
   const CardContent = (
     <div
       className={`
@@ -105,7 +48,7 @@ function GameCard({ game }: { game: GameCardData }) {
     >
       {/* Icon */}
       <div className="mb-2">
-        <GameIcon gameId={game.id} fallbackEmoji={game.emoji} />
+        <GameIcon gameId={entry.id} fallbackEmoji={game.emoji} />
       </div>
 
       {/* Title */}
@@ -132,7 +75,7 @@ function GameCard({ game }: { game: GameCardData }) {
   );
 
   if (game.available) {
-    return <Link to={game.path}>{CardContent}</Link>;
+    return <Link to={entry.routePath}>{CardContent}</Link>;
   }
 
   return CardContent;
@@ -156,6 +99,9 @@ export function GameSelector() {
     );
   }
 
+  const games = getSelectorEntries();
+  const showDevLinks = import.meta.env.DEV;
+
   return (
     <div
       className="min-h-screen p-8"
@@ -176,20 +122,22 @@ export function GameSelector() {
 
         {/* Game Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {GAMES.map((game) => (
-            <GameCard key={game.id} game={game} />
+          {games.map((entry) => (
+            <GameCard key={entry.id} entry={entry} />
           ))}
         </div>
 
         {/* Sandbox Link */}
-        <div className="text-center mt-12">
-          <Link
-            to="/sandbox"
-            className="text-gray-500 hover:text-amber-400 transition-colors text-sm"
-          >
-            🎨 Effects Sandbox (для разработчиков)
-          </Link>
-        </div>
+        {showDevLinks && (
+          <div className="text-center mt-12">
+            <Link
+              to="/sandbox"
+              className="text-gray-500 hover:text-amber-400 transition-colors text-sm"
+            >
+              🎨 Effects Sandbox (для разработчиков)
+            </Link>
+          </div>
+        )}
 
         {/* Footer */}
         <div className="text-center mt-8 text-gray-600 text-sm">

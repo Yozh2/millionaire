@@ -1,6 +1,7 @@
 import { MemoryRouter } from 'react-router-dom';
 import { render, screen } from '@testing-library/react';
 import { GameSelector } from './GameSelector';
+import { getSelectorEntries } from '../registry';
 
 vi.mock('../../engine/hooks', () => ({
   useFavicon: vi.fn(),
@@ -29,6 +30,7 @@ describe('GameSelector', () => {
 
     // Available games are listed as cards
     const cards = screen.getAllByText(/Играть →/i);
-    expect(cards.length).toBe(3);
+    const availableGamesCount = getSelectorEntries().filter((e) => e.card.available).length;
+    expect(cards.length).toBe(availableGamesCount);
   });
 });
