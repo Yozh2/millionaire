@@ -770,7 +770,7 @@ PoC и базовый engine должны запускаться без `public/
   - Маркировать devOnly страницы (EffectsSandbox/SandboxPage) и скрывать в UI.
   - Acceptance: добавление новой игры = одна запись в registry.
 
-- ⬜ **Этап 3. Engine UI: панели и CampaignCard**
+- ✅ **Этап 3. Engine UI: панели и CampaignCard**
   - Разрезать `GameScreen` на панели (`QuestionPanel`, `AnswersPanel`, `LifelinesPanel`, `PrizeLadderPanel`).
   - Ввести `CampaignSelectionPanel` + `CampaignCard`.
   - `EndScreen` заменить на `ResultPanel(variant)`.
@@ -817,6 +817,7 @@ PoC и базовый engine должны запускаться без `public/
 - 2025‑12‑13 (codex): старт реализации: `refactoring` синхронизирован с `main` (Sky‑CotL), поправлен тест `GameSelector`.
 - 2025‑12‑13 (codex): ✅ Этап 1: введены `LifelineKind/LifelineResult/RewardKind`, добавлены алиасы `hint* → lifeline*` (types + audio), `GameScreen` переведён на новые ключи SFX и новые имена (с fallback на старые строки/иконки/ключи).
 - 2025‑12‑13 (codex): ✅ Этап 2: введён `GameRegistry` (routes + карточки), `App.tsx` и `GameSelector` переведены на registry; per‑game `*Page.tsx` удалены; devOnly ссылки скрыты вне `import.meta.env.DEV`.
+- 2025‑12‑13 (codex): ✅ Этап 3: введены панели (`QuestionPanel`, `AnswersPanel`, `LifelinesPanel`, `PrizeLadderPanel`, `LifelineResultPanel`), добавлены `CampaignSelectionPanel` + `CampaignCard`, `takeMoney` переехал в низ `PrizeLadderPanel`, `EndScreen` переведён на `ResultPanel(variant)`.
 
 ---
 

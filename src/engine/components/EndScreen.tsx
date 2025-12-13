@@ -6,14 +6,8 @@ import { useEffect, useRef, useCallback, useMemo } from 'react';
 import type { PointerEvent } from 'react';
 import { GameConfig, ThemeColors, SlideshowScreen, EffectsAPI } from '../types';
 import { UseGameStateReturn } from '../hooks/useGameState';
-import { Panel, PanelHeader } from './ui';
 import { HeaderPanel } from './HeaderPanel';
-import {
-  DefaultCoinIcon,
-  DefaultTrophyIcon,
-  DefaultFailIcon,
-  DefaultMoneyIcon,
-} from './DefaultIcons';
+import { ResultPanel, type ResultVariant } from './panels/ResultPanel';
 
 interface EndScreenProps {
   config: GameConfig;
@@ -121,62 +115,6 @@ export function EndScreen({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state, getIconOrigin]); // effects intentionally omitted to prevent re-triggering
 
-  // Get icons from config or use defaults
-  const CoinIcon = config.icons?.coin || DefaultCoinIcon;
-
-  // Get the correct icon component
-  const getIcon = () => {
-    if (config.endIcons) {
-      if (state === 'won' && config.endIcons.won) {
-        const WonIcon = config.endIcons.won;
-        return <WonIcon />;
-      }
-      if (state === 'lost' && config.endIcons.lost) {
-        const LostIcon = config.endIcons.lost;
-        return <LostIcon />;
-      }
-      if (state === 'took_money' && config.endIcons.tookMoney) {
-        const TookMoneyIcon = config.endIcons.tookMoney;
-        return <TookMoneyIcon />;
-      }
-    }
-
-    // Default icons
-    if (state === 'won') return <DefaultTrophyIcon />;
-    if (state === 'lost') return <DefaultFailIcon />;
-    return <DefaultMoneyIcon />;
-  };
-
-  const getTitle = () => {
-    if (state === 'won') return config.strings.wonTitle;
-    if (state === 'lost') return config.strings.lostTitle;
-    return config.strings.tookMoneyTitle;
-  };
-
-  const getText = () => {
-    if (state === 'won') return config.strings.wonText;
-    if (state === 'lost') return config.strings.lostText;
-    return config.strings.tookMoneyText;
-  };
-
-  const getHeader = () => {
-    if (state === 'won') return config.strings.wonHeader;
-    if (state === 'lost') return config.strings.lostHeader;
-    return config.strings.tookMoneyHeader;
-  };
-
-  const getTitleColor = () => {
-    if (state === 'won') return 'text-yellow-400';
-    if (state === 'lost') return 'text-red-400';
-    return theme.textPrimary;
-  };
-
-  const getTextShadow = () => {
-    if (state === 'won') return '0 0 25px #facc15, 0 2px 8px #000';
-    if (state === 'lost') return '0 0 25px #ef4444, 0 2px 8px #000';
-    return `0 0 25px ${theme.glowColor}, 0 2px 8px #000`;
-  };
-
   // Determine screen animation class based on state
   const screenClass = state === 'won' ? 'screen-victory' :
                       state === 'lost' ? 'screen-defeat' :
@@ -189,7 +127,8 @@ export function EndScreen({
     return 'took';
   }, [state]);
 
-  const iconClassName = 'animate-pop-in stagger-3';
+  const variant: ResultVariant =
+    state === 'won' ? 'won' : state === 'lost' ? 'lost' : 'took_money';
 
   return (
     <div className={screenClass}>
@@ -203,50 +142,15 @@ export function EndScreen({
         onToggleMusic={onToggleMusic}
       />
 
-      {/* End Screen Panel */}
-      <Panel className="p-1 animate-slide-in stagger-2">
-        <PanelHeader>{getHeader()}</PanelHeader>
-        <div className="text-center py-12 px-4">
-          <div ref={iconRef} className={iconClassName}>
-            {getIcon()}
-          </div>
-
-          <h2
-            className={`text-2xl font-bold mt-4 mb-4 tracking-wide animate-slide-in stagger-4 ${getTitleColor()}`}
-            style={{ textShadow: getTextShadow() }}
-          >
-            {getTitle()}
-          </h2>
-
-          <p className={`${theme.textSecondary} text-lg mb-2`}>
-            {getText()}
-          </p>
-
-          <div className="flex items-center justify-center gap-2 text-xl text-yellow-300 font-bold mb-6 animate-prize stagger-5">
-            {CoinIcon && <CoinIcon />}
-            <span>
-              {wonPrize} {config.prizes.currency}
-            </span>
-          </div>
-
-          {/* New Game Button */}
-          <div className="animate-pop-in stagger-6">
-          <button
-            onClick={onNewGame}
-            onPointerDown={(e) => onBigButtonPress(e)}
-            className={`shine-button action-btn px-8 py-3 bg-gradient-to-b ${theme.bgButton} text-white font-bold text-lg tracking-wide border-4 ${theme.borderLight}`}
-            style={{
-              ['--btn-glow' as string]: theme.glow,
-              boxShadow: `0 5px 20px rgba(0, 0, 0, 0.3), 0 0 25px ${theme.glow}`,
-              borderStyle: 'ridge',
-                textShadow: '0 2px 4px rgba(0,0,0,0.8)',
-              }}
-            >
-              {config.strings.newGameButton}
-            </button>
-          </div>
-        </div>
-      </Panel>
+      <ResultPanel
+        config={config}
+        theme={theme}
+        variant={variant}
+        wonPrize={wonPrize}
+        iconRef={iconRef}
+        onNewGame={onNewGame}
+        onBigButtonPress={onBigButtonPress}
+      />
     </div>
   );
 }
