@@ -1,38 +1,20 @@
-/**
- * useGameState Hook
- *
- * Manages all game state and logic for the quiz game.
- * Independent of UI - can be used with any rendering layer.
- *
- * Supports dynamic question selection from pools and
- * automatic prize ladder calculation.
- */
-
-import { useState, useCallback, useMemo, useEffect } from 'react';
+import { useCallback, useEffect, useMemo, useReducer } from 'react';
+import type { Campaign, Companion, GameConfig, GameState, Hint, LifelineResult, PrizeLadder, Question } from '../../types';
 import { logger } from '../../services';
 import {
-  GameConfig,
-  GameState,
-  Question,
-  Hint,
-  LifelineResult,
-  Campaign,
-  Companion,
-  PrizeLadder,
-} from '../../types';
-import {
-  selectQuestionsFromPool,
-  calculatePrizeLadder,
-  getGuaranteedPrize,
-  getQuestionDifficulty,
-  getFiftyFiftyEliminations,
+  createGameSession,
+  createInitialGameDomainState,
+  gameReducer,
   generateAudiencePercentages,
+  getFiftyFiftyEliminations,
   getPhoneSuggestion,
+  resolveAnswer,
+  selectCurrentDifficulty,
+  selectCurrentPrize,
+  selectCurrentQuestionData,
+  selectTotalQuestions,
 } from '../../game';
-
-// ============================================
-// Types
-// ============================================
+import { shuffleArray } from '../../game/utils/shuffleArray';
 
 export interface GameStateData {
   /** Current game state */
@@ -62,13 +44,13 @@ export interface GameStateData {
   /** Answers eliminated by 50:50 */
   eliminatedAnswers: number[];
 
-  /** Current hint being displayed */
+  /** Current hint being displayed (legacy name) */
   hint: Hint;
 
   /** Current lifeline result overlay (preferred name) */
   lifelineResult: LifelineResult;
 
-  /** Lifeline availability */
+  /** Lifeline availability (legacy keys) */
   lifelines: {
     fiftyFifty: boolean;
     phoneAFriend: boolean;
@@ -116,31 +98,31 @@ export interface GameStateActions {
     displayIndex: number
   ) => Promise<'correct' | 'wrong' | 'won' | 'ignored'>;
 
-  /** Take current winnings and leave */
+  /** Take current winnings and leave (legacy name) */
   takeTheMoney: () => void;
 
   /** Take current winnings and leave (preferred name) */
   takeMoney: () => void;
 
-  /** Use 50:50 lifeline */
+  /** Use 50:50 lifeline (legacy name) */
   useFiftyFifty: () => void;
 
   /** Use 50:50 lifeline (preferred name) */
   useLifelineFifty: () => void;
 
-  /** Use Phone a Friend lifeline - returns companion for voice playback */
+  /** Use Phone a Friend lifeline - returns companion for voice playback (legacy name) */
   usePhoneAFriend: () => Companion | null;
 
   /** Use Phone-a-Friend lifeline (preferred name) */
   useLifelinePhone: () => Companion | null;
 
-  /** Use Ask the Audience lifeline */
+  /** Use Ask the Audience lifeline (legacy name) */
   useAskAudience: () => void;
 
   /** Use Ask-the-Audience lifeline (preferred name) */
   useLifelineAudience: () => void;
 
-  /** Clear current hint */
+  /** Clear current hint (legacy name) */
   clearHint: () => void;
 
   /** Clear current lifeline result overlay (preferred name) */
@@ -149,302 +131,210 @@ export interface GameStateActions {
 
 export interface UseGameStateReturn extends GameStateData, GameStateActions {}
 
-// ============================================
-// Utilities
-// ============================================
-
-/** Fisher-Yates shuffle */
-const shuffleArray = <T,>(array: T[]): T[] => {
-  const shuffled = [...array];
-  for (let i = shuffled.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-  }
-  return shuffled;
-};
-
-// ============================================
-// Hook
-// ============================================
-
 export const useGameState = (config: GameConfig): UseGameStateReturn => {
-  // Core state
-  const [gameState, setGameState] = useState<GameState>('start');
-  const [selectedCampaign, setSelectedCampaign] = useState<Campaign | null>(
-    null
+  const [state, dispatch] = useReducer(
+    gameReducer,
+    undefined,
+    () => createInitialGameDomainState()
   );
-  const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
-  const [questions, setQuestions] = useState<Question[]>([]);
-  const [prizeLadder, setPrizeLadder] = useState<PrizeLadder>({
-    values: [],
-    guaranteed: [],
-  });
-  const [shuffledAnswers, setShuffledAnswers] = useState<number[]>([
-    0, 1, 2, 3,
-  ]);
-  const [eliminatedAnswers, setEliminatedAnswers] = useState<number[]>([]);
-  const [hint, setHint] = useState<LifelineResult>(null);
-  const [wonPrize, setWonPrize] = useState('0');
 
-  // Lifelines
-  const [fiftyFifty, setFiftyFifty] = useState(true);
-  const [phoneAFriend, setPhoneAFriend] = useState(true);
-  const [askAudience, setAskAudience] = useState(true);
+  const campaignsById = useMemo(() => {
+    const map = new Map<string, Campaign>();
+    for (const campaign of config.campaigns) map.set(campaign.id, campaign);
+    return map;
+  }, [config.campaigns]);
 
-  // Derived state
-  const totalQuestions = questions.length;
+  const selectedCampaign = useMemo(() => {
+    if (!state.selectedCampaignId) return null;
+    return campaignsById.get(state.selectedCampaignId) ?? null;
+  }, [campaignsById, state.selectedCampaignId]);
 
+  const totalQuestions = useMemo(() => selectTotalQuestions(state), [state]);
   const currentQuestionData = useMemo(
-    () => (questions.length > 0 ? questions[currentQuestion] : null),
-    [questions, currentQuestion]
+    () => selectCurrentQuestionData(state),
+    [state]
   );
-
-  const currentPrize = useMemo(
-    () => prizeLadder.values[currentQuestion] || '0',
-    [prizeLadder.values, currentQuestion]
-  );
-
+  const currentPrize = useMemo(() => selectCurrentPrize(state), [state]);
   const currentDifficulty = useMemo(
-    () => getQuestionDifficulty(currentQuestion, totalQuestions),
-    [currentQuestion, totalQuestions]
+    () => selectCurrentDifficulty(state),
+    [state]
   );
 
   const currentTheme = useMemo(
-    () => selectedCampaign?.theme || null,
+    () => selectedCampaign?.theme ?? null,
     [selectedCampaign]
   );
 
-  const lifelines = useMemo(
-    () => ({ fiftyFifty, phoneAFriend, askAudience }),
-    [fiftyFifty, phoneAFriend, askAudience]
-  );
-
   const lifelineAvailability = useMemo(
-    () => ({ fifty: fiftyFifty, phone: phoneAFriend, audience: askAudience }),
-    [fiftyFifty, phoneAFriend, askAudience]
+    () => state.lifelineAvailability,
+    [state.lifelineAvailability]
   );
 
-  // Shuffle answers for current question
-  const shuffleCurrentAnswers = useCallback(() => {
-    setShuffledAnswers(shuffleArray([0, 1, 2, 3]));
-  }, []);
-
-  // Initialize questions and prize ladder for a campaign
-  const initializeGame = useCallback(
-    (campaign: Campaign) => {
-      const pool = config.questionPools[campaign.id];
-      if (!pool) {
-        logger.gameState.warn(`No question pool found for campaign: ${campaign.id}`);
-        setQuestions([]);
-        setPrizeLadder({ values: [], guaranteed: [] });
-        return;
-      }
-
-      // Select random questions from pool
-      const selectedQuestions = selectQuestionsFromPool(pool);
-      setQuestions(selectedQuestions);
-
-      // Calculate prize ladder based on question count
-      const ladder = calculatePrizeLadder(
-        selectedQuestions.length,
-        config.prizes
-      );
-      setPrizeLadder(ladder);
-
-      shuffleCurrentAnswers();
-    },
-    [config.questionPools, config.prizes, shuffleCurrentAnswers]
+  const lifelines = useMemo(
+    () => ({
+      fiftyFifty: lifelineAvailability.fifty,
+      phoneAFriend: lifelineAvailability.phone,
+      askAudience: lifelineAvailability.audience,
+    }),
+    [lifelineAvailability]
   );
-
-  // Reset all state
-  const resetState = useCallback(() => {
-    setCurrentQuestion(0);
-    setSelectedAnswer(null);
-    setEliminatedAnswers([]);
-    setHint(null);
-    setWonPrize('0');
-    setFiftyFifty(true);
-    setPhoneAFriend(true);
-    setAskAudience(true);
-  }, []);
-
-  // ============================================
-  // Actions
-  // ============================================
 
   const selectCampaign = useCallback(
     (campaign: Campaign) => {
-      setSelectedCampaign(campaign);
-      initializeGame(campaign);
+      const session = createGameSession(config, campaign.id);
+      if (!session) {
+        logger.gameState.warn(`No question pool found for campaign: ${campaign.id}`);
+      }
+
+      dispatch({ type: 'SELECT_CAMPAIGN', campaignId: campaign.id, session });
     },
-    [initializeGame]
+    [config]
   );
 
-  // Convenience: if a game has exactly one campaign, auto-select it.
   useEffect(() => {
     if (config.campaigns.length !== 1) return;
-    if (gameState !== 'start') return;
-    if (selectedCampaign) return;
+    if (state.phase !== 'start') return;
+    if (state.selectedCampaignId) return;
     selectCampaign(config.campaigns[0]);
-  }, [config.campaigns, gameState, selectCampaign, selectedCampaign]);
+  }, [config.campaigns, selectCampaign, state.phase, state.selectedCampaignId]);
 
   const startGame = useCallback(() => {
-    if (!selectedCampaign) return;
+    if (!state.selectedCampaignId) return;
 
-    resetState();
-    initializeGame(selectedCampaign);
-    setGameState('playing');
-  }, [selectedCampaign, resetState, initializeGame]);
+    const session = createGameSession(config, state.selectedCampaignId);
+    if (!session) {
+      logger.gameState.warn(
+        `No question pool found for campaign: ${state.selectedCampaignId}`
+      );
+    }
+
+    dispatch({
+      type: 'START_GAME',
+      campaignId: state.selectedCampaignId,
+      session,
+    });
+  }, [config, state.selectedCampaignId]);
 
   const forceWin = useCallback(
     (prizeOverride?: string) => {
-      // Prefer provided prize, otherwise use final ladder prize or current
       const finalPrize =
         prizeOverride ??
-        prizeLadder.values[prizeLadder.values.length - 1] ??
-        prizeLadder.values[currentQuestion] ??
+        state.prizeLadder.values[state.prizeLadder.values.length - 1] ??
+        state.prizeLadder.values[state.currentQuestionIndex] ??
         '0';
 
-      setSelectedAnswer(null);
-      setEliminatedAnswers([]);
-      setHint(null);
-      setWonPrize(finalPrize);
-      setGameState('won');
+      dispatch({ type: 'FORCE_WIN', prize: finalPrize });
     },
-    [currentQuestion, prizeLadder.values]
+    [state.currentQuestionIndex, state.prizeLadder.values]
   );
 
   const newGame = useCallback(() => {
-    setGameState('start');
-    setSelectedCampaign(null);
-    resetState();
-    setQuestions([]);
-    setPrizeLadder({ values: [], guaranteed: [] });
-  }, [resetState]);
+    dispatch({ type: 'NEW_GAME' });
+  }, []);
 
   const handleAnswer = useCallback(
     async (
       displayIndex: number
     ): Promise<'correct' | 'wrong' | 'won' | 'ignored'> => {
-      // Ignore if already answered or eliminated
-      if (selectedAnswer !== null || eliminatedAnswers.includes(displayIndex)) {
-        return 'ignored';
-      }
+      if (state.selectedAnswerDisplayIndex !== null) return 'ignored';
+      if (state.eliminatedAnswerDisplayIndices.includes(displayIndex)) return 'ignored';
 
-      const originalIndex = shuffledAnswers[displayIndex];
-      setSelectedAnswer(displayIndex);
-      setHint(null);
+      dispatch({ type: 'ANSWER_SELECTED', displayIndex });
 
-      // Return result for sound handling (actual state change happens after delay)
       return new Promise((resolve) => {
         setTimeout(() => {
-          const correct = questions[currentQuestion].correct;
+          const { outcome, wonPrize } = resolveAnswer(state, displayIndex);
 
-          if (originalIndex === correct) {
-            // Correct answer
-            if (currentQuestion === totalQuestions - 1) {
-              // Won the game!
-              setWonPrize(prizeLadder.values[currentQuestion]);
-              setGameState('won');
-              resolve('won');  // Player won - for victory music
-            } else {
-              // Move to next question
-              setCurrentQuestion((prev) => prev + 1);
-              setSelectedAnswer(null);
-              setEliminatedAnswers([]);
-              shuffleCurrentAnswers();
-              resolve('correct');  // Just correct, continue playing
-            }
+          if (outcome === 'correct') {
+            dispatch({
+              type: 'ANSWER_RESOLVED',
+              outcome,
+              wonPrize,
+              nextQuestionIndex: state.currentQuestionIndex + 1,
+              nextShuffledAnswers: shuffleArray([0, 1, 2, 3]),
+            });
           } else {
-            // Wrong answer - get guaranteed prize
-            const guaranteedPrize = getGuaranteedPrize(
-              currentQuestion,
-              prizeLadder
-            );
-            setWonPrize(guaranteedPrize);
-            setGameState('lost');
-            resolve('wrong');
+            dispatch({ type: 'ANSWER_RESOLVED', outcome, wonPrize });
           }
+
+          resolve(outcome);
         }, 2000);
       });
     },
-    [
-      selectedAnswer,
-      eliminatedAnswers,
-      shuffledAnswers,
-      questions,
-      currentQuestion,
-      totalQuestions,
-      prizeLadder,
-      shuffleCurrentAnswers,
-    ]
+    [state]
   );
 
   const takeTheMoney = useCallback(() => {
-    if (currentQuestion === 0) return;
-    setWonPrize(prizeLadder.values[currentQuestion - 1]);
-    setGameState('took_money');
-  }, [currentQuestion, prizeLadder.values]);
+    dispatch({ type: 'TAKE_MONEY' });
+  }, []);
 
   const useFiftyFifty = useCallback(() => {
-    if (!fiftyFifty || selectedAnswer !== null || !currentQuestionData) return;
+    if (!state.lifelineAvailability.fifty) return;
+    if (state.selectedAnswerDisplayIndex !== null) return;
+    const question = selectCurrentQuestionData(state);
+    if (!question) return;
 
-    setFiftyFifty(false);
-    setEliminatedAnswers(
-      getFiftyFiftyEliminations({
-        correctOriginalIndex: currentQuestionData.correct,
-        shuffledAnswers,
-      })
-    );
-  }, [fiftyFifty, selectedAnswer, currentQuestionData, shuffledAnswers]);
+    dispatch({
+      type: 'APPLY_LIFELINE_FIFTY',
+      eliminated: getFiftyFiftyEliminations({
+        correctOriginalIndex: question.correct,
+        shuffledAnswers: state.shuffledAnswers,
+      }),
+    });
+  }, [state]);
 
   const usePhoneAFriend = useCallback((): Companion | null => {
-    if (!phoneAFriend || selectedAnswer !== null || !currentQuestionData) return null;
+    if (!state.lifelineAvailability.phone) return null;
+    if (state.selectedAnswerDisplayIndex !== null) return null;
+    const question = selectCurrentQuestionData(state);
+    if (!question) return null;
     if (config.companions.length === 0) return null;
 
-    setPhoneAFriend(false);
-    const { isConfident, suggestedOriginalIndex: suggestedAnswer } = getPhoneSuggestion({
-      correctOriginalIndex: currentQuestionData.correct,
+    const suggestion = getPhoneSuggestion({
+      correctOriginalIndex: question.correct,
     });
 
     const companion =
       config.companions[Math.floor(Math.random() * config.companions.length)];
-    const answerText = currentQuestionData.answers[suggestedAnswer];
+    const answerText = question.answers[suggestion.suggestedOriginalIndex];
 
-    // Pick a phrase
-    const phrases = isConfident
+    const phrases = suggestion.isConfident
       ? config.strings.companionPhrases.confident
       : config.strings.companionPhrases.uncertain;
     const phrase = phrases[Math.floor(Math.random() * phrases.length)];
 
-    setHint({
-      type: 'phone',
-      name: companion.name,
-      text: phrase.replace('{answer}', answerText),
+    dispatch({
+      type: 'APPLY_LIFELINE_PHONE',
+      result: {
+        type: 'phone',
+        name: companion.name,
+        text: phrase.replace('{answer}', answerText),
+      },
     });
 
     return companion;
-  }, [phoneAFriend, selectedAnswer, currentQuestionData, config]);
+  }, [config, state]);
 
   const useAskAudience = useCallback(() => {
-    if (!askAudience || selectedAnswer !== null || !currentQuestionData) return;
+    if (!state.lifelineAvailability.audience) return;
+    if (state.selectedAnswerDisplayIndex !== null) return;
+    const question = selectCurrentQuestionData(state);
+    if (!question) return;
 
-    setAskAudience(false);
-    const correctDisplayIndex = shuffledAnswers.indexOf(currentQuestionData.correct);
+    const correctDisplayIndex = state.shuffledAnswers.indexOf(question.correct);
     const percentages = generateAudiencePercentages({
       correctDisplayIndex,
-      eliminatedDisplayIndices: eliminatedAnswers,
+      eliminatedDisplayIndices: state.eliminatedAnswerDisplayIndices,
     });
 
-    setHint({
-      type: 'audience',
-      percentages,
+    dispatch({
+      type: 'APPLY_LIFELINE_AUDIENCE',
+      result: { type: 'audience', percentages },
     });
-  }, [askAudience, selectedAnswer, currentQuestionData, shuffledAnswers, eliminatedAnswers]);
+  }, [state]);
 
   const clearHint = useCallback(() => {
-    setHint(null);
+    dispatch({ type: 'CLEAR_LIFELINE_RESULT' });
   }, []);
 
   const takeMoney = takeTheMoney;
@@ -453,32 +343,26 @@ export const useGameState = (config: GameConfig): UseGameStateReturn => {
   const useLifelinePhone = usePhoneAFriend;
   const useLifelineAudience = useAskAudience;
 
-  // ============================================
-  // Return
-  // ============================================
-
   return {
-    // State
-    gameState,
+    gameState: state.phase,
     selectedCampaign,
-    currentQuestion,
+    currentQuestion: state.currentQuestionIndex,
     totalQuestions,
-    selectedAnswer,
-    questions,
-    prizeLadder,
-    shuffledAnswers,
-    eliminatedAnswers,
-    hint,
-    lifelineResult: hint,
+    selectedAnswer: state.selectedAnswerDisplayIndex,
+    questions: state.questions,
+    prizeLadder: state.prizeLadder,
+    shuffledAnswers: state.shuffledAnswers,
+    eliminatedAnswers: state.eliminatedAnswerDisplayIndices,
+    hint: state.lifelineResult,
+    lifelineResult: state.lifelineResult,
     lifelines,
     lifelineAvailability,
-    wonPrize,
+    wonPrize: state.wonPrize,
     currentQuestionData,
     currentPrize,
     currentDifficulty,
     currentTheme,
 
-    // Actions
     selectCampaign,
     startGame,
     forceWin,
@@ -496,5 +380,3 @@ export const useGameState = (config: GameConfig): UseGameStateReturn => {
     clearLifelineResult,
   };
 };
-
-export default useGameState;

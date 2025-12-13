@@ -1,0 +1,40 @@
+import type { GameState, LifelineResult, PrizeLadder, Question } from '../../types';
+
+export interface LifelineAvailabilityState {
+  fifty: boolean;
+  phone: boolean;
+  audience: boolean;
+}
+
+export interface GameDomainState {
+  phase: GameState;
+  selectedCampaignId: string | null;
+
+  questions: Question[];
+  prizeLadder: PrizeLadder;
+
+  currentQuestionIndex: number;
+  selectedAnswerDisplayIndex: number | null;
+  shuffledAnswers: number[];
+  eliminatedAnswerDisplayIndices: number[];
+
+  lifelineAvailability: LifelineAvailabilityState;
+  lifelineResult: LifelineResult;
+
+  wonPrize: string;
+}
+
+export const createInitialGameDomainState = (): GameDomainState => ({
+  phase: 'start',
+  selectedCampaignId: null,
+  questions: [],
+  prizeLadder: { values: [], guaranteed: [] },
+  currentQuestionIndex: 0,
+  selectedAnswerDisplayIndex: null,
+  shuffledAnswers: [0, 1, 2, 3],
+  eliminatedAnswerDisplayIndices: [],
+  lifelineAvailability: { fifty: true, phone: true, audience: true },
+  lifelineResult: null,
+  wonPrize: '0',
+});
+
