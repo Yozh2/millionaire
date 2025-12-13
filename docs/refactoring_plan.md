@@ -162,13 +162,21 @@
 src
 ├── .DS_Store
 ├── app
-│   └── components
-│       ├── GameSelector.test.tsx
-│       ├── GameSelector.tsx
+│   ├── components
+│   │   ├── GameSelector.test.tsx
+│   │   ├── GameSelector.tsx
+│   │   └── index.ts
+│   └── registry
+│       ├── gameRegistry.ts
 │       └── index.ts
 ├── App.tsx
 ├── engine
 │   ├── .DS_Store
+│   ├── assets
+│   │   └── paths.ts
+│   ├── audio
+│   │   ├── useMusicPlayer.ts
+│   │   └── useSoundPlayer.ts
 │   ├── components
 │   │   ├── DefaultIcons.tsx
 │   │   ├── EndScreen.tsx
@@ -179,12 +187,19 @@ src
 │   │   ├── index.ts
 │   │   ├── LoadingScreen.tsx
 │   │   ├── MillionaireGame.tsx
+│   │   ├── panels
+│   │   │   ├── AnswersPanel.tsx
+│   │   │   ├── CampaignSelectionPanel.tsx
+│   │   │   ├── LifelineResultPanel.tsx
+│   │   │   ├── lifelines
+│   │   │   │   ├── LifelineAudiencePanel.tsx
+│   │   │   │   └── LifelinePhonePanel.tsx
+│   │   │   ├── LifelinesPanel.tsx
+│   │   │   ├── PrizeLadderPanel.tsx
+│   │   │   ├── QuestionPanel.tsx
+│   │   │   └── ResultPanel.tsx
 │   │   ├── ParticleCanvas.tsx
-│   │   ├── StartScreen.tsx
-│   │   └── ui
-│   │       ├── index.ts
-│   │       ├── Panel.tsx
-│   │       └── PanelHeader.tsx
+│   │   └── StartScreen.tsx
 │   ├── constants.ts
 │   ├── context
 │   │   ├── index.ts
@@ -204,6 +219,15 @@ src
 │   │   └── types.ts
 │   ├── types
 │   │   └── index.ts
+│   ├── ui
+│   │   └── components
+│   │       ├── cards
+│   │       │   └── campaign
+│   │       │       └── CampaignCard.tsx
+│   │       └── panel
+│   │           ├── index.ts
+│   │           ├── Panel.tsx
+│   │           └── PanelHeader.tsx
 │   └── utils
 │       ├── assetLoader.ts
 │       ├── audioPlayer.ts
@@ -212,6 +236,19 @@ src
 ├── games
 │   ├── .DS_Store
 │   ├── bg3
+│   │   ├── campaigns
+│   │   │   ├── darkUrge
+│   │   │   │   ├── campaign.ts
+│   │   │   │   ├── questions.ts
+│   │   │   │   └── theme.ts
+│   │   │   ├── hero
+│   │   │   │   ├── campaign.ts
+│   │   │   │   ├── questions.ts
+│   │   │   │   └── theme.ts
+│   │   │   └── mindFlayer
+│   │   │       ├── campaign.ts
+│   │   │       ├── questions.ts
+│   │   │       └── theme.ts
 │   │   ├── config.ts
 │   │   ├── icons.tsx
 │   │   ├── index.ts
@@ -219,18 +256,45 @@ src
 │   │   └── themes.ts
 │   ├── index.ts
 │   ├── poc
+│   │   ├── campaigns
+│   │   │   ├── easy
+│   │   │   │   ├── campaign.ts
+│   │   │   │   ├── questions.ts
+│   │   │   │   └── theme.ts
+│   │   │   └── hard
+│   │   │       ├── campaign.ts
+│   │   │       ├── questions.ts
+│   │   │       └── theme.ts
 │   │   ├── config.ts
 │   │   ├── icons.tsx
 │   │   ├── index.ts
 │   │   ├── questions.ts
 │   │   └── themes.ts
 │   ├── sky-cotl
+│   │   ├── campaigns
+│   │   │   └── journey
+│   │   │       ├── campaign.ts
+│   │   │       ├── questions.ts
+│   │   │       └── theme.ts
 │   │   ├── config.ts
 │   │   ├── icons.tsx
 │   │   ├── index.ts
 │   │   ├── questions.ts
 │   │   └── themes.ts
 │   └── transformers
+│       ├── campaigns
+│       │   ├── autocracy
+│       │   │   ├── campaign.ts
+│       │   │   ├── questions.ts
+│       │   │   └── theme.ts
+│       │   ├── megatron
+│       │   │   ├── campaign.ts
+│       │   │   ├── questions.ts
+│       │   │   └── theme.ts
+│       │   └── skybound
+│       │       ├── campaign.ts
+│       │       ├── questions.ts
+│       │       └── theme.ts
 │       ├── config.ts
 │       ├── icons.tsx
 │       ├── index.ts
@@ -239,20 +303,17 @@ src
 ├── index.css
 ├── main.tsx
 ├── pages
-│   ├── BG3Page.tsx
 │   ├── EffectsSandboxPage.tsx
 │   ├── index.ts
-│   ├── PocPage.tsx
+│   ├── RegisteredGamePage.tsx
 │   ├── SandboxPage.tsx
-│   ├── SkyCotlPage.tsx
-│   └── TransformersPage.tsx
 ├── styles
 │   ├── animations.css
 │   ├── base.css
 │   ├── buttons.css
 │   ├── fonts.css
+│   ├── glare.css
 │   ├── prize-ladder.css
-│   └── glare.css
 ├── tailwind.css
 └── vite-env.d.ts
 scripts
@@ -266,6 +327,12 @@ scripts
     ├── millionaire-sounds.html
     └── test-prizes.js
 ```
+
+#### 3.1.2 Комментарии по структуре (что сейчас смущает)
+
+- В `src/engine` сейчас одновременно есть `engine/components/*` и `engine/ui/components/*`. Оба содержат React‑компоненты, но по разной логике; это создаёт путаницу и “двойную точку входа” для UI.
+- `engine/context/*` и `engine/hooks/*` по смыслу обслуживают UI‑слой, но лежат на уровне “ядра” engine.
+- Самый простой “правильный” принцип: TSX = UI → `engine/ui/**`, а всё не‑UI (state/audio/assets/services/types/utils) остаётся снаружи.
 
 ### 3.2 Комментарии по каждому файлу (назначение + заметка для рефакторинга)
 
@@ -691,6 +758,63 @@ interface GameState {
 - заменить `src/styles/glare.css` на `engine/ui/styles/glare.css`
 - использовать CSS custom properties для параметризации (например: `--glare-from`, `--glare-to`, `--glare-width`, `--glare-duration`, `--glare-alpha`)
 
+### 7.7 Предложение: целевое дерево `src/engine` (UI в одном месте)
+
+Цель: **весь React‑UI** лежит внутри `src/engine/ui/*`.  
+В `src/engine/*` вне `ui/` остаются только “движковые” штуки: state, audio, assets, services, types, utils.
+
+#### 7.7.1 Предлагаемая структура (vNext)
+
+```text
+src/engine
+├── index.ts                    # public API engine (минимальный)
+├── types/                      # публичные типы (GameConfig, Campaign, etc.)
+├── game/                       # домен: GameState + правила + transitions (без React)
+│   ├── state/                  # machine/reducer/selectors/actions/types
+│   ├── lifelines/              # доменная логика lifeline'ов
+│   └── prizes/                 # prizeladder/reward rules
+├── assets/                     # base path + asset helpers
+├── audio/                      # MusicPlayer/SoundPlayer + audio types
+├── services/                   # AssetLoader, logger, etc.
+├── utils/                      # чистые утилиты (без React)
+└── ui/                         # ВСЁ React/UI здесь
+    ├── screens/                # StartScreen/GameScreen/EndScreen/LoadingScreen
+    ├── panels/                 # CampaignSelectionPanel, QuestionPanel, etc.
+    │   └── lifelines/          # LifelinePhonePanel, LifelineAudiencePanel, ...
+    ├── layout/                 # Header (slideshow), Footer, shells
+    ├── components/             # переиспользуемые UI-примитивы
+    │   ├── panel/              # Panel, PanelHeader, ...
+    │   ├── buttons/            # ActionButton, AnswerButton, LifelineButton, ...
+    │   └── cards/              # CampaignCard, ...
+    ├── effects/                # ParticleCanvas, визуальные эффекты
+    ├── theme/                  # ThemeContext, theme helpers
+    ├── hooks/                  # UI-hooks (useGameState facade, useEffects, etc.)
+    └── styles/                 # glare/base/buttons/prize-ladder CSS (по желанию)
+```
+
+#### 7.7.2 Правила (чтобы больше не плодить “components vs ui/components”)
+
+- TSX‑компоненты UI живут только в `src/engine/ui/**`.
+- `src/engine/components/**` после миграции **удаляем** (это сейчас главный источник путаницы).
+- `src/engine/ui/components/**` — только переиспользуемые атомы/примитивы, не “экраны”.
+- `src/engine/ui/screens/**` — “страницы игры” (Start/Game/End/Loading).
+- `src/engine/ui/panels/**` — панели, которые оркестрируются `GameScreen`.
+- `src/engine/game/**` — чистая логика (без React), её проще тестировать и расширять.
+
+#### 7.7.3 Карта миграции (минимальная, чтобы убрать текущую неоднозначность)
+
+- `src/engine/components/StartScreen.tsx` → `src/engine/ui/screens/StartScreen.tsx`
+- `src/engine/components/GameScreen.tsx` → `src/engine/ui/screens/GameScreen.tsx`
+- `src/engine/components/EndScreen.tsx` → `src/engine/ui/screens/EndScreen.tsx`
+- `src/engine/components/LoadingScreen.tsx` → `src/engine/ui/screens/LoadingScreen.tsx`
+- `src/engine/components/panels/*` → `src/engine/ui/panels/*`
+- `src/engine/components/HeaderPanel.tsx` + `HeaderSlideshow.tsx` → `src/engine/ui/layout/header/*`
+- `src/engine/components/ParticleCanvas.tsx` → `src/engine/ui/effects/ParticleCanvas.tsx`
+- `src/engine/context/*` → `src/engine/ui/theme/*`
+- `src/engine/hooks/*` → split:
+  - UI‑хуки → `src/engine/ui/hooks/*`
+  - доменные части/переиспользуемая логика → `src/engine/game/*` (по мере появления)
+
 ---
 
 ## 8 Games: структура по кампаниям
@@ -811,6 +935,13 @@ PoC и базовый engine должны запускаться без `public/
   - Campaign cards: одинаковая высота + одинаковая ширина, равная самой широкой карточке (с адаптацией под узкий экран).
   - Acceptance: `npm test`, `npm run lint`, `npm run build` зелёные; визуальные регрессии устранены.
 
+- ⬜ **Этап 9. Engine: свести весь UI в `engine/ui`**
+  - Перенести `src/engine/components/*` → `src/engine/ui/screens|panels|layout|effects`.
+  - Перенести `src/engine/context/*` → `src/engine/ui/theme/*`.
+  - Перенести UI‑хуки из `src/engine/hooks/*` → `src/engine/ui/hooks/*` (а доменную часть — в `src/engine/game/*`).
+  - Удалить `src/engine/components/` после миграции, чтобы не осталось “двух UI”.
+  - Acceptance: `npm test`, `npm run lint`, `npm run build` зелёные; импортов из `engine/components/*` больше нет.
+
 ---
 
 ## 11 Журнал выполненных работ
@@ -818,6 +949,7 @@ PoC и базовый engine должны запускаться без `public/
 ### 11.1 Записи
 
 - 2025‑12‑13 (codex): обновлён диздок (v2): добавлена строгая терминология (`lifeline`, `prizeLadder`, `rewardKind`), описан `GameRegistry`, уточнена структура `games/campaigns`, добавлены правила работы и этапы.
+- 2025‑12‑13 (codex): актуализирован `tree src` (появились `app/registry`, `games/*/campaigns`, `engine/ui/components/panel`), добавлено предложение целевой структуры `src/engine` (UI только в `engine/ui/**`) и введён новый плановый этап “Engine: свести весь UI в `engine/ui`”.
 - 2025‑12‑13 (codex): перенесены актуальные пункты из старого анализа в этапы диздока; старый файл анализа удалён.
 - 2025‑12‑13 (codex): исправлена ссылка “см. раздел …”, добавлены “Открытые вопросы” и “Риски”.
 - 2025‑12‑13 (codex): добавлена таблица миграции `hint* → lifeline*`, предложена явная модель `GameState` (v0), зафиксированы решения: `takeMoney`=action в `PrizeLadderPanel`, `glare`=CSS‑примитив, `systemStrings`=часть `GameConfig`.
