@@ -281,19 +281,19 @@ export function MillionaireGame({ config }: MillionaireGameProps) {
         />
 
         <div className="max-w-4xl mx-auto w-full flex-1 flex flex-col">
-          <div key={gameState.gameState} className={screenWrapperClass}>
-            {showHeader && (
-              <HeaderPanel
-                config={config}
-                theme={theme}
-                slideshowScreen={slideshowScreen}
-                campaignId={gameState.selectedCampaign?.id}
-                difficulty={difficultyLevel}
-                isMusicPlaying={audio.isMusicPlaying}
-                onToggleMusic={audio.toggleMusic}
-              />
-            )}
+          {showHeader && (
+            <HeaderPanel
+              config={config}
+              theme={theme}
+              slideshowScreen={slideshowScreen}
+              campaignId={gameState.selectedCampaign?.id}
+              difficulty={difficultyLevel}
+              isMusicPlaying={audio.isMusicPlaying}
+              onToggleMusic={audio.toggleMusic}
+            />
+          )}
 
+          <div key={gameState.gameState} className={screenWrapperClass}>
             {/* Start Screen */}
             {gameState.gameState === 'start' &&
               !level1Preload.isLoading &&
