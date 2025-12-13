@@ -517,11 +517,11 @@ export function EffectsSandboxPage() {
             <div>
               <h3 className="text-lg text-gray-300 mb-3">Answer Button (hover + press)</h3>
               <div className="grid grid-cols-2 gap-4">
-                <button className="shine-button answer-btn px-4 py-3 bg-gradient-to-b from-stone-700 to-stone-900 text-amber-100 border-4 border-stone-600 text-left">
+                <button className="glare answer-btn px-4 py-3 bg-gradient-to-b from-stone-700 to-stone-900 text-amber-100 border-4 border-stone-600 text-left">
                   <span className="text-amber-400 mr-2 font-bold">[A]</span>
                   Наведи и нажми
                 </button>
-                <button className="shine-button answer-btn px-4 py-3 bg-gradient-to-b from-green-700 to-green-900 text-green-100 border-4 border-green-500 text-left">
+                <button className="glare answer-btn px-4 py-3 bg-gradient-to-b from-green-700 to-green-900 text-green-100 border-4 border-green-500 text-left">
                   <span className="text-green-300 mr-2 font-bold">[B]</span>
                   Правильный ответ
                 </button>
@@ -533,7 +533,7 @@ export function EffectsSandboxPage() {
               <h3 className="text-lg text-gray-300 mb-3">Action Button (3D press)</h3>
               <div className="flex gap-4 flex-wrap">
                 <button
-                  className="shine-button action-btn px-8 py-3 bg-gradient-to-b from-amber-600 to-amber-800 text-white font-bold border-4 border-amber-500"
+                  className="glare action-btn px-8 py-3 bg-gradient-to-b from-amber-600 to-amber-800 text-white font-bold border-4 border-amber-500"
                   style={{
                     ['--btn-glow' as string]: 'rgba(255, 180, 0, 0.5)',
                     boxShadow: '0 5px 20px rgba(0, 0, 0, 0.3), 0 0 25px rgba(255, 180, 0, 0.3)',
@@ -543,7 +543,7 @@ export function EffectsSandboxPage() {
                   🎮 Начать игру
                 </button>
                 <button
-                  className="shine-button action-btn px-8 py-3 bg-gradient-to-b from-blue-600 to-blue-800 text-white font-bold border-4 border-blue-500"
+                  className="glare action-btn px-8 py-3 bg-gradient-to-b from-blue-600 to-blue-800 text-white font-bold border-4 border-blue-500"
                   style={{
                     ['--btn-glow' as string]: 'rgba(0, 150, 255, 0.5)',
                     boxShadow: '0 5px 20px rgba(0, 0, 0, 0.3), 0 0 25px rgba(0, 150, 255, 0.3)',
@@ -553,7 +553,7 @@ export function EffectsSandboxPage() {
                   🔄 Новая игра
                 </button>
                 <button
-                  className="shine-button action-btn px-8 py-3 bg-gradient-to-b from-red-600 to-red-800 text-white font-bold border-4 border-red-500"
+                  className="glare action-btn px-8 py-3 bg-gradient-to-b from-red-600 to-red-800 text-white font-bold border-4 border-red-500"
                   style={{
                     ['--btn-glow' as string]: 'rgba(255, 50, 50, 0.5)',
                     boxShadow: '0 5px 20px rgba(0, 0, 0, 0.3), 0 0 25px rgba(255, 50, 50, 0.3)',

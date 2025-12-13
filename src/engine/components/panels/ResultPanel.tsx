@@ -113,7 +113,7 @@ export function ResultPanel({
           <button
             onClick={onNewGame}
             onPointerDown={(e) => onBigButtonPress(e)}
-            className={`shine-button action-btn px-8 py-3 bg-gradient-to-b ${theme.bgButton} text-white font-bold text-lg tracking-wide border-4 ${theme.borderLight}`}
+            className={`glare action-btn px-8 py-3 bg-gradient-to-b ${theme.bgButton} text-white font-bold text-lg tracking-wide border-4 ${theme.borderLight}`}
             style={{
               ['--btn-glow' as string]: theme.glow,
               boxShadow: `0 5px 20px rgba(0, 0, 0, 0.3), 0 0 25px ${theme.glow}`,

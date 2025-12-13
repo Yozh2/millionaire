@@ -1,3 +1,4 @@
+@layer utilities {
 /* ============================================
    Screen Transition Animations
    Beautiful transitions between game screens
@@ -160,3 +161,4 @@
   }
 }
 
+}

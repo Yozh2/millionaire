@@ -1,10 +1,11 @@
+@layer components {
 /* Button-specific interaction tweaks on top of Tailwind utilities */
 
 .answer-btn {
   transition: transform 0.1s ease-out, box-shadow 0.1s ease-out;
-  --shine-width: 60%;
-  --shine-duration: 0.45s;
-  --shine-press-duration: 0.2s;
+  --glare-width: 60%;
+  --glare-duration: 0.45s;
+  --glare-press-duration: 0.2s;
 }
 
 /* Hover effect - slight lift */
@@ -27,8 +28,8 @@
 
    States:
    1. Rest: button at "ground level" (scale 1, normal brightness)
-   2. Hover/Touch: button lifts UP (scale 1.08), shine L→R, brighter
-   3. Active/Press: button SLAMS DOWN (scale 0.95), shine R→L, darker, dust puff
+   2. Hover/Touch: button lifts UP (scale 1.08), glare →, brighter
+   3. Active/Press: button SLAMS DOWN (scale 0.95), glare ←, darker, dust puff
    4. Release outside: returns to rest smoothly
    5. Release inside: triggers click → next screen
    ============================================ */
@@ -71,13 +72,13 @@
     filter 0.25s ease-out,
     box-shadow 0.25s ease-out;
   z-index: 10;
-  --shine-width: 60%;
-  --shine-blur: 4px;
-  --shine-duration: 0.35s;
-  --shine-press-duration: 0.2s;
+  --glare-width: 60%;
+  --glare-blur: 4px;
+  --glare-duration: 0.35s;
+  --glare-press-duration: 0.2s;
 }
 
-/* ---- STATE 2: HOVER (lifted, bright, shine L→R) ---- */
+/* ---- STATE 2: HOVER (lifted, bright, glare →) ---- */
 @media (hover: hover) and (pointer: fine) {
   .action-btn:not(:disabled):hover {
     transform: scale(1.08);
@@ -97,7 +98,7 @@
   }
 }
 
-/* ---- STATE 3: ACTIVE/PRESS (slammed down, dark, shine R→L, dust puff) ---- */
+/* ---- STATE 3: ACTIVE/PRESS (slammed down, dark, glare ←, dust puff) ---- */
 @media (hover: hover) and (pointer: fine) {
   .action-btn:not(:disabled):active {
     transform: scale(0.94);
@@ -116,10 +117,10 @@
 .lifeline-btn {
   transform: scale(1) translateY(0);
   transition: transform 0.12s ease-out, box-shadow 0.12s ease-out, filter 0.12s ease-out;
-  --shine-width: 60%;
-  --shine-blur: 3.5px;
-  --shine-duration: 0.3s;
-  --shine-press-duration: 0.2s;
+  --glare-width: 60%;
+  --glare-blur: 3.5px;
+  --glare-duration: 0.3s;
+  --glare-press-duration: 0.2s;
 }
 
 /* Hover state - lift up and glow */
@@ -142,4 +143,6 @@
     inset 0 2px 8px rgba(0, 0, 0, 0.3);
   filter: brightness(0.95);
   transition: transform 0.06s ease-out, box-shadow 0.06s ease-out, filter 0.06s ease-out;
+}
+
 }

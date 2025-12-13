@@ -252,7 +252,7 @@ src
 │   ├── buttons.css
 │   ├── fonts.css
 │   ├── prize-ladder.css
-│   └── shine.css
+│   └── glare.css
 ├── tailwind.css
 └── vite-env.d.ts
 scripts
@@ -301,7 +301,7 @@ scripts
 - `src/styles/buttons.css` — логика состояний кнопок + эффекты; цель: формализовать состояния (Spawn/Idle/Hover/Press/Click/Ease/Kill) и переименовать `shine` → `glare`.
 - `src/styles/prize-ladder.css` — стили `prizeLadder`; цель: сохранить нейминг `prizeLadder`, а “shine” эффекты переименовать в `glare`.
 - `src/styles/fonts.css` — `@font-face`; цель: проверить необходимость, убрать неиспользуемое, синхронизировать с темами.
-- `src/styles/shine.css` — “shine sweep”; цель: переименовать/переписать на универсальный `glare` (одна реализация, два направления).
+- `src/styles/glare.css` — “glare sweep”; цель: универсальный `glare` (одна реализация, два направления).
 
 #### 3.2.5 `src/engine/` (публичный движок)
 
@@ -688,7 +688,7 @@ interface GameState {
 - без отдельных `shine`/`shine-reverse` неймингов.
 
 План по стилям:
-- заменить `src/styles/shine.css` на `engine/ui/styles/glare.css`
+- заменить `src/styles/glare.css` на `engine/ui/styles/glare.css`
 - использовать CSS custom properties для параметризации (например: `--glare-from`, `--glare-to`, `--glare-width`, `--glare-duration`, `--glare-alpha`)
 
 ---
@@ -793,7 +793,7 @@ PoC и базовый engine должны запускаться без `public/
   - Скрипты генерации манифестов устойчивы без `public/`.
   - Acceptance: `npm run dev` стартует при пустом `public/`.
 
-- ⬜ **Этап 7. Styles: glare + слои CSS + чистка шрифтов**
+- ✅ **Этап 7. Styles: glare + слои CSS + чистка шрифтов**
   - `shine` → `glare`: единая реализация, миграция классов.
   - Разложить стили по слоям `engine/ui/styles/*` или `@layer`.
   - Проверить шрифты: удалить неиспользуемые, синхронизировать с темами/играми.
@@ -821,6 +821,7 @@ PoC и базовый engine должны запускаться без `public/
 - 2025‑12‑13 (codex): ✅ Этап 4: `LifelinePhonePanel` и `LifelineAudiencePanel` вынесены в отдельные компоненты, анимация и общий механизм показа результата lifeline перенесены в `LifelineResultPanel`; Transformers активирован в `GameRegistry`.
 - 2025‑12‑13 (codex): ✅ Этап 5: аудио разделено на `useMusicPlayer` и `useSoundPlayer` (`src/engine/audio/*`), `useAudio` стал фасадом, `playCampaignSelectSound` реализован как tagged‑sound с мгновенной остановкой, алиасы `hint* → lifeline*` сохранены.
 - 2025‑12‑13 (codex): ✅ Этап 6: добавлен `src/engine/assets/paths.ts` (единый `getBasePath`), `AssetLoader.loadManifest()` стал устойчивым к отсутствующему `asset-manifest.json`, `scripts/generate-asset-manifest.js` создаёт `public/` при необходимости.
+- 2025‑12‑13 (codex): ✅ Этап 7: `shine`‑нейминг заменён на `glare` (CSS‑примитив + кастом‑проперти), `src/styles/shine.css` → `src/styles/glare.css`, стили разнесены по `@layer`, удалён неиспользуемый шрифт `Aeromatics NC`.
 
 ---
 

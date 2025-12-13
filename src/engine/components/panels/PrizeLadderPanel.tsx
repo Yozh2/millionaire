@@ -26,7 +26,7 @@ export function PrizeLadderPanel({
   onTakeMoney,
 }: PrizeLadderPanelProps) {
   const takeMoneyBase =
-    'shine-button lifeline-btn px-3 py-2 text-sm border-3 h-12 w-full ' +
+    'glare lifeline-btn px-3 py-2 text-sm border-3 h-12 w-full ' +
     'flex items-center justify-center gap-2';
 
   return (
@@ -111,4 +111,3 @@ export function PrizeLadderPanel({
 }
 
 export default PrizeLadderPanel;
-

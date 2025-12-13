@@ -70,7 +70,7 @@ export function AnswersPanel({
           key={displayIndex}
           onClick={(e) => onAnswerClick(displayIndex, e)}
           disabled={selectedAnswer !== null || eliminatedAnswers.includes(displayIndex)}
-          className={`shine-button answer-btn ${getAnswerStyle(displayIndex)}`}
+          className={`glare answer-btn ${getAnswerStyle(displayIndex)}`}
           style={{ borderStyle: 'ridge' }}
         >
           <span
@@ -89,4 +89,3 @@ export function AnswersPanel({
 }
 
 export default AnswersPanel;
-

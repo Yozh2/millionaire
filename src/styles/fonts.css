@@ -1,22 +1,14 @@
-/* ============================================
-   Custom Fonts (local TTF files)
-   ============================================ */
+@layer base {
+  /* ============================================
+     Custom Fonts (local TTF files)
+     ============================================ */
 
-/* Neuropol X RG - футуристический шрифт для Transformers */
-@font-face {
-  font-family: 'Neuropol X Rg';
-  src: url('/fonts/neuropol_x_rg.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
+  /* Neuropol X RG - футуристический шрифт для Transformers */
+  @font-face {
+    font-family: 'Neuropol X Rg';
+    src: url('/fonts/neuropol_x_rg.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+  }
 }
-
-/* Aeromatics NC - дополнительный технологичный шрифт */
-@font-face {
-  font-family: 'Aeromatics NC';
-  src: url('/fonts/Aeromatics_NC.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
-

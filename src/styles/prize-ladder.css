@@ -1,4 +1,5 @@
-/* Shine effect for current prize row */
+@layer components {
+/* Glare effect for current prize row */
 .prize-row {
   position: relative;
   overflow: hidden;
@@ -47,10 +48,12 @@
   content: '';
   position: absolute;
   top: 0;
-  left: -120%;
-  width: 60%;
+  left: 0;
+  width: 100%;
   height: 100%;
-  --shine-end: 420%;
+  --glare-width: 60%;
+  --glare-from: -150%;
+  --glare-to: 420%;
   background: linear-gradient(
     130deg,
     transparent 0%,
@@ -61,8 +64,10 @@
     transparent 80%,
     transparent 100%
   );
-  transform: skewX(-25deg);
+  transform: skewX(var(--glare-skew, -25deg)) translateX(var(--glare-from, -150%));
   filter: blur(1px);
   pointer-events: none;
-  animation: shine-sweep 1.2s ease-in-out forwards;
+  animation: glare-sweep 1.2s ease-in-out forwards;
+}
+
 }

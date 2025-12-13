@@ -28,7 +28,7 @@ export function LifelinesPanel({
   onAudience,
 }: LifelinesPanelProps) {
   const lifelineBase =
-    'shine-button lifeline-btn px-3 py-2 text-sm border-3 h-12 w-full min-w-[132px] ' +
+    'glare lifeline-btn px-3 py-2 text-sm border-3 h-12 w-full min-w-[132px] ' +
     'flex items-center justify-center gap-2';
 
   return (
@@ -114,4 +114,3 @@ export function LifelinesPanel({
 }
 
 export default LifelinesPanel;
-
