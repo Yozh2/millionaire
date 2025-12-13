@@ -27,8 +27,8 @@ describe('GameSelector', () => {
       screen.getByText('🎯 Кто хочет стать миллионером?')
     ).toBeInTheDocument();
 
-    // Two available games are listed (poc, bg3)
+    // Available games are listed as cards
     const cards = screen.getAllByText(/Играть →/i);
-    expect(cards.length).toBe(2);
+    expect(cards.length).toBe(3);
   });
 });
