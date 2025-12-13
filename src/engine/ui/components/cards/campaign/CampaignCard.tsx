@@ -5,7 +5,6 @@ interface CampaignCardProps {
   selected: boolean;
   onSelect: () => void;
   isLightTheme?: boolean;
-  uniformWidthPx?: number;
 }
 
 export function CampaignCard({
@@ -13,7 +12,6 @@ export function CampaignCard({
   selected,
   onSelect,
   isLightTheme,
-  uniformWidthPx,
 }: CampaignCardProps) {
   const CampaignIcon = campaign.icon;
 
@@ -21,17 +19,19 @@ export function CampaignCard({
     <button
       onClick={onSelect}
       data-campaign-card="true"
-      className={`flex-none flex flex-col items-center gap-2 p-3 md:p-4 border-4 transition-all transform hover:scale-105 h-[148px] ${
-        isLightTheme ? 'bg-white/35' : 'bg-stone-950/50'
-      }`}
+      data-selected={selected ? 'true' : 'false'}
+      className={`campaign-card relative flex-none overflow-hidden border-4 transition-transform duration-200 transform hover:scale-[1.03] w-[164px] h-[216px] px-3 pt-7 pb-3 flex flex-col items-center ${
+        isLightTheme
+          ? 'bg-gradient-to-b from-white/45 via-white/25 to-white/10'
+          : 'bg-gradient-to-b from-stone-950/70 via-stone-950/45 to-black/70'
+      } ${selected ? '-translate-y-1' : ''}`}
       style={{
-        width: uniformWidthPx ? `${uniformWidthPx}px` : undefined,
-        maxWidth: '100%',
+        ['--campaign-glow' as string]: campaign.theme.glowColor,
         borderStyle: 'ridge',
         borderColor: selected ? campaign.theme.glowColor : '#44403c',
         boxShadow: selected
-          ? `0 0 25px ${campaign.theme.glow}, inset 0 0 15px ${campaign.theme.glow}`
-          : 'none',
+          ? `0 0 26px ${campaign.theme.glow}, 0 16px 60px rgba(0,0,0,0.55), inset 0 0 14px ${campaign.theme.glow}`
+          : '0 14px 56px rgba(0,0,0,0.55)',
       }}
       onMouseEnter={(e) => {
         if (!selected) {
@@ -44,18 +44,42 @@ export function CampaignCard({
         }
       }}
     >
-      <div className="w-16 h-16 md:w-[72px] md:h-[72px] flex items-center justify-center shrink-0">
-        <CampaignIcon className="w-full h-full" />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/10 via-transparent to-black/35"
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent"
+      />
+      <div
+        aria-hidden="true"
+        className={`pointer-events-none absolute inset-2 border ${
+          isLightTheme ? 'border-black/10' : 'border-white/10'
+        }`}
+      />
+
+      <div className="relative mt-0 w-[98px] h-[98px] flex items-center justify-center overflow-visible">
+        <div aria-hidden="true" className="campaign-icon-glow" />
+        <div aria-hidden="true" className="campaign-icon-rays" />
+        <CampaignIcon className="relative w-full h-full max-w-full max-h-full object-contain text-5xl leading-none" />
       </div>
+
       <span
-        className="text-sm font-bold"
+        className="relative mt-5 w-full max-w-full px-0.5 text-sm font-bold text-center truncate leading-tight"
         style={{
           color: selected ? campaign.theme.glowColor : campaign.theme.glowSecondary,
         }}
       >
         {campaign.name}
       </span>
-      <span className="text-xs text-stone-500">{campaign.label}</span>
+      <span
+        className={`relative mt-0 w-full max-w-full px-0.5 text-xs text-center truncate leading-tight ${
+          isLightTheme ? 'text-stone-600' : 'text-stone-400'
+        }`}
+      >
+        {campaign.label}
+      </span>
     </button>
   );
 }

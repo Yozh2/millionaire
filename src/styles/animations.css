@@ -161,4 +161,103 @@
   }
 }
 
+/* ============================================
+   Campaign icon glow/rays (CampaignCard)
+   ============================================ */
+
+@keyframes campaign-glow-breathe {
+  0% {
+    opacity: 0.25;
+    transform: scale(0.98);
+  }
+  50% {
+    opacity: 0.55;
+    transform: scale(1.04);
+  }
+  100% {
+    opacity: 0.25;
+    transform: scale(0.98);
+  }
+}
+
+@keyframes campaign-rays-rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes campaign-rays-pulse {
+  0%,
+  100% {
+    opacity: 0.12;
+  }
+  40% {
+    opacity: 0.38;
+  }
+  70% {
+    opacity: 0.18;
+  }
+}
+
+.campaign-icon-glow {
+  position: absolute;
+  inset: -12%;
+  border-radius: 9999px;
+  background: radial-gradient(
+    circle at 50% 55%,
+    color-mix(in srgb, var(--campaign-glow, rgba(255, 200, 0, 0.65)) 40%, transparent) 0%,
+    color-mix(in srgb, var(--campaign-glow, rgba(255, 200, 0, 0.65)) 18%, transparent) 42%,
+    transparent 72%
+  );
+  filter: blur(0.4px);
+  opacity: 0;
+  transform: scale(0.86);
+  transition:
+    opacity 220ms ease-out,
+    transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
+  animation: campaign-glow-breathe 2.6s ease-in-out infinite;
+  animation-play-state: paused;
+}
+
+.campaign-icon-rays {
+  position: absolute;
+  inset: -18%;
+  border-radius: 9999px;
+  background: repeating-conic-gradient(
+    from 0deg,
+    transparent 0deg 18deg,
+    color-mix(in srgb, var(--campaign-glow, rgba(255, 200, 0, 0.65)) 45%, transparent) 18deg 22deg,
+    transparent 22deg 45deg
+  );
+  mask-image: radial-gradient(circle at 50% 50%, transparent 0% 28%, black 46%, transparent 74%);
+  mix-blend-mode: screen;
+  filter: blur(0.7px);
+  opacity: 0;
+  transform: scale(0.86);
+  transition:
+    opacity 220ms ease-out,
+    transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
+  animation:
+    campaign-rays-rotate 4.6s linear infinite,
+    campaign-rays-pulse 2.1s ease-in-out infinite;
+  animation-play-state: paused;
+}
+
+.campaign-card[data-selected='true'] .campaign-icon-glow,
+.campaign-card[data-selected='true'] .campaign-icon-rays {
+  opacity: 1;
+  transform: scale(1);
+  animation-play-state: running;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .campaign-icon-glow,
+  .campaign-icon-rays {
+    animation: none !important;
+  }
+}
+
 }
