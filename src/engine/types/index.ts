@@ -5,6 +5,10 @@
 
 import { ComponentType } from 'react';
 
+export interface CampaignIconProps {
+  className?: string;
+}
+
 /**
  * Custom coin drawing function for particle effects.
  * Called with canvas context, size, and color index.
@@ -137,7 +141,7 @@ export interface Campaign {
   label: string;
 
   /** Icon component for this campaign */
-  icon: ComponentType;
+  icon: ComponentType<CampaignIconProps>;
 
   /** Color theme for this campaign */
   theme: ThemeColors;

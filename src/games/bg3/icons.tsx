@@ -5,32 +5,34 @@
  * These components wrap SVG files for use in React.
  */
 
+import type { CampaignIconProps } from '../../engine/types';
+
 const ICONS_PATH = `${import.meta.env.BASE_URL}games/bg3/icons`;
 
 /** Mind Flayer (Illithid) icon - represents the tadpole storyline */
-export const MindFlayerIcon = () => (
+export const MindFlayerIcon = ({ className }: CampaignIconProps) => (
   <img
     src={`${ICONS_PATH}/mind-flayer.png`}
     alt="Mind Flayer"
-    className="w-24 h-24 mx-auto"
+    className={`mx-auto object-contain ${className ?? 'w-24 h-24'}`}
   />
 );
 
 /** Dark Urge icon - represents the Bhaalspawn origin */
-export const DarkUrgeIcon = () => (
+export const DarkUrgeIcon = ({ className }: CampaignIconProps) => (
   <img
     src={`${ICONS_PATH}/dark-urge.png`}
     alt="Dark Urge"
-    className="w-24 h-24 mx-auto"
+    className={`mx-auto object-contain ${className ?? 'w-24 h-24'}`}
   />
 );
 
 /** Hero icon - represents the Hero origin */
-export const HeroIcon = () => (
+export const HeroIcon = ({ className }: CampaignIconProps) => (
   <img
     src={`${ICONS_PATH}/heroes.png`}
     alt="Hero"
-    className="w-24 h-24 mx-auto"
+    className={`mx-auto object-contain ${className ?? 'w-24 h-24'}`}
   />
 );
 

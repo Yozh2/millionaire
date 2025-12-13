@@ -4,14 +4,15 @@
  * No external assets yet: simple, hand-drawn SVG/emoji icons.
  */
 
+import type { CampaignIconProps } from '../../engine/types';
+
 const baseIconClass = 'w-16 h-16 mx-auto flex items-center justify-center';
 
-export const SkyJourneyIcon = () => (
-  <div className={baseIconClass} aria-label="Sky Journey">
+export const SkyJourneyIcon = ({ className }: CampaignIconProps) => (
+  <div className={`${baseIconClass} ${className ?? ''}`} aria-label="Sky Journey">
     <svg
-      width="56"
-      height="56"
       viewBox="0 0 56 56"
+      className="w-full h-full"
       role="img"
       aria-hidden="true"
       style={{ filter: 'drop-shadow(0 0 10px rgba(56,189,248,0.55))' }}
@@ -86,4 +87,3 @@ export const StarIcon = () => (
     ✦
   </span>
 );
-

@@ -44,7 +44,9 @@ export function CampaignCard({
         }
       }}
     >
-      <CampaignIcon />
+      <div className="w-16 h-16 md:w-[72px] md:h-[72px] flex items-center justify-center shrink-0">
+        <CampaignIcon className="w-full h-full" />
+      </div>
       <span
         className="text-sm font-bold"
         style={{

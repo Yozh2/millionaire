@@ -5,45 +5,41 @@
  * Campaign faction icons.
  */
 
+import type { CampaignIconProps } from '../../engine/types';
+
 const ICONS_PATH = `${import.meta.env.BASE_URL}games/transformers/icons`;
 
 /**
  * Autocracy campaign icon
  */
-export const AutocracyIcon = () => (
-  <div className="w-16 h-16 mx-auto flex items-center justify-center">
-    <img
-      src={`${ICONS_PATH}/Autocracy.png`}
-      alt="Autocracy"
-      className="w-14 h-14"
-    />
-  </div>
+export const AutocracyIcon = ({ className }: CampaignIconProps) => (
+  <img
+    src={`${ICONS_PATH}/Autocracy.png`}
+    alt="Autocracy"
+    className={`mx-auto object-contain ${className ?? 'w-14 h-14'}`}
+  />
 );
 
 /**
  * Megatron campaign icon
  */
-export const MegatronIcon = () => (
-  <div className="w-16 h-16 mx-auto flex items-center justify-center">
-    <img
-      src={`${ICONS_PATH}/Megatron.png`}
-      alt="Megatron"
-      className="w-14 h-14"
-    />
-  </div>
+export const MegatronIcon = ({ className }: CampaignIconProps) => (
+  <img
+    src={`${ICONS_PATH}/Megatron.png`}
+    alt="Megatron"
+    className={`mx-auto object-contain ${className ?? 'w-14 h-14'}`}
+  />
 );
 
 /**
  * Skybound campaign icon
  */
-export const SkyboundIcon = () => (
-  <div className="w-16 h-16 mx-auto flex items-center justify-center">
-    <img
-      src={`${ICONS_PATH}/Skybound.png`}
-      alt="Skybound"
-      className="w-14 h-14"
-    />
-  </div>
+export const SkyboundIcon = ({ className }: CampaignIconProps) => (
+  <img
+    src={`${ICONS_PATH}/Skybound.png`}
+    alt="Skybound"
+    className={`mx-auto object-contain ${className ?? 'w-14 h-14'}`}
+  />
 );
 
 /**

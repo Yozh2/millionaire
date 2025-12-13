@@ -15,7 +15,12 @@
   --glare-duration: 0.8s;
   --glare-press-duration: 0.2s;
   --glare-blur: 5px;
-  --glare-skew: -25deg;
+  --glare-skew-hover: -25deg;
+  --glare-skew-press: 25deg;
+  --glare-skew: var(--glare-skew-hover);
+  --glare-angle-hover: 115deg;
+  --glare-angle-press: 65deg;
+  --glare-angle: var(--glare-angle-hover);
   --glare-rest: -150%;
   --glare-start: -150%;
   --glare-end: 150%;
@@ -30,7 +35,7 @@
   width: 100%;
   height: 100%;
   background: linear-gradient(
-    115deg,
+    var(--glare-angle, 115deg),
     transparent 0%,
     transparent calc(var(--glare-width, 60%) * 0.25),
     rgba(255, 255, 255, 0.1) calc(var(--glare-width, 60%) * 0.45),
@@ -49,6 +54,8 @@
 
 @media (hover: hover) and (pointer: fine) {
   .glare:not(:disabled):hover:not(:active)::before {
+    --glare-angle: var(--glare-angle-hover, 115deg);
+    --glare-skew: var(--glare-skew-hover, -25deg);
     --glare-from: var(--glare-start, -150%);
     --glare-to: var(--glare-end, 150%);
     animation: glare-sweep var(--glare-duration, 0.5s) ease-out forwards;
@@ -56,6 +63,8 @@
 }
 
 .glare:not(:disabled):active::before {
+  --glare-angle: var(--glare-angle-press, 65deg);
+  --glare-skew: var(--glare-skew-press, 25deg);
   --glare-from: var(--glare-end, 150%);
   --glare-to: var(--glare-start, -150%);
   animation: glare-sweep var(--glare-press-duration, 0.2s) ease-out forwards;
