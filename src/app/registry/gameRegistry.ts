@@ -89,7 +89,7 @@ export const GAME_REGISTRY: readonly RegistryEntry[] = [
       emoji: '🤖',
       gradient: 'from-purple-700 via-red-600 to-purple-800',
       borderColor: 'border-purple-500',
-      available: false,
+      available: true,
     },
     getConfig: async () =>
       (await import('../../games/transformers/config')).transformersConfig,
@@ -125,4 +125,3 @@ export const getGameById = (id: string): GameRegistryEntry | undefined =>
  */
 export const getSelectorEntries = (): GameRegistryEntry[] =>
   getGameEntries().filter((entry) => !entry.devOnly);
-

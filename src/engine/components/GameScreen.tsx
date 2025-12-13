@@ -2,8 +2,8 @@
  * GameScreen - Main gameplay screen with question, answers, lifelines
  */
 
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { GameConfig, ThemeColors, QuestionDifficulty, EffectsAPI, LifelineResult } from '../types';
+import { useMemo, useRef } from 'react';
+import { GameConfig, ThemeColors, QuestionDifficulty, EffectsAPI } from '../types';
 import { UseGameStateReturn } from '../hooks/useGameState';
 import { UseAudioReturn } from '../hooks/useAudio';
 import { HeaderPanel } from './HeaderPanel';
@@ -162,50 +162,6 @@ export function GameScreen({
     `\u00A0${formattedQuestionNumber}`
   );
 
-  // Animate lifeline result panel in/out so it doesn't pop abruptly
-  const LIFELINE_RESULT_EXIT_MS = 140;
-  const [displayedLifelineResult, setDisplayedLifelineResult] =
-    useState<LifelineResult>(lifelineResult);
-  const [lifelineResultExiting, setLifelineResultExiting] = useState(false);
-  const lifelineResultsEqual = (a: LifelineResult, b: LifelineResult) => {
-    if (!a && !b) return true;
-    if (!a || !b) return false;
-    if (a.type !== b.type) return false;
-    if (a.type === 'phone' && b.type === 'phone') {
-      return a.name === b.name && a.text === b.text;
-    }
-    if (a.type === 'audience' && b.type === 'audience') {
-      return (
-        a.percentages.length === b.percentages.length &&
-        a.percentages.every((value, idx) => value === b.percentages[idx])
-      );
-    }
-    return false;
-  };
-
-  useEffect(() => {
-    if (lifelineResultsEqual(lifelineResult, displayedLifelineResult)) {
-      setLifelineResultExiting(false);
-      return;
-    }
-
-    if (!displayedLifelineResult) {
-      if (lifelineResult) {
-        setDisplayedLifelineResult(lifelineResult);
-      }
-      setLifelineResultExiting(false);
-      return;
-    }
-
-    setLifelineResultExiting(true);
-    const timeout = setTimeout(() => {
-      setDisplayedLifelineResult(lifelineResult);
-      setLifelineResultExiting(false);
-    }, LIFELINE_RESULT_EXIT_MS);
-
-    return () => clearTimeout(timeout);
-  }, [lifelineResult, displayedLifelineResult]);
-
   return (
     <div className="screen-transition">
       {/* Header */}
@@ -253,8 +209,7 @@ export function GameScreen({
           />
 
           <LifelineResultPanel
-            displayed={displayedLifelineResult}
-            exiting={lifelineResultExiting}
+            lifelineResult={lifelineResult}
             config={config}
             theme={theme}
             PhoneLifelineIcon={PhoneLifelineIcon}

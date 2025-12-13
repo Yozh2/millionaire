@@ -776,7 +776,7 @@ PoC и базовый engine должны запускаться без `public/
   - `EndScreen` заменить на `ResultPanel(variant)`.
   - Acceptance: `GameScreen.tsx` становится оркестратором, панели тестируемы.
 
-- ⬜ **Этап 4. Lifeline panels и новая модель lifeline результата**
+- ✅ **Этап 4. Lifeline panels и новая модель lifeline результата**
   - `HintPanel` → `LifelinePhonePanel`/`LifelineAudiencePanel` (+ общий механизм показа/скрытия).
   - Подготовить места для `host/switch/double`.
   - Acceptance: UI использует `lifelineResult`/`lifelineState`, нигде нет `hint*` в новых местах.
@@ -818,6 +818,7 @@ PoC и базовый engine должны запускаться без `public/
 - 2025‑12‑13 (codex): ✅ Этап 1: введены `LifelineKind/LifelineResult/RewardKind`, добавлены алиасы `hint* → lifeline*` (types + audio), `GameScreen` переведён на новые ключи SFX и новые имена (с fallback на старые строки/иконки/ключи).
 - 2025‑12‑13 (codex): ✅ Этап 2: введён `GameRegistry` (routes + карточки), `App.tsx` и `GameSelector` переведены на registry; per‑game `*Page.tsx` удалены; devOnly ссылки скрыты вне `import.meta.env.DEV`.
 - 2025‑12‑13 (codex): ✅ Этап 3: введены панели (`QuestionPanel`, `AnswersPanel`, `LifelinesPanel`, `PrizeLadderPanel`, `LifelineResultPanel`), добавлены `CampaignSelectionPanel` + `CampaignCard`, `takeMoney` переехал в низ `PrizeLadderPanel`, `EndScreen` переведён на `ResultPanel(variant)`.
+- 2025‑12‑13 (codex): ✅ Этап 4: `LifelinePhonePanel` и `LifelineAudiencePanel` вынесены в отдельные компоненты, анимация и общий механизм показа результата lifeline перенесены в `LifelineResultPanel`; Transformers активирован в `GameRegistry`.
 
 ---
 

@@ -1,22 +1,66 @@
+import { useEffect, useState } from 'react';
 import type { ComponentType } from 'react';
 import type { GameConfig, LifelineResult, ThemeColors } from '../../types';
 import { Panel, PanelHeader } from '../ui';
+import { LifelinePhonePanel } from './lifelines/LifelinePhonePanel';
+import { LifelineAudiencePanel } from './lifelines/LifelineAudiencePanel';
 
 interface LifelineResultPanelProps {
-  displayed: LifelineResult;
-  exiting: boolean;
+  lifelineResult: LifelineResult;
   config: GameConfig;
   theme: ThemeColors;
   PhoneLifelineIcon: ComponentType;
 }
 
 export function LifelineResultPanel({
-  displayed,
-  exiting,
+  lifelineResult,
   config,
   theme,
   PhoneLifelineIcon,
 }: LifelineResultPanelProps) {
+  const EXIT_MS = 140;
+  const [displayed, setDisplayed] = useState<LifelineResult>(lifelineResult);
+  const [exiting, setExiting] = useState(false);
+
+  const resultsEqual = (a: LifelineResult, b: LifelineResult) => {
+    if (!a && !b) return true;
+    if (!a || !b) return false;
+    if (a.type !== b.type) return false;
+    if (a.type === 'phone' && b.type === 'phone') {
+      return a.name === b.name && a.text === b.text;
+    }
+    if (a.type === 'audience' && b.type === 'audience') {
+      return (
+        a.percentages.length === b.percentages.length &&
+        a.percentages.every((value, idx) => value === b.percentages[idx])
+      );
+    }
+    return false;
+  };
+
+  useEffect(() => {
+    if (resultsEqual(lifelineResult, displayed)) {
+      setExiting(false);
+      return;
+    }
+
+    if (!displayed) {
+      if (lifelineResult) {
+        setDisplayed(lifelineResult);
+      }
+      setExiting(false);
+      return;
+    }
+
+    setExiting(true);
+    const timeout = setTimeout(() => {
+      setDisplayed(lifelineResult);
+      setExiting(false);
+    }, EXIT_MS);
+
+    return () => clearTimeout(timeout);
+  }, [lifelineResult, displayed]);
+
   if (!displayed) return null;
 
   const headerText =
@@ -37,35 +81,16 @@ export function LifelineResultPanel({
       <PanelHeader>{headerText}</PanelHeader>
       <div className="p-3">
         {displayed.type === 'phone' && (
-          <div>
-            <p className="text-amber-400 text-xs mb-1 italic">
-              <PhoneLifelineIcon /> {senderLabel} {displayed.name}
-            </p>
-            <p className="text-amber-300 italic">{displayed.text}</p>
-          </div>
+          <LifelinePhonePanel
+            icon={PhoneLifelineIcon}
+            senderLabel={senderLabel}
+            name={displayed.name}
+            text={displayed.text}
+          />
         )}
 
         {displayed.type === 'audience' && (
-          <div>
-            <div className="grid grid-cols-4 gap-2">
-              {displayed.percentages.map((p, i) => (
-                <div key={i} className="text-center">
-                  <div
-                    className={`h-16 bg-black border-2 ${theme.border} relative overflow-hidden`}
-                    style={{ borderStyle: 'inset' }}
-                  >
-                    <div
-                      className={`absolute bottom-0 left-0 right-0 bg-gradient-to-t ${theme.bgLifeline} transition-all duration-500`}
-                      style={{ height: `${p}%` }}
-                    />
-                  </div>
-                  <span className={`text-xs ${theme.textPrimary}`}>
-                    [{['A', 'B', 'C', 'D'][i]}] {p}%
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
+          <LifelineAudiencePanel theme={theme} percentages={displayed.percentages} />
         )}
       </div>
     </Panel>
@@ -73,4 +98,3 @@ export function LifelineResultPanel({
 }
 
 export default LifelineResultPanel;
-
