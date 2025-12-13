@@ -9,6 +9,7 @@
  * - /poc      → PoC game (no external assets)
  * - /bg3      → Baldur's Gate 3 Edition
  * - /transformers → Transformers Edition
+ * - /sky-cotl → Sky: Children of the Light Edition
  * - /sandbox  → Effects demo page
  *
  * @author Yozh2
@@ -23,6 +24,7 @@ import { GameSelector } from './app/components/GameSelector';
 const PocGame = lazy(() => import('./pages/PocPage'));
 const BG3Game = lazy(() => import('./pages/BG3Page'));
 const TransformersGame = lazy(() => import('./pages/TransformersPage'));
+const SkyCotlGame = lazy(() => import('./pages/SkyCotlPage'));
 const EffectsSandbox = lazy(() => import('./pages/EffectsSandboxPage'));
 const SlideshowSandbox = lazy(() => import('./pages/SandboxPage'));
 
@@ -51,6 +53,7 @@ export default function App() {
         <Route path="/poc" element={<PocGame />} />
         <Route path="/bg3" element={<BG3Game />} />
         <Route path="/transformers" element={<TransformersGame />} />
+        <Route path="/sky-cotl" element={<SkyCotlGame />} />
         <Route path="/sandbox" element={<EffectsSandbox />} />
         <Route path="/slideshow" element={<SlideshowSandbox />} />
         <Route path="*" element={<Navigate to="/" replace />} />

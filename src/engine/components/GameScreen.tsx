@@ -203,6 +203,8 @@ export function GameScreen({
     `\u00A0${formattedQuestionNumber}`
   );
 
+  const headerTextClass = theme.textHeader ?? theme.textSecondary;
+
   const lifelineBase =
     'shine-button lifeline-btn px-3 py-2 text-sm border-3 h-12 w-full min-w-[132px] ' +
     'flex items-center justify-center gap-2';
@@ -273,7 +275,7 @@ export function GameScreen({
                 {questionHeaderText}
               </span>
               <span
-                className={`${theme.textSecondary} font-bold flex items-center gap-1`}
+                className={`${headerTextClass} font-bold flex items-center gap-1`}
               >
                 <CoinIcon />
                 {prizes[currentQuestion]}

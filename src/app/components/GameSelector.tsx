@@ -45,6 +45,17 @@ const GAMES: GameCardData[] = [
     borderColor: 'border-amber-500',
     available: true,
   },
+  {
+    id: 'sky-cotl',
+    path: '/sky-cotl',
+    title: 'SKY',
+    subtitle: 'Children of the Light Edition',
+    description: 'A 15-question quiz about Sky: Children of the Light (English-only)',
+    emoji: '☁️',
+    gradient: 'from-sky-500 via-sky-400 to-emerald-500',
+    borderColor: 'border-sky-300',
+    available: true,
+  },
   // {
   //   id: 'transformers',
   //   path: '/transformers',

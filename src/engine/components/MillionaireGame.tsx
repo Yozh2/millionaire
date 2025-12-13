@@ -130,6 +130,14 @@ export function MillionaireGame({ config }: MillionaireGameProps) {
     return theme.bgGradient;
   };
 
+  const loadingGameTitle =
+    config.systemStrings?.loadingGameTitle?.replace('{title}', config.title) ??
+    `Загрузка ${config.title}...`;
+  const loadingGameSubtitle =
+    config.systemStrings?.loadingGameSubtitle ?? 'Подготавливаем игру';
+  const loadingCampaignTitle =
+    config.systemStrings?.loadingCampaignTitle ?? 'Подготовка кампании...';
+
   // Wrapper for selectCampaign with sound
   const handleSelectCampaign = useCallback((campaign: Campaign) => {
     // Enable sound on first campaign selection (user interaction)
@@ -208,8 +216,9 @@ export function MillionaireGame({ config }: MillionaireGameProps) {
         {level1Preload.isLoading && (
           <LoadingScreen
             progress={level1Preload.progress}
-            title={`Загрузка ${config.title}...`}
-            subtitle="Подготавливаем игру"
+            title={loadingGameTitle}
+            subtitle={loadingGameSubtitle}
+            theme={theme}
           />
         )}
 
@@ -217,8 +226,9 @@ export function MillionaireGame({ config }: MillionaireGameProps) {
         {isWaitingForLevel11 && !level1Preload.isLoading && (
           <LoadingScreen
             progress={level11Progress}
-            title="Подготовка кампании..."
+            title={loadingCampaignTitle}
             subtitle={gameState.selectedCampaign?.name}
+            theme={theme}
           />
         )}
         {/* Particle Effects Layer */}

@@ -12,3 +12,6 @@ export { bg3Config } from './bg3';
 
 // Transformers - IDW Comics
 export { transformersConfig } from './transformers';
+
+// Sky: Children of the Light
+export { skyCotlConfig } from './sky-cotl';
