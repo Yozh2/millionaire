@@ -9,7 +9,7 @@
  * - Manages asset preloading across loading levels
  */
 
-import { useEffect, useCallback, useState } from 'react';
+import { useEffect, useCallback, useMemo, useState } from 'react';
 import type { PointerEvent } from 'react';
 
 import { ThemeProvider } from './theme';
@@ -27,6 +27,7 @@ import { GameScreen } from './screens/GameScreen';
 import { LoadingScreen } from './screens/LoadingScreen';
 import { ParticleCanvas } from './effects/ParticleCanvas';
 import { StartScreen } from './screens/StartScreen';
+import { HeaderPanel } from './layout/header/HeaderPanel';
 
 interface MillionaireGameProps {
   /** Game configuration - defines modes, questions, themes, etc. */
@@ -203,6 +204,36 @@ export function MillionaireGame({ config }: MillionaireGameProps) {
     gameState.newGame();
   }, [audio, gameState]);
 
+  const showHeader = !level1Preload.isLoading && !isWaitingForLevel11;
+
+  const slideshowScreen = useMemo(() => {
+    if (gameState.gameState === 'playing') return 'play';
+    if (gameState.gameState === 'won') return 'won';
+    if (gameState.gameState === 'lost') return 'lost';
+    if (gameState.gameState === 'took_money') return 'took';
+    return 'start';
+  }, [gameState.gameState]);
+
+  const difficultyLevel = useMemo(() => {
+    if (gameState.gameState !== 'playing') return undefined;
+    const total = gameState.totalQuestions || 0;
+    if (total <= 0) return undefined;
+
+    const progress = gameState.currentQuestion / total;
+    if (progress < 1 / 3) return 'easy';
+    if (progress < 2 / 3) return 'medium';
+    return 'hard';
+  }, [gameState.currentQuestion, gameState.gameState, gameState.totalQuestions]);
+
+  const screenWrapperClass =
+    gameState.gameState === 'won'
+      ? 'screen-victory'
+      : gameState.gameState === 'lost'
+        ? 'screen-defeat'
+        : gameState.gameState === 'took_money'
+          ? 'screen-transition-dramatic'
+          : 'screen-transition';
+
   return (
     <ThemeProvider theme={theme}>
       <div
@@ -250,7 +281,19 @@ export function MillionaireGame({ config }: MillionaireGameProps) {
         />
 
         <div className="max-w-4xl mx-auto w-full flex-1 flex flex-col">
-          <div className="flex-1 flex flex-col">
+          <div key={gameState.gameState} className={screenWrapperClass}>
+            {showHeader && (
+              <HeaderPanel
+                config={config}
+                theme={theme}
+                slideshowScreen={slideshowScreen}
+                campaignId={gameState.selectedCampaign?.id}
+                difficulty={difficultyLevel}
+                isMusicPlaying={audio.isMusicPlaying}
+                onToggleMusic={audio.toggleMusic}
+              />
+            )}
+
             {/* Start Screen */}
             {gameState.gameState === 'start' &&
               !level1Preload.isLoading &&
@@ -261,8 +304,6 @@ export function MillionaireGame({ config }: MillionaireGameProps) {
                 onSelectCampaign={handleSelectCampaign}
                 onStartGame={handleStartGame}
                 onBigButtonPress={handleBigButtonPress}
-                isMusicPlaying={audio.isMusicPlaying}
-                onToggleMusic={audio.toggleMusic}
                 theme={theme}
               />
             )}
@@ -287,8 +328,6 @@ export function MillionaireGame({ config }: MillionaireGameProps) {
                 gameState={gameState}
                 onNewGame={handleNewGame}
                 onBigButtonPress={handleBigButtonPress}
-                isMusicPlaying={audio.isMusicPlaying}
-                onToggleMusic={audio.toggleMusic}
                 theme={theme}
                 effects={effects}
               />

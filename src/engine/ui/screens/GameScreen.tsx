@@ -2,11 +2,10 @@
  * GameScreen - Main gameplay screen with question, answers, lifelines
  */
 
-import { useMemo, useRef } from 'react';
-import { GameConfig, ThemeColors, QuestionDifficulty, EffectsAPI } from '../../types';
+import { useRef } from 'react';
+import { GameConfig, ThemeColors, EffectsAPI } from '../../types';
 import { UseGameStateReturn } from '../hooks/useGameState';
 import { UseAudioReturn } from '../hooks/useAudio';
-import { HeaderPanel } from '../layout/header/HeaderPanel';
 import {
   DefaultCoinIcon,
   DefaultPhoneHintIcon,
@@ -52,14 +51,6 @@ export function GameScreen({
   const questionData = questions[currentQuestion];
   const prizes = prizeLadder.values;
   const guaranteedPrizes = prizeLadder.guaranteed;
-
-  // Calculate difficulty level for slideshow
-  const difficultyLevel: QuestionDifficulty = useMemo(() => {
-    const progress = currentQuestion / totalQuestions;
-    if (progress < 1 / 3) return 'easy';
-    if (progress < 2 / 3) return 'medium';
-    return 'hard';
-  }, [currentQuestion, totalQuestions]);
 
   // Refs for answer index labels (A, B, C, D) to get their positions for effects
   const answerIndexRefs = useRef<(HTMLSpanElement | null)[]>([]);
@@ -163,73 +154,58 @@ export function GameScreen({
   );
 
   return (
-    <div className="screen-transition">
-      {/* Header */}
-      <HeaderPanel
-        config={config}
-        theme={theme}
-        slideshowScreen="play"
-        campaignId={gameState.selectedCampaign?.id}
-        difficulty={difficultyLevel}
-        isMusicPlaying={audio.isMusicPlaying}
-        onToggleMusic={audio.toggleMusic}
-      />
-
-      {/* Game Area */}
-      <div className="grid md:grid-cols-4 gap-3 animate-slide-in stagger-2">
-        <div className="md:col-span-3 space-y-3">
-          <QuestionPanel
-            headerText={questionHeaderText}
-            prizeText={prizes[currentQuestion]}
-            questionText={questionData.question}
-            CoinIcon={CoinIcon}
-            theme={theme}
-          />
-
-          <AnswersPanel
-            answers={questionData.answers}
-            correctAnswerIndex={questionData.correct}
-            shuffledAnswers={shuffledAnswers}
-            eliminatedAnswers={eliminatedAnswers}
-            selectedAnswer={selectedAnswer}
-            theme={theme}
-            answerIndexRefs={answerIndexRefs}
-            onAnswerClick={handleAnswerWithSound}
-          />
-
-          <LifelinesPanel
-            selectedAnswer={selectedAnswer}
-            lifelineAvailability={lifelineAvailability}
-            lifelineConfigFifty={lifelineConfigFifty}
-            lifelineConfigPhone={lifelineConfigPhone}
-            lifelineConfigAudience={lifelineConfigAudience}
-            onFifty={handleFiftyFiftyWithSound}
-            onPhone={handlePhoneAFriendWithSound}
-            onAudience={handleAskAudienceWithSound}
-          />
-
-          <LifelineResultPanel
-            lifelineResult={lifelineResult}
-            config={config}
-            theme={theme}
-            PhoneLifelineIcon={PhoneLifelineIcon}
-          />
-
-        </div>
-
-        {/* Prize Ladder */}
-        <PrizeLadderPanel
-          prizesHeader={config.strings.prizesHeader}
-          prizes={prizes}
-          guaranteedPrizes={guaranteedPrizes}
-          currentQuestion={currentQuestion}
-          totalQuestions={totalQuestions}
+    <div className="grid md:grid-cols-4 gap-3 animate-slide-in stagger-2">
+      <div className="md:col-span-3 space-y-3">
+        <QuestionPanel
+          headerText={questionHeaderText}
+          prizeText={prizes[currentQuestion]}
+          questionText={questionData.question}
+          CoinIcon={CoinIcon}
           theme={theme}
-          takeMoneyConfig={config.lifelines.takeMoney}
-          takeMoneyDisabled={currentQuestion === 0 || selectedAnswer !== null}
-          onTakeMoney={handleTakeMoneyWithSound}
+        />
+
+        <AnswersPanel
+          answers={questionData.answers}
+          correctAnswerIndex={questionData.correct}
+          shuffledAnswers={shuffledAnswers}
+          eliminatedAnswers={eliminatedAnswers}
+          selectedAnswer={selectedAnswer}
+          theme={theme}
+          answerIndexRefs={answerIndexRefs}
+          onAnswerClick={handleAnswerWithSound}
+        />
+
+        <LifelinesPanel
+          selectedAnswer={selectedAnswer}
+          lifelineAvailability={lifelineAvailability}
+          lifelineConfigFifty={lifelineConfigFifty}
+          lifelineConfigPhone={lifelineConfigPhone}
+          lifelineConfigAudience={lifelineConfigAudience}
+          onFifty={handleFiftyFiftyWithSound}
+          onPhone={handlePhoneAFriendWithSound}
+          onAudience={handleAskAudienceWithSound}
+        />
+
+        <LifelineResultPanel
+          lifelineResult={lifelineResult}
+          config={config}
+          theme={theme}
+          PhoneLifelineIcon={PhoneLifelineIcon}
         />
       </div>
+
+      {/* Prize Ladder */}
+      <PrizeLadderPanel
+        prizesHeader={config.strings.prizesHeader}
+        prizes={prizes}
+        guaranteedPrizes={guaranteedPrizes}
+        currentQuestion={currentQuestion}
+        totalQuestions={totalQuestions}
+        theme={theme}
+        takeMoneyConfig={config.lifelines.takeMoney}
+        takeMoneyDisabled={currentQuestion === 0 || selectedAnswer !== null}
+        onTakeMoney={handleTakeMoneyWithSound}
+      />
     </div>
   );
 }

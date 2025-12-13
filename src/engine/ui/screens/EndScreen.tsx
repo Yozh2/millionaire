@@ -2,11 +2,10 @@
  * EndScreen - Game over screens (won, lost, took money)
  */
 
-import { useEffect, useRef, useCallback, useMemo } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 import type { PointerEvent } from 'react';
-import { GameConfig, ThemeColors, SlideshowScreen, EffectsAPI } from '../../types';
+import { GameConfig, ThemeColors, EffectsAPI } from '../../types';
 import { UseGameStateReturn } from '../hooks/useGameState';
-import { HeaderPanel } from '../layout/header/HeaderPanel';
 import { ResultPanel, type ResultVariant } from '../panels/ResultPanel';
 
 interface EndScreenProps {
@@ -14,8 +13,6 @@ interface EndScreenProps {
   gameState: UseGameStateReturn;
   onNewGame: () => void;
   onBigButtonPress: (e?: PointerEvent<Element>) => void;
-  isMusicPlaying: boolean;
-  onToggleMusic: () => void;
   theme: ThemeColors;
   effects?: EffectsAPI;
 }
@@ -25,8 +22,6 @@ export function EndScreen({
   gameState,
   onNewGame,
   onBigButtonPress,
-  isMusicPlaying,
-  onToggleMusic,
   theme,
   effects,
 }: EndScreenProps) {
@@ -115,43 +110,19 @@ export function EndScreen({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state, getIconOrigin]); // effects intentionally omitted to prevent re-triggering
 
-  // Determine screen animation class based on state
-  const screenClass = state === 'won' ? 'screen-victory' :
-                      state === 'lost' ? 'screen-defeat' :
-                      'screen-transition-dramatic';
-
-  // Map game state to slideshow screen type
-  const slideshowScreen: SlideshowScreen = useMemo(() => {
-    if (state === 'won') return 'won';
-    if (state === 'lost') return 'lost';
-    return 'took';
-  }, [state]);
-
   const variant: ResultVariant =
     state === 'won' ? 'won' : state === 'lost' ? 'lost' : 'took_money';
 
   return (
-    <div className={screenClass}>
-      {/* Header */}
-      <HeaderPanel
-        config={config}
-        theme={theme}
-        slideshowScreen={slideshowScreen}
-        campaignId={gameState.selectedCampaign?.id}
-        isMusicPlaying={isMusicPlaying}
-        onToggleMusic={onToggleMusic}
-      />
-
-      <ResultPanel
-        config={config}
-        theme={theme}
-        variant={variant}
-        wonPrize={wonPrize}
-        iconRef={iconRef}
-        onNewGame={onNewGame}
-        onBigButtonPress={onBigButtonPress}
-      />
-    </div>
+    <ResultPanel
+      config={config}
+      theme={theme}
+      variant={variant}
+      wonPrize={wonPrize}
+      iconRef={iconRef}
+      onNewGame={onNewGame}
+      onBigButtonPress={onBigButtonPress}
+    />
   );
 }
 
