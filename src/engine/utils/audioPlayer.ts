@@ -243,6 +243,16 @@ const OSCILLATOR_SOUNDS: Record<string, OscillatorSoundConfig> = {
     delayBetween: 0.04,
   },
 
+  // v2 aliases (lifeline* / takeMoneyButton)
+  lifelineFifty: {
+    tones: [
+      { frequency: 1200, duration: 0.05, type: 'square', volume: 0.15 },
+      { frequency: 800, duration: 0.05, type: 'square', volume: 0.15 },
+      { frequency: 1000, duration: 0.1, type: 'sine', volume: 0.2 },
+    ],
+    delayBetween: 0.04,
+  },
+
   // Phone a friend lifeline
   hintCallButton: {
     tones: [
@@ -253,6 +263,24 @@ const OSCILLATOR_SOUNDS: Record<string, OscillatorSoundConfig> = {
     delayBetween: 0.08,
   },
 
+  lifelinePhone: {
+    tones: [
+      { frequency: 600, duration: 0.1, type: 'sine', volume: 0.2 },
+      { frequency: 800, duration: 0.1, type: 'sine', volume: 0.2 },
+      { frequency: 1000, duration: 0.15, type: 'sine', volume: 0.25 },
+    ],
+    delayBetween: 0.08,
+  },
+
+  lifelineHost: {
+    tones: [
+      { frequency: 750, duration: 0.09, type: 'sine', volume: 0.18 },
+      { frequency: 950, duration: 0.12, type: 'sine', volume: 0.22 },
+      { frequency: 1150, duration: 0.14, type: 'sine', volume: 0.25 },
+    ],
+    delayBetween: 0.07,
+  },
+
   // Ask the audience lifeline
   hintVoteButton: {
     tones: [
@@ -261,6 +289,33 @@ const OSCILLATOR_SOUNDS: Record<string, OscillatorSoundConfig> = {
       { frequency: 500, duration: 0.15, type: 'triangle', volume: 0.25 },
     ],
     delayBetween: 0.06,
+  },
+
+  lifelineAudience: {
+    tones: [
+      { frequency: 300, duration: 0.1, type: 'triangle', volume: 0.2 },
+      { frequency: 400, duration: 0.1, type: 'triangle', volume: 0.2 },
+      { frequency: 500, duration: 0.15, type: 'triangle', volume: 0.25 },
+    ],
+    delayBetween: 0.06,
+  },
+
+  lifelineSwitch: {
+    tones: [
+      { frequency: 520, duration: 0.08, type: 'triangle', volume: 0.22 },
+      { frequency: 780, duration: 0.12, type: 'triangle', volume: 0.26 },
+      { frequency: 1040, duration: 0.18, type: 'triangle', volume: 0.28 },
+    ],
+    delayBetween: 0.06,
+  },
+
+  lifelineDouble: {
+    tones: [
+      { frequency: 900, duration: 0.06, type: 'square', volume: 0.18 },
+      { frequency: 900, duration: 0.06, type: 'square', volume: 0.18 },
+      { frequency: 600, duration: 0.14, type: 'sine', volume: 0.22 },
+    ],
+    delayBetween: 0.04,
   },
 
   // Take money lifeline - coin sounds
@@ -274,6 +329,15 @@ const OSCILLATOR_SOUNDS: Record<string, OscillatorSoundConfig> = {
     delayBetween: 0.1,
   },
 
+  takeMoneyButton: {
+    tones: [
+      { frequency: 523, duration: 0.12, type: 'triangle', volume: 0.25 },
+      { frequency: 659, duration: 0.12, type: 'triangle', volume: 0.25 },
+      { frequency: 784, duration: 0.12, type: 'triangle', volume: 0.25 },
+      { frequency: 1047, duration: 0.3, type: 'triangle', volume: 0.3 },
+    ],
+    delayBetween: 0.1,
+  },
   // Victory - epic fanfare for winning the game
   victory: {
     tones: [
@@ -589,6 +653,15 @@ const SOUND_TYPE_MAP: Record<string, string> = {
   HintCall: 'hintCallButton',
   HintVote: 'hintVoteButton',
   HintTakeMoney: 'hintTakeMoneyButton',
+  // Lifeline button sounds (v2)
+  LifelineFifty: 'lifelineFifty',
+  LifelinePhone: 'lifelinePhone',
+  LifelineAudience: 'lifelineAudience',
+  LifelineHost: 'lifelineHost',
+  LifelineSwitch: 'lifelineSwitch',
+  LifelineDouble: 'lifelineDouble',
+  // Take money action sound (v2)
+  TakeMoney: 'takeMoneyButton',
   // Game event sounds
   Victory: 'victory',
   Fail: 'defeat',

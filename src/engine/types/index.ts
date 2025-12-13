@@ -175,6 +175,15 @@ export interface Companion {
 // Lifeline Types
 // ============================================
 
+/** Standard lifeline identifiers (domain ids) */
+export type LifelineKind =
+  | 'fifty'
+  | 'phone'
+  | 'audience'
+  | 'host'
+  | 'switch'
+  | 'double';
+
 /** Configuration for a single lifeline */
 export interface LifelineConfig {
   /** Display name */
@@ -189,6 +198,17 @@ export interface LifelineConfig {
 
 /** All lifelines configuration */
 export interface LifelinesConfig {
+  /**
+   * v2 lifeline ids (preferred)
+   * Note: kept optional during migration; engine normalizes v1→v2.
+   */
+  fifty?: LifelineConfig;
+  phone?: LifelineConfig;
+  audience?: LifelineConfig;
+  host?: LifelineConfig;
+  switch?: LifelineConfig;
+  double?: LifelineConfig;
+
   /** 50:50 - removes two wrong answers */
   fiftyFifty: LifelineConfig;
 
@@ -198,7 +218,10 @@ export interface LifelinesConfig {
   /** Ask the Audience - voting percentages */
   askAudience: LifelineConfig;
 
-  /** Take the Money - leave with current winnings */
+  /**
+   * Take the Money - leave with current winnings
+   * @deprecated `takeMoney` is an action button, not a lifeline (see docs).
+   */
   takeMoney: LifelineConfig;
 }
 
@@ -241,14 +264,33 @@ export interface SoundEffects {
   answerButton?: string;
   /** Big button press (start game / restart) */
   bigButton?: string;
-  /** 50:50 lifeline - reduce answers */
+
+  /**
+   * v2 lifeline SFX keys (preferred)
+   * Note: during migration the engine also supports `hint*` keys as aliases.
+   */
+  lifelineFifty?: string;
+  lifelinePhone?: string;
+  lifelineAudience?: string;
+  lifelineHost?: string;
+  lifelineSwitch?: string;
+  lifelineDouble?: string;
+
+  /** Take money action button SFX (not a lifeline) */
+  takeMoneyButton?: string;
+
+  /**
+   * v1 legacy keys
+   * @deprecated use `lifeline*` / `takeMoneyButton`
+   */
   hintReduceButton?: string;
-  /** Phone a friend lifeline */
+  /** @deprecated use `lifeline*` / `takeMoneyButton` */
   hintCallButton?: string;
-  /** Ask the audience lifeline */
+  /** @deprecated use `lifeline*` / `takeMoneyButton` */
   hintVoteButton?: string;
-  /** Take money lifeline */
+  /** @deprecated use `lifeline*` / `takeMoneyButton` */
   hintTakeMoneyButton?: string;
+
   /** Victory - winning the game sound (epic fanfare) */
   victory?: string;
   /** Defeat - wrong answer / game over sound */
@@ -305,10 +347,22 @@ export interface GameStrings {
   // Game screen - Prize ladder
   prizesHeader: string;
 
-  // Hints
+  // Lifelines (preferred)
+  lifelinePhoneHeader?: string;
+  lifelineAudienceHeader?: string;
+  lifelineSenderLabel?: string;
+  lifelineAudienceLabel?: string;
+
+  /**
+   * v1 legacy hint strings
+   * @deprecated use `lifeline*` fields
+   */
   hintPhoneHeader: string;
+  /** @deprecated use `lifeline*` fields */
   hintAudienceHeader: string;
+  /** @deprecated use `lifeline*` fields */
   hintSenderLabel: string;
+  /** @deprecated use `lifeline*` fields */
   hintAudienceLabel: string;
 
   // Companion phrases (with {answer} placeholder)
@@ -348,21 +402,34 @@ export interface GameStrings {
 /** Possible game states */
 export type GameState = 'start' | 'playing' | 'won' | 'lost' | 'took_money';
 
-/** Hint from "Phone a Friend" lifeline */
-export interface PhoneHint {
+/** Reward kind for end-of-game result */
+export type RewardKind = 'trophy' | 'money' | 'defeat';
+
+/** Lifeline result from "Phone-a-Friend" */
+export interface LifelinePhoneResult {
   type: 'phone';
   name: string;
   text: string;
 }
 
-/** Hint from "Ask the Audience" lifeline */
-export interface AudienceHint {
+/** Lifeline result from "Ask-the-Audience" */
+export interface LifelineAudienceResult {
   type: 'audience';
   percentages: number[];
 }
 
-/** Union type for all hint types */
-export type Hint = PhoneHint | AudienceHint | null;
+/** Union type for all lifeline result overlays */
+export type LifelineResult = LifelinePhoneResult | LifelineAudienceResult | null;
+
+/**
+ * v1 legacy names (kept for compatibility during migration)
+ * @deprecated use `Lifeline*` / `LifelineResult`
+ */
+export type PhoneHint = LifelinePhoneResult;
+/** @deprecated use `Lifeline*` / `LifelineResult` */
+export type AudienceHint = LifelineAudienceResult;
+/** @deprecated use `Lifeline*` / `LifelineResult` */
+export type Hint = LifelineResult;
 
 // ============================================
 // Header Slideshow Types
@@ -470,12 +537,20 @@ export interface GameConfig {
   icons?: {
     /** Small coin icon for prize display */
     coin?: ComponentType;
-    /** Icon for phone a friend hint */
-    phoneHint?: ComponentType;
-    /** Icon for ask the audience hint */
-    audienceHint?: ComponentType;
+    /** Icon for phone-a-friend lifeline */
+    lifelinePhone?: ComponentType;
+    /** Icon for ask-the-audience lifeline */
+    lifelineAudience?: ComponentType;
     /** Star icon for difficulty rating */
     star?: ComponentType;
+
+    /**
+     * v1 legacy icon keys
+     * @deprecated use `lifelinePhone` / `lifelineAudience`
+     */
+    phoneHint?: ComponentType;
+    /** @deprecated use `lifelinePhone` / `lifelineAudience` */
+    audienceHint?: ComponentType;
   };
 
   /**

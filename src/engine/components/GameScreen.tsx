@@ -3,7 +3,7 @@
  */
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { GameConfig, ThemeColors, QuestionDifficulty, EffectsAPI, Hint } from '../types';
+import { GameConfig, ThemeColors, QuestionDifficulty, EffectsAPI, LifelineResult } from '../types';
 import { UseGameStateReturn } from '../hooks/useGameState';
 import { UseAudioReturn } from '../hooks/useAudio';
 import { Panel, PanelHeader } from './ui';
@@ -36,13 +36,13 @@ export function GameScreen({
     shuffledAnswers,
     eliminatedAnswers,
     selectedAnswer,
-    hint,
-    lifelines,
+    lifelineResult,
+    lifelineAvailability,
     handleAnswer,
-    useFiftyFifty: lifelineFiftyFifty,
-    usePhoneAFriend: lifelinePhoneAFriend,
-    useAskAudience: lifelineAskAudience,
-    takeTheMoney,
+    useLifelineFifty: activateLifelineFifty,
+    useLifelinePhone: activateLifelinePhone,
+    useLifelineAudience: activateLifelineAudience,
+    takeMoney: takeMoneyAction,
   } = gameState;
 
   const questionData = questions[currentQuestion];
@@ -62,7 +62,12 @@ export function GameScreen({
 
   // Get icons from config or use defaults
   const CoinIcon = config.icons?.coin || DefaultCoinIcon;
-  const PhoneHintIcon = config.icons?.phoneHint || DefaultPhoneHintIcon;
+  const PhoneLifelineIcon =
+    config.icons?.lifelinePhone || config.icons?.phoneHint || DefaultPhoneHintIcon;
+
+  const lifelineConfigFifty = config.lifelines.fifty ?? config.lifelines.fiftyFifty;
+  const lifelineConfigPhone = config.lifelines.phone ?? config.lifelines.phoneAFriend;
+  const lifelineConfigAudience = config.lifelines.audience ?? config.lifelines.askAudience;
 
   const getButtonCenterOrigin = (target: HTMLElement): { x: number; y: number } => {
     const rect = target.getBoundingClientRect();
@@ -112,13 +117,13 @@ export function GameScreen({
   };
 
   const handleFiftyFiftyWithSound = (e: React.MouseEvent<HTMLButtonElement>) => {
-    audio.playSoundEffect('hintReduceButton');
+    audio.playSoundEffect('lifelineFifty');
     triggerLifelinePulse(e.currentTarget, '#f97316');
-    lifelineFiftyFifty();
+    activateLifelineFifty();
   };
 
   const handlePhoneAFriendWithSound = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    const companion = lifelinePhoneAFriend();
+    const companion = activateLifelinePhone();
     if (companion) {
       triggerLifelinePulse(e.currentTarget, '#3b82f6');
       // Try to play companion voice file first
@@ -128,22 +133,22 @@ export function GameScreen({
       }
       // Fall back to oscillator call sound if no voice file found
       if (!voicePlayed) {
-        audio.playSoundEffect('hintCallButton');
+        audio.playSoundEffect('lifelinePhone');
       }
     }
   };
 
   const handleAskAudienceWithSound = (e: React.MouseEvent<HTMLButtonElement>) => {
-    audio.playSoundEffect('hintVoteButton');
+    audio.playSoundEffect('lifelineAudience');
     triggerLifelinePulse(e.currentTarget, '#14b8a6');
-    lifelineAskAudience();
+    activateLifelineAudience();
   };
 
   const handleTakeMoneyWithSound = (_e: React.MouseEvent<HTMLButtonElement>) => {
-    audio.playSoundEffect('hintTakeMoneyButton');
+    audio.playSoundEffect('takeMoneyButton');
     audio.playTakeMoney();
     // Coins are now triggered from EndScreen at trophy icon position
-    takeTheMoney();
+    takeMoneyAction();
   };
 
   /** Get dynamic styling for answer buttons */
@@ -209,11 +214,12 @@ export function GameScreen({
     'shine-button lifeline-btn px-3 py-2 text-sm border-3 h-12 w-full min-w-[132px] ' +
     'flex items-center justify-center gap-2';
 
-  // Animate hint panel in/out so it doesn't pop abruptly
-  const HINT_EXIT_MS = 140;
-  const [displayedHint, setDisplayedHint] = useState<Hint>(hint);
-  const [hintExiting, setHintExiting] = useState(false);
-  const hintsEqual = (a: Hint, b: Hint) => {
+  // Animate lifeline result panel in/out so it doesn't pop abruptly
+  const LIFELINE_RESULT_EXIT_MS = 140;
+  const [displayedLifelineResult, setDisplayedLifelineResult] =
+    useState<LifelineResult>(lifelineResult);
+  const [lifelineResultExiting, setLifelineResultExiting] = useState(false);
+  const lifelineResultsEqual = (a: LifelineResult, b: LifelineResult) => {
     if (!a && !b) return true;
     if (!a || !b) return false;
     if (a.type !== b.type) return false;
@@ -230,27 +236,27 @@ export function GameScreen({
   };
 
   useEffect(() => {
-    if (hintsEqual(hint, displayedHint)) {
-      setHintExiting(false);
+    if (lifelineResultsEqual(lifelineResult, displayedLifelineResult)) {
+      setLifelineResultExiting(false);
       return;
     }
 
-    if (!displayedHint) {
-      if (hint) {
-        setDisplayedHint(hint);
+    if (!displayedLifelineResult) {
+      if (lifelineResult) {
+        setDisplayedLifelineResult(lifelineResult);
       }
-      setHintExiting(false);
+      setLifelineResultExiting(false);
       return;
     }
 
-    setHintExiting(true);
+    setLifelineResultExiting(true);
     const timeout = setTimeout(() => {
-      setDisplayedHint(hint);
-      setHintExiting(false);
-    }, HINT_EXIT_MS);
+      setDisplayedLifelineResult(lifelineResult);
+      setLifelineResultExiting(false);
+    }, LIFELINE_RESULT_EXIT_MS);
 
     return () => clearTimeout(timeout);
-  }, [hint, displayedHint]);
+  }, [lifelineResult, displayedLifelineResult]);
 
   return (
     <div className="screen-transition">
@@ -321,9 +327,9 @@ export function GameScreen({
             >
               <button
                 onClick={handleFiftyFiftyWithSound}
-                disabled={!lifelines.fiftyFifty || selectedAnswer !== null}
+                disabled={!lifelineAvailability.fifty || selectedAnswer !== null}
                 className={`${lifelineBase} ${
-                  lifelines.fiftyFifty && selectedAnswer === null
+                  lifelineAvailability.fifty && selectedAnswer === null
                     ? 'bg-gradient-to-b from-orange-700 to-orange-900 border-orange-500 text-orange-100'
                     : 'bg-stone-950 border-stone-800 text-stone-600 cursor-not-allowed'
                 }`}
@@ -331,23 +337,23 @@ export function GameScreen({
                   borderStyle: 'ridge',
                   ['--lifeline-glow' as string]: 'rgba(249, 115, 22, 0.5)',
                   boxShadow:
-                    lifelines.fiftyFifty && selectedAnswer === null
+                    lifelineAvailability.fifty && selectedAnswer === null
                       ? '0 0 15px rgba(249, 115, 22, 0.4)'
                       : 'none',
                 }}
               >
                 <span className="flex items-center gap-2 justify-center">
                   <span className="w-6 h-6 flex items-center justify-center">
-                    {config.lifelines.fiftyFifty.icon}
+                    {lifelineConfigFifty.icon}
                   </span>
-                  <span className="text-left">{config.lifelines.fiftyFifty.name}</span>
+                  <span className="text-left">{lifelineConfigFifty.name}</span>
                 </span>
               </button>
               <button
                 onClick={handlePhoneAFriendWithSound}
-                disabled={!lifelines.phoneAFriend || selectedAnswer !== null}
+                disabled={!lifelineAvailability.phone || selectedAnswer !== null}
                 className={`${lifelineBase} ${
-                  lifelines.phoneAFriend && selectedAnswer === null
+                  lifelineAvailability.phone && selectedAnswer === null
                     ? 'bg-gradient-to-b from-blue-700 to-blue-900 border-blue-500 text-blue-100'
                     : 'bg-stone-950 border-stone-800 text-stone-600 cursor-not-allowed'
                 }`}
@@ -355,23 +361,23 @@ export function GameScreen({
                   borderStyle: 'ridge',
                   ['--lifeline-glow' as string]: 'rgba(59, 130, 246, 0.5)',
                   boxShadow:
-                    lifelines.phoneAFriend && selectedAnswer === null
+                    lifelineAvailability.phone && selectedAnswer === null
                       ? '0 0 15px rgba(59, 130, 246, 0.4)'
                       : 'none',
                 }}
               >
                 <span className="flex items-center gap-2 justify-center">
                   <span className="w-6 h-6 flex items-center justify-center">
-                    {config.lifelines.phoneAFriend.icon}
+                    {lifelineConfigPhone.icon}
                   </span>
-                  <span className="text-left">{config.lifelines.phoneAFriend.name}</span>
+                  <span className="text-left">{lifelineConfigPhone.name}</span>
                 </span>
               </button>
               <button
                 onClick={handleAskAudienceWithSound}
-                disabled={!lifelines.askAudience || selectedAnswer !== null}
+                disabled={!lifelineAvailability.audience || selectedAnswer !== null}
                 className={`${lifelineBase} ${
-                  lifelines.askAudience && selectedAnswer === null
+                  lifelineAvailability.audience && selectedAnswer === null
                     ? 'bg-gradient-to-b from-teal-700 to-teal-900 border-teal-500 text-teal-100'
                     : 'bg-stone-950 border-stone-800 text-stone-600 cursor-not-allowed'
                 }`}
@@ -379,16 +385,16 @@ export function GameScreen({
                   borderStyle: 'ridge',
                   ['--lifeline-glow' as string]: 'rgba(20, 184, 166, 0.5)',
                   boxShadow:
-                    lifelines.askAudience && selectedAnswer === null
+                    lifelineAvailability.audience && selectedAnswer === null
                       ? '0 0 15px rgba(20, 184, 166, 0.4)'
                       : 'none',
                 }}
               >
                 <span className="flex items-center gap-2 justify-center">
                   <span className="w-6 h-6 flex items-center justify-center">
-                    {config.lifelines.askAudience.icon}
+                    {lifelineConfigAudience.icon}
                   </span>
-                  <span className="text-left">{config.lifelines.askAudience.name}</span>
+                  <span className="text-left">{lifelineConfigAudience.name}</span>
                 </span>
               </button>
               <button
@@ -418,34 +424,40 @@ export function GameScreen({
             </div>
           </Panel>
 
-          {/* Hint Display */}
-          {displayedHint && (
+          {/* Lifeline Result Display */}
+          {displayedLifelineResult && (
             <Panel
               className={`p-1 mt-1 ${
-                hintExiting ? 'animate-dust-out' : 'animate-slide-in stagger-4'
+                lifelineResultExiting
+                  ? 'animate-dust-out'
+                  : 'animate-slide-in stagger-4'
               }`}
             >
               <PanelHeader>
-                {displayedHint.type === 'phone'
-                  ? config.strings.hintPhoneHeader
-                  : config.strings.hintAudienceHeader}
+                {displayedLifelineResult.type === 'phone'
+                  ? (config.strings.lifelinePhoneHeader ??
+                    config.strings.hintPhoneHeader)
+                  : (config.strings.lifelineAudienceHeader ??
+                    config.strings.hintAudienceHeader)}
               </PanelHeader>
               <div className="p-3">
-                {displayedHint.type === 'phone' && (
+                {displayedLifelineResult.type === 'phone' && (
                   <div>
                     <p className="text-amber-400 text-xs mb-1 italic">
-                      <PhoneHintIcon /> {config.strings.hintSenderLabel}{' '}
-                      {displayedHint.name}
+                      <PhoneLifelineIcon />{' '}
+                      {(config.strings.lifelineSenderLabel ??
+                        config.strings.hintSenderLabel)}{' '}
+                      {displayedLifelineResult.name}
                     </p>
                     <p className="text-amber-300 italic">
-                      {displayedHint.text}
+                      {displayedLifelineResult.text}
                     </p>
                   </div>
                 )}
-                {displayedHint.type === 'audience' && (
+                {displayedLifelineResult.type === 'audience' && (
                   <div>
                     <div className="grid grid-cols-4 gap-2">
-                      {displayedHint.percentages.map((p, i) => (
+                      {displayedLifelineResult.percentages.map((p, i) => (
                         <div key={i} className="text-center">
                           <div
                             className={`h-16 bg-black border-2 ${theme.border} relative overflow-hidden`}

@@ -15,6 +15,7 @@ import {
   GameState,
   Question,
   Hint,
+  LifelineResult,
   Campaign,
   Companion,
   PrizeLadder,
@@ -61,11 +62,21 @@ export interface GameStateData {
   /** Current hint being displayed */
   hint: Hint;
 
+  /** Current lifeline result overlay (preferred name) */
+  lifelineResult: LifelineResult;
+
   /** Lifeline availability */
   lifelines: {
     fiftyFifty: boolean;
     phoneAFriend: boolean;
     askAudience: boolean;
+  };
+
+  /** Lifeline availability (preferred ids) */
+  lifelineAvailability: {
+    fifty: boolean;
+    phone: boolean;
+    audience: boolean;
   };
 
   /** Prize won (as string) */
@@ -105,17 +116,32 @@ export interface GameStateActions {
   /** Take current winnings and leave */
   takeTheMoney: () => void;
 
+  /** Take current winnings and leave (preferred name) */
+  takeMoney: () => void;
+
   /** Use 50:50 lifeline */
   useFiftyFifty: () => void;
+
+  /** Use 50:50 lifeline (preferred name) */
+  useLifelineFifty: () => void;
 
   /** Use Phone a Friend lifeline - returns companion for voice playback */
   usePhoneAFriend: () => Companion | null;
 
+  /** Use Phone-a-Friend lifeline (preferred name) */
+  useLifelinePhone: () => Companion | null;
+
   /** Use Ask the Audience lifeline */
   useAskAudience: () => void;
 
+  /** Use Ask-the-Audience lifeline (preferred name) */
+  useLifelineAudience: () => void;
+
   /** Clear current hint */
   clearHint: () => void;
+
+  /** Clear current lifeline result overlay (preferred name) */
+  clearLifelineResult: () => void;
 }
 
 export interface UseGameStateReturn extends GameStateData, GameStateActions {}
@@ -155,7 +181,7 @@ export const useGameState = (config: GameConfig): UseGameStateReturn => {
     0, 1, 2, 3,
   ]);
   const [eliminatedAnswers, setEliminatedAnswers] = useState<number[]>([]);
-  const [hint, setHint] = useState<Hint>(null);
+  const [hint, setHint] = useState<LifelineResult>(null);
   const [wonPrize, setWonPrize] = useState('0');
 
   // Lifelines
@@ -188,6 +214,11 @@ export const useGameState = (config: GameConfig): UseGameStateReturn => {
 
   const lifelines = useMemo(
     () => ({ fiftyFifty, phoneAFriend, askAudience }),
+    [fiftyFifty, phoneAFriend, askAudience]
+  );
+
+  const lifelineAvailability = useMemo(
+    () => ({ fifty: fiftyFifty, phone: phoneAFriend, audience: askAudience }),
     [fiftyFifty, phoneAFriend, askAudience]
   );
 
@@ -437,6 +468,12 @@ export const useGameState = (config: GameConfig): UseGameStateReturn => {
     setHint(null);
   }, []);
 
+  const takeMoney = takeTheMoney;
+  const clearLifelineResult = clearHint;
+  const useLifelineFifty = useFiftyFifty;
+  const useLifelinePhone = usePhoneAFriend;
+  const useLifelineAudience = useAskAudience;
+
   // ============================================
   // Return
   // ============================================
@@ -453,7 +490,9 @@ export const useGameState = (config: GameConfig): UseGameStateReturn => {
     shuffledAnswers,
     eliminatedAnswers,
     hint,
+    lifelineResult: hint,
     lifelines,
+    lifelineAvailability,
     wonPrize,
     currentQuestionData,
     currentPrize,
@@ -467,10 +506,15 @@ export const useGameState = (config: GameConfig): UseGameStateReturn => {
     newGame,
     handleAnswer,
     takeTheMoney,
+    takeMoney,
     useFiftyFifty,
+    useLifelineFifty,
     usePhoneAFriend,
+    useLifelinePhone,
     useAskAudience,
+    useLifelineAudience,
     clearHint,
+    clearLifelineResult,
   };
 };
 

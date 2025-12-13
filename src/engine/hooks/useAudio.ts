@@ -113,6 +113,19 @@ export interface UseAudioReturn {
 }
 
 // ============================================
+// Sound key aliases (hint* → lifeline* migration)
+// ============================================
+
+const SOUND_EFFECT_KEY_ALIASES: Partial<
+  Record<keyof GameConfig['audio']['sounds'], keyof GameConfig['audio']['sounds']>
+> = {
+  lifelineFifty: 'hintReduceButton',
+  lifelinePhone: 'hintCallButton',
+  lifelineAudience: 'hintVoteButton',
+  takeMoneyButton: 'hintTakeMoneyButton',
+};
+
+// ============================================
 // Hook
 // ============================================
 
@@ -392,12 +405,13 @@ export const useAudio = (
         hasWarmedContext.current = true;
       }
 
-      const soundFile = config.audio.sounds[key];
+      const resolvedKey = SOUND_EFFECT_KEY_ALIASES[key] ?? key;
+      const soundFile = config.audio.sounds[resolvedKey];
       if (soundFile) {
         playSound(soundFile, config.audio.soundVolume);
       } else {
         // Try to play oscillator by key name
-        playSoundByType(key as OscillatorSoundKey);
+        playSoundByType(resolvedKey as OscillatorSoundKey);
       }
     },
     [config.audio.sounds, config.audio.soundVolume]
