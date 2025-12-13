@@ -1,6 +1,6 @@
 import type { ComponentType } from 'react';
 import type { ThemeColors } from '../../types';
-import { Panel, PanelHeader } from '../ui';
+import { Panel, PanelHeader } from '../../ui/components/panel';
 
 interface QuestionPanelProps {
   headerText: string;
@@ -40,4 +40,3 @@ export function QuestionPanel({
 }
 
 export default QuestionPanel;
-

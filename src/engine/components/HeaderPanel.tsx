@@ -1,5 +1,5 @@
 import React from 'react';
-import { Panel } from './ui/Panel';
+import { Panel } from '../ui/components/panel';
 import { HeaderSlideshow } from './HeaderSlideshow';
 import type {
   GameConfig,

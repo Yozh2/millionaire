@@ -48,7 +48,7 @@
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .glare:not(:disabled):hover::before {
+  .glare:not(:disabled):hover:not(:active)::before {
     --glare-from: var(--glare-start, -150%);
     --glare-to: var(--glare-end, 150%);
     animation: glare-sweep var(--glare-duration, 0.5s) ease-out forwards;

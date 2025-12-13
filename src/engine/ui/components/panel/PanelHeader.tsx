@@ -1,5 +1,5 @@
 import React from 'react';
-import { useTheme } from '../../context';
+import { useTheme } from '../../../context';
 
 interface PanelHeaderProps {
   children: React.ReactNode;
@@ -25,9 +25,10 @@ export const PanelHeader: React.FC<PanelHeaderProps> = ({
       ? '0 1px 2px rgba(15, 23, 42, 0.28)'
       : '0 1px 3px rgba(0,0,0,0.8)');
 
-  const alignmentClass = align === 'between'
-    ? 'flex justify-between items-center'
-    : 'text-center';
+  const alignmentClass =
+    align === 'between'
+      ? 'flex justify-between items-center'
+      : 'text-center';
 
   return (
     <div
@@ -43,3 +44,4 @@ export const PanelHeader: React.FC<PanelHeaderProps> = ({
     </div>
   );
 };
+

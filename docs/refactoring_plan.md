@@ -804,6 +804,13 @@ PoC и базовый engine должны запускаться без `public/
   - Разбить большие Transformers файлы.
   - Acceptance: структура игры масштабируется, меньше монолитов.
 
+- ✅ **Этап 8.5. Stabilization: исправление накопившихся регрессий**
+  - Удалить устаревшие docs (например, `ENGINE_PLAN.md`), если они больше не используются.
+  - Сверить `tree src` с диздоком и убрать “дубликаты” директорий (например, `engine/components/ui` vs `engine/ui/*`).
+  - Починить `glare` на `:active`: press‑блик должен идти “влево” и не перекрываться hover‑бликом.
+  - Campaign cards: одинаковая высота + одинаковая ширина, равная самой широкой карточке (с адаптацией под узкий экран).
+  - Acceptance: `npm test`, `npm run lint`, `npm run build` зелёные; визуальные регрессии устранены.
+
 ---
 
 ## 11 Журнал выполненных работ
@@ -823,6 +830,7 @@ PoC и базовый engine должны запускаться без `public/
 - 2025‑12‑13 (codex): ✅ Этап 6: добавлен `src/engine/assets/paths.ts` (единый `getBasePath`), `AssetLoader.loadManifest()` стал устойчивым к отсутствующему `asset-manifest.json`, `scripts/generate-asset-manifest.js` создаёт `public/` при необходимости.
 - 2025‑12‑13 (codex): ✅ Этап 7: `shine`‑нейминг заменён на `glare` (CSS‑примитив + кастом‑проперти), `src/styles/shine.css` → `src/styles/glare.css`, стили разнесены по `@layer`, удалён неиспользуемый шрифт `Aeromatics NC`.
 - 2025‑12‑13 (codex): ✅ Этап 8: игры переведены на структуру `src/games/<gameId>/campaigns/<campaignId>/*` (campaign/theme/questions); Transformers `questions.ts` разбит на 3 кампании, конфиги переведены на импорт из campaign‑модулей; `npm test/lint/build` зелёные.
+- 2025‑12‑13 (codex): ✅ Этап 8.5: удалён `docs/ENGINE_PLAN.md`, `Panel/PanelHeader` перенесены в `src/engine/ui/components/panel/*` (убран дубль `engine/components/ui`), исправлен press‑`glare` (hover не перекрывает `:active`), campaign cards получили одинаковую ширину по самой широкой карточке.
 
 ---
 

@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import type { PointerEvent, RefObject, ComponentType } from 'react';
 import type { GameConfig, ThemeColors } from '../../types';
-import { Panel, PanelHeader } from '../ui';
+import { Panel, PanelHeader } from '../../ui/components/panel';
 import {
   DefaultCoinIcon,
   DefaultFailIcon,

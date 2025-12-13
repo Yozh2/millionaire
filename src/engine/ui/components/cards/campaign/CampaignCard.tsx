@@ -5,6 +5,7 @@ interface CampaignCardProps {
   selected: boolean;
   onSelect: () => void;
   isLightTheme?: boolean;
+  uniformWidthPx?: number;
 }
 
 export function CampaignCard({
@@ -12,16 +13,20 @@ export function CampaignCard({
   selected,
   onSelect,
   isLightTheme,
+  uniformWidthPx,
 }: CampaignCardProps) {
   const CampaignIcon = campaign.icon;
 
   return (
     <button
       onClick={onSelect}
-      className={`flex flex-col items-center gap-2 p-3 md:p-4 border-4 transition-all transform hover:scale-105 ${
+      data-campaign-card="true"
+      className={`flex-none flex flex-col items-center gap-2 p-3 md:p-4 border-4 transition-all transform hover:scale-105 h-[148px] ${
         isLightTheme ? 'bg-white/35' : 'bg-stone-950/50'
       }`}
       style={{
+        width: uniformWidthPx ? `${uniformWidthPx}px` : undefined,
+        maxWidth: '100%',
         borderStyle: 'ridge',
         borderColor: selected ? campaign.theme.glowColor : '#44403c',
         boxShadow: selected
@@ -54,4 +59,3 @@ export function CampaignCard({
 }
 
 export default CampaignCard;
-

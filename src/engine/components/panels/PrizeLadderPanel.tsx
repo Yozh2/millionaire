@@ -1,6 +1,6 @@
 import type { MouseEvent } from 'react';
 import type { LifelineConfig, ThemeColors } from '../../types';
-import { Panel, PanelHeader } from '../ui';
+import { Panel, PanelHeader } from '../../ui/components/panel';
 
 interface PrizeLadderPanelProps {
   prizesHeader: string;

@@ -1,6 +1,7 @@
+import { useLayoutEffect, useRef, useState } from 'react';
 import type { PointerEvent } from 'react';
 import type { Campaign, GameConfig, ThemeColors } from '../../types';
-import { Panel, PanelHeader } from '../ui';
+import { Panel, PanelHeader } from '../../ui/components/panel';
 import { CampaignCard } from '../../ui/components/cards/campaign/CampaignCard';
 
 interface CampaignSelectionPanelProps {
@@ -21,6 +22,56 @@ export function CampaignSelectionPanel({
   theme,
 }: CampaignSelectionPanelProps) {
   const isLightTheme = !!theme.isLight;
+  const cardsContainerRef = useRef<HTMLDivElement | null>(null);
+  const [uniformCardWidthPx, setUniformCardWidthPx] = useState<number>();
+
+  useLayoutEffect(() => {
+    const container = cardsContainerRef.current;
+    if (!container) return;
+
+    let raf = 0;
+
+    const measure = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => {
+        const cards = Array.from(
+          container.querySelectorAll<HTMLButtonElement>('[data-campaign-card="true"]')
+        );
+        if (cards.length === 0) return;
+
+        const maxWidth = Math.max(
+          ...cards.map((card) => card.getBoundingClientRect().width)
+        );
+        const containerWidth = container.getBoundingClientRect().width;
+        const nextWidth = Math.min(maxWidth, containerWidth);
+
+        setUniformCardWidthPx((prev) =>
+          prev !== undefined && Math.abs(prev - nextWidth) < 0.5 ? prev : nextWidth
+        );
+      });
+    };
+
+    measure();
+
+    if (typeof ResizeObserver === 'undefined') {
+      window.addEventListener('resize', measure);
+      return () => {
+        cancelAnimationFrame(raf);
+        window.removeEventListener('resize', measure);
+      };
+    }
+
+    const ro = new ResizeObserver(measure);
+    ro.observe(container);
+    for (const card of container.querySelectorAll('[data-campaign-card="true"]')) {
+      ro.observe(card);
+    }
+
+    return () => {
+      cancelAnimationFrame(raf);
+      ro.disconnect();
+    };
+  }, [config.campaigns.length, theme.isLight]);
 
   return (
     <Panel className="p-1 animate-slide-in stagger-2">
@@ -34,13 +85,14 @@ export function CampaignSelectionPanel({
 
         {/* Campaign Selection */}
         <div className="mb-8">
-          <div className="flex justify-center gap-4 md:gap-6 flex-wrap">
+          <div ref={cardsContainerRef} className="flex justify-center gap-4 md:gap-6 flex-wrap">
             {config.campaigns.map((campaign) => (
               <CampaignCard
                 key={campaign.id}
                 campaign={campaign}
                 selected={selectedCampaign?.id === campaign.id}
                 isLightTheme={isLightTheme}
+                uniformWidthPx={uniformCardWidthPx}
                 onSelect={() => onSelectCampaign(campaign)}
               />
             ))}

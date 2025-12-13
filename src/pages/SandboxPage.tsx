@@ -8,7 +8,7 @@
  */
 
 import { useState, useEffect } from 'react';
-import { Panel, PanelHeader } from '../engine/components/ui';
+import { Panel, PanelHeader } from '../engine/ui/components/panel';
 import { logger } from '../engine/services';
 
 // Types
