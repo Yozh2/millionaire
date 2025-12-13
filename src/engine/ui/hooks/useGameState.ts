@@ -25,7 +25,7 @@ import {
   calculatePrizeLadder,
   getGuaranteedPrize,
   getQuestionDifficulty,
-} from '../../utils/questionGenerator';
+} from '../../game';
 
 // ============================================
 // Types

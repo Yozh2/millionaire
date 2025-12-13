@@ -81,7 +81,7 @@ export {
   calculatePrizeLadder,
   getGuaranteedPrize,
   getQuestionDifficulty,
-} from './utils/questionGenerator';
+} from './game';
 
 // UI entry + screens
 export { MillionaireGame } from './ui/MillionaireGame';
