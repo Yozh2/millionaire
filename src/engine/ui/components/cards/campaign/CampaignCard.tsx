@@ -20,11 +20,11 @@ export function CampaignCard({
       onClick={onSelect}
       data-campaign-card="true"
       data-selected={selected ? 'true' : 'false'}
-      className={`campaign-card relative flex-none overflow-hidden border-4 transition-transform duration-200 transform hover:scale-[1.03] w-[164px] h-[216px] px-3 pt-7 pb-3 flex flex-col items-center ${
+      className={`campaign-card relative flex-none overflow-hidden border-4 transition-transform duration-200 w-[164px] h-[216px] px-3 pt-7 pb-3 flex flex-col items-center ${
         isLightTheme
           ? 'bg-gradient-to-b from-white/45 via-white/25 to-white/10'
           : 'bg-gradient-to-b from-stone-950/70 via-stone-950/45 to-black/70'
-      } ${selected ? '-translate-y-1' : ''}`}
+      }`}
       style={{
         ['--campaign-glow' as string]: campaign.theme.glowColor,
         ['--campaign-glow-secondary' as string]: campaign.theme.glowSecondary,
