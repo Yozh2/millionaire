@@ -935,6 +935,13 @@ PoC и базовый engine должны запускаться без `public/
   - Удалить `src/engine/components/` после миграции, чтобы не осталось “двух UI”.
   - Acceptance: `npm test`, `npm run lint`, `npm run build` зелёные; импортов из `engine/components/*` больше нет.
 
+- ⬜ **Этап 10. Engine: GameState machine (v0) и вынос домена**
+  - Ввести `src/engine/game/state/*`: `types/actions/reducer/selectors/machine` (v0).
+  - Постепенно вынести доменную логику из `useGameState` в `src/engine/game/**` (questions/prizes/lifelines).
+  - Acceptance:
+    - `npm test`, `npm run lint`, `npm run build` зелёные.
+    - Визуальная проверка: на кнопках **press‑`glare-left` заметен** (не “как hover”), hover остаётся `glare-right`.
+
 ---
 
 ## 11 Журнал выполненных работ
@@ -957,6 +964,7 @@ PoC и базовый engine должны запускаться без `public/
 - 2025‑12‑13 (codex): ✅ Этап 8: игры переведены на структуру `src/games/<gameId>/campaigns/<campaignId>/*` (campaign/theme/questions); Transformers `questions.ts` разбит на 3 кампании, конфиги переведены на импорт из campaign‑модулей; `npm test/lint/build` зелёные.
 - 2025‑12‑13 (codex): ✅ Этап 8.5: удалён `docs/ENGINE_PLAN.md`, `Panel/PanelHeader` перенесены в `src/engine/ui/components/panel/*` (убран дубль `engine/components/ui`), исправлен press‑`glare` (hover не перекрывает `:active`), campaign cards получили одинаковую ширину по самой широкой карточке.
 - 2025‑12‑13 (codex): ✅ Этап 9: UI‑слой полностью перенесён в `src/engine/ui/**` (screens/panels/layout/effects/icons/theme/hooks), удалены `src/engine/components|context|hooks`, обновлены импорты/`src/engine/index.ts`; `npm test/lint/build` зелёные.
+- 2025‑12‑13 (codex): Этап 10 (частично): начат вынос доменной логики в `src/engine/game/**` (questions/prizes), `useGameState` переведён на импорт из `engine/game`.
 
 ---
 
