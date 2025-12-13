@@ -25,6 +25,9 @@ import {
   calculatePrizeLadder,
   getGuaranteedPrize,
   getQuestionDifficulty,
+  getFiftyFiftyEliminations,
+  generateAudiencePercentages,
+  getPhoneSuggestion,
 } from '../../game';
 
 // ============================================
@@ -388,17 +391,12 @@ export const useGameState = (config: GameConfig): UseGameStateReturn => {
     if (!fiftyFifty || selectedAnswer !== null || !currentQuestionData) return;
 
     setFiftyFifty(false);
-    const correct = currentQuestionData.correct;
-
-    // Find display indices of wrong answers
-    const wrongDisplayIndices = shuffledAnswers
-      .map((originalIdx, displayIdx) => ({ originalIdx, displayIdx }))
-      .filter(({ originalIdx }) => originalIdx !== correct)
-      .map(({ displayIdx }) => displayIdx);
-
-    // Randomly pick 2 wrong answers to eliminate
-    const toEliminate = shuffleArray(wrongDisplayIndices).slice(0, 2);
-    setEliminatedAnswers(toEliminate);
+    setEliminatedAnswers(
+      getFiftyFiftyEliminations({
+        correctOriginalIndex: currentQuestionData.correct,
+        shuffledAnswers,
+      })
+    );
   }, [fiftyFifty, selectedAnswer, currentQuestionData, shuffledAnswers]);
 
   const usePhoneAFriend = useCallback((): Companion | null => {
@@ -406,13 +404,9 @@ export const useGameState = (config: GameConfig): UseGameStateReturn => {
     if (config.companions.length === 0) return null;
 
     setPhoneAFriend(false);
-    const correct = currentQuestionData.correct;
-
-    // 80% chance of correct advice
-    const isConfident = Math.random() > 0.2;
-    const suggestedAnswer = isConfident
-      ? correct
-      : [0, 1, 2, 3].filter((i) => i !== correct)[Math.floor(Math.random() * 3)];
+    const { isConfident, suggestedOriginalIndex: suggestedAnswer } = getPhoneSuggestion({
+      correctOriginalIndex: currentQuestionData.correct,
+    });
 
     const companion =
       config.companions[Math.floor(Math.random() * config.companions.length)];
@@ -437,31 +431,16 @@ export const useGameState = (config: GameConfig): UseGameStateReturn => {
     if (!askAudience || selectedAnswer !== null || !currentQuestionData) return;
 
     setAskAudience(false);
-    const correct = currentQuestionData.correct;
-
-    // Find display index of correct answer
-    const correctDisplayIndex = shuffledAnswers.indexOf(correct);
-
-    // Generate realistic-looking percentages
-    const percentages = [0, 0, 0, 0];
-    percentages[correctDisplayIndex] = 40 + Math.floor(Math.random() * 35);
-
-    let remaining = 100 - percentages[correctDisplayIndex];
-    const otherDisplayIndices = [0, 1, 2, 3].filter(
-      (i) => i !== correctDisplayIndex && !eliminatedAnswers.includes(i)
-    );
-
-    otherDisplayIndices.forEach((i, idx, arr) => {
-      if (idx === arr.length - 1) {
-        percentages[i] = remaining;
-      } else {
-        const val = Math.floor(Math.random() * remaining * 0.6);
-        percentages[i] = val;
-        remaining -= val;
-      }
+    const correctDisplayIndex = shuffledAnswers.indexOf(currentQuestionData.correct);
+    const percentages = generateAudiencePercentages({
+      correctDisplayIndex,
+      eliminatedDisplayIndices: eliminatedAnswers,
     });
 
-    setHint({ type: 'audience', percentages });
+    setHint({
+      type: 'audience',
+      percentages,
+    });
   }, [askAudience, selectedAnswer, currentQuestionData, shuffledAnswers, eliminatedAnswers]);
 
   const clearHint = useCallback(() => {

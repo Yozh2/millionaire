@@ -118,4 +118,3 @@ export const calculatePrizeLadder = (
 
   return { values, guaranteed };
 };
-
