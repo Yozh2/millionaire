@@ -27,6 +27,7 @@ export function CampaignCard({
       } ${selected ? '-translate-y-1' : ''}`}
       style={{
         ['--campaign-glow' as string]: campaign.theme.glowColor,
+        ['--campaign-glow-secondary' as string]: campaign.theme.glowSecondary,
         borderStyle: 'ridge',
         borderColor: selected ? campaign.theme.glowColor : '#44403c',
         boxShadow: selected
@@ -44,42 +45,44 @@ export function CampaignCard({
         }
       }}
     >
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/10 via-transparent to-black/35"
-      />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent"
-      />
-      <div
-        aria-hidden="true"
-        className={`pointer-events-none absolute inset-2 border ${
-          isLightTheme ? 'border-black/10' : 'border-white/10'
-        }`}
-      />
+      <div className="campaign-card-inner relative w-full h-full flex flex-col items-center">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/10 via-transparent to-black/35"
+        />
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent"
+        />
+        <div
+          aria-hidden="true"
+          className={`pointer-events-none absolute inset-2 border ${
+            isLightTheme ? 'border-black/10' : 'border-white/10'
+          }`}
+        />
 
-      <div className="relative mt-0 w-[98px] h-[98px] flex items-center justify-center overflow-visible">
-        <div aria-hidden="true" className="campaign-icon-glow" />
-        <div aria-hidden="true" className="campaign-icon-rays" />
-        <CampaignIcon className="relative w-full h-full max-w-full max-h-full object-contain text-5xl leading-none" />
+        <div className="relative mt-0 w-[98px] h-[98px] flex items-center justify-center overflow-visible">
+          <div aria-hidden="true" className="campaign-icon-glow" />
+          <div aria-hidden="true" className="campaign-icon-rays" />
+          <CampaignIcon className="relative z-10 w-full h-full max-w-full max-h-full object-contain text-5xl leading-none" />
+        </div>
+
+        <span
+          className="relative mt-5 w-full max-w-full px-0.5 text-sm font-bold text-center truncate leading-tight"
+          style={{
+            color: selected ? campaign.theme.glowColor : campaign.theme.glowSecondary,
+          }}
+        >
+          {campaign.name}
+        </span>
+        <span
+          className={`relative mt-0 w-full max-w-full px-0.5 text-xs text-center truncate leading-tight ${
+            isLightTheme ? 'text-stone-600' : 'text-stone-400'
+          }`}
+        >
+          {campaign.label}
+        </span>
       </div>
-
-      <span
-        className="relative mt-5 w-full max-w-full px-0.5 text-sm font-bold text-center truncate leading-tight"
-        style={{
-          color: selected ? campaign.theme.glowColor : campaign.theme.glowSecondary,
-        }}
-      >
-        {campaign.name}
-      </span>
-      <span
-        className={`relative mt-0 w-full max-w-full px-0.5 text-xs text-center truncate leading-tight ${
-          isLightTheme ? 'text-stone-600' : 'text-stone-400'
-        }`}
-      >
-        {campaign.label}
-      </span>
     </button>
   );
 }

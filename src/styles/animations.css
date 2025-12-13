@@ -165,17 +165,29 @@
    Campaign icon glow/rays (CampaignCard)
    ============================================ */
 
+@keyframes campaign-card-float {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
 @keyframes campaign-glow-breathe {
   0% {
-    opacity: 0.25;
+    opacity: 0.35;
     transform: scale(0.98);
   }
   50% {
-    opacity: 0.55;
+    opacity: 0.65;
     transform: scale(1.04);
   }
   100% {
-    opacity: 0.25;
+    opacity: 0.35;
     transform: scale(0.98);
   }
 }
@@ -186,6 +198,15 @@
   }
   100% {
     transform: rotate(360deg);
+  }
+}
+
+@keyframes campaign-rays-rotate-reverse {
+  0% {
+    transform: rotate(360deg);
+  }
+  100% {
+    transform: rotate(0deg);
   }
 }
 
@@ -202,47 +223,131 @@
   }
 }
 
+@keyframes campaign-rays-shimmer {
+  0%,
+  100% {
+    opacity: 0.22;
+    filter: blur(0.9px);
+  }
+  40% {
+    opacity: 0.5;
+    filter: blur(0.7px);
+  }
+  70% {
+    opacity: 0.3;
+    filter: blur(1.2px);
+  }
+}
+
+.campaign-card-inner {
+  will-change: transform;
+}
+
+.campaign-card[data-selected='true'] .campaign-card-inner {
+  animation: campaign-card-float 2.9s ease-in-out infinite;
+}
+
 .campaign-icon-glow {
   position: absolute;
-  inset: -12%;
+  inset: -60%;
   border-radius: 9999px;
   background: radial-gradient(
     circle at 50% 55%,
-    color-mix(in srgb, var(--campaign-glow, rgba(255, 200, 0, 0.65)) 40%, transparent) 0%,
-    color-mix(in srgb, var(--campaign-glow, rgba(255, 200, 0, 0.65)) 18%, transparent) 42%,
-    transparent 72%
+    color-mix(in srgb, var(--campaign-glow, rgba(255, 200, 0, 0.65)) 55%, transparent) 0%,
+    color-mix(in srgb, var(--campaign-glow, rgba(255, 200, 0, 0.65)) 25%, transparent) 38%,
+    color-mix(in srgb, var(--campaign-glow-secondary, rgba(255, 255, 255, 0.35)) 22%, transparent) 60%,
+    transparent 78%
   );
-  filter: blur(0.4px);
+  filter: blur(9px);
   opacity: 0;
-  transform: scale(0.86);
+  transform: scale(0.12);
+  transform-origin: 50% 55%;
   transition:
-    opacity 220ms ease-out,
-    transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
+    opacity 260ms ease-out,
+    transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
   animation: campaign-glow-breathe 2.6s ease-in-out infinite;
   animation-play-state: paused;
 }
 
+.campaign-icon-glow::before {
+  content: '';
+  position: absolute;
+  inset: -12%;
+  border-radius: 9999px;
+  background: radial-gradient(
+    circle at 50% 52%,
+    color-mix(in srgb, var(--campaign-glow, rgba(255, 200, 0, 0.65)) 55%, transparent) 0%,
+    color-mix(in srgb, var(--campaign-glow, rgba(255, 200, 0, 0.65)) 18%, transparent) 45%,
+    transparent 72%
+  );
+  filter: blur(5px);
+  opacity: 0.75;
+}
+
 .campaign-icon-rays {
   position: absolute;
-  inset: -18%;
+  inset: -86%;
   border-radius: 9999px;
-  background: repeating-conic-gradient(
-    from 0deg,
-    transparent 0deg 18deg,
-    color-mix(in srgb, var(--campaign-glow, rgba(255, 200, 0, 0.65)) 45%, transparent) 18deg 22deg,
-    transparent 22deg 45deg
-  );
-  mask-image: radial-gradient(circle at 50% 50%, transparent 0% 28%, black 46%, transparent 74%);
+  background:
+    repeating-conic-gradient(
+      from 12deg,
+      transparent 0deg 16deg,
+      color-mix(in srgb, var(--campaign-glow, rgba(255, 200, 0, 0.65)) 55%, transparent) 16deg 20deg,
+      transparent 20deg 44deg
+    );
+  mask-image: radial-gradient(circle at 50% 50%, transparent 0% 26%, black 46%, transparent 76%);
   mix-blend-mode: screen;
-  filter: blur(0.7px);
+  filter: blur(0.9px);
   opacity: 0;
-  transform: scale(0.86);
+  transform: scale(0.12);
+  transform-origin: 50% 50%;
   transition:
-    opacity 220ms ease-out,
-    transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
+    opacity 260ms ease-out,
+    transform 640ms cubic-bezier(0.22, 1, 0.36, 1);
+  animation: campaign-rays-pulse 2.1s ease-in-out infinite;
+  animation-play-state: paused;
+}
+
+.campaign-icon-rays::before,
+.campaign-icon-rays::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+.campaign-icon-rays::before {
+  background:
+    repeating-conic-gradient(
+      from 220deg,
+      transparent 0deg 10deg,
+      color-mix(in srgb, var(--campaign-glow, rgba(255, 200, 0, 0.65)) 45%, transparent) 10deg 14deg,
+      transparent 14deg 38deg
+    );
+  mask-image: radial-gradient(circle at 50% 50%, transparent 0% 30%, black 50%, transparent 82%);
+  filter: blur(0.75px);
+  opacity: 0.75;
+  transform: rotate(0deg) scaleX(1.04) scaleY(0.94);
+  animation: campaign-rays-rotate 5.8s linear infinite;
+  animation-play-state: paused;
+}
+
+.campaign-icon-rays::after {
+  background:
+    repeating-conic-gradient(
+      from 40deg,
+      transparent 0deg 22deg,
+      color-mix(in srgb, var(--campaign-glow-secondary, rgba(255, 255, 255, 0.35)) 55%, transparent) 22deg 26deg,
+      transparent 26deg 52deg
+    );
+  mask-image: radial-gradient(circle at 50% 50%, transparent 0% 34%, black 56%, transparent 86%);
+  opacity: 0.6;
+  transform: rotate(0deg) scaleX(0.96) scaleY(1.06);
   animation:
-    campaign-rays-rotate 4.6s linear infinite,
-    campaign-rays-pulse 2.1s ease-in-out infinite;
+    campaign-rays-rotate-reverse 7.4s linear infinite,
+    campaign-rays-shimmer 2.7s ease-in-out infinite;
   animation-play-state: paused;
 }
 
@@ -253,9 +358,23 @@
   animation-play-state: running;
 }
 
+.campaign-card[data-selected='true'] .campaign-icon-rays {
+  transition-delay: 90ms;
+}
+
+.campaign-card[data-selected='true'] .campaign-icon-rays::before,
+.campaign-card[data-selected='true'] .campaign-icon-rays::after {
+  animation-play-state: running;
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .campaign-card[data-selected='true'] .campaign-card-inner {
+    animation: none !important;
+  }
   .campaign-icon-glow,
-  .campaign-icon-rays {
+  .campaign-icon-rays,
+  .campaign-icon-rays::before,
+  .campaign-icon-rays::after {
     animation: none !important;
   }
 }
