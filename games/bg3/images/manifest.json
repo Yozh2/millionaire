@@ -1,0 +1,66 @@
+{
+  "campaigns": {
+    "darkUrge": {
+      "end": {
+        "lost": {
+          "images": [
+            "dark-urge-lost.jpg"
+          ]
+        }
+      },
+      "start": {
+        "images": [
+          "dark-urge-wallpaper.jpg"
+        ]
+      }
+    },
+    "hero": {
+      "end": {
+        "lost": {
+          "images": [
+            "hero-lost.jpg"
+          ]
+        }
+      },
+      "play": {
+        "images": [
+          "heroes.png"
+        ]
+      },
+      "start": {
+        "images": [
+          "heroes.jpg"
+        ]
+      }
+    },
+    "mindFlayer": {
+      "end": {
+        "lost": {
+          "images": [
+            "mind-flayer-lost.jpg"
+          ]
+        }
+      },
+      "start": {
+        "images": [
+          "mind-flayer-in-the-dark.png"
+        ]
+      }
+    }
+  },
+  "end": {
+    "images": [
+      "EndingScreen.png"
+    ],
+    "lost": {
+      "images": [
+        "dead-girls.jpg"
+      ]
+    },
+    "took": {
+      "images": [
+        "camp.png"
+      ]
+    }
+  }
+}
