@@ -1,5 +1,5 @@
 import React from 'react';
-import { useTheme } from '../../../context';
+import { useTheme } from '../../theme';
 
 interface PanelHeaderProps {
   children: React.ReactNode;
@@ -44,4 +44,3 @@ export const PanelHeader: React.FC<PanelHeaderProps> = ({
     </div>
   );
 };
-

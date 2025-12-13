@@ -177,15 +177,41 @@ src
 │   ├── audio
 │   │   ├── useMusicPlayer.ts
 │   │   └── useSoundPlayer.ts
-│   ├── components
-│   │   ├── DefaultIcons.tsx
-│   │   ├── EndScreen.tsx
-│   │   ├── ErrorBoundary.tsx
-│   │   ├── GameScreen.tsx
-│   │   ├── HeaderPanel.tsx
-│   │   ├── HeaderSlideshow.tsx
+│   ├── constants.ts
+│   ├── index.ts
+│   ├── services
+│   │   ├── AssetLoader.ts
 │   │   ├── index.ts
-│   │   ├── LoadingScreen.tsx
+│   │   ├── logger.ts
+│   │   └── types.ts
+│   ├── types
+│   │   └── index.ts
+│   ├── ui
+│   │   ├── components
+│   │   │   ├── cards
+│   │   │   │   └── campaign
+│   │   │   │       └── CampaignCard.tsx
+│   │   │   ├── errors
+│   │   │   │   └── ErrorBoundary.tsx
+│   │   │   └── panel
+│   │   │       ├── index.ts
+│   │   │       ├── Panel.tsx
+│   │   │       └── PanelHeader.tsx
+│   │   ├── effects
+│   │   │   └── ParticleCanvas.tsx
+│   │   ├── hooks
+│   │   │   ├── index.ts
+│   │   │   ├── useAssetPreloader.ts
+│   │   │   ├── useAudio.ts
+│   │   │   ├── useEffects.ts
+│   │   │   ├── useFavicon.ts
+│   │   │   └── useGameState.ts
+│   │   ├── icons
+│   │   │   └── DefaultIcons.tsx
+│   │   ├── layout
+│   │   │   └── header
+│   │   │       ├── HeaderPanel.tsx
+│   │   │       └── HeaderSlideshow.tsx
 │   │   ├── MillionaireGame.tsx
 │   │   ├── panels
 │   │   │   ├── AnswersPanel.tsx
@@ -198,36 +224,14 @@ src
 │   │   │   ├── PrizeLadderPanel.tsx
 │   │   │   ├── QuestionPanel.tsx
 │   │   │   └── ResultPanel.tsx
-│   │   ├── ParticleCanvas.tsx
-│   │   └── StartScreen.tsx
-│   ├── constants.ts
-│   ├── context
-│   │   ├── index.ts
-│   │   └── ThemeContext.tsx
-│   ├── hooks
-│   │   ├── index.ts
-│   │   ├── useAssetPreloader.ts
-│   │   ├── useAudio.ts
-│   │   ├── useEffects.ts
-│   │   ├── useFavicon.ts
-│   │   └── useGameState.ts
-│   ├── index.ts
-│   ├── services
-│   │   ├── AssetLoader.ts
-│   │   ├── index.ts
-│   │   ├── logger.ts
-│   │   └── types.ts
-│   ├── types
-│   │   └── index.ts
-│   ├── ui
-│   │   └── components
-│   │       ├── cards
-│   │       │   └── campaign
-│   │       │       └── CampaignCard.tsx
-│   │       └── panel
-│   │           ├── index.ts
-│   │           ├── Panel.tsx
-│   │           └── PanelHeader.tsx
+│   │   ├── screens
+│   │   │   ├── EndScreen.tsx
+│   │   │   ├── GameScreen.tsx
+│   │   │   ├── LoadingScreen.tsx
+│   │   │   └── StartScreen.tsx
+│   │   └── theme
+│   │       ├── index.ts
+│   │       └── ThemeContext.tsx
 │   └── utils
 │       ├── assetLoader.ts
 │       ├── audioPlayer.ts
@@ -306,16 +310,19 @@ src
 │   ├── EffectsSandboxPage.tsx
 │   ├── index.ts
 │   ├── RegisteredGamePage.tsx
-│   ├── SandboxPage.tsx
+│   └── SandboxPage.tsx
 ├── styles
 │   ├── animations.css
 │   ├── base.css
 │   ├── buttons.css
 │   ├── fonts.css
 │   ├── glare.css
-│   ├── prize-ladder.css
+│   └── prize-ladder.css
 ├── tailwind.css
 └── vite-env.d.ts
+
+45 directories, 116 files
+
 scripts
 ├── comics_parser.py
 ├── convert_mp3_to_ogg.sh
@@ -326,13 +333,15 @@ scripts
     ├── G1_translations.csv
     ├── millionaire-sounds.html
     └── test-prizes.js
+
+2 directories, 8 files
 ```
 
 #### 3.1.2 Комментарии по структуре (что сейчас смущает)
 
-- В `src/engine` сейчас одновременно есть `engine/components/*` и `engine/ui/components/*`. Оба содержат React‑компоненты, но по разной логике; это создаёт путаницу и “двойную точку входа” для UI.
-- `engine/context/*` и `engine/hooks/*` по смыслу обслуживают UI‑слой, но лежат на уровне “ядра” engine.
-- Самый простой “правильный” принцип: TSX = UI → `engine/ui/**`, а всё не‑UI (state/audio/assets/services/types/utils) остаётся снаружи.
+- Проблема “двух UI” устранена: весь React‑UI живёт в `src/engine/ui/**` (Этап 9).
+- Вне `engine/ui/**` оставляем только не‑UI: audio/assets/services/types/utils (+ будущий `engine/game/**`).
+- Следующий шаг по структуре: начать вынос доменной логики из `useGameState`/`questionGenerator` в `src/engine/game/**`.
 
 ### 3.2 Комментарии по каждому файлу (назначение + заметка для рефакторинга)
 
@@ -354,10 +363,7 @@ scripts
 #### 3.2.3 `src/pages/`
 
 - `src/pages/index.ts` — barrel export страниц; в будущем можно убрать и импортировать напрямую.
-- `src/pages/PocPage.tsx` — страница запуска PoC; цель: роут из registry.
-- `src/pages/BG3Page.tsx` — страница запуска BG3; цель: роут из registry.
-- `src/pages/TransformersPage.tsx` — страница запуска Transformers; цель: роут из registry.
-- `src/pages/SkyCotlPage.tsx` — страница запуска Sky‑CotL; цель: роут из registry.
+- `src/pages/RegisteredGamePage.tsx` — универсальная страница запуска игры по `:gameId` из `GameRegistry`.
 - `src/pages/SandboxPage.tsx` — отладка `HeaderSlideshow`; цель: пометить как devOnly и вынести из prod navigation.
 - `src/pages/EffectsSandboxPage.tsx` — демо визуальных эффектов; цель: devOnly.
 
@@ -365,10 +371,10 @@ scripts
 
 - `src/styles/base.css` — глобальный reset + body фон + CSS vars; цель: переехать в `engine/ui/styles/base.css` (или `@layer base`) и не мешать внешним приложениям.
 - `src/styles/animations.css` — анимации экранов/панелей; цель: перенести в `engine/ui/styles/animations.css`.
-- `src/styles/buttons.css` — логика состояний кнопок + эффекты; цель: формализовать состояния (Spawn/Idle/Hover/Press/Click/Ease/Kill) и переименовать `shine` → `glare`.
-- `src/styles/prize-ladder.css` — стили `prizeLadder`; цель: сохранить нейминг `prizeLadder`, а “shine” эффекты переименовать в `glare`.
+- `src/styles/buttons.css` — логика состояний кнопок + эффекты; цель: формализовать состояния (Spawn/Idle/Hover/Press/Click/Ease/Kill). (`glare` уже в актуальном нейминге.)
+- `src/styles/prize-ladder.css` — стили `prizeLadder`; цель: сохранить нейминг `prizeLadder`.
 - `src/styles/fonts.css` — `@font-face`; цель: проверить необходимость, убрать неиспользуемое, синхронизировать с темами.
-- `src/styles/glare.css` — “glare sweep”; цель: универсальный `glare` (одна реализация, два направления).
+- `src/styles/glare.css` — “glare sweep”; цель: универсальный `glare` (одна реализация, два направления) — уже реализовано.
 
 #### 3.2.5 `src/engine/` (публичный движок)
 
@@ -376,52 +382,39 @@ scripts
 - `src/engine/index.ts` — публичный API движка (barrel); цель: сузить API, стабилизировать, не раздувать бандл.
 - `src/engine/constants.ts` — общие константы; цель: расширять и использовать как “single source of truth”.
 
-##### 3.2.5.1 Components
+##### 3.2.5.1 Assets
 
-- `src/engine/components/index.ts` — barrel export компонентов; цель: позже разнести по `engine/ui/*` и оставить минимум.
-- `src/engine/components/MillionaireGame.tsx` — центральный оркестратор; цель: превратить в `GameLayout` + wiring state/audio/assets.
-- `src/engine/components/StartScreen.tsx` — стартовый экран; цель: композиция панелей, а не монолит.
-- `src/engine/components/GameScreen.tsx` — главный экран игры; цель: разрезать на панели/кнопки (см. раздел 7).
-- `src/engine/components/EndScreen.tsx` — экран результата; цель: заменить на `ResultPanel` с вариантом исхода.
-- `src/engine/components/HeaderPanel.tsx` — временная реализация “шапки” (пока в панели); цель: выделить настоящий `Header` (не Panel) и развивать графику/анимации.
-- `src/engine/components/HeaderSlideshow.tsx` — фон‑слайдшоу; цель: оставить как часть `HeaderBackdrop`.
-- `src/engine/components/ParticleCanvas.tsx` — canvas‑эффекты; цель: оформить как UI‑подсистему эффектов и стабилизировать API.
-- `src/engine/components/LoadingScreen.tsx` — loader UI; цель: использовать `systemStrings` из `GameConfig` для локализации.
-- `src/engine/components/DefaultIcons.tsx` — дефолтные emoji‑иконки; цель: оформить как “DefaultIconPack”.
-- `src/engine/components/ErrorBoundary.tsx` — error boundary; цель: оставить, добавить “ErrorPanel” поверх игры (не только fallback‑экран).
+- `src/engine/assets/paths.ts` — единая логика `baseUrl` и построения путей; цель: engine запускается без `public/`.
 
-##### 3.2.5.2 UI (Panel system)
+##### 3.2.5.2 Audio
 
-- `src/engine/components/ui/index.ts` — barrel.
-- `src/engine/components/ui/Panel.tsx` — базовая панель; цель: оставить в `engine/ui/components/common/Panel`.
-- `src/engine/components/ui/PanelHeader.tsx` — заголовок панели; цель: поддержать light themes (уже частично сделано) и переехать вместе с `Panel`.
+- `src/engine/audio/useMusicPlayer.ts` — управление музыкой (loop/track switching); цель: правила переключений уйдут в `engine/game` по мере появления машины.
+- `src/engine/audio/useSoundPlayer.ts` — SFX/voice + stop‑handles/tagging; цель: сохранять мгновенную остановку звуков для UX.
 
-##### 3.2.5.3 Context
+##### 3.2.5.3 UI (весь React слой)
 
-- `src/engine/context/index.ts` — barrel.
-- `src/engine/context/ThemeContext.tsx` — `ThemeProvider/useTheme`; цель: это UI‑слой, позже переехать в `engine/ui/theme`.
+- `src/engine/ui/MillionaireGame.tsx` — UI‑точка входа engine (компоновка экранов + wiring hooks).
+- `src/engine/ui/screens/*` — экраны (Start/Game/End/Loading).
+- `src/engine/ui/panels/*` — панели, которые оркестрирует `GameScreen`.
+- `src/engine/ui/components/*` — UI‑примитивы (Panel, CampaignCard, ErrorBoundary, …).
+- `src/engine/ui/layout/*` — layout‑слой (header и будущие shells).
+- `src/engine/ui/effects/*` — canvas/визуальные эффекты.
+- `src/engine/ui/icons/*` — DefaultIcons (дефолтный icon pack).
+- `src/engine/ui/theme/*` — ThemeContext/ThemeProvider.
+- `src/engine/ui/hooks/*` — UI hooks (в т.ч. фасады к аудио/эффектам/состоянию).
 
-##### 3.2.5.4 Hooks
-
-- `src/engine/hooks/index.ts` — barrel.
-- `src/engine/hooks/useGameState.ts` — текущая логика состояния; цель: вынести правила/переходы в “машину” (см. 7.3).
-- `src/engine/hooks/useAudio.ts` — интеграция аудио; цель: разделить на `MusicPlayer`/`SoundPlayer` и унифицировать stop‑handles.
-- `src/engine/hooks/useEffects.ts` — API эффектов; цель: переехать в UI‑слой эффектов.
-- `src/engine/hooks/useFavicon.ts` — favicon resolving; цель: использовать манифест/кеш, избегать лишних HEAD.
-- `src/engine/hooks/useAssetPreloader.ts` — preload уровней; цель: gracefully работать без `public/`/манифеста.
-
-##### 3.2.5.5 Services
+##### 3.2.5.4 Services
 
 - `src/engine/services/index.ts` — barrel.
 - `src/engine/services/logger.ts` — logger; цель: постепенно заменить `console.*` в engine.
 - `src/engine/services/types.ts` — типы манифеста/уровней; цель: оформить как `engine/assets/manifest/*`.
 - `src/engine/services/AssetLoader.ts` — manifest‑based loader; цель: стать единственной точкой preload + единая система путей.
 
-##### 3.2.5.6 Types
+##### 3.2.5.5 Types
 
 - `src/engine/types/index.ts` — договор API движка (GameConfig, ThemeColors, etc.); цель: переименовать `hint*` → `lifeline*`, формализовать `rewardKind`, не ломая совместимость сразу.
 
-##### 3.2.5.7 Utils
+##### 3.2.5.6 Utils
 
 - `src/engine/utils/index.ts` — barrel.
 - `src/engine/utils/questionGenerator.ts` — генерация вопросов/ladder; цель: в доменный слой `engine/game/*`.
@@ -935,7 +928,7 @@ PoC и базовый engine должны запускаться без `public/
   - Campaign cards: одинаковая высота + одинаковая ширина, равная самой широкой карточке (с адаптацией под узкий экран).
   - Acceptance: `npm test`, `npm run lint`, `npm run build` зелёные; визуальные регрессии устранены.
 
-- ⬜ **Этап 9. Engine: свести весь UI в `engine/ui`**
+- ✅ **Этап 9. Engine: свести весь UI в `engine/ui`**
   - Перенести `src/engine/components/*` → `src/engine/ui/screens|panels|layout|effects`.
   - Перенести `src/engine/context/*` → `src/engine/ui/theme/*`.
   - Перенести UI‑хуки из `src/engine/hooks/*` → `src/engine/ui/hooks/*` (а доменную часть — в `src/engine/game/*`).
@@ -963,6 +956,7 @@ PoC и базовый engine должны запускаться без `public/
 - 2025‑12‑13 (codex): ✅ Этап 7: `shine`‑нейминг заменён на `glare` (CSS‑примитив + кастом‑проперти), `src/styles/shine.css` → `src/styles/glare.css`, стили разнесены по `@layer`, удалён неиспользуемый шрифт `Aeromatics NC`.
 - 2025‑12‑13 (codex): ✅ Этап 8: игры переведены на структуру `src/games/<gameId>/campaigns/<campaignId>/*` (campaign/theme/questions); Transformers `questions.ts` разбит на 3 кампании, конфиги переведены на импорт из campaign‑модулей; `npm test/lint/build` зелёные.
 - 2025‑12‑13 (codex): ✅ Этап 8.5: удалён `docs/ENGINE_PLAN.md`, `Panel/PanelHeader` перенесены в `src/engine/ui/components/panel/*` (убран дубль `engine/components/ui`), исправлен press‑`glare` (hover не перекрывает `:active`), campaign cards получили одинаковую ширину по самой широкой карточке.
+- 2025‑12‑13 (codex): ✅ Этап 9: UI‑слой полностью перенесён в `src/engine/ui/**` (screens/panels/layout/effects/icons/theme/hooks), удалены `src/engine/components|context|hooks`, обновлены импорты/`src/engine/index.ts`; `npm test/lint/build` зелёные.
 
 ---
 

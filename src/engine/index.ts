@@ -48,8 +48,8 @@ export type {
 } from './types';
 
 // Hooks
-export { useGameState, type UseGameStateReturn } from './hooks/useGameState';
-export { useAudio, type UseAudioReturn } from './hooks/useAudio';
+export { useGameState, type UseGameStateReturn } from './ui/hooks/useGameState';
+export { useAudio, type UseAudioReturn } from './ui/hooks/useAudio';
 
 // Utils
 export {
@@ -83,20 +83,35 @@ export {
   getQuestionDifficulty,
 } from './utils/questionGenerator';
 
-// Components (to be added)
-// export { MillionaireGame } from './components/MillionaireGame';
+// UI entry + screens
+export { MillionaireGame } from './ui/MillionaireGame';
+export { StartScreen } from './ui/screens/StartScreen';
+export { GameScreen } from './ui/screens/GameScreen';
+export { EndScreen } from './ui/screens/EndScreen';
 export {
-  MillionaireGame,
-  StartScreen,
-  GameScreen,
-  EndScreen,
-} from './components';
+  LoadingScreen,
+  LoadingIndicator,
+  type LoadingScreenProps,
+} from './ui/screens/LoadingScreen';
 
-// Particle utils (for custom coin drawing)
-export { drawDefaultCoin } from './components/ParticleCanvas';
+// UI utils (for custom coin drawing)
+export { ParticleCanvas, type EffectType, drawDefaultCoin } from './ui/effects/ParticleCanvas';
+
+// Error boundary (app-level safety)
+export { ErrorBoundary } from './ui/components/errors/ErrorBoundary';
+
+// Default icon pack
+export {
+  DefaultCoinIcon,
+  DefaultPhoneHintIcon,
+  DefaultAudienceHintIcon,
+  DefaultTrophyIcon,
+  DefaultFailIcon,
+  DefaultMoneyIcon,
+} from './ui/icons/DefaultIcons';
 
 // Context
-export { ThemeProvider, useTheme, defaultTheme } from './context';
+export { ThemeProvider, useTheme, defaultTheme } from './ui/theme';
 
 // Hooks
 export {
@@ -104,11 +119,12 @@ export {
   useGameIcon,
   resolveGameIcon,
   resolveSharedIcon,
+  useEffects,
   useAssetPreloader,
   useBackgroundPreload,
   useEnsureAssetsLoaded,
   type PreloadState,
-} from './hooks';
+} from './ui/hooks';
 
 // Services
 export { assetLoader, type LoadLevel, type AssetManifest } from './services';

@@ -3,18 +3,22 @@ import { render, screen } from '@testing-library/react';
 import { GameSelector } from './GameSelector';
 import { getSelectorEntries } from '../registry';
 
-vi.mock('../../engine/hooks', () => ({
-  useFavicon: vi.fn(),
-  useGameIcon: (_id: string, fallbackEmoji: string) => ({
-    iconUrl: null,
-    isEmoji: true,
-    emoji: fallbackEmoji,
-  }),
-  useAssetPreloader: () => ({
-    isLoading: false,
-    progress: 100,
-  }),
-}));
+vi.mock('../../engine', async () => {
+  const actual = await vi.importActual<typeof import('../../engine')>('../../engine');
+  return {
+    ...actual,
+    useFavicon: vi.fn(),
+    useGameIcon: (_id: string, fallbackEmoji: string) => ({
+      iconUrl: null,
+      isEmoji: true,
+      emoji: fallbackEmoji,
+    }),
+    useAssetPreloader: () => ({
+      isLoading: false,
+      progress: 100,
+    }),
+  };
+});
 
 describe('GameSelector', () => {
   it('renders title and available game cards', () => {
