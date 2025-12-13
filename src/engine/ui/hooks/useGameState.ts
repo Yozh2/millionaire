@@ -15,6 +15,7 @@ import {
   selectTotalQuestions,
 } from '../../game';
 import { shuffleArray } from '../../game/utils/shuffleArray';
+import { ANSWER_REVEAL_DURATION_MS } from '../../constants';
 
 export interface GameStateData {
   /** Current game state */
@@ -258,7 +259,7 @@ export const useGameState = (config: GameConfig): UseGameStateReturn => {
           }
 
           resolve(outcome);
-        }, 2000);
+        }, ANSWER_REVEAL_DURATION_MS);
       });
     },
     [state]
