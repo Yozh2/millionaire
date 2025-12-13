@@ -781,7 +781,7 @@ PoC и базовый engine должны запускаться без `public/
   - Подготовить места для `host/switch/double`.
   - Acceptance: UI использует `lifelineResult`/`lifelineState`, нигде нет `hint*` в новых местах.
 
-- ⬜ **Этап 5. Audio: MusicPlayer + SoundPlayer**
+- ✅ **Этап 5. Audio: MusicPlayer + SoundPlayer**
   - Разделить обязанности: музыка отдельно, SFX/voice отдельно.
   - Ввести stop‑handles/tagging (для мгновенной остановки выбора кампании).
   - Переименовать “hint” SFX в “lifeline” (с алиасами).
@@ -819,6 +819,7 @@ PoC и базовый engine должны запускаться без `public/
 - 2025‑12‑13 (codex): ✅ Этап 2: введён `GameRegistry` (routes + карточки), `App.tsx` и `GameSelector` переведены на registry; per‑game `*Page.tsx` удалены; devOnly ссылки скрыты вне `import.meta.env.DEV`.
 - 2025‑12‑13 (codex): ✅ Этап 3: введены панели (`QuestionPanel`, `AnswersPanel`, `LifelinesPanel`, `PrizeLadderPanel`, `LifelineResultPanel`), добавлены `CampaignSelectionPanel` + `CampaignCard`, `takeMoney` переехал в низ `PrizeLadderPanel`, `EndScreen` переведён на `ResultPanel(variant)`.
 - 2025‑12‑13 (codex): ✅ Этап 4: `LifelinePhonePanel` и `LifelineAudiencePanel` вынесены в отдельные компоненты, анимация и общий механизм показа результата lifeline перенесены в `LifelineResultPanel`; Transformers активирован в `GameRegistry`.
+- 2025‑12‑13 (codex): ✅ Этап 5: аудио разделено на `useMusicPlayer` и `useSoundPlayer` (`src/engine/audio/*`), `useAudio` стал фасадом, `playCampaignSelectSound` реализован как tagged‑sound с мгновенной остановкой, алиасы `hint* → lifeline*` сохранены.
 
 ---
 
