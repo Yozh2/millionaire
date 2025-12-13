@@ -136,6 +136,10 @@ export function useButtonFsm({
       if (disabled) return;
       if (pointerIdRef.current !== e.pointerId) return;
 
+      // Mark capture as finished *before* releasing it, so `lostpointercapture`
+      // triggered by our own `releasePointerCapture` doesn't get treated as cancel.
+      pointerIdRef.current = null;
+
       if (enablePointerCapture) {
         try {
           e.currentTarget.releasePointerCapture(e.pointerId);
@@ -147,7 +151,6 @@ export function useButtonFsm({
       const over = hitTest(e.currentTarget, e.clientX, e.clientY);
       setIsOver(over);
       suppressNextClickRef.current = !over;
-      pointerIdRef.current = null;
 
       if (over) {
         setState('Activate');
@@ -170,10 +173,12 @@ export function useButtonFsm({
 
     const onLostPointerCapture: PointerEventHandler<HTMLElement> = () => {
       if (disabled) return;
+      // Ignore `lostpointercapture` that happens after a normal release.
+      if (pointerIdRef.current == null) return;
       suppressNextClickRef.current = true;
       pointerIdRef.current = null;
       setIsOver(false);
-      setState('Ease');
+      setState((prev) => (prev === 'Press' ? 'Ease' : prev));
       scheduleEaseDone();
     };
 
