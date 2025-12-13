@@ -1,5 +1,6 @@
 import type { MouseEvent } from 'react';
 import type { LifelineConfig, ThemeColors } from '../../types';
+import { LifelineButton } from '../components/buttons';
 import { Panel, PanelHeader } from '../components/panel';
 
 interface PrizeLadderPanelProps {
@@ -26,8 +27,7 @@ export function PrizeLadderPanel({
   onTakeMoney,
 }: PrizeLadderPanelProps) {
   const takeMoneyBase =
-    'glare lifeline-btn px-3 py-2 text-sm border-3 h-12 w-full ' +
-    'flex items-center justify-center gap-2';
+    'px-3 py-2 text-sm border-3 h-12 w-full flex items-center justify-center gap-2';
 
   return (
     <Panel className="p-1 h-fit">
@@ -84,7 +84,7 @@ export function PrizeLadderPanel({
       </div>
 
       <div className="p-2 pt-1">
-        <button
+        <LifelineButton
           onClick={onTakeMoney}
           disabled={takeMoneyDisabled}
           className={`${takeMoneyBase} ${
@@ -92,19 +92,11 @@ export function PrizeLadderPanel({
               ? 'bg-gradient-to-b from-yellow-700 to-yellow-900 border-yellow-600 text-yellow-100'
               : 'bg-stone-950 border-stone-800 text-stone-600 cursor-not-allowed'
           }`}
-          style={{
-            borderStyle: 'ridge',
-            ['--lifeline-glow' as string]: 'rgba(234, 179, 8, 0.5)',
-            boxShadow: !takeMoneyDisabled ? '0 0 15px rgba(234, 179, 8, 0.4)' : 'none',
-          }}
-        >
-          <span className="flex items-center gap-2 justify-center">
-            <span className="w-6 h-6 flex items-center justify-center">
-              {takeMoneyConfig.icon}
-            </span>
-            <span className="text-left">{takeMoneyConfig.name}</span>
-          </span>
-        </button>
+          glow="rgba(234, 179, 8, 0.5)"
+          boxShadow={!takeMoneyDisabled ? '0 0 15px rgba(234, 179, 8, 0.4)' : 'none'}
+          icon={takeMoneyConfig.icon}
+          label={takeMoneyConfig.name}
+        />
       </div>
     </Panel>
   );

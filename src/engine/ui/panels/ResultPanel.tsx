@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import type { PointerEvent, RefObject, ComponentType } from 'react';
 import type { GameConfig, ThemeColors } from '../../types';
+import { ActionButton } from '../components/buttons';
 import { Panel, PanelHeader } from '../components/panel';
 import {
   DefaultCoinIcon,
@@ -110,19 +111,14 @@ export function ResultPanel({
         </div>
 
         <div className="animate-pop-in stagger-6">
-          <button
+          <ActionButton
+            theme={theme}
             onClick={onNewGame}
             onPointerDown={(e) => onBigButtonPress(e)}
-            className={`glare action-btn px-8 py-3 bg-gradient-to-b ${theme.bgButton} text-white font-bold text-lg tracking-wide border-4 ${theme.borderLight}`}
-            style={{
-              ['--btn-glow' as string]: theme.glow,
-              boxShadow: `0 5px 20px rgba(0, 0, 0, 0.3), 0 0 25px ${theme.glow}`,
-              borderStyle: 'ridge',
-              textShadow: '0 2px 4px rgba(0,0,0,0.8)',
-            }}
+            className={`bg-gradient-to-b ${theme.bgButton} text-white ${theme.borderLight}`}
           >
             {config.strings.newGameButton}
-          </button>
+          </ActionButton>
         </div>
       </div>
     </Panel>

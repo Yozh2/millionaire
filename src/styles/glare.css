@@ -72,4 +72,16 @@
     forwards;
 }
 
+/* Button FSM support (v0): use data attribute instead of relying only on :hover/:active */
+@media (hover: hover) and (pointer: fine) {
+  .glare[data-btn-state='Hover']:not(:disabled)::before {
+    animation: glare-sweep var(--glare-duration, 0.5s) ease-out forwards;
+  }
+}
+
+.glare[data-btn-state='Press']:not(:disabled)::before {
+  animation: glare-sweep-reverse var(--glare-press-duration, 0.2s) ease-out
+    forwards;
+}
+
 }

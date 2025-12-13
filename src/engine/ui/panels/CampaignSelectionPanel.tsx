@@ -1,5 +1,6 @@
 import type { PointerEvent } from 'react';
 import type { Campaign, GameConfig, ThemeColors } from '../../types';
+import { ActionButton } from '../components/buttons';
 import { Panel, PanelHeader } from '../components/panel';
 import { CampaignCard } from '../components/cards/campaign/CampaignCard';
 
@@ -48,26 +49,19 @@ export function CampaignSelectionPanel({
         </div>
 
         {/* Start Button */}
-        <button
+        <ActionButton
+          theme={theme}
           onClick={onStartGame}
           onPointerDown={(e) => selectedCampaign && onBigButtonPress(e)}
           disabled={!selectedCampaign}
-          className={`glare action-btn px-8 py-3 font-bold text-lg tracking-wide border-4 ${
+          className={
             selectedCampaign
               ? `bg-gradient-to-b ${theme.bgButton} text-white ${theme.borderLight}`
               : 'bg-gradient-to-b from-stone-700 via-stone-800 to-stone-900 text-stone-500 border-stone-600 cursor-not-allowed'
-          }`}
-          style={{
-            ['--btn-glow' as string]: theme.glow,
-            boxShadow: selectedCampaign
-              ? `0 5px 20px rgba(0, 0, 0, 0.3), 0 0 25px ${theme.glow}`
-              : 'none',
-            borderStyle: 'ridge',
-            textShadow: selectedCampaign ? '0 2px 4px rgba(0,0,0,0.8)' : 'none',
-          }}
+          }
         >
           {config.strings.startButton}
-        </button>
+        </ActionButton>
       </div>
     </Panel>
   );

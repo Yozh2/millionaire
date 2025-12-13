@@ -1,5 +1,6 @@
 import type { MouseEvent, MutableRefObject } from 'react';
 import type { ThemeColors } from '../../types';
+import { AnswerButton } from '../components/buttons';
 
 interface AnswersPanelProps {
   answers: string[];
@@ -66,12 +67,11 @@ export function AnswersPanel({
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
       {shuffledAnswers.map((originalIndex, displayIndex) => (
-        <button
+        <AnswerButton
           key={displayIndex}
           onClick={(e) => onAnswerClick(displayIndex, e)}
           disabled={selectedAnswer !== null || eliminatedAnswers.includes(displayIndex)}
-          className={`glare answer-btn ${getAnswerStyle(displayIndex)}`}
-          style={{ borderStyle: 'ridge' }}
+          className={getAnswerStyle(displayIndex)}
         >
           <span
             ref={(el) => {
@@ -82,7 +82,7 @@ export function AnswersPanel({
             [{['A', 'B', 'C', 'D'][displayIndex]}]
           </span>
           {answers[originalIndex]}
-        </button>
+        </AnswerButton>
       ))}
     </div>
   );

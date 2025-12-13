@@ -1,5 +1,6 @@
 import React from 'react';
 import { Panel } from '../../components/panel';
+import { VolumeButton } from '../../components/buttons';
 import { HeaderSlideshow } from './HeaderSlideshow';
 import type {
   GameConfig,
@@ -66,14 +67,12 @@ export const HeaderPanel: React.FC<HeaderPanelProps> = ({
       )}
 
       <div className="p-4 relative z-10 h-full flex flex-col justify-center">
-        <button
+        <VolumeButton
           onClick={onToggleMusic}
-          className="absolute top-3 right-3 text-2xl hover:scale-110 transition-transform"
           title={isMusicPlaying ? config.strings.musicOn : config.strings.musicOff}
-          style={{ filter: 'drop-shadow(0 0 6px rgba(0,0,0,0.6))' }}
         >
           {isMusicPlaying ? '🔊' : '🔇'}
-        </button>
+        </VolumeButton>
 
         <div className="relative max-w-5xl mx-auto text-center flex items-center justify-center min-h-[180px]">
           <div
