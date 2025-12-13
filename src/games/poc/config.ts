@@ -5,30 +5,12 @@
  * Uses oscillator sounds only, no external assets.
  */
 
-import { GameConfig, Campaign } from '../../engine/types';
-import { easyTheme, hardTheme } from './themes';
-import { easyQuestionPool, hardQuestionPool } from './questions';
-import { EasyIcon, HardIcon, TrophyIcon, FailIcon, MoneyIcon } from './icons';
-
-// ============================================
-// Campaigns
-// ============================================
-
-const easyCampaign: Campaign = {
-  id: 'easy',
-  name: 'ЛЕГКО',
-  label: 'Новичок',
-  icon: EasyIcon,
-  theme: easyTheme,
-};
-
-const hardCampaign: Campaign = {
-  id: 'hard',
-  name: 'СЛОЖНО',
-  label: 'Эксперт',
-  icon: HardIcon,
-  theme: hardTheme,
-};
+import type { GameConfig } from '../../engine/types';
+import { easyCampaign } from './campaigns/easy/campaign';
+import { hardCampaign } from './campaigns/hard/campaign';
+import { easyQuestionPool } from './campaigns/easy/questions';
+import { hardQuestionPool } from './campaigns/hard/questions';
+import { TrophyIcon, FailIcon, MoneyIcon } from './icons';
 
 // ============================================
 // Main Config

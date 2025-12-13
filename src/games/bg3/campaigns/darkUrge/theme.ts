@@ -1,0 +1,35 @@
+import type { ThemeColors } from '../../../../engine/types';
+
+/** Dark Urge mode theme - sinister red colors */
+export const darkUrgeTheme: ThemeColors = {
+  primary: 'red',
+  textPrimary: 'text-red-400',
+  textSecondary: 'text-red-200',
+  textMuted: 'text-red-700',
+  textAccent: 'text-red-100',
+  border: 'border-red-800',
+  borderLight: 'border-red-600',
+  borderHover: 'hover:border-red-600',
+  bgPanel: 'from-red-950/90 via-stone-900/95 to-stone-950/90',
+  bgPanelFrom: '#450a0a',
+  bgPanelVia: '#1c1917',
+  bgPanelTo: '#0c0a09',
+  bgHeader: 'from-red-900 via-red-800 to-red-900',
+  bgHeaderVia: '#dc2626',
+  bgButton: 'from-red-700 via-red-800 to-red-900',
+  bgButtonHover: 'hover:from-red-600 hover:via-red-700 hover:to-red-800',
+  bgAnswer: 'from-red-950 via-stone-900 to-neutral-950',
+  bgAnswerHover: 'hover:from-red-900 hover:to-stone-900',
+  bgLifeline: 'from-red-700 to-red-900',
+  bgPrizeCurrent: 'bg-red-900/60',
+  bgPrizePassed: 'bg-red-950/40',
+  textLifeline: 'text-red-100',
+  borderLifeline: 'border-red-500',
+  shadowAnswer: 'hover:shadow-red-900/50',
+  glow: 'rgba(239, 68, 68, 0.5)',
+  glowColor: '#ef4444',
+  glowSecondary: '#dc2626',
+  borderImageColors: '#dc2626, #450a0a',
+  headerBorderColor: '#450a0a',
+};
+

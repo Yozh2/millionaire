@@ -5,11 +5,10 @@
  * All UI strings are in English (game exception).
  */
 
-import type { Campaign, DrawCoinFunction, GameConfig } from '../../engine/types';
-import { skyJourneyTheme } from './themes';
-import { skyJourneyQuestionPool } from './questions';
+import type { DrawCoinFunction, GameConfig } from '../../engine/types';
+import { skyJourneyCampaign } from './campaigns/journey/campaign';
+import { skyJourneyQuestionPool } from './campaigns/journey/questions';
 import {
-  SkyJourneyIcon,
   WingedLightTrophyIcon,
   FallenStarIcon,
   CandleIcon,
@@ -57,14 +56,6 @@ const drawCandleCoin: DrawCoinFunction = (ctx, size, colorIndex) => {
 
   ctx.fillStyle = flameColors[colorIndex % flameColors.length];
   ctx.fill();
-};
-
-const skyJourneyCampaign: Campaign = {
-  id: 'journey',
-  name: 'SKY JOURNEY',
-  label: 'One campaign',
-  icon: SkyJourneyIcon,
-  theme: skyJourneyTheme,
 };
 
 export const skyCotlConfig: GameConfig = {

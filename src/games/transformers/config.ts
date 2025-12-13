@@ -7,22 +7,14 @@
  * - Skybound (Земля)
  */
 
-import { GameConfig, Campaign, DrawCoinFunction } from '../../engine/types';
-import { decepticonTheme, autobotTheme, skyboundTheme } from './themes';
-import {
-  megatronQuestionPool,
-  autocracyQuestionPool,
-  skyboundQuestionPool,
-} from './questions';
-import {
-  MegatronIcon,
-  AutocracyIcon,
-  SkyboundIcon,
-  MatrixIcon,
-  BrokenSparkIcon,
-  EnergonIcon,
-  EnergonCoinIcon,
-} from './icons';
+import { GameConfig, DrawCoinFunction } from '../../engine/types';
+import { megatronCampaign } from './campaigns/megatron/campaign';
+import { autocracyCampaign } from './campaigns/autocracy/campaign';
+import { skyboundCampaign } from './campaigns/skybound/campaign';
+import { megatronQuestionPool } from './campaigns/megatron/questions';
+import { autocracyQuestionPool } from './campaigns/autocracy/questions';
+import { skyboundQuestionPool } from './campaigns/skybound/questions';
+import { MatrixIcon, BrokenSparkIcon, EnergonIcon, EnergonCoinIcon } from './icons';
 
 // ============================================
 // Custom Energon Crystal Drawing - simple pink/blue crystal
@@ -47,40 +39,6 @@ const drawEnergonCrystal: DrawCoinFunction = (ctx, size, colorIndex) => {
   ctx.strokeStyle = glowColors[colorIndex % glowColors.length];
   ctx.lineWidth = 1.5;
   ctx.stroke();
-};
-
-// ============================================
-// Campaigns
-// ============================================
-
-const megatronCampaign: Campaign = {
-  id: 'megatron',
-  name: 'МЕГАТРОН',
-  label: 'Восхождение',
-  icon: MegatronIcon,
-  theme: decepticonTheme,
-  musicTrack: 'Megatron.ogg',
-  selectSound: 'CampaignMegatron.ogg',
-};
-
-const autocracyCampaign: Campaign = {
-  id: 'autocracy',
-  name: 'АВТОКРАТИЯ',
-  label: 'Орион Пакс',
-  icon: AutocracyIcon,
-  theme: autobotTheme,
-  musicTrack: 'Autocracy.ogg',
-  selectSound: 'CampaignAutocracy.ogg',
-};
-
-const skyboundCampaign: Campaign = {
-  id: 'skybound',
-  name: 'SKYBOUND',
-  label: 'Земля',
-  icon: SkyboundIcon,
-  theme: skyboundTheme,
-  musicTrack: 'SkyBound.ogg',
-  selectSound: 'CampaignSkybound.ogg',
 };
 
 // ============================================

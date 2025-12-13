@@ -4,12 +4,11 @@
  * Complete configuration for the BG3 edition of the quiz game.
  */
 
-import { GameConfig, Campaign, Companion, DrawCoinFunction } from '../../engine/types';
-import { heroTheme, mindFlayerTheme, darkUrgeTheme } from './themes';
+import { GameConfig, Companion, DrawCoinFunction } from '../../engine/types';
+import { heroCampaign } from './campaigns/hero/campaign';
+import { mindFlayerCampaign } from './campaigns/mindFlayer/campaign';
+import { darkUrgeCampaign } from './campaigns/darkUrge/campaign';
 import {
-  HeroIcon,
-  MindFlayerIcon,
-  DarkUrgeIcon,
   TrophyIcon,
   MoneyIcon,
   CriticalFailIcon,
@@ -17,11 +16,9 @@ import {
   ScrollIcon,
   TavernIcon,
 } from './icons';
-import {
-  heroQuestionPool,
-  mindFlayerQuestionPool,
-  darkUrgeQuestionPool,
-} from './questions';
+import { heroQuestionPool } from './campaigns/hero/questions';
+import { mindFlayerQuestionPool } from './campaigns/mindFlayer/questions';
+import { darkUrgeQuestionPool } from './campaigns/darkUrge/questions';
 
 // ============================================
 // Custom Coin Drawing - Simple gold coin
@@ -40,40 +37,6 @@ const drawGoldCoin: DrawCoinFunction = (ctx, size, colorIndex) => {
   ctx.strokeStyle = strokeColors[colorIndex % strokeColors.length];
   ctx.lineWidth = 1.5;
   ctx.stroke();
-};
-
-// ============================================
-// Campaigns
-// ============================================
-
-const heroCampaign: Campaign = {
-  id: 'hero',
-  name: 'ГЕРОЙ',
-  label: 'Легко',
-  icon: HeroIcon,
-  theme: heroTheme,
-  musicTrack: 'Hero.ogg',
-  selectSound: 'CampaignHero.ogg',
-};
-
-const mindFlayerCampaign: Campaign = {
-  id: 'mindFlayer',
-  name: 'ИЛЛИТИД',
-  label: 'Сложно',
-  icon: MindFlayerIcon,
-  theme: mindFlayerTheme,
-  musicTrack: 'MindFlayer.ogg',
-  selectSound: 'CampaignMindFlayer.ogg',
-};
-
-const darkUrgeCampaign: Campaign = {
-  id: 'darkUrge',
-  name: 'СОБЛАЗН',
-  label: 'Доблесть',
-  icon: DarkUrgeIcon,
-  theme: darkUrgeTheme,
-  musicTrack: 'DarkUrge.ogg',
-  selectSound: 'CampaignDarkUrge.ogg',
 };
 
 // ============================================

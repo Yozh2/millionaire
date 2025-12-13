@@ -1,0 +1,35 @@
+import type { ThemeColors } from '../../../../engine/types';
+
+/** Mind Flayer mode theme - mysterious purple colors */
+export const mindFlayerTheme: ThemeColors = {
+  primary: 'purple',
+  textPrimary: 'text-purple-400',
+  textSecondary: 'text-purple-200',
+  textMuted: 'text-purple-700',
+  textAccent: 'text-purple-100',
+  border: 'border-purple-800',
+  borderLight: 'border-purple-600',
+  borderHover: 'hover:border-purple-600',
+  bgPanel: 'from-purple-950/90 via-indigo-950/95 to-stone-950/90',
+  bgPanelFrom: '#3b0764',
+  bgPanelVia: '#1e1b4b',
+  bgPanelTo: '#0c0a09',
+  bgHeader: 'from-purple-900 via-purple-800 to-purple-900',
+  bgHeaderVia: '#7c3aed',
+  bgButton: 'from-purple-700 via-purple-800 to-purple-900',
+  bgButtonHover: 'hover:from-purple-600 hover:via-purple-700 hover:to-purple-800',
+  bgAnswer: 'from-purple-950 via-indigo-950 to-neutral-950',
+  bgAnswerHover: 'hover:from-purple-900 hover:to-indigo-950',
+  bgLifeline: 'from-purple-700 to-purple-900',
+  bgPrizeCurrent: 'bg-purple-900/60',
+  bgPrizePassed: 'bg-purple-950/40',
+  textLifeline: 'text-purple-100',
+  borderLifeline: 'border-purple-500',
+  shadowAnswer: 'hover:shadow-purple-900/50',
+  glow: 'rgba(168, 85, 247, 0.5)',
+  glowColor: '#a855f7',
+  glowSecondary: '#7c3aed',
+  borderImageColors: '#7c3aed, #3b0764',
+  headerBorderColor: '#3b0764',
+};
+

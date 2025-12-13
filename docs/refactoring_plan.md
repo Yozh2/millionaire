@@ -799,7 +799,7 @@ PoC и базовый engine должны запускаться без `public/
   - Проверить шрифты: удалить неиспользуемые, синхронизировать с темами/играми.
   - Acceptance: нейминг `glare` единый, нет “shine”.
 
-- ⬜ **Этап 8. Games: campaigns/***
+- ✅ **Этап 8. Games: campaigns/***
   - Перестроить игры на `campaigns/<id>/*`.
   - Разбить большие Transformers файлы.
   - Acceptance: структура игры масштабируется, меньше монолитов.
@@ -822,6 +822,7 @@ PoC и базовый engine должны запускаться без `public/
 - 2025‑12‑13 (codex): ✅ Этап 5: аудио разделено на `useMusicPlayer` и `useSoundPlayer` (`src/engine/audio/*`), `useAudio` стал фасадом, `playCampaignSelectSound` реализован как tagged‑sound с мгновенной остановкой, алиасы `hint* → lifeline*` сохранены.
 - 2025‑12‑13 (codex): ✅ Этап 6: добавлен `src/engine/assets/paths.ts` (единый `getBasePath`), `AssetLoader.loadManifest()` стал устойчивым к отсутствующему `asset-manifest.json`, `scripts/generate-asset-manifest.js` создаёт `public/` при необходимости.
 - 2025‑12‑13 (codex): ✅ Этап 7: `shine`‑нейминг заменён на `glare` (CSS‑примитив + кастом‑проперти), `src/styles/shine.css` → `src/styles/glare.css`, стили разнесены по `@layer`, удалён неиспользуемый шрифт `Aeromatics NC`.
+- 2025‑12‑13 (codex): ✅ Этап 8: игры переведены на структуру `src/games/<gameId>/campaigns/<campaignId>/*` (campaign/theme/questions); Transformers `questions.ts` разбит на 3 кампании, конфиги переведены на импорт из campaign‑модулей; `npm test/lint/build` зелёные.
 
 ---
 
