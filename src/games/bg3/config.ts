@@ -92,11 +92,11 @@ export const bg3Config: GameConfig = {
     // Game screen - Prize ladder
     prizesHeader: '✦ СОКРОВИЩЕ ✦',
 
-    // Hints
-    hintPhoneHeader: '✦ МАГИЧЕСКОЕ ПОСЛАНИЕ ✦',
-    hintAudienceHeader: '✦ РЕЗУЛЬТАТЫ ГАДАНИЯ ✦',
-    hintSenderLabel: 'Отправитель:',
-    hintAudienceLabel: 'Мнение таверны:',
+    // Lifelines
+    lifelinePhoneHeader: '✦ МАГИЧЕСКОЕ ПОСЛАНИЕ ✦',
+    lifelineAudienceHeader: '✦ РЕЗУЛЬТАТЫ ГАДАНИЯ ✦',
+    lifelineSenderLabel: 'Отправитель:',
+    lifelineAudienceLabel: 'Мнение таверны:',
 
     // Companion phrases
     companionPhrases: {
@@ -153,21 +153,24 @@ export const bg3Config: GameConfig = {
   },
 
   lifelines: {
-    fiftyFifty: {
+    fifty: {
       name: '50:50',
       icon: '⚡',
       enabled: true,
     },
-    phoneAFriend: {
+    phone: {
       name: 'Послание',
       icon: '📜',
       enabled: true,
     },
-    askAudience: {
+    audience: {
       name: 'Таверна',
       icon: '🍺',
       enabled: true,
     },
+  },
+
+  actions: {
     takeMoney: {
       name: 'Забрать',
       icon: '💰',
@@ -191,9 +194,9 @@ export const bg3Config: GameConfig = {
     sounds: {
       answerButton: 'AnswerClick.ogg',
       bigButton: 'BigButtonPress.ogg',
-      hintReduceButton: 'HintReduce.ogg',
-      hintVoteButton: 'HintVote.ogg',
-      hintTakeMoneyButton: 'HintTakeMoney.ogg',
+      lifelineFifty: 'HintReduce.ogg',
+      lifelineAudience: 'HintVote.ogg',
+      takeMoneyButton: 'HintTakeMoney.ogg',
       defeat: 'Fail.ogg',
     },
   },
@@ -206,8 +209,8 @@ export const bg3Config: GameConfig = {
 
   icons: {
     coin: CoinIcon,
-    phoneHint: ScrollIcon,
-    audienceHint: TavernIcon,
+    lifelinePhone: ScrollIcon,
+    lifelineAudience: TavernIcon,
   },
 
   // Custom gold coin particles for win/take money effects

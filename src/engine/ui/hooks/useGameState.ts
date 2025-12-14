@@ -7,7 +7,9 @@ import {
   gameReducer,
   generateAudiencePercentages,
   getFiftyFiftyEliminations,
+  getHostSuggestion,
   getPhoneSuggestion,
+  pickSwitchQuestionIndex,
   resolveAnswer,
   selectCurrentDifficulty,
   selectCurrentPrize,
@@ -226,9 +228,9 @@ export const useGameState = (config: GameConfig): UseGameStateReturn => {
       campaignId: state.selectedCampaignId,
       session,
       lifelineAvailability: {
-        fifty: (config.lifelines.fifty?.enabled ?? config.lifelines.fiftyFifty.enabled) ?? true,
-        phone: (config.lifelines.phone?.enabled ?? config.lifelines.phoneAFriend.enabled) ?? true,
-        audience: (config.lifelines.audience?.enabled ?? config.lifelines.askAudience.enabled) ?? true,
+        fifty: config.lifelines.fifty.enabled,
+        phone: config.lifelines.phone.enabled,
+        audience: config.lifelines.audience.enabled,
         host: config.lifelines.host?.enabled ?? false,
         switch: config.lifelines.switch?.enabled ?? false,
         double: config.lifelines.double?.enabled ?? false,
@@ -360,18 +362,11 @@ export const useGameState = (config: GameConfig): UseGameStateReturn => {
     const question = selectCurrentQuestionData(state);
     if (!question) return;
 
-    const rng = Math.random;
     const correctDisplayIndex = state.shuffledAnswers.indexOf(question.correct);
-    const isConfident = rng() > 0.22;
-
-    const available = [0, 1, 2, 3].filter(
-      (i) => !state.eliminatedAnswerDisplayIndices.includes(i)
-    );
-    const wrongChoices = available.filter((i) => i !== correctDisplayIndex);
-    const suggestedDisplayIndex =
-      isConfident || wrongChoices.length === 0
-        ? correctDisplayIndex
-        : wrongChoices[Math.floor(rng() * wrongChoices.length)]!;
+    const { suggestedDisplayIndex, confidence } = getHostSuggestion({
+      correctDisplayIndex,
+      eliminatedDisplayIndices: state.eliminatedAnswerDisplayIndices,
+    });
 
     const originalIndex = state.shuffledAnswers[suggestedDisplayIndex] ?? question.correct;
     const answerText = question.answers[originalIndex] ?? '';
@@ -382,7 +377,7 @@ export const useGameState = (config: GameConfig): UseGameStateReturn => {
         type: 'host',
         suggestedDisplayIndex,
         answerText,
-        confidence: isConfident ? 'confident' : 'uncertain',
+        confidence,
       },
     });
   }, [state]);
@@ -393,20 +388,16 @@ export const useGameState = (config: GameConfig): UseGameStateReturn => {
     if (state.questions.length < 2) return;
     if (state.currentQuestionIndex >= state.questions.length - 1) return;
 
-    const rng = Math.random;
-    const remainingIndices = [];
-    for (let i = state.currentQuestionIndex + 1; i < state.questions.length; i += 1) {
-      remainingIndices.push(i);
-    }
-    if (remainingIndices.length === 0) return;
-
-    const swapWithIndex =
-      remainingIndices[Math.floor(rng() * remainingIndices.length)]!;
+    const swapWithIndex = pickSwitchQuestionIndex({
+      currentQuestionIndex: state.currentQuestionIndex,
+      totalQuestions: state.questions.length,
+    });
+    if (swapWithIndex == null) return;
 
     dispatch({
       type: 'APPLY_LIFELINE_SWITCH',
       swapWithIndex,
-      nextShuffledAnswers: shuffleArray([0, 1, 2, 3], rng),
+      nextShuffledAnswers: shuffleArray([0, 1, 2, 3]),
       result: { type: 'switch' },
     });
   }, [state]);

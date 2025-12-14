@@ -337,11 +337,237 @@ scripts
 2 directories, 8 files
 ```
 
+#### 3.1.1.1 Tree output (обновлено 2025‑12‑14)
+
+```text
+src
+├── .DS_Store
+├── app
+│   ├── components
+│   │   ├── GameSelector.test.tsx
+│   │   ├── GameSelector.tsx
+│   │   └── index.ts
+│   └── registry
+│       ├── gameRegistry.ts
+│       └── index.ts
+├── App.tsx
+├── engine
+│   ├── .DS_Store
+│   ├── assets
+│   │   └── paths.ts
+│   ├── audio
+│   │   ├── useMusicPlayer.ts
+│   │   └── useSoundPlayer.ts
+│   ├── constants.ts
+│   ├── game
+│   │   ├── index.ts
+│   │   ├── lifelines
+│   │   │   ├── audience.ts
+│   │   │   ├── fifty.ts
+│   │   │   ├── host.ts
+│   │   │   ├── index.ts
+│   │   │   ├── phone.ts
+│   │   │   └── switch.ts
+│   │   ├── prizes
+│   │   │   ├── calculatePrizeLadder.ts
+│   │   │   ├── getGuaranteedPrize.ts
+│   │   │   └── index.ts
+│   │   ├── questions
+│   │   │   ├── getQuestionDifficulty.ts
+│   │   │   ├── index.ts
+│   │   │   └── selectQuestionsFromPool.ts
+│   │   ├── session
+│   │   │   ├── createGameSession.ts
+│   │   │   └── index.ts
+│   │   ├── state
+│   │   │   ├── actions.ts
+│   │   │   ├── index.ts
+│   │   │   ├── lifelines.v1.test.ts
+│   │   │   ├── machine.ts
+│   │   │   ├── reducer.ts
+│   │   │   ├── resolveAnswer.ts
+│   │   │   ├── selectors.ts
+│   │   │   └── types.ts
+│   │   └── utils
+│   │       └── shuffleArray.ts
+│   ├── index.ts
+│   ├── services
+│   │   ├── AssetLoader.ts
+│   │   ├── index.ts
+│   │   ├── logger.ts
+│   │   └── types.ts
+│   ├── types
+│   │   └── index.ts
+│   ├── ui
+│   │   ├── components
+│   │   │   ├── buttons
+│   │   │   │   ├── ActionButton.tsx
+│   │   │   │   ├── AnswerButton.tsx
+│   │   │   │   ├── BaseButton.tsx
+│   │   │   │   ├── index.ts
+│   │   │   │   ├── LifelineButton.tsx
+│   │   │   │   ├── types.ts
+│   │   │   │   ├── useButtonFsm.ts
+│   │   │   │   └── VolumeButton.tsx
+│   │   │   ├── cards
+│   │   │   │   └── campaign
+│   │   │   │       ├── CampaignCard.tsx
+│   │   │   │       └── useCampaignCardFsm.ts
+│   │   │   ├── errors
+│   │   │   │   └── ErrorBoundary.tsx
+│   │   │   └── panel
+│   │   │       ├── index.ts
+│   │   │       ├── Panel.tsx
+│   │   │       └── PanelHeader.tsx
+│   │   ├── effects
+│   │   │   └── ParticleCanvas.tsx
+│   │   ├── hooks
+│   │   │   ├── index.ts
+│   │   │   ├── useAssetPreloader.ts
+│   │   │   ├── useAudio.ts
+│   │   │   ├── useEffects.ts
+│   │   │   ├── useFavicon.ts
+│   │   │   └── useGameState.ts
+│   │   ├── icons
+│   │   │   └── DefaultIcons.tsx
+│   │   ├── layout
+│   │   │   └── header
+│   │   │       ├── HeaderPanel.tsx
+│   │   │       └── HeaderSlideshow.tsx
+│   │   ├── MillionaireGame.tsx
+│   │   ├── panels
+│   │   │   ├── AnswersPanel.tsx
+│   │   │   ├── CampaignSelectionPanel.tsx
+│   │   │   ├── LifelineResultPanel.tsx
+│   │   │   ├── lifelines
+│   │   │   │   ├── LifelineAudiencePanel.tsx
+│   │   │   │   ├── LifelineDoublePanel.tsx
+│   │   │   │   ├── LifelineHostPanel.tsx
+│   │   │   │   ├── LifelinePhonePanel.tsx
+│   │   │   │   └── LifelineSwitchPanel.tsx
+│   │   │   ├── LifelinesPanel.tsx
+│   │   │   ├── PrizeLadderPanel.tsx
+│   │   │   ├── QuestionPanel.tsx
+│   │   │   └── ResultPanel.tsx
+│   │   ├── screens
+│   │   │   ├── EndScreen.tsx
+│   │   │   ├── GameScreen.tsx
+│   │   │   ├── LoadingScreen.tsx
+│   │   │   └── StartScreen.tsx
+│   │   └── theme
+│   │       ├── index.ts
+│   │       └── ThemeContext.tsx
+│   └── utils
+│       ├── assetLoader.ts
+│       ├── audioPlayer.ts
+│       ├── index.ts
+│       └── questionGenerator.ts
+├── games
+│   ├── .DS_Store
+│   ├── bg3
+│   │   ├── campaigns
+│   │   │   ├── darkUrge
+│   │   │   │   ├── campaign.ts
+│   │   │   │   ├── questions.ts
+│   │   │   │   └── theme.ts
+│   │   │   ├── hero
+│   │   │   │   ├── campaign.ts
+│   │   │   │   ├── questions.ts
+│   │   │   │   └── theme.ts
+│   │   │   └── mindFlayer
+│   │   │       ├── campaign.ts
+│   │   │       ├── questions.ts
+│   │   │       └── theme.ts
+│   │   ├── config.ts
+│   │   ├── icons.tsx
+│   │   ├── index.ts
+│   │   ├── questions.ts
+│   │   └── themes.ts
+│   ├── index.ts
+│   ├── poc
+│   │   ├── campaigns
+│   │   │   ├── easy
+│   │   │   │   ├── campaign.ts
+│   │   │   │   ├── questions.ts
+│   │   │   │   └── theme.ts
+│   │   │   └── hard
+│   │   │       ├── campaign.ts
+│   │   │       ├── questions.ts
+│   │   │       └── theme.ts
+│   │   ├── config.ts
+│   │   ├── icons.tsx
+│   │   ├── index.ts
+│   │   ├── questions.ts
+│   │   └── themes.ts
+│   ├── sky-cotl
+│   │   ├── campaigns
+│   │   │   └── journey
+│   │   │       ├── campaign.ts
+│   │   │       ├── questions.ts
+│   │   │       └── theme.ts
+│   │   ├── config.ts
+│   │   ├── icons.tsx
+│   │   ├── index.ts
+│   │   ├── questions.ts
+│   │   └── themes.ts
+│   └── transformers
+│       ├── campaigns
+│       │   ├── autocracy
+│       │   │   ├── campaign.ts
+│       │   │   ├── questions.ts
+│       │   │   └── theme.ts
+│       │   ├── megatron
+│       │   │   ├── campaign.ts
+│       │   │   ├── questions.ts
+│       │   │   └── theme.ts
+│       │   └── skybound
+│       │       ├── campaign.ts
+│       │       ├── questions.ts
+│       │       └── theme.ts
+│       ├── config.ts
+│       ├── icons.tsx
+│       ├── index.ts
+│       ├── questions.ts
+│       └── themes.ts
+├── index.css
+├── main.tsx
+├── pages
+│   ├── EffectsSandboxPage.tsx
+│   ├── index.ts
+│   ├── RegisteredGamePage.tsx
+│   └── SandboxPage.tsx
+├── styles
+│   ├── animations.css
+│   ├── base.css
+│   ├── buttons.css
+│   ├── fonts.css
+│   ├── glare.css
+│   └── prize-ladder.css
+├── tailwind.css
+└── vite-env.d.ts
+
+53 directories, 152 files
+
+scripts
+├── comics_parser.py
+├── convert_mp3_to_ogg.sh
+├── generate-asset-manifest.js
+├── generate-image-manifest.js
+└── sandbox
+    ├── floating_card.html
+    ├── g1_names_to_json.py
+    ├── G1_translations.csv
+    ├── millionaire-sounds.html
+    └── test-prizes.js
+
+2 directories, 9 files
+```
+
 #### 3.1.2 Комментарии по структуре (что сейчас смущает)
 
 - Проблема “двух UI” устранена: весь React‑UI живёт в `src/engine/ui/**` (Этап 9).
-- Вне `engine/ui/**` оставляем только не‑UI: audio/assets/services/types/utils (+ будущий `engine/game/**`).
-- Следующий шаг по структуре: начать вынос доменной логики из `useGameState`/`questionGenerator` в `src/engine/game/**`.
+- Вне `engine/ui/**` оставляем только не‑UI: audio/assets/services/types/utils (+ `engine/game/**`).
+- Доменный слой уже выделен в `src/engine/game/**`; следующий шаг — расширять покрытие (lifelines/prizes/session) и добавлять unit‑тесты на домен.
 
 ### 3.2 Комментарии по каждому файлу (назначение + заметка для рефакторинга)
 
@@ -388,10 +614,15 @@ scripts
 
 ##### 3.2.5.2 Audio
 
-- `src/engine/audio/useMusicPlayer.ts` — управление музыкой (loop/track switching); цель: правила переключений уйдут в `engine/game` по мере появления машины.
+- `src/engine/audio/useMusicPlayer.ts` — управление музыкой (loop/track switching); цель: правила переключений постепенно “переезжают” в доменный слой `engine/game`.
 - `src/engine/audio/useSoundPlayer.ts` — SFX/voice + stop‑handles/tagging; цель: сохранять мгновенную остановку звуков для UX.
 
-##### 3.2.5.3 UI (весь React слой)
+##### 3.2.5.3 Game (domain)
+
+- `src/engine/game/**` — чистая доменная логика (state machine, session, lifelines, prizes, selectors) без React.
+- Цель: именно этот слой покрывать unit‑тестами (быстро, без DOM), а UI держать тонким оркестратором.
+
+##### 3.2.5.4 UI (весь React слой)
 
 - `src/engine/ui/MillionaireGame.tsx` — UI‑точка входа engine (компоновка экранов + wiring hooks).
 - `src/engine/ui/screens/*` — экраны (Start/Game/End/Loading).
@@ -401,23 +632,23 @@ scripts
 - `src/engine/ui/effects/*` — canvas/визуальные эффекты.
 - `src/engine/ui/icons/*` — DefaultIcons (дефолтный icon pack).
 - `src/engine/ui/theme/*` — ThemeContext/ThemeProvider.
-- `src/engine/ui/hooks/*` — UI hooks (в т.ч. фасады к аудио/эффектам/состоянию).
+- `src/engine/ui/hooks/*` — UI hooks (в т.ч. фасады к аудио/эффектам/домену).
 
-##### 3.2.5.4 Services
+##### 3.2.5.5 Services
 
 - `src/engine/services/index.ts` — barrel.
 - `src/engine/services/logger.ts` — logger; цель: постепенно заменить `console.*` в engine.
 - `src/engine/services/types.ts` — типы манифеста/уровней; цель: оформить как `engine/assets/manifest/*`.
 - `src/engine/services/AssetLoader.ts` — manifest‑based loader; цель: стать единственной точкой preload + единая система путей.
 
-##### 3.2.5.5 Types
+##### 3.2.5.6 Types
 
 - `src/engine/types/index.ts` — договор API движка (GameConfig, ThemeColors, etc.); цель: переименовать `hint*` → `lifeline*`, формализовать `rewardKind`, не ломая совместимость сразу.
 
-##### 3.2.5.6 Utils
+##### 3.2.5.7 Utils
 
 - `src/engine/utils/index.ts` — barrel.
-- `src/engine/utils/questionGenerator.ts` — генерация вопросов/ladder; цель: в доменный слой `engine/game/*`.
+- `src/engine/utils/questionGenerator.ts` — генерация вопросов/ladder; цель: остаток логики перенести в `engine/game/*` и удалить/свести к thin‑wrapper.
 - `src/engine/utils/assetLoader.ts` — path helpers + HEAD exists; цель: слить с `AssetLoader`/`paths.ts`, оставить fallback.
 - `src/engine/utils/audioPlayer.ts` — низкоуровневое аудио; цель: разделить на `SoundPlayer`/декодирование/кеш/oscillator.
 
@@ -1100,3 +1331,4 @@ PoC и базовый engine должны запускаться без `public/
 - 2025‑12‑13 (codex): UI polish: CampaignCard — фиксированный размер, без `glare`, выбранная кампания приподнимается и подсвечивается glow/rays‑эффектом; иконки приведены к единому контракту `CampaignIconProps`.
 - 2025‑12‑14 (codex): диздок: Этап 12 помечен как отложенный и перенесён в конец списка этапов.
 - 2025‑12‑14 (codex): Этап 13 (начало): добавлены доменные типы/действия для `host/switch/double`, `double` поддерживает “один промах” (`retry`), UI показывает кнопки/оверлеи для новых lifeline’ов (если они включены в `GameConfig.lifelines`).
+- 2025‑12‑14 (codex): Этап 13 (продолжение): `GameConfig.lifelines` переведён на v2 ключи (`fifty/phone/audience`), `takeMoney` перенесён в `GameConfig.actions.takeMoney`, `strings` переведены на `lifeline*` поля, в играх обновлены `audio.sounds` на `lifeline*`/`takeMoneyButton`; добавлены доменные утилиты `getHostSuggestion`/`pickSwitchQuestionIndex` и unit‑тесты `src/engine/game/state/lifelines.v1.test.ts` (npm test/lint/build зелёные).

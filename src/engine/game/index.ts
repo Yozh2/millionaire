@@ -4,6 +4,8 @@ export {
   getFiftyFiftyEliminations,
   generateAudiencePercentages,
   getPhoneSuggestion,
+  getHostSuggestion,
+  pickSwitchQuestionIndex,
 } from './lifelines';
 export { createGameSession, type GameSession } from './session';
 export {

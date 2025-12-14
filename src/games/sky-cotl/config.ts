@@ -94,11 +94,11 @@ export const skyCotlConfig: GameConfig = {
     // Game screen - Prize ladder
     prizesHeader: 'PRIZE LADDER',
 
-    // Hints
-    hintPhoneHeader: 'CALL A FRIEND',
-    hintAudienceHeader: 'ASK THE CROWD',
-    hintSenderLabel: 'From:',
-    hintAudienceLabel: 'The crowd says:',
+    // Lifelines
+    lifelinePhoneHeader: 'CALL A FRIEND',
+    lifelineAudienceHeader: 'ASK THE CROWD',
+    lifelineSenderLabel: 'From:',
+    lifelineAudienceLabel: 'The crowd says:',
 
     // Companion phrases
     companionPhrases: {
@@ -140,9 +140,12 @@ export const skyCotlConfig: GameConfig = {
   },
 
   lifelines: {
-    fiftyFifty: { name: '50:50', icon: '✨', enabled: true },
-    phoneAFriend: { name: 'Call', icon: '📞', enabled: true },
-    askAudience: { name: 'Crowd', icon: '📊', enabled: true },
+    fifty: { name: '50:50', icon: '✨', enabled: true },
+    phone: { name: 'Call', icon: '📞', enabled: true },
+    audience: { name: 'Crowd', icon: '📊', enabled: true },
+  },
+
+  actions: {
     takeMoney: { name: 'Take', icon: '🕯️', enabled: true },
   },
 

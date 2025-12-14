@@ -69,6 +69,9 @@ export function GameScreen({
   const lifelineConfigHost = config.lifelines.host;
   const lifelineConfigSwitch = config.lifelines.switch;
   const lifelineConfigDouble = config.lifelines.double;
+  const takeMoneyConfig =
+    config.actions?.takeMoney ??
+    config.lifelines.takeMoney ?? { name: 'Take Money', icon: '💰', enabled: true };
 
   const getButtonCenterOrigin = (target: HTMLElement): { x: number; y: number } => {
     const rect = target.getBoundingClientRect();
@@ -234,7 +237,7 @@ export function GameScreen({
         currentQuestion={currentQuestion}
         totalQuestions={totalQuestions}
         theme={theme}
-        takeMoneyConfig={config.lifelines.takeMoney}
+        takeMoneyConfig={takeMoneyConfig}
         takeMoneyDisabled={currentQuestion === 0 || selectedAnswer !== null}
         onTakeMoney={handleTakeMoneyWithSound}
       />

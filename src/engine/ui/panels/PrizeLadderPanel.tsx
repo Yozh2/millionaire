@@ -1,5 +1,5 @@
 import type { MouseEvent } from 'react';
-import type { LifelineConfig, ThemeColors } from '../../types';
+import type { ActionConfig, ThemeColors } from '../../types';
 import { LifelineButton } from '../components/buttons';
 import { Panel, PanelHeader } from '../components/panel';
 
@@ -10,7 +10,7 @@ interface PrizeLadderPanelProps {
   currentQuestion: number;
   totalQuestions: number;
   theme: ThemeColors;
-  takeMoneyConfig: LifelineConfig;
+  takeMoneyConfig: ActionConfig;
   takeMoneyDisabled: boolean;
   onTakeMoney: (e: MouseEvent<HTMLButtonElement>) => void;
 }

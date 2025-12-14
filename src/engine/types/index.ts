@@ -200,33 +200,45 @@ export interface LifelineConfig {
   enabled: boolean;
 }
 
+/** Configuration for a single non-lifeline action button (e.g. take money) */
+export interface ActionConfig {
+  /** Display name */
+  name: string;
+
+  /** Icon (emoji or component) */
+  icon: string;
+
+  /** Whether this action is enabled */
+  enabled: boolean;
+}
+
 /** All lifelines configuration */
 export interface LifelinesConfig {
   /**
    * v2 lifeline ids (preferred)
-   * Note: kept optional during migration; engine normalizes v1→v2.
    */
-  fifty?: LifelineConfig;
-  phone?: LifelineConfig;
-  audience?: LifelineConfig;
+  fifty: LifelineConfig;
+  phone: LifelineConfig;
+  audience: LifelineConfig;
   host?: LifelineConfig;
   switch?: LifelineConfig;
   double?: LifelineConfig;
 
-  /** 50:50 - removes two wrong answers */
-  fiftyFifty: LifelineConfig;
-
-  /** Phone a Friend - advice from a companion */
-  phoneAFriend: LifelineConfig;
-
-  /** Ask the Audience - voting percentages */
-  askAudience: LifelineConfig;
+  /**
+   * v1 legacy lifeline keys
+   * @deprecated use v2 ids (`fifty|phone|audience`)
+   */
+  fiftyFifty?: LifelineConfig;
+  /** @deprecated use v2 ids (`fifty|phone|audience`) */
+  phoneAFriend?: LifelineConfig;
+  /** @deprecated use v2 ids (`fifty|phone|audience`) */
+  askAudience?: LifelineConfig;
 
   /**
-   * Take the Money - leave with current winnings
-   * @deprecated `takeMoney` is an action button, not a lifeline (see docs).
+   * Take the Money (legacy placement)
+   * @deprecated use `GameConfig.actions.takeMoney`
    */
-  takeMoney: LifelineConfig;
+  takeMoney?: ActionConfig;
 }
 
 // ============================================
@@ -352,22 +364,22 @@ export interface GameStrings {
   prizesHeader: string;
 
   // Lifelines (preferred)
-  lifelinePhoneHeader?: string;
-  lifelineAudienceHeader?: string;
-  lifelineSenderLabel?: string;
-  lifelineAudienceLabel?: string;
+  lifelinePhoneHeader: string;
+  lifelineAudienceHeader: string;
+  lifelineSenderLabel: string;
+  lifelineAudienceLabel: string;
 
   /**
    * v1 legacy hint strings
    * @deprecated use `lifeline*` fields
    */
-  hintPhoneHeader: string;
+  hintPhoneHeader?: string;
   /** @deprecated use `lifeline*` fields */
-  hintAudienceHeader: string;
+  hintAudienceHeader?: string;
   /** @deprecated use `lifeline*` fields */
-  hintSenderLabel: string;
+  hintSenderLabel?: string;
   /** @deprecated use `lifeline*` fields */
-  hintAudienceLabel: string;
+  hintAudienceLabel?: string;
 
   // Companion phrases (with {answer} placeholder)
   companionPhrases: {
@@ -543,6 +555,14 @@ export interface GameConfig {
 
   /** Lifelines configuration */
   lifelines: LifelinesConfig;
+
+  /**
+   * Non-lifeline action buttons (v1).
+   * @example takeMoney button shown in PrizeLadderPanel.
+   */
+  actions?: {
+    takeMoney: ActionConfig;
+  };
 
   /** Prize configuration */
   prizes: PrizesConfig;

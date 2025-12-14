@@ -48,10 +48,10 @@ export const pocConfig: GameConfig = {
     lifelinesHeader: 'ПОДСКАЗКИ',
     prizesHeader: 'ПРИЗЫ',
 
-    hintPhoneHeader: 'СОВЕТ ДРУГА',
-    hintAudienceHeader: 'ОПРОС ЗАЛА',
-    hintSenderLabel: 'От:',
-    hintAudienceLabel: 'Зал считает:',
+    lifelinePhoneHeader: 'СОВЕТ ДРУГА',
+    lifelineAudienceHeader: 'ОПРОС ЗАЛА',
+    lifelineSenderLabel: 'От:',
+    lifelineAudienceLabel: 'Зал считает:',
 
     companionPhrases: {
       confident: ['Я уверен, что это "{answer}"', 'Точно "{answer}"'],
@@ -80,12 +80,15 @@ export const pocConfig: GameConfig = {
   },
 
   lifelines: {
-    fiftyFifty: { name: '50:50', icon: '⚡', enabled: true },
-    phoneAFriend: { name: 'Звонок', icon: '📞', enabled: true },
-    askAudience: { name: 'Зал', icon: '📊', enabled: true },
+    fifty: { name: '50:50', icon: '⚡', enabled: true },
+    phone: { name: 'Звонок', icon: '📞', enabled: true },
+    audience: { name: 'Зал', icon: '📊', enabled: true },
     host: { name: 'Ведущий', icon: '🎭', enabled: true },
     switch: { name: 'Замена', icon: '🔁', enabled: true },
     double: { name: 'Ошибиться', icon: '🎯', enabled: true },
+  },
+
+  actions: {
     takeMoney: { name: 'Забрать', icon: '💰', enabled: true },
   },
 

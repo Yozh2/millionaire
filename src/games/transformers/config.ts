@@ -242,10 +242,10 @@ export const transformersConfig: GameConfig = {
     lifelinesHeader: 'ПОДСКАЗКИ',
     prizesHeader: 'ЭНЕРГОН',
 
-    hintPhoneHeader: 'СВЯЗЬ С БАЗОЙ',
-    hintAudienceHeader: 'СОВЕТ ОТРЯДА',
-    hintSenderLabel: 'Сообщение от:',
-    hintAudienceLabel: 'Отряд считает:',
+    lifelinePhoneHeader: 'СВЯЗЬ С БАЗОЙ',
+    lifelineAudienceHeader: 'СОВЕТ ОТРЯДА',
+    lifelineSenderLabel: 'Сообщение от:',
+    lifelineAudienceLabel: 'Отряд считает:',
 
     companionPhrases: {
       confident: [
@@ -305,9 +305,12 @@ export const transformersConfig: GameConfig = {
   },
 
   lifelines: {
-    fiftyFifty: { name: '50:50', icon: '⚡', enabled: true },
-    phoneAFriend: { name: 'База', icon: '📡', enabled: true },
-    askAudience: { name: 'Отряд', icon: '🤖', enabled: true },
+    fifty: { name: '50:50', icon: '⚡', enabled: true },
+    phone: { name: 'База', icon: '📡', enabled: true },
+    audience: { name: 'Отряд', icon: '🤖', enabled: true },
+  },
+
+  actions: {
     takeMoney: { name: 'Забрать', icon: '🔮', enabled: true },
   },
 
@@ -328,9 +331,9 @@ export const transformersConfig: GameConfig = {
     sounds: {
       answerButton: 'AnswerClick.ogg',
       bigButton: 'BigButtonPress.ogg',
-      hintReduceButton: 'HintReduce.ogg',
-      hintCallButton: 'HintCall.ogg',
-      hintVoteButton: 'HintVote.ogg',
+      lifelineFifty: 'HintReduce.ogg',
+      lifelinePhone: 'HintCall.ogg',
+      lifelineAudience: 'HintVote.ogg',
       correct: 'Next.ogg',
       defeat: 'Fail.ogg',
     },
