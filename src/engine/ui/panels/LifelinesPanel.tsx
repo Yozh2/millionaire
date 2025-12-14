@@ -111,7 +111,7 @@ export function LifelinesPanel({
           label={lifelineConfigAudience.name}
         />
 
-        {lifelineConfigHost && onHost && (
+        {lifelineConfigHost?.enabled && onHost && (
           <LifelineButton
             onClick={onHost}
             disabled={!isLifelineEnabled(lifelineConfigHost, lifelineAvailability.host) || !canUse}
@@ -131,7 +131,7 @@ export function LifelinesPanel({
           />
         )}
 
-        {lifelineConfigSwitch && onSwitch && (
+        {lifelineConfigSwitch?.enabled && onSwitch && (
           <LifelineButton
             onClick={onSwitch}
             disabled={!isLifelineEnabled(lifelineConfigSwitch, lifelineAvailability.switch) || !canUse}
@@ -151,7 +151,7 @@ export function LifelinesPanel({
           />
         )}
 
-        {lifelineConfigDouble && onDouble && (
+        {lifelineConfigDouble?.enabled && onDouble && (
           <LifelineButton
             onClick={onDouble}
             disabled={!isLifelineEnabled(lifelineConfigDouble, lifelineAvailability.double) || !canUse}
