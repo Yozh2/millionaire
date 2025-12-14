@@ -17,10 +17,13 @@ export function CampaignCard({
 
   return (
     <button
-      onClick={onSelect}
+      onClick={() => {
+        if (selected) return;
+        onSelect();
+      }}
       data-campaign-card="true"
       data-selected={selected ? 'true' : 'false'}
-      className={`campaign-card relative flex-none overflow-hidden border-4 transition-transform duration-200 w-[164px] h-[216px] px-3 pt-7 pb-3 flex flex-col items-center ${
+      className={`campaign-card relative flex-none overflow-hidden border-4 transition-transform duration-200 w-[164px] h-[216px] ${
         isLightTheme
           ? 'bg-gradient-to-b from-white/45 via-white/25 to-white/10'
           : 'bg-gradient-to-b from-stone-950/70 via-stone-950/45 to-black/70'
@@ -45,22 +48,22 @@ export function CampaignCard({
         }
       }}
     >
-      <div className="campaign-card-inner relative w-full h-full flex flex-col items-center">
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/10 via-transparent to-black/35"
-        />
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent"
-        />
-        <div
-          aria-hidden="true"
-          className={`pointer-events-none absolute inset-2 border ${
-            isLightTheme ? 'border-black/10' : 'border-white/10'
-          }`}
-        />
+      <div
+        aria-hidden="true"
+        className="campaign-card-glass pointer-events-none absolute inset-0 bg-gradient-to-b from-white/10 via-transparent to-black/35"
+      />
+      <div
+        aria-hidden="true"
+        className="campaign-card-glass pointer-events-none absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent"
+      />
+      <div
+        aria-hidden="true"
+        className={`campaign-card-frame pointer-events-none absolute inset-2 border ${
+          isLightTheme ? 'border-black/10' : 'border-white/10'
+        }`}
+      />
 
+      <div className="relative w-full h-full px-3 pt-7 pb-3 flex flex-col items-center">
         <div className="relative mt-0 w-[98px] h-[98px] flex items-center justify-center overflow-visible">
           <div aria-hidden="true" className="campaign-icon-glow" />
           <div aria-hidden="true" className="campaign-icon-rays" />
