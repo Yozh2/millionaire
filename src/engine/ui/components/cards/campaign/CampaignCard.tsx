@@ -40,7 +40,7 @@ export function CampaignCard({
       data-campaign-card="true"
       data-selected={selected ? 'true' : 'false'}
       data-card-state={fsm.state}
-      className={`campaign-card relative flex-none overflow-hidden border-4 transition-transform duration-200 w-[164px] h-[216px] ${
+      className={`campaign-card relative flex-none overflow-hidden border-4 w-[164px] h-[216px] ${
         isLightTheme
           ? 'bg-gradient-to-b from-white/45 via-white/25 to-white/10'
           : 'bg-gradient-to-b from-stone-950/70 via-stone-950/45 to-black/70'
@@ -72,6 +72,10 @@ export function CampaignCard({
       <div
         aria-hidden="true"
         className="campaign-card-glass pointer-events-none absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent"
+      />
+      <div
+        aria-hidden="true"
+        className="campaign-card-glare pointer-events-none absolute"
       />
       <div
         aria-hidden="true"
