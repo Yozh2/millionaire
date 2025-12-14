@@ -1,6 +1,8 @@
 @import './fonts.css';
 @import './base.css';
 @import './animations.css';
+@import './panels.css';
+@import './campaign-card.css';
 @import './glare.css';
 @import './prize-ladder.css';
 @import './buttons.css';

@@ -1,7 +1,7 @@
 # 🧱 Диздок рефакторинга Millionaire (Engine + Games)
 
 Дата: 2025‑12‑13
-Статус: in progress (Этапы 1–11 ✅, 12 отложен, 13 ✅, 14 ✅)
+Статус: in progress (Этапы 1–11 ✅, 12 отложен, 13 ✅, 14 ✅, 15 в работе)
 
 ---
 
@@ -567,6 +567,240 @@ scripts
 
 - `src/styles/*` переехали в `src/engine/ui/styles/*` (директория `src/styles/` теперь пустая и не используется).
 - Engine‑CSS подключается из `src/engine/index.ts` (engine сам тянет свои стили), а `src/index.css` содержит только `tailwind.css`.
+- Wrapper‑класс engine: `.engine` (вместо `.millionaire-engine`).
+
+#### 3.1.1.3 Tree output (обновлено 2025‑12‑14)
+
+```text
+src
+├── .DS_Store
+├── app
+│   ├── components
+│   │   ├── GameSelector.test.tsx
+│   │   ├── GameSelector.tsx
+│   │   └── index.ts
+│   └── registry
+│       ├── gameRegistry.ts
+│       └── index.ts
+├── App.tsx
+├── engine
+│   ├── .DS_Store
+│   ├── assets
+│   │   └── paths.ts
+│   ├── audio
+│   │   ├── useMusicPlayer.ts
+│   │   └── useSoundPlayer.ts
+│   ├── constants.ts
+│   ├── game
+│   │   ├── index.ts
+│   │   ├── lifelines
+│   │   │   ├── audience.ts
+│   │   │   ├── fifty.ts
+│   │   │   ├── host.ts
+│   │   │   ├── index.ts
+│   │   │   ├── phone.ts
+│   │   │   └── switch.ts
+│   │   ├── prizes
+│   │   │   ├── calculatePrizeLadder.ts
+│   │   │   ├── getGuaranteedPrize.ts
+│   │   │   ├── index.ts
+│   │   │   └── prizes.v0.test.ts
+│   │   ├── questions
+│   │   │   ├── getQuestionDifficulty.ts
+│   │   │   ├── index.ts
+│   │   │   └── selectQuestionsFromPool.ts
+│   │   ├── session
+│   │   │   ├── createGameSession.ts
+│   │   │   └── index.ts
+│   │   ├── state
+│   │   │   ├── actions.ts
+│   │   │   ├── index.ts
+│   │   │   ├── lifelines.v1.test.ts
+│   │   │   ├── machine.ts
+│   │   │   ├── reducer.ts
+│   │   │   ├── resolveAnswer.ts
+│   │   │   ├── selectors.ts
+│   │   │   ├── selectors.v0.test.ts
+│   │   │   ├── state.v0.test.ts
+│   │   │   └── types.ts
+│   │   └── utils
+│   │       └── shuffleArray.ts
+│   ├── index.ts
+│   ├── services
+│   │   ├── AssetLoader.ts
+│   │   ├── index.ts
+│   │   ├── logger.ts
+│   │   └── types.ts
+│   ├── types
+│   │   └── index.ts
+│   ├── ui
+│   │   ├── components
+│   │   │   ├── buttons
+│   │   │   │   ├── ActionButton.tsx
+│   │   │   │   ├── AnswerButton.tsx
+│   │   │   │   ├── BaseButton.tsx
+│   │   │   │   ├── index.ts
+│   │   │   │   ├── LifelineButton.tsx
+│   │   │   │   ├── types.ts
+│   │   │   │   ├── useButtonFsm.ts
+│   │   │   │   └── VolumeButton.tsx
+│   │   │   ├── cards
+│   │   │   │   └── campaign
+│   │   │   │       ├── CampaignCard.tsx
+│   │   │   │       └── useCampaignCardFsm.ts
+│   │   │   ├── errors
+│   │   │   │   └── ErrorBoundary.tsx
+│   │   │   └── panel
+│   │   │       ├── index.ts
+│   │   │       ├── Panel.tsx
+│   │   │       └── PanelHeader.tsx
+│   │   ├── effects
+│   │   │   └── ParticleCanvas.tsx
+│   │   ├── hooks
+│   │   │   ├── index.ts
+│   │   │   ├── useAssetPreloader.ts
+│   │   │   ├── useAudio.ts
+│   │   │   ├── useEffects.ts
+│   │   │   ├── useFavicon.ts
+│   │   │   └── useGameState.ts
+│   │   ├── icons
+│   │   │   └── DefaultIcons.tsx
+│   │   ├── layout
+│   │   │   └── header
+│   │   │       ├── HeaderPanel.tsx
+│   │   │       └── HeaderSlideshow.tsx
+│   │   ├── MillionaireGame.tsx
+│   │   ├── panels
+│   │   │   ├── AnswersPanel.tsx
+│   │   │   ├── CampaignSelectionPanel.tsx
+│   │   │   ├── LifelineResultPanel.tsx
+│   │   │   ├── lifelines
+│   │   │   │   ├── LifelineAudiencePanel.tsx
+│   │   │   │   ├── LifelineDoublePanel.tsx
+│   │   │   │   ├── LifelineHostPanel.tsx
+│   │   │   │   ├── LifelinePhonePanel.tsx
+│   │   │   │   └── LifelineSwitchPanel.tsx
+│   │   │   ├── LifelinesPanel.tsx
+│   │   │   ├── PrizeLadderPanel.tsx
+│   │   │   ├── QuestionPanel.tsx
+│   │   │   └── ResultPanel.tsx
+│   │   ├── screens
+│   │   │   ├── EndScreen.tsx
+│   │   │   ├── GameScreen.tsx
+│   │   │   ├── LoadingScreen.tsx
+│   │   │   └── StartScreen.tsx
+│   │   ├── styles
+│   │   │   ├── animations.css
+│   │   │   ├── base.css
+│   │   │   ├── buttons.css
+│   │   │   ├── campaign-card.css
+│   │   │   ├── engine.css
+│   │   │   ├── fonts.css
+│   │   │   ├── glare.css
+│   │   │   ├── panels.css
+│   │   │   └── prize-ladder.css
+│   │   └── theme
+│   │       ├── index.ts
+│   │       └── ThemeContext.tsx
+│   └── utils
+│       ├── assetLoader.ts
+│       ├── audioPlayer.ts
+│       ├── index.ts
+│       └── questionGenerator.ts
+├── games
+│   ├── .DS_Store
+│   ├── bg3
+│   │   ├── campaigns
+│   │   │   ├── darkUrge
+│   │   │   │   ├── campaign.ts
+│   │   │   │   ├── questions.ts
+│   │   │   │   └── theme.ts
+│   │   │   ├── hero
+│   │   │   │   ├── campaign.ts
+│   │   │   │   ├── questions.ts
+│   │   │   │   └── theme.ts
+│   │   │   └── mindFlayer
+│   │   │       ├── campaign.ts
+│   │   │       ├── questions.ts
+│   │   │       └── theme.ts
+│   │   ├── config.ts
+│   │   ├── icons.tsx
+│   │   ├── index.ts
+│   │   ├── questions.ts
+│   │   └── themes.ts
+│   ├── index.ts
+│   ├── poc
+│   │   ├── campaigns
+│   │   │   ├── easy
+│   │   │   │   ├── campaign.ts
+│   │   │   │   ├── questions.ts
+│   │   │   │   └── theme.ts
+│   │   │   └── hard
+│   │   │       ├── campaign.ts
+│   │   │       ├── questions.ts
+│   │   │       └── theme.ts
+│   │   ├── config.ts
+│   │   ├── icons.tsx
+│   │   ├── index.ts
+│   │   ├── questions.ts
+│   │   └── themes.ts
+│   ├── sky-cotl
+│   │   ├── campaigns
+│   │   │   └── journey
+│   │   │       ├── campaign.ts
+│   │   │       ├── questions.ts
+│   │   │       └── theme.ts
+│   │   ├── config.ts
+│   │   ├── icons.tsx
+│   │   ├── index.ts
+│   │   ├── questions.ts
+│   │   └── themes.ts
+│   └── transformers
+│       ├── campaigns
+│       │   ├── autocracy
+│       │   │   ├── campaign.ts
+│       │   │   ├── questions.ts
+│       │   │   └── theme.ts
+│       │   ├── megatron
+│       │   │   ├── campaign.ts
+│       │   │   ├── questions.ts
+│       │   │   └── theme.ts
+│       │   └── skybound
+│       │       ├── campaign.ts
+│       │       ├── questions.ts
+│       │       └── theme.ts
+│       ├── config.ts
+│       ├── icons.tsx
+│       ├── index.ts
+│       ├── questions.ts
+│       └── themes.ts
+├── index.css
+├── main.tsx
+├── pages
+│   ├── EffectsSandboxPage.tsx
+│   ├── index.ts
+│   ├── RegisteredGamePage.tsx
+│   └── SandboxPage.tsx
+├── styles
+├── tailwind.css
+└── vite-env.d.ts
+
+54 directories, 158 files
+
+scripts
+├── comics_parser.py
+├── convert_mp3_to_ogg.sh
+├── generate-asset-manifest.js
+├── generate-image-manifest.js
+└── sandbox
+    ├── floating_card.html
+    ├── g1_names_to_json.py
+    ├── G1_translations.csv
+    ├── millionaire-sounds.html
+    └── test-prizes.js
+
+2 directories, 9 files
+```
 
 #### 3.1.2 Комментарии по структуре (что сейчас смущает)
 
@@ -603,8 +837,10 @@ scripts
 - `src/styles/` — устаревшая директория (после Этапа 14): файлы переехали в `src/engine/ui/styles/`, `src/styles/` можно удалить.
 
 Новый дом для engine‑CSS:
-- `src/engine/ui/styles/base.css` — базовые правила engine, scoped под `.millionaire-engine`.
-- `src/engine/ui/styles/animations.css` — анимации экранов/панелей + CampaignCard, scoped.
+- `src/engine/ui/styles/base.css` — базовые правила engine, scoped под `.engine`.
+- `src/engine/ui/styles/animations.css` — анимации экранов (screen transitions + win/lose), scoped.
+- `src/engine/ui/styles/panels.css` — анимации панелей (enter/exit/stagger), scoped.
+- `src/engine/ui/styles/campaign-card.css` — стили/анимации `CampaignCard` (glow/rays/tilt vars), scoped.
 - `src/engine/ui/styles/glare.css` — универсальный `glare` (right/left), scoped.
 - `src/engine/ui/styles/buttons.css` — состояния кнопок и эффекты, scoped.
 - `src/engine/ui/styles/prize-ladder.css` — стили `prizeLadder`, scoped.
@@ -1276,7 +1512,7 @@ PoC и базовый engine должны запускаться без `public/
   - Удалить `.DS_Store` из репозитория и запретить через `.gitignore`.
   - Acceptance: engine можно импортировать в другое приложение без “утечек” глобальных стилей.
 
-- ⬜ **Этап 15. Тесты домена**
+- ⬜ **Этап 15. Тесты домена (в работе)**
   - Добавить unit‑тесты для `src/engine/game/state/*` (reducers/selectors/machine), `lifelines/*`, `prizes/*`.
   - Acceptance: тесты ловят регрессии логики без React, CI остаётся быстрым.
 
@@ -1341,4 +1577,5 @@ PoC и базовый engine должны запускаться без `public/
 - 2025‑12‑14 (codex): диздок: Этап 12 помечен как отложенный и перенесён в конец списка этапов.
 - 2025‑12‑14 (codex): Этап 13 (начало): добавлены доменные типы/действия для `host/switch/double`, `double` поддерживает “один промах” (`retry`), UI показывает кнопки/оверлеи для новых lifeline’ов (если они включены в `GameConfig.lifelines`).
 - 2025‑12‑14 (codex): Этап 13 (продолжение): `GameConfig.lifelines` переведён на v2 ключи (`fifty/phone/audience`), `takeMoney` перенесён в `GameConfig.actions.takeMoney`, `strings` переведены на `lifeline*` поля, в играх обновлены `audio.sounds` на `lifeline*`/`takeMoneyButton`; добавлены доменные утилиты `getHostSuggestion`/`pickSwitchQuestionIndex` и unit‑тесты `src/engine/game/state/lifelines.v1.test.ts` (npm test/lint/build зелёные).
-- 2025‑12‑14 (codex): ✅ Этап 14: стили переехали в `src/engine/ui/styles/*` и подключаются самим engine (`src/engine/index.ts`), все engine‑классы/примитивы scoped под `.millionaire-engine` (минимум конфликтов при встраивании); `src/styles/` больше не используется (пустая), `.DS_Store` уже игнорируется `.gitignore` (tracked файлов нет), `npm test/lint/build` зелёные.
+- 2025‑12‑14 (codex): ✅ Этап 14: стили переехали в `src/engine/ui/styles/*` и подключаются самим engine (`src/engine/index.ts`), все engine‑классы/примитивы scoped под `.engine` (минимум конфликтов при встраивании); `src/styles/` больше не используется (пустая), `.DS_Store` уже игнорируется `.gitignore` (tracked файлов нет), `npm test/lint/build` зелёные.
+- 2025‑12‑14 (codex): Этап 15 (частично): добавлены быстрые unit‑тесты домена для `state/machine` и `state/selectors` и `prizes` (без React), `npm test/lint/build` зелёные.

@@ -21,7 +21,7 @@
   }
 }
 
-.millionaire-engine .glare {
+.engine .glare {
   position: relative;
   overflow: hidden;
   --glare-width: 60%;
@@ -35,7 +35,7 @@
   --glare-opacity: 1;
 }
 
-.millionaire-engine .glare::before {
+.engine .glare::before {
   content: '';
   position: absolute;
   top: 0;
@@ -62,24 +62,24 @@
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .millionaire-engine .glare:not(:disabled):hover::before {
+  .engine .glare:not(:disabled):hover::before {
     animation: glare-sweep var(--glare-duration, 0.5s) ease-out forwards;
   }
 }
 
-.millionaire-engine .glare:not(:disabled):active::before {
+.engine .glare:not(:disabled):active::before {
   animation: glare-sweep-reverse var(--glare-press-duration, 0.2s) ease-out
     forwards;
 }
 
 /* Button FSM support (v0): use data attribute instead of relying only on :hover/:active */
 @media (hover: hover) and (pointer: fine) {
-  .millionaire-engine .glare[data-btn-state='Hover']:not(:disabled)::before {
+  .engine .glare[data-btn-state='Hover']:not(:disabled)::before {
     animation: glare-sweep var(--glare-duration, 0.5s) ease-out forwards;
   }
 }
 
-.millionaire-engine .glare[data-btn-state='Press']:not(:disabled)::before {
+.engine .glare[data-btn-state='Press']:not(:disabled)::before {
   animation: glare-sweep-reverse var(--glare-press-duration, 0.2s) ease-out
     forwards;
 }

@@ -1,5 +1,5 @@
-.millionaire-engine,
-.millionaire-engine * {
+.engine,
+.engine * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -9,7 +9,7 @@
   -webkit-touch-callout: none;
 }
 
-.millionaire-engine {
+.engine {
   font-family: Arial, Helvetica, sans-serif;
   background: #000;
 

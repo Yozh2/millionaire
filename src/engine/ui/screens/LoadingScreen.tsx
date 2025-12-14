@@ -70,7 +70,7 @@ export function LoadingScreen({
   const t = { ...defaultLoadingTheme, ...theme };
 
   return (
-    <div className="millionaire-engine fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
+    <div className="engine fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
       {/* Background pattern */}
       <div
         className="absolute inset-0 opacity-5"
