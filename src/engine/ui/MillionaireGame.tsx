@@ -28,6 +28,8 @@ import { LoadingScreen } from './screens/LoadingScreen';
 import { ParticleCanvas } from './effects/ParticleCanvas';
 import { StartScreen } from './screens/StartScreen';
 import { HeaderPanel } from './layout/header/HeaderPanel';
+import { SoundConsentOverlay } from './components/overlays/SoundConsentOverlay';
+import { STORAGE_KEY_SOUND_ENABLED } from '../constants';
 
 interface MillionaireGameProps {
   /** Game configuration - defines modes, questions, themes, etc. */
@@ -84,6 +86,25 @@ export function MillionaireGame({ config }: MillionaireGameProps) {
   );
   const [level11Progress, setLevel11Progress] = useState(0);
   const [isWaitingForLevel11, setIsWaitingForLevel11] = useState(false);
+  const soundConsentKey = useMemo(
+    () => `engine:sound-consent-shown:${config.id}`,
+    [config.id]
+  );
+  const [isSoundConsentDone, setIsSoundConsentDone] = useState<boolean>(() => {
+    try {
+      return sessionStorage.getItem(soundConsentKey) === 'true';
+    } catch {
+      return false;
+    }
+  });
+
+  useEffect(() => {
+    try {
+      setIsSoundConsentDone(sessionStorage.getItem(soundConsentKey) === 'true');
+    } catch {
+      setIsSoundConsentDone(false);
+    }
+  }, [soundConsentKey]);
 
   // Preload campaign assets when campaign is selected (background)
   useEffect(() => {
@@ -139,12 +160,8 @@ export function MillionaireGame({ config }: MillionaireGameProps) {
   const loadingCampaignTitle =
     config.systemStrings?.loadingCampaignTitle ?? 'Подготовка кампании...';
 
-  // Wrapper for selectCampaign with sound
+  // Wrapper for selectCampaign with sound (campaign select SFX only if user enabled sound)
   const handleSelectCampaign = useCallback((campaign: Campaign) => {
-    // Enable sound on first campaign selection (user interaction)
-    if (!audio.isMusicPlaying) {
-      audio.toggleMusic();
-    }
     // Play campaign-specific select sound if defined, otherwise generic click
     if (campaign.selectSound) {
       audio.playCampaignSelectSound(campaign.selectSound);
@@ -204,7 +221,39 @@ export function MillionaireGame({ config }: MillionaireGameProps) {
     gameState.newGame();
   }, [audio, gameState]);
 
+  const markSoundConsentDone = useCallback(() => {
+    setIsSoundConsentDone(true);
+    try {
+      sessionStorage.setItem(soundConsentKey, 'true');
+    } catch {
+      // ignore storage errors
+    }
+  }, [soundConsentKey]);
+
+  const handleEnableSound = useCallback(() => {
+    if (!audio.isMusicPlaying) {
+      audio.toggleMusic();
+    }
+    audio.playMainMenu();
+    markSoundConsentDone();
+  }, [audio, markSoundConsentDone]);
+
+  const handleDisableSound = useCallback(() => {
+    if (audio.isMusicPlaying) {
+      audio.toggleMusic();
+    } else {
+      try {
+        localStorage.setItem(STORAGE_KEY_SOUND_ENABLED, 'false');
+      } catch {
+        // ignore storage errors
+      }
+    }
+    markSoundConsentDone();
+  }, [audio, markSoundConsentDone]);
+
   const showHeader = !level1Preload.isLoading && !isWaitingForLevel11;
+  const showSoundConsent =
+    showHeader && gameState.gameState === 'start' && !isSoundConsentDone;
 
   const slideshowScreen = useMemo(() => {
     if (gameState.gameState === 'playing') return 'play';
@@ -272,6 +321,14 @@ export function MillionaireGame({ config }: MillionaireGameProps) {
           drawCoin={config.drawCoinParticle}
           lostSparkColors={config.lostSparkColors}
         />
+
+        {showSoundConsent && (
+          <SoundConsentOverlay
+            config={config}
+            onEnableSound={handleEnableSound}
+            onDisableSound={handleDisableSound}
+          />
+        )}
 
         {/* Background Music */}
         <audio

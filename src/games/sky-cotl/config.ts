@@ -184,6 +184,11 @@ export const skyCotlConfig: GameConfig = {
     loadingGameTitle: 'Loading {title}…',
     loadingGameSubtitle: 'Preparing your journey',
     loadingCampaignTitle: 'Preparing campaign…',
+    soundConsentTitle: 'Sound',
+    soundConsentMessage:
+      'This game is best experienced with headphones.\nEnable sound?',
+    soundConsentEnableLabel: 'With sound',
+    soundConsentDisableLabel: 'Without sound',
   },
 };
 

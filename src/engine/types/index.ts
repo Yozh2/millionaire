@@ -640,6 +640,15 @@ export interface GameConfig {
     loadingGameSubtitle?: string;
     /** Loading title shown while preloading campaign assets. */
     loadingCampaignTitle?: string;
+
+    /** Title shown in the initial sound consent overlay. */
+    soundConsentTitle?: string;
+    /** Message shown in the initial sound consent overlay (may include newlines). */
+    soundConsentMessage?: string;
+    /** Button label for enabling sound. */
+    soundConsentEnableLabel?: string;
+    /** Button label for disabling sound. */
+    soundConsentDisableLabel?: string;
   };
 }
 

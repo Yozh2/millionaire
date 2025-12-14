@@ -44,10 +44,15 @@ export function useButtonFsm({
 }: UseButtonFsmOptions = {}): UseButtonFsmResult {
   const [state, setState] = useState<ButtonFsmState>(initial);
   const [isOver, setIsOver] = useState<boolean>(true);
+  const isOverRef = useRef<boolean>(true);
   const pointerIdRef = useRef<number | null>(null);
   const easeTimerRef = useRef<number | null>(null);
   const activateTimerRef = useRef<number | null>(null);
   const suppressNextClickRef = useRef<boolean>(false);
+
+  useEffect(() => {
+    isOverRef.current = isOver;
+  }, [isOver]);
 
   useEffect(() => {
     if (state !== 'Appear') return;
@@ -75,7 +80,7 @@ export function useButtonFsm({
       easeTimerRef.current = window.setTimeout(() => {
         setState((prev) => {
           if (prev !== 'Ease') return prev;
-          return isOver ? 'Hover' : 'Idle';
+          return isOverRef.current ? 'Hover' : 'Idle';
         });
       }, easeMs);
     };
@@ -85,13 +90,14 @@ export function useButtonFsm({
       activateTimerRef.current = window.setTimeout(() => {
         setState((prev) => {
           if (prev !== 'Activate') return prev;
-          return isOver ? 'Hover' : 'Idle';
+          return isOverRef.current ? 'Hover' : 'Idle';
         });
       }, activateMs);
     };
 
     const onPointerEnter: PointerEventHandler<HTMLElement> = () => {
       if (disabled) return;
+      if (pointerIdRef.current != null) return;
       setIsOver(true);
       setState((prev) => {
         if (prev === 'Idle') return 'Hover';
@@ -101,6 +107,7 @@ export function useButtonFsm({
 
     const onPointerLeave: PointerEventHandler<HTMLElement> = () => {
       if (disabled) return;
+      if (pointerIdRef.current != null) return;
       setIsOver(false);
       setState((prev) => {
         if (prev === 'Hover') return 'Idle';
@@ -148,7 +155,10 @@ export function useButtonFsm({
         }
       }
 
-      const over = hitTest(e.currentTarget, e.clientX, e.clientY);
+      const over = enablePointerCapture
+        ? isOverRef.current
+        : hitTest(e.currentTarget, e.clientX, e.clientY);
+
       setIsOver(over);
       suppressNextClickRef.current = !over;
 
@@ -191,7 +201,7 @@ export function useButtonFsm({
       onPointerCancel,
       onLostPointerCapture,
     };
-  }, [activateMs, disabled, easeMs, enablePointerCapture, isOver, state]);
+  }, [activateMs, disabled, easeMs, enablePointerCapture, state]);
 
   return {
     state,
