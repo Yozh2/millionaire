@@ -1,4 +1,6 @@
 import type { Campaign } from '../../../../types';
+import { useRef } from 'react';
+import { useCampaignCardFsm } from './useCampaignCardFsm';
 
 interface CampaignCardProps {
   campaign: Campaign;
@@ -14,15 +16,30 @@ export function CampaignCard({
   isLightTheme,
 }: CampaignCardProps) {
   const CampaignIcon = campaign.icon;
+  const buttonRef = useRef<HTMLButtonElement | null>(null);
+  const fsm = useCampaignCardFsm({
+    ref: buttonRef,
+    selected,
+    onSelect,
+  });
 
   return (
     <button
-      onClick={() => {
+      ref={buttonRef}
+      onClick={(e) => {
+        if (fsm.suppressNextClickRef.current) {
+          fsm.suppressNextClickRef.current = false;
+          e.preventDefault();
+          e.stopPropagation();
+          return;
+        }
         if (selected) return;
         onSelect();
       }}
+      {...fsm.eventHandlers}
       data-campaign-card="true"
       data-selected={selected ? 'true' : 'false'}
+      data-card-state={fsm.state}
       className={`campaign-card relative flex-none overflow-hidden border-4 transition-transform duration-200 w-[164px] h-[216px] ${
         isLightTheme
           ? 'bg-gradient-to-b from-white/45 via-white/25 to-white/10'
@@ -66,7 +83,9 @@ export function CampaignCard({
       <div className="relative w-full h-full px-3 pt-7 pb-3 flex flex-col items-center">
         <div className="relative mt-0 w-[98px] h-[98px] flex items-center justify-center overflow-visible">
           <div aria-hidden="true" className="campaign-icon-glow" />
-          <div aria-hidden="true" className="campaign-icon-rays" />
+          <div aria-hidden="true" className="campaign-icon-rays-wrap">
+            <div aria-hidden="true" className="campaign-icon-rays" />
+          </div>
           <CampaignIcon className="relative z-10 w-full h-full max-w-full max-h-full object-contain text-5xl leading-none" />
         </div>
 

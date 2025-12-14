@@ -165,18 +165,67 @@
    Campaign icon glow/rays (CampaignCard)
    ============================================ */
 
-@keyframes campaign-card-float {
+@keyframes campaign-card-appear {
   0% {
-    transform: translateY(calc(var(--campaign-base-lift, 0px) + 0px))
-      scale(var(--campaign-scale, 1));
-  }
-  50% {
-    transform: translateY(calc(var(--campaign-base-lift, 0px) - 6px))
-      scale(var(--campaign-scale, 1));
+    opacity: 0;
+    transform: translateY(12px) scale(0.96);
+    filter: blur(2px);
   }
   100% {
-    transform: translateY(calc(var(--campaign-base-lift, 0px) + 0px))
-      scale(var(--campaign-scale, 1));
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+@keyframes campaign-card-takeoff {
+  0% {
+    transform: translateY(var(--campaign-card-from-y, 0px))
+      scale(var(--campaign-card-from-scale, 1));
+  }
+  100% {
+    transform: translateY(var(--campaign-card-top-y, -12px)) scale(1);
+  }
+}
+
+/* Cosine-ish levitation starting from the max height (top), going down and back up. */
+@keyframes campaign-card-levitate {
+  0% {
+    transform: translateY(var(--campaign-card-top-y, -12px)) scale(1);
+  }
+  12.5% {
+    transform: translateY(calc(var(--campaign-card-top-y, -12px) + 1px)) scale(1);
+  }
+  25% {
+    transform: translateY(calc(var(--campaign-card-top-y, -12px) + 2px)) scale(1);
+  }
+  37.5% {
+    transform: translateY(calc(var(--campaign-card-top-y, -12px) + 3px)) scale(1);
+  }
+  50% {
+    transform: translateY(calc(var(--campaign-card-top-y, -12px) + 4px)) scale(1);
+  }
+  62.5% {
+    transform: translateY(calc(var(--campaign-card-top-y, -12px) + 3px)) scale(1);
+  }
+  75% {
+    transform: translateY(calc(var(--campaign-card-top-y, -12px) + 2px)) scale(1);
+  }
+  87.5% {
+    transform: translateY(calc(var(--campaign-card-top-y, -12px) + 1px)) scale(1);
+  }
+  100% {
+    transform: translateY(var(--campaign-card-top-y, -12px)) scale(1);
+  }
+}
+
+@keyframes campaign-card-land {
+  0% {
+    transform: translateY(var(--campaign-card-from-y, var(--campaign-card-top-y, -12px)))
+      scale(1);
+  }
+  100% {
+    transform: translateY(0px) scale(1);
   }
 }
 
@@ -197,19 +246,19 @@
 
 @keyframes campaign-rays-rotate {
   0% {
-    transform: rotate(0deg);
+    transform: rotate(0deg) scaleX(var(--ray-scale-x, 1)) scaleY(var(--ray-scale-y, 1));
   }
   100% {
-    transform: rotate(360deg);
+    transform: rotate(360deg) scaleX(var(--ray-scale-x, 1)) scaleY(var(--ray-scale-y, 1));
   }
 }
 
 @keyframes campaign-rays-rotate-reverse {
   0% {
-    transform: rotate(360deg);
+    transform: rotate(360deg) scaleX(var(--ray-scale-x, 1)) scaleY(var(--ray-scale-y, 1));
   }
   100% {
-    transform: rotate(0deg);
+    transform: rotate(0deg) scaleX(var(--ray-scale-x, 1)) scaleY(var(--ray-scale-y, 1));
   }
 }
 
@@ -243,27 +292,39 @@
 }
 
 .campaign-card {
-  --campaign-scale: 1;
-  --campaign-base-lift: 0px;
-  transform: translateY(var(--campaign-base-lift)) scale(var(--campaign-scale));
+  --campaign-card-top-y: -12px;
+  transform: translateY(0) scale(1);
   transform-origin: center center;
-  transition: transform 360ms cubic-bezier(0.22, 1, 0.36, 1);
+  transition: transform 180ms cubic-bezier(0.22, 1, 0.36, 1);
   will-change: transform;
   cursor: pointer;
 }
 
-@media (hover: hover) and (pointer: fine) {
-  .campaign-card:not([data-selected='true']):hover {
-    --campaign-scale: 1.03;
-  }
+.campaign-card[data-card-state='Appear'] {
+  animation: campaign-card-appear 240ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-.campaign-card[data-selected='true'] {
-  --campaign-base-lift: -4px;
-  animation: campaign-card-float 2.9s ease-in-out infinite;
-  animation-delay: 260ms;
-  animation-fill-mode: both;
+.campaign-card[data-card-state='Hover'] {
+  transform: translateY(-3px) scale(1.03);
+}
+
+.campaign-card[data-card-state='Press'] {
+  transform: translateY(1px) scale(0.985);
+}
+
+.campaign-card[data-card-state='Ease'] {
+  transform: translateY(0) scale(1);
+}
+
+.campaign-card[data-card-state='Activate'] {
   cursor: default;
+  animation:
+    campaign-card-takeoff 420ms cubic-bezier(0.42, 0, 1, 1) both,
+    campaign-card-levitate 2.9s linear infinite 420ms;
+}
+
+.campaign-card[data-card-state='Deactivate'] {
+  animation: campaign-card-land 380ms cubic-bezier(0.42, 0, 1, 1) both;
 }
 
 .campaign-icon-glow {
@@ -303,10 +364,26 @@
   opacity: 0.75;
 }
 
-.campaign-icon-rays {
+.campaign-icon-rays-wrap {
   position: absolute;
   inset: -86%;
   border-radius: 9999px;
+  opacity: 0;
+  transform: scale(0.12);
+  transform-origin: 50% 50%;
+  transition:
+    opacity 260ms ease-out,
+    transform 640ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform, opacity;
+  pointer-events: none;
+}
+
+.campaign-icon-rays {
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  --ray-scale-x: 1;
+  --ray-scale-y: 1;
   background:
     repeating-conic-gradient(
       from 12deg,
@@ -317,14 +394,9 @@
   mask-image: radial-gradient(circle at 50% 50%, transparent 0% 26%, black 46%, transparent 76%);
   mix-blend-mode: screen;
   filter: blur(0.9px);
-  opacity: 0;
-  transform: scale(0.12);
-  transform-origin: 50% 50%;
-  transition:
-    opacity 260ms ease-out,
-    transform 640ms cubic-bezier(0.22, 1, 0.36, 1);
+  opacity: 1;
   animation:
-    campaign-rays-rotate 11.5s linear infinite,
+    campaign-rays-rotate 18s linear infinite,
     campaign-rays-pulse 2.1s ease-in-out infinite;
   animation-play-state: paused;
 }
@@ -350,8 +422,9 @@
   mask-image: radial-gradient(circle at 50% 50%, transparent 0% 30%, black 50%, transparent 82%);
   filter: blur(0.75px);
   opacity: 0.75;
-  transform: rotate(0deg) scaleX(1.04) scaleY(0.94);
-  animation: campaign-rays-rotate 8.8s linear infinite;
+  --ray-scale-x: 1.04;
+  --ray-scale-y: 0.94;
+  animation: campaign-rays-rotate 9.6s linear infinite;
   animation-play-state: paused;
 }
 
@@ -365,21 +438,26 @@
     );
   mask-image: radial-gradient(circle at 50% 50%, transparent 0% 34%, black 56%, transparent 86%);
   opacity: 0.6;
-  transform: rotate(0deg) scaleX(0.96) scaleY(1.06);
+  --ray-scale-x: 0.96;
+  --ray-scale-y: 1.06;
   animation:
-    campaign-rays-rotate-reverse 11.2s linear infinite,
+    campaign-rays-rotate-reverse 13.4s linear infinite,
     campaign-rays-shimmer 2.7s ease-in-out infinite;
   animation-play-state: paused;
 }
 
 .campaign-card[data-selected='true'] .campaign-icon-glow,
-.campaign-card[data-selected='true'] .campaign-icon-rays {
+.campaign-card[data-selected='true'] .campaign-icon-rays-wrap {
   opacity: 1;
   transform: scale(1);
   animation-play-state: running;
 }
 
 .campaign-card[data-selected='true'] .campaign-icon-rays {
+  animation-play-state: running;
+}
+
+.campaign-card[data-selected='true'] .campaign-icon-rays-wrap {
   transition-delay: 90ms;
 }
 
@@ -389,11 +467,14 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .campaign-card[data-selected='true'] {
+  .campaign-card[data-card-state='Activate'],
+  .campaign-card[data-card-state='Deactivate'],
+  .campaign-card[data-card-state='Appear'],
+  .campaign-card[data-card-state='Disappear'] {
     animation: none !important;
-    transform: translateY(var(--campaign-base-lift)) scale(var(--campaign-scale));
   }
   .campaign-icon-glow,
+  .campaign-icon-rays-wrap,
   .campaign-icon-rays,
   .campaign-icon-rays::before,
   .campaign-icon-rays::after {
