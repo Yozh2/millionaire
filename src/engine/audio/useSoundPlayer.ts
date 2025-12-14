@@ -14,13 +14,23 @@ import type { OscillatorSoundKey } from '../utils/audioPlayer';
 
 export type TaggedSoundId = 'campaignSelect';
 
-const SOUND_EFFECT_KEY_ALIASES: Partial<
-  Record<keyof GameConfig['audio']['sounds'], keyof GameConfig['audio']['sounds']>
+const SOUND_EFFECT_KEY_FALLBACKS: Partial<
+  Record<
+    keyof GameConfig['audio']['sounds'],
+    ReadonlyArray<keyof GameConfig['audio']['sounds']>
+  >
 > = {
-  lifelineFifty: 'hintReduceButton',
-  lifelinePhone: 'hintCallButton',
-  lifelineAudience: 'hintVoteButton',
-  takeMoneyButton: 'hintTakeMoneyButton',
+  lifelineFifty: ['hintReduceButton'],
+  hintReduceButton: ['lifelineFifty'],
+
+  lifelinePhone: ['hintCallButton'],
+  hintCallButton: ['lifelinePhone'],
+
+  lifelineAudience: ['hintVoteButton'],
+  hintVoteButton: ['lifelineAudience'],
+
+  takeMoneyButton: ['hintTakeMoneyButton'],
+  hintTakeMoneyButton: ['takeMoneyButton'],
 };
 
 export interface UseSoundPlayerReturn {
@@ -65,7 +75,10 @@ export function useSoundPlayer(config: GameConfig): UseSoundPlayerReturn {
 
       warmUpIfNeeded();
 
-      const resolvedKey = SOUND_EFFECT_KEY_ALIASES[key] ?? key;
+      const candidates = [key, ...(SOUND_EFFECT_KEY_FALLBACKS[key] ?? [])];
+      const resolvedKey =
+        candidates.find((candidate) => !!config.audio.sounds[candidate]) ?? key;
+
       const soundFile = config.audio.sounds[resolvedKey];
 
       if (soundFile) {

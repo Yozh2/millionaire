@@ -17,7 +17,9 @@
 
 import './ui/styles/engine.css';
 
-// Types
+// =========================
+// Types (public contract)
+// =========================
 export type {
   Question,
   QuestionPool,
@@ -50,54 +52,19 @@ export type {
   EffectsAPI,
 } from './types';
 
-// Hooks
-export { useGameState, type UseGameStateReturn } from './ui/hooks/useGameState';
-export { useAudio, type UseAudioReturn } from './ui/hooks/useAudio';
-
-// Utils
-export {
-  getBasePath,
-  getAssetPaths,
-  checkFileExists,
-  resolveAssetPath,
-  type AssetType,
-} from './utils/assetLoader';
-
-export {
-  setGameId,
-  setSoundEnabled,
-  isSoundEnabled,
-  playSound,
-  playSoundByType,
-  playMusic,
-  playVoice,
-  preloadSounds,
-  clearAudioCache,
-  ensureAudioContext,
-  preDecodeAudio,
-  warmUpAudioContext,
-  isAudioDecoded,
-} from './utils/audioPlayer';
-
-export {
-  selectQuestionsFromPool,
-  calculatePrizeLadder,
-  getGuaranteedPrize,
-  getQuestionDifficulty,
-} from './game';
-
-// UI entry + screens
+// =========================
+// UI entry (primary exports)
+// =========================
 export { MillionaireGame } from './ui/MillionaireGame';
-export { StartScreen } from './ui/screens/StartScreen';
-export { GameScreen } from './ui/screens/GameScreen';
-export { EndScreen } from './ui/screens/EndScreen';
 export {
   LoadingScreen,
   LoadingIndicator,
   type LoadingScreenProps,
 } from './ui/screens/LoadingScreen';
 
-// UI utils (for custom coin drawing)
+// =========================
+// UI primitives / effects
+// =========================
 export { ParticleCanvas, type EffectType, drawDefaultCoin } from './ui/effects/ParticleCanvas';
 
 // Error boundary (app-level safety)
@@ -113,10 +80,16 @@ export {
   DefaultMoneyIcon,
 } from './ui/icons/DefaultIcons';
 
-// Context
+// =========================
+// Theme
+// =========================
 export { ThemeProvider, useTheme, defaultTheme } from './ui/theme';
 
-// Hooks
+// =========================
+// Hooks (public)
+// =========================
+export { useGameState, type UseGameStateReturn } from './ui/hooks/useGameState';
+export { useAudio, type UseAudioReturn } from './ui/hooks/useAudio';
 export {
   useFavicon,
   useGameIcon,
@@ -129,10 +102,14 @@ export {
   type PreloadState,
 } from './ui/hooks';
 
-// Services
+// =========================
+// Services (advanced)
+// =========================
 export { assetLoader, type LoadLevel, type AssetManifest } from './services';
 
+// =========================
 // Constants
+// =========================
 export {
   MAX_QUESTIONS_PER_TIER,
   DIFFICULTY_TIERS,
