@@ -301,11 +301,12 @@
     rgba(255, 255, 255, 0) 60%,
     rgba(255, 255, 255, 0) 100%
   );
-  transform: translate(var(--campaign-glareX), var(--campaign-glareY));
+  transform: translate(var(--campaign-glareX), var(--campaign-glareY))
+    translateZ(36px);
   opacity: calc(var(--campaign-glare) * 0.85);
   mix-blend-mode: screen;
   filter: blur(0.2px);
-  z-index: 1;
+  z-index: 50;
 }
 
 .campaign-icon-glow {

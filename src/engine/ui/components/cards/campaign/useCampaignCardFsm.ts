@@ -17,7 +17,7 @@ const EASE_MS = 140;
 const HOVER_Y = -16; // px
 const BOB_RANGE = 7; // px
 const BOB_PERIOD = 3.0; // s
-const TILT_MAX = 7; // deg
+const TILT_MAX = 9; // deg
 const GLARE_SHIFT = 28; // px
 
 // Damped spring: a = -k(x-target) - c*v
