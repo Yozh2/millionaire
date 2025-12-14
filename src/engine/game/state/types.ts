@@ -4,6 +4,9 @@ export interface LifelineAvailabilityState {
   fifty: boolean;
   phone: boolean;
   audience: boolean;
+  host: boolean;
+  switch: boolean;
+  double: boolean;
 }
 
 export interface GameDomainState {
@@ -21,6 +24,9 @@ export interface GameDomainState {
   lifelineAvailability: LifelineAvailabilityState;
   lifelineResult: LifelineResult;
 
+  doubleDipArmed: boolean;
+  doubleDipStrikeUsed: boolean;
+
   wonPrize: string;
 }
 
@@ -33,8 +39,16 @@ export const createInitialGameDomainState = (): GameDomainState => ({
   selectedAnswerDisplayIndex: null,
   shuffledAnswers: [0, 1, 2, 3],
   eliminatedAnswerDisplayIndices: [],
-  lifelineAvailability: { fifty: true, phone: true, audience: true },
+  lifelineAvailability: {
+    fifty: true,
+    phone: true,
+    audience: true,
+    host: false,
+    switch: false,
+    double: false,
+  },
   lifelineResult: null,
+  doubleDipArmed: false,
+  doubleDipStrikeUsed: false,
   wonPrize: '0',
 });
-

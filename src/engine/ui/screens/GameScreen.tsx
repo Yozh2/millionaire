@@ -45,6 +45,9 @@ export function GameScreen({
     useLifelineFifty: activateLifelineFifty,
     useLifelinePhone: activateLifelinePhone,
     useLifelineAudience: activateLifelineAudience,
+    useLifelineHost: activateLifelineHost,
+    useLifelineSwitch: activateLifelineSwitch,
+    useLifelineDouble: activateLifelineDouble,
     takeMoney: takeMoneyAction,
   } = gameState;
 
@@ -63,6 +66,9 @@ export function GameScreen({
   const lifelineConfigFifty = config.lifelines.fifty ?? config.lifelines.fiftyFifty;
   const lifelineConfigPhone = config.lifelines.phone ?? config.lifelines.phoneAFriend;
   const lifelineConfigAudience = config.lifelines.audience ?? config.lifelines.askAudience;
+  const lifelineConfigHost = config.lifelines.host;
+  const lifelineConfigSwitch = config.lifelines.switch;
+  const lifelineConfigDouble = config.lifelines.double;
 
   const getButtonCenterOrigin = (target: HTMLElement): { x: number; y: number } => {
     const rect = target.getBoundingClientRect();
@@ -105,6 +111,8 @@ export function GameScreen({
       // Player won! Play victory sound and music
       audio.playSoundEffect('victory');
       audio.playVictory();
+    } else if (result === 'retry') {
+      audio.playSoundEffect('defeat');
     } else if (result === 'wrong') {
       audio.playSoundEffect('defeat');
       audio.playGameOver();
@@ -137,6 +145,24 @@ export function GameScreen({
     audio.playSoundEffect('lifelineAudience');
     triggerLifelinePulse(e.currentTarget, '#14b8a6');
     activateLifelineAudience();
+  };
+
+  const handleAskHostWithSound = (e: React.MouseEvent<HTMLButtonElement>) => {
+    audio.playSoundEffect('lifelineHost');
+    triggerLifelinePulse(e.currentTarget, '#a855f7');
+    activateLifelineHost();
+  };
+
+  const handleSwitchQuestionWithSound = (e: React.MouseEvent<HTMLButtonElement>) => {
+    audio.playSoundEffect('lifelineSwitch');
+    triggerLifelinePulse(e.currentTarget, '#d946ef');
+    activateLifelineSwitch();
+  };
+
+  const handleDoubleDipWithSound = (e: React.MouseEvent<HTMLButtonElement>) => {
+    audio.playSoundEffect('lifelineDouble');
+    triggerLifelinePulse(e.currentTarget, '#f43f5e');
+    activateLifelineDouble();
   };
 
   const handleTakeMoneyWithSound = (_e: React.MouseEvent<HTMLButtonElement>) => {
@@ -181,9 +207,15 @@ export function GameScreen({
           lifelineConfigFifty={lifelineConfigFifty}
           lifelineConfigPhone={lifelineConfigPhone}
           lifelineConfigAudience={lifelineConfigAudience}
+          lifelineConfigHost={lifelineConfigHost}
+          lifelineConfigSwitch={lifelineConfigSwitch}
+          lifelineConfigDouble={lifelineConfigDouble}
           onFifty={handleFiftyFiftyWithSound}
           onPhone={handlePhoneAFriendWithSound}
           onAudience={handleAskAudienceWithSound}
+          onHost={handleAskHostWithSound}
+          onSwitch={handleSwitchQuestionWithSound}
+          onDouble={handleDoubleDipWithSound}
         />
 
         <LifelineResultPanel

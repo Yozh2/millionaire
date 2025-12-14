@@ -422,8 +422,33 @@ export interface LifelineAudienceResult {
   percentages: number[];
 }
 
+/** Lifeline result from "Ask-the-Host" */
+export interface LifelineHostResult {
+  type: 'host';
+  suggestedDisplayIndex: number;
+  answerText: string;
+  confidence: 'confident' | 'uncertain';
+}
+
+/** Lifeline result from "Switch-the-Question" */
+export interface LifelineSwitchResult {
+  type: 'switch';
+}
+
+/** Lifeline result from "Double Dip" */
+export interface LifelineDoubleResult {
+  type: 'double';
+  stage: 'armed' | 'strike';
+}
+
 /** Union type for all lifeline result overlays */
-export type LifelineResult = LifelinePhoneResult | LifelineAudienceResult | null;
+export type LifelineResult =
+  | LifelinePhoneResult
+  | LifelineAudienceResult
+  | LifelineHostResult
+  | LifelineSwitchResult
+  | LifelineDoubleResult
+  | null;
 
 /**
  * v1 legacy names (kept for compatibility during migration)

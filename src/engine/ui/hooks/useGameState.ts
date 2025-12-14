@@ -63,6 +63,9 @@ export interface GameStateData {
     fifty: boolean;
     phone: boolean;
     audience: boolean;
+    host: boolean;
+    switch: boolean;
+    double: boolean;
   };
 
   /** Prize won (as string) */
@@ -97,7 +100,7 @@ export interface GameStateActions {
   /** Handle answer click */
   handleAnswer: (
     displayIndex: number
-  ) => Promise<'correct' | 'wrong' | 'won' | 'ignored'>;
+  ) => Promise<'correct' | 'wrong' | 'won' | 'retry' | 'ignored'>;
 
   /** Take current winnings and leave (legacy name) */
   takeTheMoney: () => void;
@@ -122,6 +125,15 @@ export interface GameStateActions {
 
   /** Use Ask-the-Audience lifeline (preferred name) */
   useLifelineAudience: () => void;
+
+  /** Use Ask-the-Host lifeline (preferred name) */
+  useLifelineHost: () => void;
+
+  /** Use Switch-the-Question lifeline (preferred name) */
+  useLifelineSwitch: () => void;
+
+  /** Use Double Dip lifeline (preferred name) */
+  useLifelineDouble: () => void;
 
   /** Clear current hint (legacy name) */
   clearHint: () => void;
@@ -213,6 +225,14 @@ export const useGameState = (config: GameConfig): UseGameStateReturn => {
       type: 'START_GAME',
       campaignId: state.selectedCampaignId,
       session,
+      lifelineAvailability: {
+        fifty: (config.lifelines.fifty?.enabled ?? config.lifelines.fiftyFifty.enabled) ?? true,
+        phone: (config.lifelines.phone?.enabled ?? config.lifelines.phoneAFriend.enabled) ?? true,
+        audience: (config.lifelines.audience?.enabled ?? config.lifelines.askAudience.enabled) ?? true,
+        host: config.lifelines.host?.enabled ?? false,
+        switch: config.lifelines.switch?.enabled ?? false,
+        double: config.lifelines.double?.enabled ?? false,
+      },
     });
   }, [config, state.selectedCampaignId]);
 
@@ -236,7 +256,7 @@ export const useGameState = (config: GameConfig): UseGameStateReturn => {
   const handleAnswer = useCallback(
     async (
       displayIndex: number
-    ): Promise<'correct' | 'wrong' | 'won' | 'ignored'> => {
+    ): Promise<'correct' | 'wrong' | 'won' | 'retry' | 'ignored'> => {
       if (state.selectedAnswerDisplayIndex !== null) return 'ignored';
       if (state.eliminatedAnswerDisplayIndices.includes(displayIndex)) return 'ignored';
 
@@ -334,6 +354,70 @@ export const useGameState = (config: GameConfig): UseGameStateReturn => {
     });
   }, [state]);
 
+  const useLifelineHost = useCallback(() => {
+    if (!state.lifelineAvailability.host) return;
+    if (state.selectedAnswerDisplayIndex !== null) return;
+    const question = selectCurrentQuestionData(state);
+    if (!question) return;
+
+    const rng = Math.random;
+    const correctDisplayIndex = state.shuffledAnswers.indexOf(question.correct);
+    const isConfident = rng() > 0.22;
+
+    const available = [0, 1, 2, 3].filter(
+      (i) => !state.eliminatedAnswerDisplayIndices.includes(i)
+    );
+    const wrongChoices = available.filter((i) => i !== correctDisplayIndex);
+    const suggestedDisplayIndex =
+      isConfident || wrongChoices.length === 0
+        ? correctDisplayIndex
+        : wrongChoices[Math.floor(rng() * wrongChoices.length)]!;
+
+    const originalIndex = state.shuffledAnswers[suggestedDisplayIndex] ?? question.correct;
+    const answerText = question.answers[originalIndex] ?? '';
+
+    dispatch({
+      type: 'APPLY_LIFELINE_HOST',
+      result: {
+        type: 'host',
+        suggestedDisplayIndex,
+        answerText,
+        confidence: isConfident ? 'confident' : 'uncertain',
+      },
+    });
+  }, [state]);
+
+  const useLifelineSwitch = useCallback(() => {
+    if (!state.lifelineAvailability.switch) return;
+    if (state.selectedAnswerDisplayIndex !== null) return;
+    if (state.questions.length < 2) return;
+    if (state.currentQuestionIndex >= state.questions.length - 1) return;
+
+    const rng = Math.random;
+    const remainingIndices = [];
+    for (let i = state.currentQuestionIndex + 1; i < state.questions.length; i += 1) {
+      remainingIndices.push(i);
+    }
+    if (remainingIndices.length === 0) return;
+
+    const swapWithIndex =
+      remainingIndices[Math.floor(rng() * remainingIndices.length)]!;
+
+    dispatch({
+      type: 'APPLY_LIFELINE_SWITCH',
+      swapWithIndex,
+      nextShuffledAnswers: shuffleArray([0, 1, 2, 3], rng),
+      result: { type: 'switch' },
+    });
+  }, [state]);
+
+  const useLifelineDouble = useCallback(() => {
+    if (!state.lifelineAvailability.double) return;
+    if (state.selectedAnswerDisplayIndex !== null) return;
+
+    dispatch({ type: 'APPLY_LIFELINE_DOUBLE', result: { type: 'double', stage: 'armed' } });
+  }, [state]);
+
   const clearHint = useCallback(() => {
     dispatch({ type: 'CLEAR_LIFELINE_RESULT' });
   }, []);
@@ -377,6 +461,9 @@ export const useGameState = (config: GameConfig): UseGameStateReturn => {
     useLifelinePhone,
     useAskAudience,
     useLifelineAudience,
+    useLifelineHost,
+    useLifelineSwitch,
+    useLifelineDouble,
     clearHint,
     clearLifelineResult,
   };

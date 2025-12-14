@@ -11,6 +11,9 @@ const allowed: Record<GameState, ReadonlySet<GameAction['type']>> = {
     'APPLY_LIFELINE_FIFTY',
     'APPLY_LIFELINE_PHONE',
     'APPLY_LIFELINE_AUDIENCE',
+    'APPLY_LIFELINE_HOST',
+    'APPLY_LIFELINE_SWITCH',
+    'APPLY_LIFELINE_DOUBLE',
     'FORCE_WIN',
     'NEW_GAME',
   ]),
@@ -23,4 +26,3 @@ export const canDispatchInPhase = (
   phase: GameState,
   actionType: GameAction['type']
 ): boolean => allowed[phase].has(actionType);
-

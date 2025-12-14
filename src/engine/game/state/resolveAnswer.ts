@@ -17,6 +17,9 @@ export const resolveAnswer = (state: GameDomainState, displayIndex: number): Res
   const totalQuestions = selectTotalQuestions(state);
 
   if (originalIndex !== correctOriginalIndex) {
+    if (state.doubleDipArmed && !state.doubleDipStrikeUsed) {
+      return { outcome: 'retry', wonPrize: state.wonPrize };
+    }
     return { outcome: 'wrong', wonPrize: selectGuaranteedPrizeOnLoss(state) };
   }
 
@@ -26,4 +29,3 @@ export const resolveAnswer = (state: GameDomainState, displayIndex: number): Res
 
   return { outcome: 'correct', wonPrize: state.wonPrize };
 };
-

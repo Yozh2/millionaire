@@ -4,6 +4,9 @@ import type { GameConfig, LifelineResult, ThemeColors } from '../../types';
 import { Panel, PanelHeader } from '../components/panel';
 import { LifelinePhonePanel } from './lifelines/LifelinePhonePanel';
 import { LifelineAudiencePanel } from './lifelines/LifelineAudiencePanel';
+import { LifelineHostPanel } from './lifelines/LifelineHostPanel';
+import { LifelineSwitchPanel } from './lifelines/LifelineSwitchPanel';
+import { LifelineDoublePanel } from './lifelines/LifelineDoublePanel';
 
 interface LifelineResultPanelProps {
   lifelineResult: LifelineResult;
@@ -35,6 +38,17 @@ export function LifelineResultPanel({
         a.percentages.every((value, idx) => value === b.percentages[idx])
       );
     }
+    if (a.type === 'host' && b.type === 'host') {
+      return (
+        a.suggestedDisplayIndex === b.suggestedDisplayIndex &&
+        a.answerText === b.answerText &&
+        a.confidence === b.confidence
+      );
+    }
+    if (a.type === 'switch' && b.type === 'switch') return true;
+    if (a.type === 'double' && b.type === 'double') {
+      return a.stage === b.stage;
+    }
     return false;
   };
 
@@ -63,11 +77,23 @@ export function LifelineResultPanel({
 
   if (!displayed) return null;
 
-  const headerText =
-    displayed.type === 'phone'
-      ? (config.strings.lifelinePhoneHeader ?? config.strings.hintPhoneHeader)
-      : (config.strings.lifelineAudienceHeader ??
-        config.strings.hintAudienceHeader);
+  const headerText = (() => {
+    if (displayed.type === 'phone') {
+      return config.strings.lifelinePhoneHeader ?? config.strings.hintPhoneHeader;
+    }
+    if (displayed.type === 'audience') {
+      return (
+        config.strings.lifelineAudienceHeader ?? config.strings.hintAudienceHeader
+      );
+    }
+    if (displayed.type === 'host') {
+      return config.lifelines.host?.name ?? 'Помощь ведущего';
+    }
+    if (displayed.type === 'switch') {
+      return config.lifelines.switch?.name ?? 'Замена вопроса';
+    }
+    return config.lifelines.double?.name ?? 'Право на ошибку';
+  })();
 
   const senderLabel =
     config.strings.lifelineSenderLabel ?? config.strings.hintSenderLabel;
@@ -91,6 +117,27 @@ export function LifelineResultPanel({
 
         {displayed.type === 'audience' && (
           <LifelineAudiencePanel theme={theme} percentages={displayed.percentages} />
+        )}
+
+        {displayed.type === 'host' && (
+          <LifelineHostPanel
+            icon={config.lifelines.host?.icon ?? '🎭'}
+            result={displayed}
+          />
+        )}
+
+        {displayed.type === 'switch' && (
+          <LifelineSwitchPanel
+            icon={config.lifelines.switch?.icon ?? '🔁'}
+            result={displayed}
+          />
+        )}
+
+        {displayed.type === 'double' && (
+          <LifelineDoublePanel
+            icon={config.lifelines.double?.icon ?? '🎯'}
+            result={displayed}
+          />
         )}
       </div>
     </Panel>

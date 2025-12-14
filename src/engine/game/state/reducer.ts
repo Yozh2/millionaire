@@ -33,8 +33,10 @@ export const gameReducer = (
         currentQuestionIndex: 0,
         selectedAnswerDisplayIndex: null,
         eliminatedAnswerDisplayIndices: [],
-        lifelineAvailability: { fifty: true, phone: true, audience: true },
+        lifelineAvailability: action.lifelineAvailability,
         lifelineResult: null,
+        doubleDipArmed: false,
+        doubleDipStrikeUsed: false,
         wonPrize: '0',
       };
     }
@@ -70,6 +72,25 @@ export const gameReducer = (
       if (state.phase !== 'playing') return state;
       if (state.selectedAnswerDisplayIndex === null) return state;
 
+      if (action.outcome === 'retry') {
+        if (!state.doubleDipArmed) return state;
+        if (state.doubleDipStrikeUsed) return state;
+
+        const eliminated = state.eliminatedAnswerDisplayIndices.includes(
+          state.selectedAnswerDisplayIndex
+        )
+          ? state.eliminatedAnswerDisplayIndices
+          : [...state.eliminatedAnswerDisplayIndices, state.selectedAnswerDisplayIndex];
+
+        return {
+          ...state,
+          selectedAnswerDisplayIndex: null,
+          eliminatedAnswerDisplayIndices: eliminated,
+          doubleDipStrikeUsed: true,
+          lifelineResult: { type: 'double', stage: 'strike' },
+        };
+      }
+
       if (action.outcome === 'correct') {
         return {
           ...state,
@@ -77,6 +98,8 @@ export const gameReducer = (
           selectedAnswerDisplayIndex: null,
           eliminatedAnswerDisplayIndices: [],
           shuffledAnswers: action.nextShuffledAnswers ?? state.shuffledAnswers,
+          doubleDipArmed: false,
+          doubleDipStrikeUsed: false,
         };
       }
 
@@ -84,6 +107,8 @@ export const gameReducer = (
         ...state,
         phase: action.outcome === 'won' ? 'won' : 'lost',
         wonPrize: action.wonPrize,
+        doubleDipArmed: false,
+        doubleDipStrikeUsed: false,
       };
     }
 
@@ -95,6 +120,8 @@ export const gameReducer = (
         ...state,
         phase: 'took_money',
         wonPrize: state.prizeLadder.values[state.currentQuestionIndex - 1] ?? '0',
+        doubleDipArmed: false,
+        doubleDipStrikeUsed: false,
       };
     }
 
@@ -138,8 +165,59 @@ export const gameReducer = (
       };
     }
 
+    case 'APPLY_LIFELINE_HOST': {
+      if (!state.lifelineAvailability.host) return state;
+      if (state.phase !== 'playing') return state;
+      if (state.selectedAnswerDisplayIndex !== null) return state;
+
+      return {
+        ...state,
+        lifelineAvailability: { ...state.lifelineAvailability, host: false },
+        lifelineResult: action.result,
+      };
+    }
+
+    case 'APPLY_LIFELINE_SWITCH': {
+      if (!state.lifelineAvailability.switch) return state;
+      if (state.phase !== 'playing') return state;
+      if (state.selectedAnswerDisplayIndex !== null) return state;
+      if (action.swapWithIndex === state.currentQuestionIndex) return state;
+      if (action.swapWithIndex < 0 || action.swapWithIndex >= state.questions.length) {
+        return state;
+      }
+
+      const questions = [...state.questions];
+      const tmp = questions[state.currentQuestionIndex];
+      questions[state.currentQuestionIndex] = questions[action.swapWithIndex]!;
+      questions[action.swapWithIndex] = tmp!;
+
+      return {
+        ...state,
+        questions,
+        shuffledAnswers: action.nextShuffledAnswers,
+        eliminatedAnswerDisplayIndices: [],
+        lifelineAvailability: { ...state.lifelineAvailability, switch: false },
+        lifelineResult: action.result,
+        doubleDipArmed: false,
+        doubleDipStrikeUsed: false,
+      };
+    }
+
+    case 'APPLY_LIFELINE_DOUBLE': {
+      if (!state.lifelineAvailability.double) return state;
+      if (state.phase !== 'playing') return state;
+      if (state.selectedAnswerDisplayIndex !== null) return state;
+
+      return {
+        ...state,
+        lifelineAvailability: { ...state.lifelineAvailability, double: false },
+        lifelineResult: action.result,
+        doubleDipArmed: true,
+        doubleDipStrikeUsed: false,
+      };
+    }
+
     default:
       return state;
   }
 };
-
