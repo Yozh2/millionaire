@@ -2,41 +2,63 @@ import { useMemo } from 'react';
 import type { MouseEvent } from 'react';
 
 import type { GameConfig } from '../../../types';
-import { Panel } from '../panel';
+import { Panel, PanelHeader } from '../panel';
 import { LifelineButton } from '../buttons';
+import { useTheme } from '../../theme';
 
-function HeadphonesIcon() {
+function AirPodsProIcon() {
   return (
     <svg
-      viewBox="0 0 64 64"
-      width="56"
-      height="56"
+      viewBox="0 0 96 64"
+      width="68"
+      height="52"
       aria-hidden="true"
       focusable="false"
       style={{ filter: 'drop-shadow(0 0 18px rgba(0,0,0,0.45))' }}
     >
       <defs>
-        <linearGradient id="hc_g" x1="0" y1="0" x2="0" y2="1">
+        <linearGradient id="airpods_g" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0" stopColor="rgba(255,255,255,0.95)" />
           <stop offset="1" stopColor="rgba(255,255,255,0.55)" />
         </linearGradient>
+        <linearGradient id="airpods_hi" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stopColor="rgba(255,255,255,0.95)" />
+          <stop offset="1" stopColor="rgba(255,255,255,0.2)" />
+        </linearGradient>
       </defs>
+
+      {/* Left earbud */}
       <path
-        d="M12 34c0-11 9-20 20-20s20 9 20 20"
-        fill="none"
-        stroke="url(#hc_g)"
-        strokeWidth="6"
-        strokeLinecap="round"
+        d="M23 15c0-6 5-11 11-11h2c6 0 11 5 11 11v12c0 7-6 13-13 13s-11-4-11-10V15z"
+        fill="url(#airpods_g)"
+        opacity="0.95"
       />
       <path
-        d="M12 34v13c0 3 2 5 5 5h3c3 0 5-2 5-5V40c0-3-2-5-5-5h-3c-3 0-5 2-5 5z"
-        fill="url(#hc_g)"
-        opacity="0.9"
+        d="M30 44V30c0-2 2-4 4-4h2c2 0 4 2 4 4v14c0 4-2 6-5 6s-5-2-5-6z"
+        fill="url(#airpods_g)"
+        opacity="0.92"
       />
       <path
-        d="M52 34v13c0 3-2 5-5 5h-3c-3 0-5-2-5-5V40c0-3 2-5 5-5h3c3 0 5 2 5 5z"
-        fill="url(#hc_g)"
-        opacity="0.9"
+        d="M28 16c0-4 3-7 7-7h2c4 0 7 3 7 7v6c0 4-3 7-7 7h-2c-4 0-7-3-7-7v-6z"
+        fill="url(#airpods_hi)"
+        opacity="0.35"
+      />
+
+      {/* Right earbud */}
+      <path
+        d="M73 15c0-6-5-11-11-11h-2c-6 0-11 5-11 11v12c0 7 6 13 13 13s11-4 11-10V15z"
+        fill="url(#airpods_g)"
+        opacity="0.95"
+      />
+      <path
+        d="M66 44V30c0-2-2-4-4-4h-2c-2 0-4 2-4 4v14c0 4 2 6 5 6s5-2 5-6z"
+        fill="url(#airpods_g)"
+        opacity="0.92"
+      />
+      <path
+        d="M68 16c0-4-3-7-7-7h-2c-4 0-7 3-7 7v6c0 4 3 7 7 7h2c4 0 7-3 7-7v-6z"
+        fill="url(#airpods_hi)"
+        opacity="0.35"
       />
     </svg>
   );
@@ -54,13 +76,17 @@ export interface SoundConsentOverlayProps {
   config: GameConfig;
   onEnableSound: () => void;
   onDisableSound: () => void;
+  isClosing?: boolean;
 }
 
 export function SoundConsentOverlay({
   config,
   onEnableSound,
   onDisableSound,
+  isClosing = false,
 }: SoundConsentOverlayProps) {
+  const theme = useTheme();
+
   const copy = useMemo(() => {
     const defaults = {
       title: 'Звук в игре',
@@ -89,6 +115,9 @@ export function SoundConsentOverlay({
     onDisableSound();
   };
 
+  const buttonBase =
+    'border-3 h-12 w-full flex items-center justify-center bg-gradient-to-b';
+
   return (
     <div
       className="absolute inset-0 z-[100] flex items-center justify-center"
@@ -96,37 +125,42 @@ export function SoundConsentOverlay({
       aria-modal="true"
       aria-label={copy.title}
     >
-      <div className="absolute inset-0 bg-black/70 backdrop-blur-[2px]" />
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-[1px]" />
 
       <div className="relative w-full max-w-lg px-4">
-        <Panel className="p-6 md:p-7" variant="headless">
-          <div className="flex flex-col items-center text-center gap-4">
-            <HeadphonesIcon />
+        <Panel
+          className={`p-1 ${isClosing ? 'animate-dust-out' : 'animate-slide-in'}`}
+        >
+          <PanelHeader>{copy.title}</PanelHeader>
 
-            <div className="space-y-2">
-              <div className="text-xl font-bold tracking-wide text-amber-100">
-                {copy.title}
-              </div>
-              <div className="text-amber-100/90 leading-relaxed whitespace-pre-line">
-                {copy.message}
-              </div>
+          <div className="p-5 md:p-6 flex flex-col items-center text-center gap-4">
+            <AirPodsProIcon />
+
+            <div
+              className={`leading-relaxed whitespace-pre-line ${theme.textSecondary}`}
+            >
+              {copy.message}
             </div>
 
-            <div className="w-full grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+            <div className="w-full grid grid-cols-2 gap-3 pt-1">
               <LifelineButton
                 icon={<VolumeOnIcon />}
-                label={copy.withSound}
-                className="w-full py-3"
-                glow="rgba(80, 200, 255, 0.55)"
-                boxShadow="0 0 18px rgba(80, 200, 255, 0.22)"
+                ariaLabel={copy.withSound}
+                title={copy.withSound}
+                disabled={isClosing}
+                className={`${buttonBase} ${theme.textLifeline} ${theme.borderLifeline} ${theme.bgLifeline}`}
+                glow={theme.glow}
+                boxShadow={`0 0 15px ${theme.glow}`}
                 onClick={handleEnable}
               />
               <LifelineButton
                 icon={<VolumeOffIcon />}
-                label={copy.withoutSound}
-                className="w-full py-3"
-                glow="rgba(255, 160, 80, 0.45)"
-                boxShadow="0 0 18px rgba(255, 160, 80, 0.18)"
+                ariaLabel={copy.withoutSound}
+                title={copy.withoutSound}
+                disabled={isClosing}
+                className={`${buttonBase} ${theme.textLifeline} ${theme.borderLifeline} ${theme.bgLifeline}`}
+                glow={theme.glowSecondary ?? theme.glow}
+                boxShadow={`0 0 12px ${theme.glowSecondary ?? theme.glow}55`}
                 onClick={handleDisable}
               />
             </div>
@@ -138,4 +172,3 @@ export function SoundConsentOverlay({
 }
 
 export default SoundConsentOverlay;
-

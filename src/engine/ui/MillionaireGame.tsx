@@ -97,6 +97,7 @@ export function MillionaireGame({ config }: MillionaireGameProps) {
       return false;
     }
   });
+  const [isSoundConsentClosing, setIsSoundConsentClosing] = useState(false);
 
   useEffect(() => {
     try {
@@ -104,6 +105,7 @@ export function MillionaireGame({ config }: MillionaireGameProps) {
     } catch {
       setIsSoundConsentDone(false);
     }
+    setIsSoundConsentClosing(false);
   }, [soundConsentKey]);
 
   // Preload campaign assets when campaign is selected (background)
@@ -234,12 +236,18 @@ export function MillionaireGame({ config }: MillionaireGameProps) {
     if (!audio.isMusicPlaying) {
       audio.toggleMusic();
     }
+    audio.playSoundEffect('answerButton');
     audio.playMainMenu();
-    markSoundConsentDone();
+    setIsSoundConsentClosing(true);
+    window.setTimeout(() => {
+      markSoundConsentDone();
+      setIsSoundConsentClosing(false);
+    }, 220);
   }, [audio, markSoundConsentDone]);
 
   const handleDisableSound = useCallback(() => {
     if (audio.isMusicPlaying) {
+      audio.playSoundEffect('answerButton');
       audio.toggleMusic();
     } else {
       try {
@@ -248,12 +256,18 @@ export function MillionaireGame({ config }: MillionaireGameProps) {
         // ignore storage errors
       }
     }
-    markSoundConsentDone();
+    setIsSoundConsentClosing(true);
+    window.setTimeout(() => {
+      markSoundConsentDone();
+      setIsSoundConsentClosing(false);
+    }, 220);
   }, [audio, markSoundConsentDone]);
 
   const showHeader = !level1Preload.isLoading && !isWaitingForLevel11;
   const showSoundConsent =
-    showHeader && gameState.gameState === 'start' && !isSoundConsentDone;
+    showHeader &&
+    gameState.gameState === 'start' &&
+    (!isSoundConsentDone || isSoundConsentClosing);
 
   const slideshowScreen = useMemo(() => {
     if (gameState.gameState === 'playing') return 'play';
@@ -327,6 +341,7 @@ export function MillionaireGame({ config }: MillionaireGameProps) {
             config={config}
             onEnableSound={handleEnableSound}
             onDisableSound={handleDisableSound}
+            isClosing={isSoundConsentClosing}
           />
         )}
 
