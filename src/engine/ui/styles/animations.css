@@ -1,4 +1,3 @@
-@layer utilities {
 /* ============================================
    Screen Transition Animations
    Beautiful transitions between game screens
@@ -21,20 +20,21 @@
   }
 }
 
+
 /* Screen wrapper with enter animation */
-.screen-transition,
-.screen-transition-dramatic {
+.millionaire-engine .screen-transition,
+.millionaire-engine .screen-transition-dramatic {
   position: relative;
   animation: screen-enter var(--screen-enter-duration, 0.6s) var(--screen-enter-easing, cubic-bezier(0.34, 1.56, 0.64, 1)) forwards;
 }
 
-.screen-transition {
+.millionaire-engine .screen-transition {
   --screen-enter-duration: 0.6s;
   --screen-enter-easing: cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 /* Slower, more dramatic enter for end screens */
-.screen-transition-dramatic {
+.millionaire-engine .screen-transition-dramatic {
   --screen-enter-duration: 0.8s;
   --screen-enter-easing: cubic-bezier(0.22, 1, 0.36, 1);
 }
@@ -66,26 +66,26 @@
 }
 
 /* Stagger delay utilities - use with animate-* classes */
-.stagger-1 { animation-delay: 0.1s !important; }
-.stagger-2 { animation-delay: 0.2s !important; }
-.stagger-3 { animation-delay: 0.3s !important; }
-.stagger-4 { animation-delay: 0.4s !important; }
-.stagger-5 { animation-delay: 0.5s !important; }
-.stagger-6 { animation-delay: 0.6s !important; }
+.millionaire-engine .stagger-1 { animation-delay: 0.1s !important; }
+.millionaire-engine .stagger-2 { animation-delay: 0.2s !important; }
+.millionaire-engine .stagger-3 { animation-delay: 0.3s !important; }
+.millionaire-engine .stagger-4 { animation-delay: 0.4s !important; }
+.millionaire-engine .stagger-5 { animation-delay: 0.5s !important; }
+.millionaire-engine .stagger-6 { animation-delay: 0.6s !important; }
 
-.animate-slide-in {
+.millionaire-engine .animate-slide-in {
   animation: element-slide-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
 }
 
-.animate-pop-in {
+.millionaire-engine .animate-pop-in {
   animation: element-pop-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both;
 }
 
-.animate-prize {
+.millionaire-engine .animate-prize {
   animation: prize-count-up 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both;
 }
 
-.animate-dust-out {
+.millionaire-engine .animate-dust-out {
   animation: panel-dust-out 0.22s ease-in forwards;
 }
 
@@ -120,11 +120,11 @@
   }
 }
 
-.screen-victory {
+.millionaire-engine .screen-victory {
   animation: victory-zoom 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
-.screen-defeat {
+.millionaire-engine .screen-defeat {
   animation: defeat-fade 0.6s ease-out forwards;
 }
 
@@ -238,7 +238,7 @@
   }
 }
 
-.campaign-card {
+.millionaire-engine .campaign-card {
   --campaign-mainY: 0px;
   --campaign-bobY: 0px;
   --campaign-pressY: 0px;
@@ -261,36 +261,36 @@
   cursor: pointer;
 }
 
-.campaign-card[data-card-state='Appear'] {
+.millionaire-engine .campaign-card[data-card-state='Appear'] {
   animation: campaign-card-appear 240ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-.campaign-card[data-card-state='Hover'] {
+.millionaire-engine .campaign-card[data-card-state='Hover'] {
   --campaign-scale: 1.015;
 }
 
-.campaign-card[data-card-state='Press'] {
+.millionaire-engine .campaign-card[data-card-state='Press'] {
   --campaign-pressY: 4px;
   --campaign-scale: 0.99;
 }
 
-.campaign-card[data-card-state='Ease'] {
+.millionaire-engine .campaign-card[data-card-state='Ease'] {
   --campaign-pressY: 0px;
   --campaign-scale: 1;
 }
 
-.campaign-card[data-card-state='Activate'] {
+.millionaire-engine .campaign-card[data-card-state='Activate'] {
   cursor: default;
   --campaign-scale: 1;
   --campaign-pressY: 0px;
 }
 
-.campaign-card[data-card-state='Deactivate'] {
+.millionaire-engine .campaign-card[data-card-state='Deactivate'] {
   --campaign-scale: 1;
   --campaign-pressY: 0px;
 }
 
-.campaign-card-glare {
+.millionaire-engine .campaign-card-glare {
   inset: -40%;
   background: linear-gradient(
     135deg,
@@ -309,7 +309,7 @@
   z-index: 50;
 }
 
-.campaign-icon-glow {
+.millionaire-engine .campaign-icon-glow {
   position: absolute;
   inset: -60%;
   border-radius: 9999px;
@@ -331,7 +331,7 @@
   animation-play-state: paused;
 }
 
-.campaign-icon-glow::before {
+.millionaire-engine .campaign-icon-glow::before {
   content: '';
   position: absolute;
   inset: -12%;
@@ -346,7 +346,7 @@
   opacity: 0.75;
 }
 
-.campaign-icon-rays-wrap {
+.millionaire-engine .campaign-icon-rays-wrap {
   position: absolute;
   inset: -86%;
   border-radius: 9999px;
@@ -360,7 +360,7 @@
   pointer-events: none;
 }
 
-.campaign-icon-rays {
+.millionaire-engine .campaign-icon-rays {
   position: absolute;
   inset: 0;
   border-radius: 9999px;
@@ -383,8 +383,8 @@
   animation-play-state: paused;
 }
 
-.campaign-icon-rays::before,
-.campaign-icon-rays::after {
+.millionaire-engine .campaign-icon-rays::before,
+.millionaire-engine .campaign-icon-rays::after {
   content: '';
   position: absolute;
   inset: 0;
@@ -393,7 +393,7 @@
   pointer-events: none;
 }
 
-.campaign-icon-rays::before {
+.millionaire-engine .campaign-icon-rays::before {
   background:
     repeating-conic-gradient(
       from 220deg,
@@ -410,7 +410,7 @@
   animation-play-state: paused;
 }
 
-.campaign-icon-rays::after {
+.millionaire-engine .campaign-icon-rays::after {
   background:
     repeating-conic-gradient(
       from 40deg,
@@ -428,40 +428,38 @@
   animation-play-state: paused;
 }
 
-.campaign-card[data-selected='true'] .campaign-icon-glow,
-.campaign-card[data-selected='true'] .campaign-icon-rays-wrap {
+.millionaire-engine .campaign-card[data-selected='true'] .campaign-icon-glow,
+.millionaire-engine .campaign-card[data-selected='true'] .campaign-icon-rays-wrap {
   opacity: 1;
   transform: scale(1);
   animation-play-state: running;
 }
 
-.campaign-card[data-selected='true'] .campaign-icon-rays {
+.millionaire-engine .campaign-card[data-selected='true'] .campaign-icon-rays {
   animation-play-state: running;
 }
 
-.campaign-card[data-selected='true'] .campaign-icon-rays-wrap {
+.millionaire-engine .campaign-card[data-selected='true'] .campaign-icon-rays-wrap {
   transition-delay: 90ms;
 }
 
-.campaign-card[data-selected='true'] .campaign-icon-rays::before,
-.campaign-card[data-selected='true'] .campaign-icon-rays::after {
+.millionaire-engine .campaign-card[data-selected='true'] .campaign-icon-rays::before,
+.millionaire-engine .campaign-card[data-selected='true'] .campaign-icon-rays::after {
   animation-play-state: running;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .campaign-card[data-card-state='Activate'],
-  .campaign-card[data-card-state='Deactivate'],
-  .campaign-card[data-card-state='Appear'],
-  .campaign-card[data-card-state='Disappear'] {
+  .millionaire-engine .campaign-card[data-card-state='Activate'],
+  .millionaire-engine .campaign-card[data-card-state='Deactivate'],
+  .millionaire-engine .campaign-card[data-card-state='Appear'],
+  .millionaire-engine .campaign-card[data-card-state='Disappear'] {
     animation: none !important;
   }
-  .campaign-icon-glow,
-  .campaign-icon-rays-wrap,
-  .campaign-icon-rays,
-  .campaign-icon-rays::before,
-  .campaign-icon-rays::after {
+  .millionaire-engine .campaign-icon-glow,
+  .millionaire-engine .campaign-icon-rays-wrap,
+  .millionaire-engine .campaign-icon-rays,
+  .millionaire-engine .campaign-icon-rays::before,
+  .millionaire-engine .campaign-icon-rays::after {
     animation: none !important;
   }
-}
-
 }

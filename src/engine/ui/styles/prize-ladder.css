@@ -1,6 +1,5 @@
-@layer components {
 /* Glare effect for current prize row */
-.prize-row {
+.millionaire-engine .prize-row {
   position: relative;
   overflow: hidden;
   --ladder-number-width: 0rem;
@@ -17,7 +16,7 @@
   gap: 0rem;
 }
 
-.prize-number {
+.millionaire-engine .prize-number {
   grid-column: 1;
   width: 100%;
   text-align: left;
@@ -25,7 +24,7 @@
   justify-content: flex-start;
 }
 
-.prize-stars {
+.millionaire-engine .prize-stars {
   grid-column: 5;
   width: 100%;
   text-align: left;
@@ -33,7 +32,7 @@
   justify-content: flex-start;
 }
 
-.prize-value {
+.millionaire-engine .prize-value {
   grid-column: 3;
   width: 100%;
   text-align: right;
@@ -44,7 +43,7 @@
   justify-content: flex-end;
 }
 
-.prize-row-current::before {
+.millionaire-engine .prize-row-current::before {
   content: '';
   position: absolute;
   top: 0;
@@ -68,6 +67,4 @@
   filter: blur(1px);
   pointer-events: none;
   animation: glare-sweep 1.2s ease-in-out forwards;
-}
-
 }

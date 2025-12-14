@@ -237,7 +237,7 @@ export function MillionaireGame({ config }: MillionaireGameProps) {
   return (
     <ThemeProvider theme={theme}>
       <div
-        className="min-h-screen p-4 transition-all duration-500 relative overflow-hidden flex flex-col"
+        className="millionaire-engine min-h-screen p-4 transition-all duration-500 relative overflow-hidden flex flex-col"
         style={{
           background: getBackgroundStyle(),
           fontFamily: config.fontFamily || DEFAULT_FONT_FAMILY,

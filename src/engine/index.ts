@@ -15,6 +15,8 @@
  * ```
  */
 
+import './ui/styles/engine.css';
+
 // Types
 export type {
   Question,
@@ -25,6 +27,7 @@ export type {
   Campaign,
   Companion,
   LifelineKind,
+  ActionConfig,
   LifelineConfig,
   LifelinesConfig,
   PrizesConfig,

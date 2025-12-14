@@ -1,0 +1,19 @@
+.millionaire-engine,
+.millionaire-engine * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.millionaire-engine {
+  font-family: Arial, Helvetica, sans-serif;
+  background: #000;
+
+  --glare-rest: -150%;
+  --glare-start: -150%;
+  --glare-end: 150%;
+}
