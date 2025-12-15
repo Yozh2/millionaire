@@ -828,7 +828,7 @@ export function PortalHeader({
         minHeight: 156,
         opacity: activated ? 1 : 0,
         transition: 'opacity 260ms ease',
-        pointerEvents: activated ? 'auto' : 'none',
+        pointerEvents: activated ? 'none' : 'none',
       }}
     >
       <div
@@ -849,19 +849,11 @@ export function PortalHeader({
           style={{
             filter:
               'drop-shadow(0 22px 44px rgba(0,0,0,0.55)) drop-shadow(0 0 22px rgba(0,0,0,0.35))',
+            pointerEvents: 'none',
           }}
         />
 
         <div className="absolute inset-0 p-4 flex flex-col justify-center pointer-events-none">
-          <div className="pointer-events-auto">
-            <VolumeButton
-              onClick={onToggleMusic}
-              title={isMusicPlaying ? config.strings.musicOn : config.strings.musicOff}
-            >
-              {isMusicPlaying ? '🔊' : '🔇'}
-            </VolumeButton>
-          </div>
-
           <div className="relative max-w-5xl mx-auto text-center flex items-center justify-center min-h-[165px] md:min-h-[175px]">
             <div
               className="pointer-events-none absolute inset-x-6 top-2 h-32"
@@ -894,6 +886,15 @@ export function PortalHeader({
             </div>
           </div>
         </div>
+      </div>
+
+      <div className="absolute top-3 right-3 pointer-events-auto">
+        <VolumeButton
+          onClick={onToggleMusic}
+          title={isMusicPlaying ? config.strings.musicOn : config.strings.musicOff}
+        >
+          {isMusicPlaying ? '🔊' : '🔇'}
+        </VolumeButton>
       </div>
     </div>
   );
