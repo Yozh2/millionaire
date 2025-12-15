@@ -97,6 +97,9 @@ function powAbs(value: number, power: number) {
 }
 
 function sgn(value: number) {
+  // Avoid discontinuities around -0 / tiny float noise (important for angle=0/2π seam).
+  const EPS = 1e-12;
+  if (Math.abs(value) < EPS) return 0;
   return value < 0 ? -1 : 1;
 }
 
