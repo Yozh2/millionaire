@@ -400,6 +400,7 @@ function usePortalCanvas({
   const tokenRef = useRef(0);
   const sizeRef = useRef({ w: 0, h: 0, dpr: 1 });
   const portalScaleRef = useRef({ x: 0.9, y: 0.85 });
+  const maskPadRef = useRef({ css: 0, px: 0 });
 
   const stateRef = useRef<PortalAnimState>({
     motion: 'open',
@@ -441,13 +442,23 @@ function usePortalCanvas({
       canvas.style.width = `${w}px`;
       canvas.style.height = `${h}px`;
 
-      if (!portalMaskRef.current) portalMaskRef.current = ensureOffscreen(pixelW, pixelH);
-      if (!revealMaskRef.current) revealMaskRef.current = ensureOffscreen(pixelW, pixelH);
+      const layersCount = Math.max(1, Math.round(cfg.layersCount));
+      const maxBlurPx =
+        cfg.featherBasePx + (layersCount - 1) * cfg.blurStepPx;
+      const padCss = Math.ceil(maxBlurPx * cfg.featherMult + 6);
+      const padPx = Math.max(0, Math.ceil(padCss * dpr));
+      maskPadRef.current = { css: padCss, px: padPx };
 
-      if (portalMaskRef.current.width !== pixelW) portalMaskRef.current.width = pixelW;
-      if (portalMaskRef.current.height !== pixelH) portalMaskRef.current.height = pixelH;
-      if (revealMaskRef.current.width !== pixelW) revealMaskRef.current.width = pixelW;
-      if (revealMaskRef.current.height !== pixelH) revealMaskRef.current.height = pixelH;
+      const maskW = pixelW + padPx * 2;
+      const maskH = pixelH + padPx * 2;
+
+      if (!portalMaskRef.current) portalMaskRef.current = ensureOffscreen(maskW, maskH);
+      if (!revealMaskRef.current) revealMaskRef.current = ensureOffscreen(maskW, maskH);
+
+      if (portalMaskRef.current.width !== maskW) portalMaskRef.current.width = maskW;
+      if (portalMaskRef.current.height !== maskH) portalMaskRef.current.height = maskH;
+      if (revealMaskRef.current.width !== maskW) revealMaskRef.current.width = maskW;
+      if (revealMaskRef.current.height !== maskH) revealMaskRef.current.height = maskH;
     };
 
     update();
@@ -455,7 +466,14 @@ function usePortalCanvas({
     const ro = new ResizeObserver(update);
     ro.observe(el);
     return () => ro.disconnect();
-  }, [canvasRef, containerRef]);
+  }, [
+    canvasRef,
+    containerRef,
+    cfg.blurStepPx,
+    cfg.featherBasePx,
+    cfg.featherMult,
+    cfg.layersCount,
+  ]);
 
   const ensureImage = useCallback((src: string) => {
     if (!src) return;
@@ -533,11 +551,13 @@ function usePortalCanvas({
       };
       const layers = layersRef.current;
       const time = (nowMs() - startedAt) / 1000 + st.phaseShift;
+      const padCss = maskPadRef.current.css;
 
       const pm = portalMask.getContext('2d')!;
       pm.setTransform(1, 0, 0, 1, 0, 0);
-      pm.clearRect(0, 0, pixelW, pixelH);
+      pm.clearRect(0, 0, portalMask.width, portalMask.height);
       pm.setTransform(dpr, 0, 0, dpr, 0, 0);
+      pm.translate(padCss, padCss);
       drawPyramidMask(
         pm,
         cfg,
@@ -553,12 +573,13 @@ function usePortalCanvas({
       );
 
       ctx.globalCompositeOperation = 'destination-in';
-      ctx.drawImage(portalMask, 0, 0, w, h);
+      ctx.drawImage(portalMask, -padCss, -padCss, w + padCss * 2, h + padCss * 2);
 
       const rm = revealMask.getContext('2d')!;
       rm.setTransform(1, 0, 0, 1, 0, 0);
-      rm.clearRect(0, 0, pixelW, pixelH);
+      rm.clearRect(0, 0, revealMask.width, revealMask.height);
       rm.setTransform(dpr, 0, 0, dpr, 0, 0);
+      rm.translate(padCss, padCss);
       drawPyramidMask(
         rm,
         cfg,
@@ -573,7 +594,7 @@ function usePortalCanvas({
         st.motion
       );
 
-      ctx.drawImage(revealMask, 0, 0, w, h);
+      ctx.drawImage(revealMask, -padCss, -padCss, w + padCss * 2, h + padCss * 2);
       ctx.globalCompositeOperation = 'source-over';
       raf = requestAnimationFrame(drawFrame);
     };
