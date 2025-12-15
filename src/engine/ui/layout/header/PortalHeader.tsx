@@ -790,7 +790,7 @@ export function PortalHeader({
 
   return (
     <div
-      className={`mb-4 relative overflow-hidden ${className}`}
+      className={`mb-4 relative ${className}`}
       style={{
         minHeight: 200,
         opacity: activated ? 1 : 0,
@@ -800,26 +800,21 @@ export function PortalHeader({
     >
       <div
         ref={containerRef}
-        className="relative w-full"
+        className="relative mx-auto w-full"
         style={{
           aspectRatio: '950 / 300',
-          borderRadius: 12,
-          background:
-            'radial-gradient(ellipse at center, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.55) 60%, rgba(0,0,0,0.7) 100%)',
-          boxShadow:
-            '0 20px 50px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.08)',
+          width: 'min(1400px, calc(100% + 120px))',
+          background: 'transparent',
+          overflow: 'visible',
         }}
       >
-        <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
-
-        <div
-          className="pointer-events-none absolute inset-0"
+        <canvas
+          ref={canvasRef}
+          className="absolute inset-0 w-full h-full"
           style={{
-            background:
-              'radial-gradient(ellipse at center, rgba(0,0,0,0) 0%, rgba(0,0,0,0.22) 58%, rgba(0,0,0,0.62) 100%)',
-            mixBlendMode: 'multiply',
+            filter:
+              'drop-shadow(0 22px 44px rgba(0,0,0,0.55)) drop-shadow(0 0 22px rgba(0,0,0,0.35))',
           }}
-          aria-hidden="true"
         />
 
         <div className="absolute inset-0 p-4 flex flex-col justify-center">

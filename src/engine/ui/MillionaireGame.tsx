@@ -354,7 +354,7 @@ export function MillionaireGame({ config }: MillionaireGameProps) {
           preload="none"
         />
 
-          <div className="max-w-4xl mx-auto w-full flex-1 flex flex-col">
+        <div className="w-full flex-1 flex flex-col">
           {showHeader && (
             <PortalHeader
               config={config}
@@ -365,53 +365,56 @@ export function MillionaireGame({ config }: MillionaireGameProps) {
               isMusicPlaying={audio.isMusicPlaying}
               onToggleMusic={audio.toggleMusic}
               activated={isHeaderActivated}
+              className="z-0 -mb-12 md:-mb-16"
             />
           )}
 
-          <div key={gameState.gameState} className={screenWrapperClass}>
-            {/* Start Screen */}
-            {gameState.gameState === 'start' &&
-              !level1Preload.isLoading &&
-              !isWaitingForLevel11 && (
-              <StartScreen
-                config={config}
-                selectedCampaign={gameState.selectedCampaign}
-                onSelectCampaign={handleSelectCampaign}
-                onStartGame={handleStartGame}
-                onBigButtonPress={handleBigButtonPress}
-                theme={theme}
-              />
-            )}
+          <div className="relative z-10 max-w-4xl mx-auto w-full flex-1 flex flex-col">
+            <div key={gameState.gameState} className={screenWrapperClass}>
+              {/* Start Screen */}
+              {gameState.gameState === 'start' &&
+                !level1Preload.isLoading &&
+                !isWaitingForLevel11 && (
+                <StartScreen
+                  config={config}
+                  selectedCampaign={gameState.selectedCampaign}
+                  onSelectCampaign={handleSelectCampaign}
+                  onStartGame={handleStartGame}
+                  onBigButtonPress={handleBigButtonPress}
+                  theme={theme}
+                />
+              )}
 
-            {/* Game Screen */}
-            {gameState.gameState === 'playing' && gameState.questions.length > 0 && (
-              <GameScreen
-                config={config}
-                gameState={gameState}
-                audio={audio}
-                theme={theme}
-                effects={effects}
-              />
-            )}
+              {/* Game Screen */}
+              {gameState.gameState === 'playing' && gameState.questions.length > 0 && (
+                <GameScreen
+                  config={config}
+                  gameState={gameState}
+                  audio={audio}
+                  theme={theme}
+                  effects={effects}
+                />
+              )}
 
-            {/* End Screen */}
-            {(gameState.gameState === 'won' ||
-              gameState.gameState === 'lost' ||
-              gameState.gameState === 'took_money') && (
-              <EndScreen
-                config={config}
-                gameState={gameState}
-                onNewGame={handleNewGame}
-                onBigButtonPress={handleBigButtonPress}
-                theme={theme}
-                effects={effects}
-              />
-            )}
-          </div>
+              {/* End Screen */}
+              {(gameState.gameState === 'won' ||
+                gameState.gameState === 'lost' ||
+                gameState.gameState === 'took_money') && (
+                <EndScreen
+                  config={config}
+                  gameState={gameState}
+                  onNewGame={handleNewGame}
+                  onBigButtonPress={handleBigButtonPress}
+                  theme={theme}
+                  effects={effects}
+                />
+              )}
+            </div>
 
-          {/* Footer */}
-          <div className="text-center mt-4 text-xs tracking-wide italic text-amber-400/70">
-            {config.strings.footer}
+            {/* Footer */}
+            <div className="text-center mt-4 text-xs tracking-wide italic text-amber-400/70">
+              {config.strings.footer}
+            </div>
           </div>
         </div>
       </div>
