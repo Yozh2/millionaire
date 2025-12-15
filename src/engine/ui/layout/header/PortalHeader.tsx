@@ -12,15 +12,6 @@ import { useHeaderImages } from './useHeaderImages';
 
 type Motion = 'open' | 'close';
 
-function isProbablySafari() {
-  try {
-    const ua = navigator.userAgent;
-    return /Safari/i.test(ua) && !/Chrome|Chromium|Edg|OPR/i.test(ua);
-  } catch {
-    return false;
-  }
-}
-
 function prefersReducedMotion() {
   try {
     return window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches ?? false;
@@ -419,7 +410,6 @@ function getSourceDims(source: CanvasImageSource): { w: number; h: number } | nu
     return { w, h };
   }
 
-  // Safari: OffscreenCanvas may not exist in all versions; keep this loose.
   const anySource = source as unknown as { width?: number; height?: number };
   if (typeof anySource.width === 'number' && typeof anySource.height === 'number') {
     const w = anySource.width;
@@ -448,34 +438,6 @@ function drawCoverImage(
   const dx = (w - dw) / 2;
   const dy = (h - dh) / 2;
   ctx.drawImage(img, dx, dy, dw, dh);
-}
-
-async function loadAndDownscaleImage(
-  src: string,
-  targetW: number,
-  targetH: number
-): Promise<HTMLCanvasElement> {
-  const img = await loadImage(src);
-  const w = Math.max(1, Math.round(targetW));
-  const h = Math.max(1, Math.round(targetH));
-
-  const canvas = document.createElement('canvas');
-  canvas.width = w;
-  canvas.height = h;
-  const ctx = canvas.getContext('2d');
-  if (ctx) {
-    ctx.imageSmoothingEnabled = true;
-    drawCoverImage(ctx, img, w, h);
-  }
-
-  try {
-    // Drop reference to potentially huge decoded backing store.
-    img.src = '';
-  } catch {
-    // ignore
-  }
-
-  return canvas;
 }
 
 type PortalCanvasHandle = {
@@ -508,11 +470,10 @@ function usePortalCanvas({
   closeMs: number;
   opacity: number;
 }): PortalCanvasHandle {
-  const isSafari = useMemo(() => isProbablySafari(), []);
   const reduceMotion = useMemo(() => prefersReducedMotion(), []);
-  const idleMotionEnabled = !reduceMotion && !isSafari;
-  const maxDpr = isSafari ? 1 : 2;
-  const targetFps = isSafari ? 30 : 60;
+  const idleMotionEnabled = !reduceMotion;
+  const maxDpr = 2;
+  const targetFps = 60;
   const maxCachedImages = 12;
 
   const tokenRef = useRef(0);
@@ -610,7 +571,7 @@ function usePortalCanvas({
       canvas.style.width = `${w}px`;
       canvas.style.height = `${h}px`;
 
-      const enableBlur = cfg.enableBlur && !isSafari;
+      const enableBlur = cfg.enableBlur;
       const layersCount = Math.max(1, Math.round(cfg.layersCount));
       const maxBlurPx = enableBlur
         ? cfg.featherBasePx + (layersCount - 1) * cfg.blurStepPx
@@ -647,7 +608,6 @@ function usePortalCanvas({
     cfg.featherBasePx,
     cfg.featherMult,
     cfg.layersCount,
-    isSafari,
     maxDpr,
   ]);
 
@@ -656,10 +616,7 @@ function usePortalCanvas({
     if (imageCacheRef.current.has(src)) return;
     if (pendingLoadsRef.current.has(src)) return;
 
-    const { w, h } = sizeRef.current;
-    const shouldDownscale = isSafari && w > 0 && h > 0;
-
-    const p = (shouldDownscale ? loadAndDownscaleImage(src, w, h) : loadImage(src))
+    const p = loadImage(src)
       .then((imgOrCanvas) => {
         imageCacheRef.current.set(src, imgOrCanvas);
       })
@@ -669,7 +626,7 @@ function usePortalCanvas({
       });
 
     pendingLoadsRef.current.set(src, p);
-  }, [isSafari]);
+  }, []);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -732,7 +689,7 @@ function usePortalCanvas({
       }
       lastFrameMsRef.current = timeNow;
 
-      const enableBlur = cfg.enableBlur && !isSafari;
+      const enableBlur = cfg.enableBlur;
       const effectiveCfg: PortalConfig = enableBlur ? cfg : { ...cfg, enableBlur: false };
 
       const transitionActive =
@@ -844,7 +801,6 @@ function usePortalCanvas({
     ensureImage,
     ensureLoop,
     idleMotionEnabled,
-    isSafari,
     opacity,
     pruneImageCache,
     stopLoop,
@@ -965,7 +921,6 @@ function usePortalCanvas({
 
     devWindow.__millionairePortalHeader = {
       getState: () => ({
-        isSafari,
         reduceMotion,
         idleMotionEnabled,
         maxDpr,
@@ -1009,7 +964,6 @@ function usePortalCanvas({
     canvasRef,
     ensureLoop,
     idleMotionEnabled,
-    isSafari,
     maxDpr,
     pruneImageCache,
     reduceMotion,
@@ -1053,7 +1007,6 @@ export function PortalHeader({
 }: PortalHeaderProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const isSafari = useMemo(() => isProbablySafari(), []);
   const enableBlur = config.headerSlideshow?.enableBlur ?? false;
 
   const { enabled, isLoading, images, basePath, subfolder, displayDuration, transitionDuration, opacity } =
@@ -1068,9 +1021,8 @@ export function PortalHeader({
   const closeMs = Math.max(250, Math.round(transitionDuration * 0.5));
 
   const portalCfg = useMemo(() => {
-    const allowBlur = enableBlur && !isSafari;
-    return { ...DEFAULT_PORTAL_CFG, enableBlur: allowBlur };
-  }, [enableBlur, isSafari]);
+    return { ...DEFAULT_PORTAL_CFG, enableBlur };
+  }, [enableBlur]);
 
   const portal = usePortalCanvas({
     canvasRef,
@@ -1181,7 +1133,7 @@ export function PortalHeader({
               className="pointer-events-none absolute inset-x-6 top-2 h-32"
               style={{
                 background: backdrop,
-                filter: isSafari || !enableBlur ? 'none' : 'blur(18px)',
+                filter: enableBlur ? 'blur(18px)' : 'none',
                 opacity: isLightTheme ? 0.9 : 0.95,
               }}
               aria-hidden="true"
