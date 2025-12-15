@@ -849,13 +849,15 @@ export function PortalHeader({
           }}
         />
 
-        <div className="absolute inset-0 p-4 flex flex-col justify-center">
-          <VolumeButton
-            onClick={onToggleMusic}
-            title={isMusicPlaying ? config.strings.musicOn : config.strings.musicOff}
-          >
-            {isMusicPlaying ? '🔊' : '🔇'}
-          </VolumeButton>
+        <div className="absolute inset-0 p-4 flex flex-col justify-center pointer-events-none">
+          <div className="pointer-events-auto">
+            <VolumeButton
+              onClick={onToggleMusic}
+              title={isMusicPlaying ? config.strings.musicOn : config.strings.musicOff}
+            >
+              {isMusicPlaying ? '🔊' : '🔇'}
+            </VolumeButton>
+          </div>
 
           <div className="relative max-w-5xl mx-auto text-center flex items-center justify-center min-h-[165px] md:min-h-[175px]">
             <div
