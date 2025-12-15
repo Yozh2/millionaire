@@ -1,20 +1,14 @@
 import type { ComponentType } from 'react';
-import type { GameConfig } from '../../engine/types';
+import type { GameConfig, GameRegistryCardMeta, GameRegistryMeta } from '../../engine/types';
 
-export interface GameCardMeta {
-  title: string;
-  subtitle: string;
-  description: string;
-  emoji: string;
-  gradient: string;
-  borderColor: string;
-  available: boolean;
-}
+export type GameCardMeta = GameRegistryCardMeta;
 
 export interface GameRegistryEntry {
   kind: 'game';
   id: string;
   routePath: string;
+  registryVisible: boolean;
+  order?: number;
   card: GameCardMeta;
   devOnly?: boolean;
   getConfig: () => Promise<GameConfig>;
@@ -30,70 +24,59 @@ export interface PageRegistryEntry {
 
 export type RegistryEntry = GameRegistryEntry | PageRegistryEntry;
 
-export const GAME_REGISTRY: readonly RegistryEntry[] = [
-  {
-    kind: 'game',
-    id: 'poc',
-    routePath: '/poc',
-    card: {
-      title: 'PROOF OF CONCEPT',
-      subtitle: 'Тестовая игра',
-      description: 'Минимальная демонстрация движка без внешних ассетов',
-      emoji: '⚙️',
-      gradient: 'from-slate-700 via-slate-600 to-slate-800',
-      borderColor: 'border-slate-500',
-      available: true,
-    },
-    getConfig: async () => (await import('../../games/poc/config')).pocConfig,
-  },
-  {
-    kind: 'game',
-    id: 'bg3',
-    routePath: '/bg3',
-    card: {
-      title: "BALDUR'S GATE 3",
-      subtitle: 'Forgotten Realms Edition',
-      description: "Викторина по вселенной Baldur's Gate 3",
-      emoji: '⚔️',
-      gradient: 'from-amber-700 via-amber-600 to-amber-800',
-      borderColor: 'border-amber-500',
-      available: true,
-    },
-    getConfig: async () => (await import('../../games/bg3/config')).bg3Config,
-  },
-  {
-    kind: 'game',
-    id: 'sky-cotl',
-    routePath: '/sky-cotl',
-    card: {
-      title: 'SKY',
-      subtitle: 'Children of the Light Edition',
-      description:
-        'A 15-question quiz about Sky: Children of the Light (English-only)',
-      emoji: '☁️',
-      gradient: 'from-sky-500 via-sky-400 to-emerald-500',
-      borderColor: 'border-sky-300',
-      available: true,
-    },
-    getConfig: async () =>
-      (await import('../../games/sky-cotl/config')).skyCotlConfig,
-  },
-  {
-    kind: 'game',
-    id: 'transformers',
-    routePath: '/transformers',
-    card: {
-      title: 'TRANSFORMERS',
-      subtitle: 'COMICS EDITION',
-      description: 'Викторина по комиксам про Трансформеров',
-      emoji: '🤖',
-      gradient: 'from-purple-700 via-red-600 to-purple-800',
-      borderColor: 'border-purple-500',
-      available: true,
-    },
-    getConfig: async () =>
-      (await import('../../games/transformers/config')).transformersConfig,
-  },
+type GameRegistryModule = { gameRegistry?: GameRegistryMeta; default?: GameRegistryMeta };
+
+const GAME_REGISTRY_MODULES = import.meta.glob('../../games/*/registry.ts', {
+  eager: true,
+}) as Record<string, GameRegistryModule>;
+
+const GAME_CONFIG_IMPORTERS = import.meta.glob('../../games/*/config.ts') as Record<
+  string,
+  () => Promise<{ default: GameConfig }>
+>;
+
+const extractGameIdFromPath = (path: string): string | null => {
+  const match = path.match(/\/games\/([^/]+)\/registry\.ts$/);
+  return match?.[1] ?? null;
+};
+
+const buildGameEntries = (): GameRegistryEntry[] => {
+  const entries: GameRegistryEntry[] = [];
+
+  for (const [path, mod] of Object.entries(GAME_REGISTRY_MODULES)) {
+    const id = extractGameIdFromPath(path);
+    if (!id) continue;
+
+    const meta = mod.gameRegistry ?? mod.default;
+    if (!meta) continue;
+
+    const configImporter = GAME_CONFIG_IMPORTERS[`../../games/${id}/config.ts`];
+    if (!configImporter) {
+      console.warn(`[registry] Missing config for game: ${id}`);
+      continue;
+    }
+
+    entries.push({
+      kind: 'game',
+      id,
+      routePath: meta.routePath ?? `/${id}`,
+      registryVisible: meta.registryVisible,
+      order: meta.order,
+      card: meta.card,
+      devOnly: meta.devOnly,
+      getConfig: async () => (await configImporter()).default,
+    });
+  }
+
+  return entries.sort((a, b) => {
+    const orderA = a.order ?? 0;
+    const orderB = b.order ?? 0;
+    if (orderA !== orderB) return orderA - orderB;
+    return a.id.localeCompare(b.id);
+  });
+};
+
+const PAGE_REGISTRY: readonly PageRegistryEntry[] = [
   {
     kind: 'page',
     id: 'effects-sandbox',
@@ -110,6 +93,11 @@ export const GAME_REGISTRY: readonly RegistryEntry[] = [
   },
 ] as const;
 
+export const GAME_REGISTRY: readonly RegistryEntry[] = [
+  ...buildGameEntries(),
+  ...PAGE_REGISTRY,
+];
+
 export const getGameEntries = (): GameRegistryEntry[] =>
   GAME_REGISTRY.filter((entry): entry is GameRegistryEntry => entry.kind === 'game');
 
@@ -124,4 +112,4 @@ export const getGameById = (id: string): GameRegistryEntry | undefined =>
  * Includes non-available games as "coming soon", excludes dev-only entries.
  */
 export const getSelectorEntries = (): GameRegistryEntry[] =>
-  getGameEntries().filter((entry) => !entry.devOnly);
+  getGameEntries().filter((entry) => entry.registryVisible && !entry.devOnly);

@@ -223,7 +223,19 @@ const OSCILLATOR_SOUNDS: Record<string, OscillatorSoundConfig> = {
     tones: [{ frequency: 800, duration: 0.08, type: 'sine', volume: 0.2 }],
   },
 
-  // Big button press - epic horn for start/restart
+  // Action button press - epic horn for start/restart
+  actionButton: {
+    tones: [
+      { frequency: 294, duration: 0.2, type: 'sawtooth', volume: 0.2 },
+      { frequency: 392, duration: 0.2, type: 'sawtooth', volume: 0.25 },
+      { frequency: 523, duration: 0.3, type: 'sawtooth', volume: 0.3 },
+    ],
+    delayBetween: 0.15,
+  },
+  /**
+   * v1 legacy key
+   * @deprecated use `actionButton`
+   */
   bigButton: {
     tones: [
       { frequency: 294, duration: 0.2, type: 'sawtooth', volume: 0.2 },
@@ -655,7 +667,7 @@ const tryPlayFile = async (
 const SOUND_TYPE_MAP: Record<string, string> = {
   // Button sounds
   AnswerClick: 'answerButton',
-  BigButtonPress: 'bigButton',
+  BigButtonPress: 'actionButton',
   // Hint button sounds
   HintReduce: 'hintReduceButton',
   HintCall: 'hintCallButton',

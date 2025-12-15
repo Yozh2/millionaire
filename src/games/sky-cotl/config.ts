@@ -15,6 +15,7 @@ import {
   SmallCandleCoinIcon,
   StarIcon,
 } from './icons';
+import { gameRegistry } from './registry';
 
 const drawCandleCoin: DrawCoinFunction = (ctx, size, colorIndex) => {
   const waxColors = ['#ffffff', '#e2e8f0', '#f8fafc'];
@@ -65,6 +66,7 @@ export const skyCotlConfig: GameConfig = {
   subtitle: 'Sky: Children of the Light Edition',
 
   emoji: '☁️',
+  registry: gameRegistry,
 
   campaigns: [skyJourneyCampaign],
 

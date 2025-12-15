@@ -46,6 +46,7 @@ export function useButtonFsm({
   const [isOver, setIsOver] = useState<boolean>(true);
   const isOverRef = useRef<boolean>(true);
   const pointerIdRef = useRef<number | null>(null);
+  const pointerTypeRef = useRef<string | null>(null);
   const easeTimerRef = useRef<number | null>(null);
   const activateTimerRef = useRef<number | null>(null);
   const suppressNextClickRef = useRef<boolean>(false);
@@ -117,10 +118,12 @@ export function useButtonFsm({
 
     const onPointerDown: PointerEventHandler<HTMLElement> = (e) => {
       if (disabled) return;
-      if (e.button !== 0) return;
+      // Safari may report `button !== 0` for touch pointers.
+      if (e.button !== 0 && e.pointerType !== 'touch') return;
 
       clearTimers();
       pointerIdRef.current = e.pointerId;
+      pointerTypeRef.current = e.pointerType;
       setIsOver(true);
       setState('Press');
 
@@ -155,9 +158,13 @@ export function useButtonFsm({
         }
       }
 
-      const over = enablePointerCapture
+      const pointerType = pointerTypeRef.current ?? e.pointerType;
+      const isTouch = pointerType === 'touch';
+      const over = isTouch
         ? isOverRef.current
-        : hitTest(e.currentTarget, e.clientX, e.clientY);
+        : enablePointerCapture
+          ? isOverRef.current
+          : hitTest(e.currentTarget, e.clientX, e.clientY);
 
       setIsOver(over);
       suppressNextClickRef.current = !over;

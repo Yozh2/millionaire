@@ -69,6 +69,7 @@ export function useCampaignCardFsm({
   const stateRef = useRef<CampaignCardFsmState>('Appear');
   const isOverRef = useRef<boolean>(false);
   const pointerIdRef = useRef<number | null>(null);
+  const pointerTypeRef = useRef<string | null>(null);
   const suppressNextClickRef = useRef<boolean>(false);
   const easeTimerRef = useRef<number | null>(null);
   const appearTimerRef = useRef<number | null>(null);
@@ -334,9 +335,11 @@ export function useCampaignCardFsm({
     const onPointerDown: PointerEventHandler<HTMLButtonElement> = (e) => {
       if (selected) return;
       if (state === 'Deactivate' || state === 'Disappear') return;
-      if (e.button !== 0) return;
+      // Safari may report `button !== 0` for touch pointers.
+      if (e.button !== 0 && e.pointerType !== 'touch') return;
 
       pointerIdRef.current = e.pointerId;
+      pointerTypeRef.current = e.pointerType;
       suppressNextClickRef.current = false;
       setIsOver(true);
       setState('Press');
@@ -370,9 +373,19 @@ export function useCampaignCardFsm({
         // ignore
       }
 
-      const over = hitTest(e.currentTarget, e.clientX, e.clientY);
+      const pointerType = pointerTypeRef.current ?? e.pointerType;
+      const isTouch = pointerType === 'touch';
+      const coordsInvalid = e.clientX === 0 && e.clientY === 0;
+      const over =
+        isTouch
+          ? coordsInvalid
+            ? true
+            : hitTest(e.currentTarget, e.clientX, e.clientY)
+          : hitTest(e.currentTarget, e.clientX, e.clientY);
       setIsOver(over);
-      suppressNextClickRef.current = true;
+      // If we handled selection on pointerup, suppress the synthetic click to avoid double-trigger.
+      // If we didn't select, allow click to be the fallback (Safari touch can be unreliable).
+      suppressNextClickRef.current = over;
 
       if (over) {
         setState('Activate');

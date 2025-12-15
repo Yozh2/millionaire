@@ -24,9 +24,11 @@ export function ActionButton({
       disabled={disabled}
       onClick={onClick}
       onPointerDown={onPointerDown}
+      enablePointerCapture={false}
       className={`glare action-btn px-8 py-3 font-bold text-lg tracking-wide border-4 ${className}`}
       style={{
         ['--btn-glow' as string]: theme.glow,
+        touchAction: 'manipulation',
         boxShadow: disabled
           ? 'none'
           : `0 5px 20px rgba(0, 0, 0, 0.3), 0 0 25px ${theme.glow}`,
@@ -40,4 +42,3 @@ export function ActionButton({
 }
 
 export default ActionButton;
-

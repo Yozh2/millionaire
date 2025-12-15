@@ -32,9 +32,7 @@ describe('GameSelector', () => {
       screen.getByText('🎯 Кто хочет стать миллионером?')
     ).toBeInTheDocument();
 
-    // Available games are listed as cards
-    const cards = screen.getAllByText(/Играть →/i);
-    const availableGamesCount = getSelectorEntries().filter((e) => e.card.available).length;
-    expect(cards.length).toBe(availableGamesCount);
+    const cards = screen.getAllByTestId('game-card');
+    expect(cards.length).toBe(getSelectorEntries().length);
   });
 });

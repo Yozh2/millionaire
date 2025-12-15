@@ -15,6 +15,7 @@ import { megatronQuestionPool } from './campaigns/megatron/questions';
 import { autocracyQuestionPool } from './campaigns/autocracy/questions';
 import { skyboundQuestionPool } from './campaigns/skybound/questions';
 import { MatrixIcon, BrokenSparkIcon, EnergonIcon, EnergonCoinIcon } from './icons';
+import { gameRegistry } from './registry';
 
 // ============================================
 // Custom Energon Crystal Drawing - simple pink/blue crystal
@@ -52,6 +53,7 @@ export const transformersConfig: GameConfig = {
   subtitle: 'THE TRANSFORMERS EDITION',
 
   emoji: '🤖',
+  registry: gameRegistry,
 
   // Neuropol X RG — футуристический технологичный шрифт
   fontFamily: '"Neuropol X Rg", "Roboto", "Helvetica Neue", sans-serif',
@@ -330,7 +332,7 @@ export const transformersConfig: GameConfig = {
     takeMoneyTrack: 'TookMoney.ogg',
     sounds: {
       answerButton: 'AnswerClick.ogg',
-      bigButton: 'BigButtonPress.ogg',
+      actionButton: 'BigButtonPress.ogg',
       lifelineFifty: 'HintReduce.ogg',
       lifelinePhone: 'HintCall.ogg',
       lifelineAudience: 'HintVote.ogg',

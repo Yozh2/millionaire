@@ -176,12 +176,17 @@ export function MillionaireGame({ config }: MillionaireGameProps) {
   }, [audio, gameState]);
 
   // Sound on button press (mousedown/touchstart) - synced with button landing animation
-  const handleBigButtonPress = useCallback(
-    (_e?: PointerEvent<Element>) => {
-      // Sync with button landing/dust puff (~50ms)
-      setTimeout(() => {
-        audio.playSoundEffect('bigButton');
-      }, 100);
+  const handleActionButtonPress = useCallback(
+    (e?: PointerEvent<Element>) => {
+      // iOS Safari requires sound to start inside the user gesture handler.
+      // Avoid setTimeout for touch pointers, otherwise SFX won't play.
+      if (e?.pointerType === 'touch') {
+        audio.playSoundEffect('actionButton');
+        return;
+      }
+
+      // Sync with button landing/dust puff (~50ms) for mouse/pen.
+      setTimeout(() => audio.playSoundEffect('actionButton'), 100);
     },
     [audio]
   );
@@ -380,7 +385,7 @@ export function MillionaireGame({ config }: MillionaireGameProps) {
                   selectedCampaign={gameState.selectedCampaign}
                   onSelectCampaign={handleSelectCampaign}
                   onStartGame={handleStartGame}
-                  onBigButtonPress={handleBigButtonPress}
+                  onActionButtonPress={handleActionButtonPress}
                   theme={theme}
                 />
               )}
@@ -404,7 +409,7 @@ export function MillionaireGame({ config }: MillionaireGameProps) {
                   config={config}
                   gameState={gameState}
                   onNewGame={handleNewGame}
-                  onBigButtonPress={handleBigButtonPress}
+                  onActionButtonPress={handleActionButtonPress}
                   theme={theme}
                   effects={effects}
                 />

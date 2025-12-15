@@ -11,7 +11,7 @@ interface StartScreenProps {
   selectedCampaign: Campaign | null;
   onSelectCampaign: (campaign: Campaign) => void;
   onStartGame: () => void;
-  onBigButtonPress: (e?: PointerEvent<Element>) => void;
+  onActionButtonPress: (e?: PointerEvent<Element>) => void;
   theme: ThemeColors;
 }
 
@@ -20,7 +20,7 @@ export function StartScreen({
   selectedCampaign,
   onSelectCampaign,
   onStartGame,
-  onBigButtonPress,
+  onActionButtonPress,
   theme,
 }: StartScreenProps) {
   return (
@@ -29,7 +29,7 @@ export function StartScreen({
       selectedCampaign={selectedCampaign}
       onSelectCampaign={onSelectCampaign}
       onStartGame={onStartGame}
-      onBigButtonPress={onBigButtonPress}
+      onActionButtonPress={onActionButtonPress}
       theme={theme}
     />
   );

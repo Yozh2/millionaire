@@ -12,7 +12,7 @@ interface EndScreenProps {
   config: GameConfig;
   gameState: UseGameStateReturn;
   onNewGame: () => void;
-  onBigButtonPress: (e?: PointerEvent<Element>) => void;
+  onActionButtonPress: (e?: PointerEvent<Element>) => void;
   theme: ThemeColors;
   effects?: EffectsAPI;
 }
@@ -21,7 +21,7 @@ export function EndScreen({
   config,
   gameState,
   onNewGame,
-  onBigButtonPress,
+  onActionButtonPress,
   theme,
   effects,
 }: EndScreenProps) {
@@ -121,7 +121,7 @@ export function EndScreen({
       wonPrize={wonPrize}
       iconRef={iconRef}
       onNewGame={onNewGame}
-      onBigButtonPress={onBigButtonPress}
+      onActionButtonPress={onActionButtonPress}
     />
   );
 }

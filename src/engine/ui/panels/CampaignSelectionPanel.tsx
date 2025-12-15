@@ -9,7 +9,7 @@ interface CampaignSelectionPanelProps {
   selectedCampaign: Campaign | null;
   onSelectCampaign: (campaign: Campaign) => void;
   onStartGame: () => void;
-  onBigButtonPress: (e?: PointerEvent<Element>) => void;
+  onActionButtonPress: (e?: PointerEvent<Element>) => void;
   theme: ThemeColors;
 }
 
@@ -18,7 +18,7 @@ export function CampaignSelectionPanel({
   selectedCampaign,
   onSelectCampaign,
   onStartGame,
-  onBigButtonPress,
+  onActionButtonPress,
   theme,
 }: CampaignSelectionPanelProps) {
   const isLightTheme = !!theme.isLight;
@@ -52,7 +52,7 @@ export function CampaignSelectionPanel({
         <ActionButton
           theme={theme}
           onClick={onStartGame}
-          onPointerDown={(e) => selectedCampaign && onBigButtonPress(e)}
+          onPointerDown={(e) => selectedCampaign && onActionButtonPress(e)}
           disabled={!selectedCampaign}
           className={
             selectedCampaign

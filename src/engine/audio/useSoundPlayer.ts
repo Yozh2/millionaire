@@ -20,6 +20,9 @@ const SOUND_EFFECT_KEY_FALLBACKS: Partial<
     ReadonlyArray<keyof GameConfig['audio']['sounds']>
   >
 > = {
+  actionButton: ['bigButton'],
+  bigButton: ['actionButton'],
+
   lifelineFifty: ['hintReduceButton'],
   hintReduceButton: ['lifelineFifty'],
 

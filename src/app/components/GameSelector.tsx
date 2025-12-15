@@ -7,77 +7,40 @@
 
 import { Link } from 'react-router-dom';
 
-import { LoadingScreen, useAssetPreloader, useFavicon, useGameIcon } from '../../engine';
+import { LoadingScreen, useAssetPreloader, useFavicon } from '../../engine';
+import { GameCard } from '../../engine/ui/components/cards/game/GameCard';
 import { getSelectorEntries, type GameRegistryEntry } from '../registry';
 
-/**
- * Game icon component that loads favicon with fallback to emoji.
- */
-function GameIcon({ gameId, fallbackEmoji }: { gameId: string; fallbackEmoji: string }) {
-  const { iconUrl, isEmoji, emoji } = useGameIcon(gameId, fallbackEmoji);
-
-  if (isEmoji || !iconUrl) {
-    // Show emoji (either as fallback or while loading)
-    return <span className="text-5xl">{emoji}</span>;
-  }
-
-  // Image favicon
-  return (
-    <img
-      src={iconUrl}
-      alt={`${gameId} icon`}
-      className="w-12 h-12 object-contain"
-    />
-  );
-}
-
-function GameCard({ entry }: { entry: GameRegistryEntry }) {
+function GameCardTile({ entry }: { entry: GameRegistryEntry }) {
   const game = entry.card;
-  const CardContent = (
-    <div
-      className={`
-        relative overflow-hidden rounded-xl border-2 ${game.borderColor}
-        bg-gradient-to-br ${game.gradient}
-        p-6 h-64 flex flex-col justify-between
-        transition-all duration-300
-        ${game.available
-          ? 'hover:scale-105 hover:shadow-2xl cursor-pointer'
-          : 'opacity-50 cursor-not-allowed'}
-      `}
-    >
-      {/* Icon */}
-      <div className="mb-2">
-        <GameIcon gameId={entry.id} fallbackEmoji={game.emoji} />
-      </div>
 
-      {/* Title */}
-      <div>
-        <h2 className="text-2xl font-bold text-white mb-1">{game.title}</h2>
-        <p className="text-sm text-white/70 mb-3">{game.subtitle}</p>
-        <p className="text-sm text-white/60">{game.description}</p>
-      </div>
-
-      {/* Status Badge */}
-      {!game.available && (
-        <div className="absolute top-4 right-4 bg-gray-900/80 text-gray-300 px-3 py-1 rounded-full text-xs">
-          Скоро
-        </div>
-      )}
-
-      {/* Play indicator */}
-      {game.available && (
-        <div className="absolute bottom-4 right-4 text-white/80 text-sm flex items-center gap-1">
-          Играть →
-        </div>
-      )}
-    </div>
+  const content = (
+    <GameCard
+      gameId={entry.id}
+      title={game.title}
+      subtitle={game.subtitle}
+      description={game.description}
+      fallbackEmoji={game.emoji}
+      gradientClass={game.gradient}
+      borderColorClass={game.borderColor}
+      available={game.available}
+      className="h-full min-h-64"
+    />
   );
 
   if (game.available) {
-    return <Link to={entry.routePath}>{CardContent}</Link>;
+    return (
+      <Link
+        to={entry.routePath}
+        aria-label={`Играть: ${game.title}`}
+        className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-white/60 rounded-xl"
+      >
+        {content}
+      </Link>
+    );
   }
 
-  return CardContent;
+  return content;
 }
 
 export function GameSelector() {
@@ -99,7 +62,6 @@ export function GameSelector() {
   }
 
   const games = getSelectorEntries();
-  const showDevLinks = import.meta.env.DEV;
 
   return (
     <div
@@ -122,21 +84,9 @@ export function GameSelector() {
         {/* Game Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {games.map((entry) => (
-            <GameCard key={entry.id} entry={entry} />
+            <GameCardTile key={entry.id} entry={entry} />
           ))}
         </div>
-
-        {/* Sandbox Link */}
-        {showDevLinks && (
-          <div className="text-center mt-12">
-            <Link
-              to="/sandbox"
-              className="text-gray-500 hover:text-amber-400 transition-colors text-sm"
-            >
-              🎨 Effects Sandbox (для разработчиков)
-            </Link>
-          </div>
-        )}
 
         {/* Footer */}
         <div className="text-center mt-8 text-gray-600 text-sm">

@@ -278,7 +278,12 @@ export interface PrizeLadder {
 export interface SoundEffects {
   /** Answer button click sound */
   answerButton?: string;
-  /** Big button press (start game / restart) */
+  /** Action button press (start game / restart) */
+  actionButton?: string;
+  /**
+   * v1 legacy key
+   * @deprecated use `actionButton`
+   */
   bigButton?: string;
 
   /**
@@ -576,6 +581,12 @@ export interface GameConfig {
   audio: AudioConfig;
 
   /**
+   * Selector/registry metadata (optional).
+   * Used by the app landing page to generate game cards automatically.
+   */
+  registry?: GameRegistryMeta;
+
+  /**
    * End screen icons (optional, uses defaults if not provided)
    * Keys: 'won', 'lost', 'tookMoney'
    */
@@ -657,6 +668,33 @@ export interface GameConfig {
     /** Button label for disabling sound. */
     soundConsentDisableLabel?: string;
   };
+}
+
+// ============================================
+// App Registry Types (optional)
+// ============================================
+
+export interface GameRegistryCardMeta {
+  title: string;
+  subtitle: string;
+  description: string;
+  emoji: string;
+  gradient: string;
+  borderColor: string;
+  available: boolean;
+}
+
+export interface GameRegistryMeta {
+  /** Show this game in the main selector UI */
+  registryVisible: boolean;
+  /** Hide from selector in production, keep routes in dev */
+  devOnly?: boolean;
+  /** Optional route override (default: `/${id}`) */
+  routePath?: string;
+  /** Sorting (lower first) */
+  order?: number;
+  /** Card display metadata */
+  card: GameRegistryCardMeta;
 }
 
 // ============================================

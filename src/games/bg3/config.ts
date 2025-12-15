@@ -19,6 +19,7 @@ import {
 import { heroQuestionPool } from './campaigns/hero/questions';
 import { mindFlayerQuestionPool } from './campaigns/mindFlayer/questions';
 import { darkUrgeQuestionPool } from './campaigns/darkUrge/questions';
+import { gameRegistry } from './registry';
 
 // ============================================
 // Custom Coin Drawing - Simple gold coin
@@ -61,6 +62,7 @@ export const bg3Config: GameConfig = {
   subtitle: "Baldur's Gate III Edition",
 
   emoji: '⚔️',
+  registry: gameRegistry,
 
   // Georgia - классический шрифт для фэнтези-тематики
   fontFamily: 'Georgia, "Times New Roman", serif',
@@ -78,7 +80,7 @@ export const bg3Config: GameConfig = {
   strings: {
     // Start screen
     introText:
-      'Искатель приключений! Перед тобой испытание на знание Забытых Королевств. ' +
+      'Искатель приключений! Перед тобой испытание на знание Baldur’s Gate III. ' +
       '15 вопросов, 3 магические подсказки, 3 000 000 золотых на кону.',
     selectPath: '✦ ВЫБЕРИ ПУТЬ ✦',
     startButton: 'В ПРИКЛЮЧЕНИЕ',
@@ -193,7 +195,7 @@ export const bg3Config: GameConfig = {
     gameOverTrack: 'GameOver.ogg',
     sounds: {
       answerButton: 'AnswerClick.ogg',
-      bigButton: 'BigButtonPress.ogg',
+      actionButton: 'BigButtonPress.ogg',
       lifelineFifty: 'HintReduce.ogg',
       lifelineAudience: 'HintVote.ogg',
       takeMoneyButton: 'HintTakeMoney.ogg',

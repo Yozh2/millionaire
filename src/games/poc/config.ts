@@ -11,6 +11,7 @@ import { hardCampaign } from './campaigns/hard/campaign';
 import { easyQuestionPool } from './campaigns/easy/questions';
 import { hardQuestionPool } from './campaigns/hard/questions';
 import { TrophyIcon, FailIcon, MoneyIcon } from './icons';
+import { gameRegistry } from './registry';
 
 // ============================================
 // Main Config
@@ -23,6 +24,7 @@ export const pocConfig: GameConfig = {
   subtitle: 'ТЕСТ ДВИЖКА',
 
   emoji: '⚙️',
+  registry: gameRegistry,
 
   campaigns: [easyCampaign, hardCampaign],
 

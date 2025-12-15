@@ -19,7 +19,7 @@ interface ResultPanelProps {
   wonPrize: string;
   iconRef?: RefObject<HTMLDivElement>;
   onNewGame: () => void;
-  onBigButtonPress: (e?: PointerEvent<Element>) => void;
+  onActionButtonPress: (e?: PointerEvent<Element>) => void;
 }
 
 export function ResultPanel({
@@ -29,7 +29,7 @@ export function ResultPanel({
   wonPrize,
   iconRef,
   onNewGame,
-  onBigButtonPress,
+  onActionButtonPress,
 }: ResultPanelProps) {
   const CoinIcon = config.icons?.coin || DefaultCoinIcon;
 
@@ -114,7 +114,7 @@ export function ResultPanel({
           <ActionButton
             theme={theme}
             onClick={onNewGame}
-            onPointerDown={(e) => onBigButtonPress(e)}
+            onPointerDown={(e) => onActionButtonPress(e)}
             className={`bg-gradient-to-b ${theme.bgButton} text-white ${theme.borderLight}`}
           >
             {config.strings.newGameButton}

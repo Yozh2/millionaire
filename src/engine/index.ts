@@ -34,6 +34,8 @@ export type {
   LifelinesConfig,
   PrizesConfig,
   SoundEffects,
+  GameRegistryMeta,
+  GameRegistryCardMeta,
   AudioConfig,
   GameStrings,
   GameState,
