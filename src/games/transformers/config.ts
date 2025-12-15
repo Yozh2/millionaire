@@ -310,7 +310,7 @@ export const transformersConfig: GameConfig = {
     fifty: { name: '50:50', icon: '⚡', enabled: true },
     phone: { name: 'База', icon: '📡', enabled: true },
     audience: { name: 'Отряд', icon: '🤖', enabled: true },
-    double: { name: 'Право на ошибку', icon: '🎯', enabled: true },
+    double: { name: 'Разведка', icon: '🛰️', enabled: true },
   },
 
   actions: {
@@ -337,6 +337,7 @@ export const transformersConfig: GameConfig = {
       lifelineFifty: 'HintReduce.ogg',
       lifelinePhone: 'HintCall.ogg',
       lifelineAudience: 'HintVote.ogg',
+      lifelineDouble: 'DoubleDip.ogg',
       correct: 'Next.ogg',
       defeat: 'Fail.ogg',
     },

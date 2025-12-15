@@ -171,8 +171,8 @@ export const bg3Config: GameConfig = {
       enabled: true,
     },
     double: {
-      name: 'Право на ошибку',
-      icon: '🎯',
+      name: 'Вдохновение',
+      icon: '🎲',
       enabled: true,
     },
   },
@@ -204,6 +204,7 @@ export const bg3Config: GameConfig = {
       lifelineFifty: 'HintReduce.ogg',
       lifelineAudience: 'HintVote.ogg',
       takeMoneyButton: 'HintTakeMoney.ogg',
+      lifelineDouble: 'DoubleDip.ogg',
       defeat: 'Fail.ogg',
     },
   },

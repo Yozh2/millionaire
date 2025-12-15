@@ -680,6 +680,7 @@ const SOUND_TYPE_MAP: Record<string, string> = {
   LifelineHost: 'lifelineHost',
   LifelineSwitch: 'lifelineSwitch',
   LifelineDouble: 'lifelineDouble',
+  DoubleDip: 'lifelineDouble',
   // Take money action sound (v2)
   TakeMoney: 'takeMoneyButton',
   // Game event sounds

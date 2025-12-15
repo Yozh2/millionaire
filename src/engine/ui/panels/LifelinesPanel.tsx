@@ -54,9 +54,17 @@ export function LifelinesPanel({
   const canUse =
     selectedAnswer === null;
 
+  const optionalButtonsCount =
+    (lifelineConfigHost?.enabled && onHost ? 1 : 0) +
+    (lifelineConfigSwitch?.enabled && onSwitch ? 1 : 0) +
+    (lifelineConfigDouble?.enabled && onDouble ? 1 : 0);
+
+  const shownButtonsCount = 3 + optionalButtonsCount;
+  const gridColsLg = shownButtonsCount === 4 ? 'lg:grid-cols-4' : 'lg:grid-cols-3';
+
   return (
     <Panel className="p-1 mt-1 animate-slide-in stagger-3">
-      <div className="grid gap-2 p-3 justify-center w-full grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+      <div className={`grid gap-2 p-3 justify-center w-full grid-cols-1 sm:grid-cols-2 ${gridColsLg}`}>
         <LifelineButton
           onClick={onFifty}
           disabled={!lifelineAvailability.fifty || !canUse}

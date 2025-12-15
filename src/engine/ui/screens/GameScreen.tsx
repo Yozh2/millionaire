@@ -117,7 +117,7 @@ export function GameScreen({
       audio.playSoundEffect('victory');
       audio.playVictory();
     } else if (result === 'retry') {
-      audio.playSoundEffect('defeat');
+      audio.playSoundEffect('lifelineDouble');
     } else if (result === 'wrong') {
       audio.playSoundEffect('defeat');
       audio.playGameOver();

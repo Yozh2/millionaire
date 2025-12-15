@@ -145,7 +145,7 @@ export const skyCotlConfig: GameConfig = {
     fifty: { name: '50:50', icon: '✨', enabled: true },
     phone: { name: 'Call', icon: '📞', enabled: true },
     audience: { name: 'Crowd', icon: '📊', enabled: true },
-    double: { name: 'Second chance', icon: '🎯', enabled: true },
+    double: { name: 'Second Flight', icon: '🪽', enabled: true },
   },
 
   actions: {
@@ -163,7 +163,9 @@ export const skyCotlConfig: GameConfig = {
     soundVolume: 1.0,
     voiceVolume: 1.0,
     // No external audio yet - oscillator fallbacks only
-    sounds: {},
+    sounds: {
+      lifelineDouble: 'DoubleDip.ogg',
+    },
   },
 
   endIcons: {

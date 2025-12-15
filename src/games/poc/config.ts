@@ -105,7 +105,9 @@ export const pocConfig: GameConfig = {
     soundVolume: 1.0,
     voiceVolume: 1.0,
     // No music/sound files - uses oscillator fallbacks only
-    sounds: {},
+    sounds: {
+      lifelineDouble: 'DoubleDip.ogg',
+    },
   },
 
   endIcons: {
