@@ -399,6 +399,7 @@ function usePortalCanvas({
 }): PortalCanvasHandle {
   const tokenRef = useRef(0);
   const sizeRef = useRef({ w: 0, h: 0, dpr: 1 });
+  const portalScaleRef = useRef({ x: 0.9, y: 0.85 });
 
   const stateRef = useRef<PortalAnimState>({
     motion: 'open',
@@ -526,6 +527,10 @@ function usePortalCanvas({
       drawCoverImage(ctx, img, w, h);
 
       const dims = getPortalHalfDims(cfg, w, h);
+      const scaledDims = {
+        a: dims.a * portalScaleRef.current.x,
+        b: dims.b * portalScaleRef.current.y,
+      };
       const layers = layersRef.current;
       const time = (nowMs() - startedAt) / 1000 + st.phaseShift;
 
@@ -539,8 +544,8 @@ function usePortalCanvas({
         layers,
         w * 0.5,
         h * 0.5,
-        dims.a,
-        dims.b,
+        scaledDims.a,
+        scaledDims.b,
         1,
         time * cfg.portalTSpeed,
         'portal',
@@ -560,8 +565,8 @@ function usePortalCanvas({
         layers,
         w * 0.5,
         h * 0.5,
-        dims.a,
-        dims.b,
+        scaledDims.a,
+        scaledDims.b,
         st.reveal,
         time * cfg.revealTSpeed,
         'reveal',
