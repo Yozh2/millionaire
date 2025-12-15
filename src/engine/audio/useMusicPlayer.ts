@@ -68,6 +68,14 @@ export function useMusicPlayer(
     audio.dataset.logicalSrc = logicalPath;
   }, []);
 
+  const primeAudio = useCallback((audio: HTMLAudioElement) => {
+    try {
+      audio.load();
+    } catch {
+      // ignore
+    }
+  }, []);
+
   useEffect(() => {
     const savedPreference = getSavedSoundPreference();
     if (savedPreference === true) {
@@ -178,6 +186,7 @@ export function useMusicPlayer(
       setAudioSource(audio, trackPath);
       audio.volume = config.audio.musicVolume;
       setCurrentTrack(trackPath);
+      primeAudio(audio);
 
       const shouldPlay =
         !userDisabledMusic.current && (autoPlay || musicEverEnabled.current);
@@ -205,7 +214,7 @@ export function useMusicPlayer(
         audio.addEventListener('canplay', tryPlay, { once: true });
       }
     },
-    [config.audio.musicVolume, getAudioElement, loadTrack, setAudioSource]
+    [config.audio.musicVolume, getAudioElement, loadTrack, primeAudio, setAudioSource]
   );
 
   const toggleMusic = useCallback(() => {

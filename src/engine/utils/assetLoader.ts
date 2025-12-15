@@ -44,7 +44,19 @@ export const getAssetPaths = (
 export const checkFileExists = async (url: string): Promise<boolean> => {
   try {
     const response = await fetch(url, { method: 'HEAD' });
-    return response.ok;
+    if (response.ok) return true;
+  } catch {
+    // ignore
+  }
+
+  // Some hosts (and occasionally Safari setups) don't reliably support HEAD for static files.
+  // Use a tiny ranged GET as a fallback.
+  try {
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: { Range: 'bytes=0-0' },
+    });
+    return response.ok || response.status === 206;
   } catch {
     return false;
   }

@@ -450,6 +450,43 @@ class AssetLoader {
    * Load an audio asset and pre-decode it for low-latency playback.
    */
   private loadAudio(fullUrl: string, cacheKey: string): Promise<void> {
+    const isSoundEffect = cacheKey.includes('/sounds/');
+    const isMusic = cacheKey.includes('/music/');
+
+    // Music and voice lines can be very large. Keeping them as ArrayBuffer in JS memory
+    // (and possibly decoding to AudioBuffer) can easily push Safari/Media processes into
+    // hundreds of MB. For those, rely on HTMLAudioElement streaming on demand instead.
+    if (!isSoundEffect) {
+      // Preload music via HTMLAudioElement to reduce start latency, without storing ArrayBuffer in JS.
+      if (isMusic) {
+        return new Promise((resolve, reject) => {
+          const audio = new Audio();
+          audio.preload = 'auto';
+
+          const onCanPlay = () => {
+            this.state.loaded.add(cacheKey);
+            resolve();
+          };
+          const onError = () => {
+            reject(new Error(`Failed to preload audio: ${fullUrl}`));
+          };
+
+          audio.addEventListener('canplay', onCanPlay, { once: true });
+          audio.addEventListener('error', onError, { once: true });
+          audio.src = fullUrl;
+          try {
+            audio.load();
+          } catch {
+            // ignore
+          }
+        });
+      }
+
+      // Voices: don't preload in JS or via media element (can be many files).
+      this.state.loaded.add(cacheKey);
+      return Promise.resolve();
+    }
+
     return fetch(fullUrl)
       .then((res) => {
         if (!res.ok) {
@@ -466,9 +503,7 @@ class AssetLoader {
 
         // Pre-decode sound effects for instant playback
         // This is critical for low-latency audio on mobile
-        if (cacheKey.includes('/sounds/')) {
-          await preDecodeAudio(fullUrl, buffer);
-        }
+        await preDecodeAudio(fullUrl, buffer);
       });
   }
 

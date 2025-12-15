@@ -12,6 +12,23 @@ import { useHeaderImages } from './useHeaderImages';
 
 type Motion = 'open' | 'close';
 
+function isProbablySafari() {
+  try {
+    const ua = navigator.userAgent;
+    return /Safari/i.test(ua) && !/Chrome|Chromium|Edg|OPR/i.test(ua);
+  } catch {
+    return false;
+  }
+}
+
+function prefersReducedMotion() {
+  try {
+    return window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches ?? false;
+  } catch {
+    return false;
+  }
+}
+
 type PortalConfig = {
   targetAspect: number; // 950/300
   portalMargin: number; // safe padding inside canvas
@@ -58,7 +75,7 @@ const DEFAULT_PORTAL_CFG: PortalConfig = {
   portalTSpeed: 0.55,
   revealTSpeed: 0.78,
 
-  layersCount: 4,
+  layersCount: 3,
   layerScaleInner: 0.9,
   layerScaleOuter: 1.13,
   layerAlphaInner: 1.0,
@@ -74,7 +91,7 @@ const DEFAULT_PORTAL_CFG: PortalConfig = {
   alphaCloseInnerGamma: 1.05,
   alphaCloseOuterGamma: 2.2,
 
-  enableBlur: true,
+  enableBlur: false,
   featherBasePx: 2.5,
   blurStepPx: 3.0,
   featherMult: 2.3,
@@ -311,12 +328,35 @@ function drawPyramidMask(
       layerIndex * cfg.layerPhaseOffset +
       (hash01(seed + 9.9) - 0.5) * cfg.layerPhaseJitter;
 
-    let blurPx = 0;
-    if (cfg.enableBlur) {
-      blurPx = cfg.featherBasePx + (layers.length - 1 - layerIndex) * cfg.blurStepPx;
+    if (!cfg.enableBlur) {
+      if (ctx.filter !== 'none') ctx.filter = 'none';
+
+      ctx.globalAlpha = layer.alpha * alphaFactor * 0.18;
+      drawSuperBlobPath(ctx, cfg, a * 1.1, b * 1.1, t + 0.33, profile, {
+        steps,
+        detail,
+        seed: seed + 303,
+      });
+      ctx.fill();
+
+      ctx.globalAlpha = layer.alpha * alphaFactor * 0.32;
+      drawSuperBlobPath(ctx, cfg, a * 1.04, b * 1.04, t + 0.22, profile, {
+        steps,
+        detail,
+        seed: seed + 101,
+      });
+      ctx.fill();
+
+      ctx.globalAlpha = layer.alpha * alphaFactor;
+      drawSuperBlobPath(ctx, cfg, a, b, t, profile, { steps, detail, seed });
+      ctx.fill();
+      continue;
     }
 
-    ctx.filter = cfg.enableBlur ? `blur(${blurPx * cfg.featherMult}px)` : 'none';
+    const blurPx = cfg.featherBasePx + (layers.length - 1 - layerIndex) * cfg.blurStepPx;
+
+    const outerFilter = cfg.enableBlur ? `blur(${blurPx * cfg.featherMult}px)` : 'none';
+    if (ctx.filter !== outerFilter) ctx.filter = outerFilter;
     ctx.globalAlpha = layer.alpha * alphaFactor * 0.55;
     drawSuperBlobPath(ctx, cfg, a * 1.03, b * 1.03, t + 0.22, profile, {
       steps,
@@ -326,13 +366,14 @@ function drawPyramidMask(
     ctx.fill();
 
     const coreBlur = Math.max(0.4, blurPx * cfg.coreMult);
-    ctx.filter = cfg.enableBlur ? `blur(${coreBlur}px)` : 'none';
+    const coreFilter = cfg.enableBlur ? `blur(${coreBlur}px)` : 'none';
+    if (ctx.filter !== coreFilter) ctx.filter = coreFilter;
     ctx.globalAlpha = layer.alpha * alphaFactor;
     drawSuperBlobPath(ctx, cfg, a, b, t, profile, { steps, detail, seed });
     ctx.fill();
   }
 
-  ctx.filter = 'none';
+  if (ctx.filter !== 'none') ctx.filter = 'none';
   ctx.restore();
   ctx.globalAlpha = 1;
 }
@@ -356,15 +397,50 @@ async function loadImage(src: string): Promise<HTMLImageElement> {
   return img;
 }
 
+function getSourceDims(source: CanvasImageSource): { w: number; h: number } | null {
+  if (source instanceof HTMLImageElement) {
+    const w = source.naturalWidth || source.width;
+    const h = source.naturalHeight || source.height;
+    if (!w || !h) return null;
+    return { w, h };
+  }
+
+  if (source instanceof HTMLCanvasElement) {
+    const w = source.width;
+    const h = source.height;
+    if (!w || !h) return null;
+    return { w, h };
+  }
+
+  if (typeof ImageBitmap !== 'undefined' && source instanceof ImageBitmap) {
+    const w = source.width;
+    const h = source.height;
+    if (!w || !h) return null;
+    return { w, h };
+  }
+
+  // Safari: OffscreenCanvas may not exist in all versions; keep this loose.
+  const anySource = source as unknown as { width?: number; height?: number };
+  if (typeof anySource.width === 'number' && typeof anySource.height === 'number') {
+    const w = anySource.width;
+    const h = anySource.height;
+    if (!w || !h) return null;
+    return { w, h };
+  }
+
+  return null;
+}
+
 function drawCoverImage(
   ctx: CanvasRenderingContext2D,
-  img: HTMLImageElement,
+  img: CanvasImageSource,
   w: number,
   h: number
 ) {
-  const iw = img.naturalWidth || img.width;
-  const ih = img.naturalHeight || img.height;
-  if (!iw || !ih) return;
+  const dims = getSourceDims(img);
+  if (!dims) return;
+  const iw = dims.w;
+  const ih = dims.h;
 
   const scale = Math.max(w / iw, h / ih);
   const dw = iw * scale;
@@ -372,6 +448,34 @@ function drawCoverImage(
   const dx = (w - dw) / 2;
   const dy = (h - dh) / 2;
   ctx.drawImage(img, dx, dy, dw, dh);
+}
+
+async function loadAndDownscaleImage(
+  src: string,
+  targetW: number,
+  targetH: number
+): Promise<HTMLCanvasElement> {
+  const img = await loadImage(src);
+  const w = Math.max(1, Math.round(targetW));
+  const h = Math.max(1, Math.round(targetH));
+
+  const canvas = document.createElement('canvas');
+  canvas.width = w;
+  canvas.height = h;
+  const ctx = canvas.getContext('2d');
+  if (ctx) {
+    ctx.imageSmoothingEnabled = true;
+    drawCoverImage(ctx, img, w, h);
+  }
+
+  try {
+    // Drop reference to potentially huge decoded backing store.
+    img.src = '';
+  } catch {
+    // ignore
+  }
+
+  return canvas;
 }
 
 type PortalCanvasHandle = {
@@ -404,10 +508,25 @@ function usePortalCanvas({
   closeMs: number;
   opacity: number;
 }): PortalCanvasHandle {
+  const isSafari = useMemo(() => isProbablySafari(), []);
+  const reduceMotion = useMemo(() => prefersReducedMotion(), []);
+  const idleMotionEnabled = !reduceMotion && !isSafari;
+  const maxDpr = isSafari ? 1 : 2;
+  const targetFps = isSafari ? 30 : 60;
+  const maxCachedImages = 12;
+
   const tokenRef = useRef(0);
   const sizeRef = useRef({ w: 0, h: 0, dpr: 1 });
   const portalScaleRef = useRef({ x: 0.9, y: 0.85 });
   const maskPadRef = useRef({ css: 0, px: 0 });
+  const rafRef = useRef<number | null>(null);
+  const drawFrameRef = useRef<(() => void) | null>(null);
+  const startedAtRef = useRef(nowMs());
+  const lastFrameMsRef = useRef(0);
+  const frozenTimeRef = useRef(0);
+  const mainCtxRef = useRef<CanvasRenderingContext2D | null>(null);
+  const portalMaskCtxRef = useRef<CanvasRenderingContext2D | null>(null);
+  const revealMaskCtxRef = useRef<CanvasRenderingContext2D | null>(null);
 
   const stateRef = useRef<PortalAnimState>({
     motion: 'open',
@@ -418,11 +537,53 @@ function usePortalCanvas({
     nextSrc: '',
   });
 
-  const imageCacheRef = useRef(new Map<string, HTMLImageElement>());
+  const imageCacheRef = useRef(new Map<string, CanvasImageSource>());
   const pendingLoadsRef = useRef(new Map<string, Promise<void>>());
   const layersRef = useRef<LayerDef[]>(makeLayers(cfg));
   const portalMaskRef = useRef<HTMLCanvasElement | null>(null);
   const revealMaskRef = useRef<HTMLCanvasElement | null>(null);
+
+  const stopLoop = useCallback(() => {
+    if (rafRef.current !== null) {
+      cancelAnimationFrame(rafRef.current);
+      rafRef.current = null;
+    }
+  }, []);
+
+  const ensureLoop = useCallback(() => {
+    const drawFrame = drawFrameRef.current;
+    if (!drawFrame) return;
+    if (rafRef.current !== null) return;
+    rafRef.current = requestAnimationFrame(drawFrame);
+  }, []);
+
+  const pruneImageCache = useCallback(
+    (keep: string[]) => {
+      const keepSet = new Set(keep.filter(Boolean));
+      const cache = imageCacheRef.current;
+
+      for (const key of Array.from(cache.keys())) {
+        if (!keepSet.has(key)) cache.delete(key);
+      }
+
+      while (cache.size > maxCachedImages) {
+        const oldestKey = cache.keys().next().value as string | undefined;
+        if (!oldestKey) break;
+        if (keepSet.has(oldestKey)) {
+          const img = cache.get(oldestKey);
+          if (img) {
+            cache.delete(oldestKey);
+            cache.set(oldestKey, img);
+          } else {
+            cache.delete(oldestKey);
+          }
+          continue;
+        }
+        cache.delete(oldestKey);
+      }
+    },
+    [maxCachedImages]
+  );
 
   useEffect(() => {
     layersRef.current = makeLayers(cfg);
@@ -436,7 +597,7 @@ function usePortalCanvas({
       const rect = el.getBoundingClientRect();
       const w = Math.max(1, Math.round(rect.width));
       const h = Math.max(1, Math.round(rect.height));
-      const dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+      const dpr = Math.max(1, Math.min(maxDpr, window.devicePixelRatio || 1));
       sizeRef.current = { w, h, dpr };
 
       const canvas = canvasRef.current;
@@ -449,10 +610,12 @@ function usePortalCanvas({
       canvas.style.width = `${w}px`;
       canvas.style.height = `${h}px`;
 
+      const enableBlur = cfg.enableBlur && !isSafari;
       const layersCount = Math.max(1, Math.round(cfg.layersCount));
-      const maxBlurPx =
-        cfg.featherBasePx + (layersCount - 1) * cfg.blurStepPx;
-      const padCss = Math.ceil(maxBlurPx * cfg.featherMult + 6);
+      const maxBlurPx = enableBlur
+        ? cfg.featherBasePx + (layersCount - 1) * cfg.blurStepPx
+        : 0;
+      const padCss = enableBlur ? Math.ceil(maxBlurPx * cfg.featherMult + 6) : 0;
       const padPx = Math.max(0, Math.ceil(padCss * dpr));
       maskPadRef.current = { css: padCss, px: padPx };
 
@@ -466,6 +629,9 @@ function usePortalCanvas({
       if (portalMaskRef.current.height !== maskH) portalMaskRef.current.height = maskH;
       if (revealMaskRef.current.width !== maskW) revealMaskRef.current.width = maskW;
       if (revealMaskRef.current.height !== maskH) revealMaskRef.current.height = maskH;
+
+      portalMaskCtxRef.current = portalMaskRef.current.getContext('2d');
+      revealMaskCtxRef.current = revealMaskRef.current.getContext('2d');
     };
 
     update();
@@ -476,10 +642,13 @@ function usePortalCanvas({
   }, [
     canvasRef,
     containerRef,
+    cfg.enableBlur,
     cfg.blurStepPx,
     cfg.featherBasePx,
     cfg.featherMult,
     cfg.layersCount,
+    isSafari,
+    maxDpr,
   ]);
 
   const ensureImage = useCallback((src: string) => {
@@ -487,9 +656,12 @@ function usePortalCanvas({
     if (imageCacheRef.current.has(src)) return;
     if (pendingLoadsRef.current.has(src)) return;
 
-    const p = loadImage(src)
-      .then((img) => {
-        imageCacheRef.current.set(src, img);
+    const { w, h } = sizeRef.current;
+    const shouldDownscale = isSafari && w > 0 && h > 0;
+
+    const p = (shouldDownscale ? loadAndDownscaleImage(src, w, h) : loadImage(src))
+      .then((imgOrCanvas) => {
+        imageCacheRef.current.set(src, imgOrCanvas);
       })
       .catch(() => {})
       .finally(() => {
@@ -497,50 +669,83 @@ function usePortalCanvas({
       });
 
     pendingLoadsRef.current.set(src, p);
-  }, []);
+  }, [isSafari]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+    mainCtxRef.current = canvas.getContext('2d');
+    if (!mainCtxRef.current) return;
 
-    let raf = 0;
-    let running = true;
-    const startedAt = nowMs();
+    const scheduleNext = () => {
+      if (rafRef.current !== null) return;
+      if (!drawFrameRef.current) return;
+      rafRef.current = requestAnimationFrame(drawFrameRef.current);
+    };
 
     const drawFrame = () => {
-      if (!running) return;
+      rafRef.current = null;
+
+      try {
+        if (document.visibilityState === 'hidden') return;
+      } catch {
+        // ignore
+      }
 
       const { w, h, dpr } = sizeRef.current;
       if (!w || !h) {
-        raf = requestAnimationFrame(drawFrame);
+        scheduleNext();
         return;
       }
 
       const st = stateRef.current;
       const currentSrc = st.currentSrc;
-      if (!currentSrc) {
-        raf = requestAnimationFrame(drawFrame);
+      if (!currentSrc) return;
+
+      const cache = imageCacheRef.current;
+      const img = cache.get(currentSrc);
+      if (!img) {
+        ensureImage(currentSrc);
+        scheduleNext();
         return;
       }
 
-      const img = imageCacheRef.current.get(currentSrc);
-      if (!img) {
-        ensureImage(currentSrc);
-        raf = requestAnimationFrame(drawFrame);
+      cache.delete(currentSrc);
+      cache.set(currentSrc, img);
+      pruneImageCache([currentSrc, st.nextSrc]);
+
+      const portalMask = portalMaskRef.current;
+      const revealMask = revealMaskRef.current;
+      const ctx = mainCtxRef.current;
+      const pm = portalMaskCtxRef.current;
+      const rm = revealMaskCtxRef.current;
+      if (!portalMask || !revealMask || !ctx || !pm || !rm) {
+        scheduleNext();
         return;
+      }
+
+      const timeNow = nowMs();
+      const frameBudgetMs = 1000 / Math.max(1, targetFps);
+      if (timeNow - lastFrameMsRef.current < frameBudgetMs) {
+        scheduleNext();
+        return;
+      }
+      lastFrameMsRef.current = timeNow;
+
+      const enableBlur = cfg.enableBlur && !isSafari;
+      const effectiveCfg: PortalConfig = enableBlur ? cfg : { ...cfg, enableBlur: false };
+
+      const transitionActive =
+        st.motion === 'close' || st.reveal < 0.999 || st.alpha < 0.999;
+      const animateWobble = transitionActive || idleMotionEnabled;
+      let time = frozenTimeRef.current;
+      if (animateWobble) {
+        time = (timeNow - startedAtRef.current) / 1000 + st.phaseShift;
+        frozenTimeRef.current = time;
       }
 
       const pixelW = canvas.width;
       const pixelH = canvas.height;
-
-      const portalMask = portalMaskRef.current;
-      const revealMask = revealMaskRef.current;
-      if (!portalMask || !revealMask) {
-        raf = requestAnimationFrame(drawFrame);
-        return;
-      }
 
       ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.clearRect(0, 0, pixelW, pixelH);
@@ -551,30 +756,28 @@ function usePortalCanvas({
       ctx.imageSmoothingEnabled = true;
       drawCoverImage(ctx, img, w, h);
 
-      const dims = getPortalHalfDims(cfg, w, h);
+      const dims = getPortalHalfDims(effectiveCfg, w, h);
       const scaledDims = {
         a: dims.a * portalScaleRef.current.x,
         b: dims.b * portalScaleRef.current.y,
       };
       const layers = layersRef.current;
-      const time = (nowMs() - startedAt) / 1000 + st.phaseShift;
       const padCss = maskPadRef.current.css;
 
-      const pm = portalMask.getContext('2d')!;
       pm.setTransform(1, 0, 0, 1, 0, 0);
       pm.clearRect(0, 0, portalMask.width, portalMask.height);
       pm.setTransform(dpr, 0, 0, dpr, 0, 0);
       pm.translate(padCss, padCss);
       drawPyramidMask(
         pm,
-        cfg,
+        effectiveCfg,
         layers,
         w * 0.5,
         h * 0.5,
         scaledDims.a,
         scaledDims.b,
         1,
-        time * cfg.portalTSpeed,
+        time * effectiveCfg.portalTSpeed,
         'portal',
         'open'
       );
@@ -582,36 +785,71 @@ function usePortalCanvas({
       ctx.globalCompositeOperation = 'destination-in';
       ctx.drawImage(portalMask, -padCss, -padCss, w + padCss * 2, h + padCss * 2);
 
-      const rm = revealMask.getContext('2d')!;
       rm.setTransform(1, 0, 0, 1, 0, 0);
       rm.clearRect(0, 0, revealMask.width, revealMask.height);
       rm.setTransform(dpr, 0, 0, dpr, 0, 0);
       rm.translate(padCss, padCss);
       drawPyramidMask(
         rm,
-        cfg,
+        effectiveCfg,
         layers,
         w * 0.5,
         h * 0.5,
         scaledDims.a,
         scaledDims.b,
         st.reveal,
-        time * cfg.revealTSpeed,
+        time * effectiveCfg.revealTSpeed,
         'reveal',
         st.motion
       );
 
       ctx.drawImage(revealMask, -padCss, -padCss, w + padCss * 2, h + padCss * 2);
       ctx.globalCompositeOperation = 'source-over';
-      raf = requestAnimationFrame(drawFrame);
+
+      if (transitionActive || idleMotionEnabled) scheduleNext();
     };
 
-    raf = requestAnimationFrame(drawFrame);
-    return () => {
-      running = false;
-      if (raf) cancelAnimationFrame(raf);
+    drawFrameRef.current = drawFrame;
+
+    const onVisibility = () => {
+      try {
+        if (document.visibilityState === 'hidden') stopLoop();
+        else if (stateRef.current.currentSrc) {
+          const stNow = stateRef.current;
+          const frozen = frozenTimeRef.current;
+          startedAtRef.current = nowMs() - Math.max(0, frozen - stNow.phaseShift) * 1000;
+          ensureLoop();
+        }
+      } catch {
+        // ignore
+      }
     };
-  }, [canvasRef, cfg, ensureImage, opacity]);
+
+    document.addEventListener('visibilitychange', onVisibility);
+    window.addEventListener('pagehide', stopLoop);
+    window.addEventListener('pageshow', onVisibility);
+
+    if (stateRef.current.currentSrc) ensureLoop();
+
+    return () => {
+      document.removeEventListener('visibilitychange', onVisibility);
+      window.removeEventListener('pagehide', stopLoop);
+      window.removeEventListener('pageshow', onVisibility);
+      drawFrameRef.current = null;
+      stopLoop();
+    };
+  }, [
+    canvasRef,
+    cfg,
+    ensureImage,
+    ensureLoop,
+    idleMotionEnabled,
+    isSafari,
+    opacity,
+    pruneImageCache,
+    stopLoop,
+    targetFps,
+  ]);
 
   const show = useCallback(
     (imageSrc: string) => {
@@ -620,6 +858,7 @@ function usePortalCanvas({
       const st = stateRef.current;
 
       ensureImage(imageSrc);
+      ensureLoop();
 
       const isEmpty = !st.currentSrc || st.reveal <= 0.001 || st.alpha <= 0.001;
       const easeOpen = (t: number) => easeOutPow(t, 3.0);
@@ -648,11 +887,14 @@ function usePortalCanvas({
 
       if (isEmpty) {
         st.phaseShift = Math.random() * 1000;
+        startedAtRef.current = nowMs();
+        frozenTimeRef.current = 0;
         st.currentSrc = imageSrc;
         st.nextSrc = '';
         st.motion = 'open';
         st.reveal = 0;
         st.alpha = 0;
+        pruneImageCache([st.currentSrc]);
         tween('reveal', 0, 1, openMs, easeOpen);
         tween('alpha', 0, 1, Math.round(openMs * 0.7), easeOpen);
         return;
@@ -660,6 +902,7 @@ function usePortalCanvas({
 
       st.nextSrc = imageSrc;
       ensureImage(st.nextSrc);
+      pruneImageCache([st.currentSrc, st.nextSrc]);
       st.motion = 'close';
       st.alpha = 1;
 
@@ -670,11 +913,13 @@ function usePortalCanvas({
           st.nextSrc = '';
         }
         st.phaseShift = Math.random() * 1000;
+        startedAtRef.current = nowMs();
+        frozenTimeRef.current = 0;
         st.motion = 'open';
         tween('reveal', 0, 1, openMs, easeOpen);
       });
     },
-    [closeMs, ensureImage, openMs]
+    [closeMs, ensureImage, ensureLoop, openMs, pruneImageCache]
   );
 
   const hide = useCallback(() => {
@@ -698,11 +943,79 @@ function usePortalCanvas({
       else {
         st.currentSrc = '';
         st.nextSrc = '';
+        pruneImageCache([]);
       }
     };
 
+    ensureLoop();
     requestAnimationFrame(step);
-  }, [closeMs]);
+  }, [closeMs, ensureLoop, pruneImageCache]);
+
+  useEffect(() => {
+    if (!import.meta.env.DEV) return;
+
+    const devWindow = window as typeof window & {
+      __millionairePortalHeader?: {
+        getState: () => unknown;
+        start: () => void;
+        stop: () => void;
+        clearCache: () => void;
+      };
+    };
+
+    devWindow.__millionairePortalHeader = {
+      getState: () => ({
+        isSafari,
+        reduceMotion,
+        idleMotionEnabled,
+        maxDpr,
+        targetFps,
+        currentSrc: stateRef.current.currentSrc,
+        nextSrc: stateRef.current.nextSrc,
+        canvas: {
+          css: sizeRef.current,
+          pixel: {
+            w: canvasRef.current?.width ?? 0,
+            h: canvasRef.current?.height ?? 0,
+          },
+        },
+        cache: {
+          images: imageCacheRef.current.size,
+          pending: pendingLoadsRef.current.size,
+          keys: Array.from(imageCacheRef.current.keys()),
+        },
+        masks: {
+          padCss: maskPadRef.current.css,
+          portal: {
+            w: portalMaskRef.current?.width ?? 0,
+            h: portalMaskRef.current?.height ?? 0,
+          },
+          reveal: {
+            w: revealMaskRef.current?.width ?? 0,
+            h: revealMaskRef.current?.height ?? 0,
+          },
+        },
+        rafScheduled: rafRef.current !== null,
+      }),
+      start: () => ensureLoop(),
+      stop: () => stopLoop(),
+      clearCache: () => pruneImageCache([]),
+    };
+
+    return () => {
+      delete devWindow.__millionairePortalHeader;
+    };
+  }, [
+    canvasRef,
+    ensureLoop,
+    idleMotionEnabled,
+    isSafari,
+    maxDpr,
+    pruneImageCache,
+    reduceMotion,
+    stopLoop,
+    targetFps,
+  ]);
 
   const isShowing = useCallback(() => {
     const st = stateRef.current;
@@ -740,6 +1053,8 @@ export function PortalHeader({
 }: PortalHeaderProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const isSafari = useMemo(() => isProbablySafari(), []);
+  const enableBlur = config.headerSlideshow?.enableBlur ?? false;
 
   const { enabled, isLoading, images, basePath, subfolder, displayDuration, transitionDuration, opacity } =
     useHeaderImages(config.headerSlideshow, {
@@ -752,10 +1067,15 @@ export function PortalHeader({
   const openMs = Math.max(400, Math.round(transitionDuration * 0.65));
   const closeMs = Math.max(250, Math.round(transitionDuration * 0.5));
 
+  const portalCfg = useMemo(() => {
+    const allowBlur = enableBlur && !isSafari;
+    return { ...DEFAULT_PORTAL_CFG, enableBlur: allowBlur };
+  }, [enableBlur, isSafari]);
+
   const portal = usePortalCanvas({
     canvasRef,
     containerRef,
-    cfg: DEFAULT_PORTAL_CFG,
+    cfg: portalCfg,
     openMs,
     closeMs,
     opacity,
@@ -851,8 +1171,6 @@ export function PortalHeader({
           ref={canvasRef}
           className="absolute inset-0 w-full h-full"
           style={{
-            filter:
-              'drop-shadow(0 22px 44px rgba(0,0,0,0.55)) drop-shadow(0 0 22px rgba(0,0,0,0.35))',
             pointerEvents: 'none',
           }}
         />
@@ -863,7 +1181,7 @@ export function PortalHeader({
               className="pointer-events-none absolute inset-x-6 top-2 h-32"
               style={{
                 background: backdrop,
-                filter: 'blur(18px)',
+                filter: isSafari || !enableBlur ? 'none' : 'blur(18px)',
                 opacity: isLightTheme ? 0.9 : 0.95,
               }}
               aria-hidden="true"

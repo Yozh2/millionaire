@@ -507,6 +507,11 @@ export interface HeaderSlideshowConfig {
   displayDuration?: number;
   /** Opacity of the slideshow overlay (default: 1) */
   opacity?: number;
+  /**
+   * Enable expensive blur-based effects in the header (e.g. PortalHeader mask blur / backdrop blur).
+   * Default: false
+   */
+  enableBlur?: boolean;
 }
 
 // ============================================

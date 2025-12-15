@@ -38,6 +38,7 @@ export const HeaderPanel: React.FC<HeaderPanelProps> = ({
 }) => {
   const isLightTheme = !!theme.isLight;
   const titleTextClass = theme.textTitle ?? theme.textPrimary;
+  const enableBlur = config.headerSlideshow?.enableBlur ?? false;
 
   const defaultTitleShadow = isLightTheme
     ? `0 4px 18px rgba(15, 23, 42, 0.20), 0 0 26px ${theme.glowColor}55`
@@ -79,7 +80,7 @@ export const HeaderPanel: React.FC<HeaderPanelProps> = ({
             className="pointer-events-none absolute inset-x-6 top-2 h-32"
             style={{
               background: backdrop,
-              filter: 'blur(18px)',
+              filter: enableBlur ? 'blur(18px)' : 'none',
               opacity: isLightTheme ? 0.9 : 0.95,
             }}
             aria-hidden="true"

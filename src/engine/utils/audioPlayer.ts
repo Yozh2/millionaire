@@ -590,6 +590,14 @@ const tryPlayFile = async (
   volume: number
 ): Promise<boolean> => {
   const key = normalizeAudioPath(path);
+  const isSoundEffect = key.includes('/sounds/');
+
+  // Voices/music: prefer HTMLAudioElement streaming to avoid decoding/caching large PCM buffers.
+  if (!isSoundEffect) {
+    const exists = await checkFileExists(key);
+    if (!exists) return false;
+    return playHtmlAudio(key, key, volume);
+  }
 
   // Check AudioBuffer cache first (fastest path)
   const cachedBuffer = audioBufferCache.get(key);
