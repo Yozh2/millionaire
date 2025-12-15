@@ -21,8 +21,8 @@ const TILT_MAX = 9; // deg
 const GLARE_SHIFT = 28; // px
 
 // Damped spring: a = -k(x-target) - c*v
-const SPRING_K = 120;
-const SPRING_C = 26;
+const SPRING_K = 190;
+const SPRING_C = 34;
 
 function hitTest(el: HTMLElement, clientX: number, clientY: number): boolean {
   const rect = el.getBoundingClientRect();
@@ -161,7 +161,7 @@ export function useCampaignCardFsm({
       m.lastT = t;
 
       // Smoothly feed the spring target to avoid harsh starts.
-      const tauTarget = 0.14;
+      const tauTarget = 0.09;
       const alphaTarget = 1 - Math.exp(-dt / tauTarget);
       m.targetY = lerp(m.targetY, m.wantedY, alphaTarget);
 
@@ -171,7 +171,7 @@ export function useCampaignCardFsm({
       m.y += m.v * dt;
 
       // Smooth bob amplitude.
-      const tauBob = 0.65;
+      const tauBob = 0.32;
       const alphaBob = 1 - Math.exp(-dt / tauBob);
       m.bobAmp = lerp(m.bobAmp, m.bobAmpTarget, alphaBob);
 
@@ -282,6 +282,23 @@ export function useCampaignCardFsm({
   }, [startLoop, state]);
 
   useEffect(() => {
+    if (state !== 'Deactivate') return;
+
+    if (easeTimerRef.current) window.clearTimeout(easeTimerRef.current);
+    easeTimerRef.current = window.setTimeout(() => {
+      setState((prev) => {
+        if (prev !== 'Deactivate') return prev;
+        return isOverRef.current ? 'Hover' : 'Idle';
+      });
+    }, Math.max(120, Math.round(EASE_MS * 1.25)));
+
+    return () => {
+      if (easeTimerRef.current) window.clearTimeout(easeTimerRef.current);
+      easeTimerRef.current = null;
+    };
+  }, [state]);
+
+  useEffect(() => {
     const prevSelected = prevSelectedRef.current;
     if (prevSelected === selected) return;
     prevSelectedRef.current = selected;
@@ -373,15 +390,8 @@ export function useCampaignCardFsm({
         // ignore
       }
 
-      const pointerType = pointerTypeRef.current ?? e.pointerType;
-      const isTouch = pointerType === 'touch';
       const coordsInvalid = e.clientX === 0 && e.clientY === 0;
-      const over =
-        isTouch
-          ? coordsInvalid
-            ? true
-            : hitTest(e.currentTarget, e.clientX, e.clientY)
-          : hitTest(e.currentTarget, e.clientX, e.clientY);
+      const over = coordsInvalid ? true : hitTest(e.currentTarget, e.clientX, e.clientY);
       setIsOver(over);
       // If we handled selection on pointerup, suppress the synthetic click to avoid double-trigger.
       // If we didn't select, allow click to be the fallback (Safari touch can be unreliable).
