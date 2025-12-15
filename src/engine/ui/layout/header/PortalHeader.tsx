@@ -801,7 +801,7 @@ export function PortalHeader({
     <div
       className={`mb-4 relative ${className}`}
       style={{
-        minHeight: 136,
+        minHeight: 156,
         opacity: activated ? 1 : 0,
         transition: 'opacity 260ms ease',
         pointerEvents: activated ? 'auto' : 'none',
@@ -812,7 +812,7 @@ export function PortalHeader({
         className="relative w-full"
         style={{
           aspectRatio: '950 / 300',
-          width: 'min(952px, calc(100% + 80px))',
+          width: 'min(1120px, calc(100% + 96px))',
           background: 'transparent',
           overflow: 'visible',
           left: '50%',
@@ -836,7 +836,7 @@ export function PortalHeader({
             {isMusicPlaying ? '🔊' : '🔇'}
           </VolumeButton>
 
-          <div className="relative max-w-5xl mx-auto text-center flex items-center justify-center min-h-[150px] md:min-h-[160px]">
+          <div className="relative max-w-5xl mx-auto text-center flex items-center justify-center min-h-[165px] md:min-h-[175px]">
             <div
               className="pointer-events-none absolute inset-x-6 top-2 h-32"
               style={{
