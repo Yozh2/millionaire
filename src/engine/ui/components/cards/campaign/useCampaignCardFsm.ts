@@ -25,6 +25,21 @@ const SPRING_K = 190;
 const SPRING_C = 34;
 
 function hitTest(el: HTMLElement, clientX: number, clientY: number): boolean {
+  // WebKit can sometimes report invalid coords for pointerup; treat as inside.
+  if (clientX === 0 && clientY === 0) return true;
+
+  // Prefer DOM hit-testing over bounding boxes to avoid WebKit quirks with 3D transforms.
+  try {
+    const stack = document.elementsFromPoint?.(clientX, clientY);
+    if (stack && stack.length > 0) {
+      return stack.some((node) => el.contains(node));
+    }
+    const top = document.elementFromPoint?.(clientX, clientY);
+    if (top) return el.contains(top);
+  } catch {
+    // ignore and fall back to bounding rect
+  }
+
   const rect = el.getBoundingClientRect();
   return (
     clientX >= rect.left &&
@@ -390,8 +405,7 @@ export function useCampaignCardFsm({
         // ignore
       }
 
-      const coordsInvalid = e.clientX === 0 && e.clientY === 0;
-      const over = coordsInvalid ? true : hitTest(e.currentTarget, e.clientX, e.clientY);
+      const over = hitTest(e.currentTarget, e.clientX, e.clientY);
       setIsOver(over);
       // If we handled selection on pointerup, suppress the synthetic click to avoid double-trigger.
       // If we didn't select, allow click to be the fallback (Safari touch can be unreliable).

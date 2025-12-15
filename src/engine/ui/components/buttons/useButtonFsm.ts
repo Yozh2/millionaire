@@ -3,6 +3,21 @@ import type { PointerEventHandler } from 'react';
 import type { ButtonFsmState } from './types';
 
 function hitTest(el: HTMLElement, clientX: number, clientY: number): boolean {
+  // Some WebKit builds may report 0/0 for pointer coordinates on release; treat as inside.
+  if (clientX === 0 && clientY === 0) return true;
+
+  // Prefer DOM hit-testing over bounding boxes to avoid WebKit quirks with transformed elements.
+  try {
+    const stack = document.elementsFromPoint?.(clientX, clientY);
+    if (stack && stack.length > 0) {
+      return stack.some((node) => el.contains(node));
+    }
+    const top = document.elementFromPoint?.(clientX, clientY);
+    if (top) return el.contains(top);
+  } catch {
+    // ignore and fall back to bounding rect
+  }
+
   const rect = el.getBoundingClientRect();
   return (
     clientX >= rect.left &&
