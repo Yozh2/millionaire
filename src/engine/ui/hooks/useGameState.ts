@@ -70,6 +70,12 @@ export interface GameStateData {
     double: boolean;
   };
 
+  /** Is "Double Dip" currently armed for this question */
+  doubleDipArmed: boolean;
+
+  /** Has the strike already been consumed */
+  doubleDipStrikeUsed: boolean;
+
   /** Prize won (as string) */
   wonPrize: string;
 
@@ -433,6 +439,8 @@ export const useGameState = (config: GameConfig): UseGameStateReturn => {
     lifelineResult: state.lifelineResult,
     lifelines,
     lifelineAvailability,
+    doubleDipArmed: state.doubleDipArmed,
+    doubleDipStrikeUsed: state.doubleDipStrikeUsed,
     wonPrize: state.wonPrize,
     currentQuestionData,
     currentPrize,

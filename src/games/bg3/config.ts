@@ -170,6 +170,11 @@ export const bg3Config: GameConfig = {
       icon: '🍺',
       enabled: true,
     },
+    double: {
+      name: 'Право на ошибку',
+      icon: '🎯',
+      enabled: true,
+    },
   },
 
   actions: {

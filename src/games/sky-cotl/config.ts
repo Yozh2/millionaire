@@ -145,6 +145,7 @@ export const skyCotlConfig: GameConfig = {
     fifty: { name: '50:50', icon: '✨', enabled: true },
     phone: { name: 'Call', icon: '📞', enabled: true },
     audience: { name: 'Crowd', icon: '📊', enabled: true },
+    double: { name: 'Second chance', icon: '🎯', enabled: true },
   },
 
   actions: {

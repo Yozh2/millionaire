@@ -310,6 +310,7 @@ export const transformersConfig: GameConfig = {
     fifty: { name: '50:50', icon: '⚡', enabled: true },
     phone: { name: 'База', icon: '📡', enabled: true },
     audience: { name: 'Отряд', icon: '🤖', enabled: true },
+    double: { name: 'Право на ошибку', icon: '🎯', enabled: true },
   },
 
   actions: {

@@ -41,6 +41,8 @@ export function GameScreen({
     selectedAnswer,
     lifelineResult,
     lifelineAvailability,
+    doubleDipArmed,
+    doubleDipStrikeUsed,
     handleAnswer,
     useLifelineFifty: activateLifelineFifty,
     useLifelinePhone: activateLifelinePhone,
@@ -199,6 +201,7 @@ export function GameScreen({
           shuffledAnswers={shuffledAnswers}
           eliminatedAnswers={eliminatedAnswers}
           selectedAnswer={selectedAnswer}
+          preventCorrectRevealOnWrongSelection={doubleDipArmed && !doubleDipStrikeUsed}
           theme={theme}
           answerIndexRefs={answerIndexRefs}
           onAnswerClick={handleAnswerWithSound}

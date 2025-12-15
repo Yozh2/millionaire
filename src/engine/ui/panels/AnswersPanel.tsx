@@ -8,6 +8,7 @@ interface AnswersPanelProps {
   shuffledAnswers: number[];
   eliminatedAnswers: number[];
   selectedAnswer: number | null;
+  preventCorrectRevealOnWrongSelection?: boolean;
   theme: ThemeColors;
   answerIndexRefs: MutableRefObject<(HTMLSpanElement | null)[]>;
   onAnswerClick: (displayIndex: number, e: MouseEvent<HTMLButtonElement>) => void;
@@ -19,6 +20,7 @@ export function AnswersPanel({
   shuffledAnswers,
   eliminatedAnswers,
   selectedAnswer,
+  preventCorrectRevealOnWrongSelection = false,
   theme,
   answerIndexRefs,
   onAnswerClick,
@@ -38,7 +40,13 @@ export function AnswersPanel({
     const originalIndex = shuffledAnswers[displayIndex];
 
     if (selectedAnswer !== null) {
-      if (originalIndex === correctAnswerIndex) {
+      const selectedOriginalIndex = shuffledAnswers[selectedAnswer];
+      const selectionIsCorrect = selectedOriginalIndex === correctAnswerIndex;
+
+      const shouldRevealCorrect =
+        selectionIsCorrect || !preventCorrectRevealOnWrongSelection;
+
+      if (originalIndex === correctAnswerIndex && shouldRevealCorrect) {
         return (
           base +
           'bg-gradient-to-br from-emerald-800 to-emerald-950 ' +
