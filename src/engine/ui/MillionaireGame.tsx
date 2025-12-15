@@ -365,7 +365,7 @@ export function MillionaireGame({ config }: MillionaireGameProps) {
               isMusicPlaying={audio.isMusicPlaying}
               onToggleMusic={audio.toggleMusic}
               activated={isHeaderActivated}
-              className="z-0 -mb-12 md:-mb-16"
+              className="z-0 -mb-10 md:-mb-14"
             />
           )}
 

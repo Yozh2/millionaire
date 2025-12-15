@@ -792,7 +792,7 @@ export function PortalHeader({
     <div
       className={`mb-4 relative ${className}`}
       style={{
-        minHeight: 200,
+        minHeight: 160,
         opacity: activated ? 1 : 0,
         transition: 'opacity 260ms ease',
         pointerEvents: activated ? 'auto' : 'none',
@@ -800,12 +800,14 @@ export function PortalHeader({
     >
       <div
         ref={containerRef}
-        className="relative mx-auto w-full"
+        className="relative w-full"
         style={{
           aspectRatio: '950 / 300',
-          width: 'min(1400px, calc(100% + 120px))',
+          width: 'min(1120px, calc(100% + 96px))',
           background: 'transparent',
           overflow: 'visible',
+          left: '50%',
+          transform: 'translateX(-50%)',
         }}
       >
         <canvas
