@@ -27,7 +27,7 @@ import { GameScreen } from './screens/GameScreen';
 import { LoadingScreen } from './screens/LoadingScreen';
 import { ParticleCanvas } from './effects/ParticleCanvas';
 import { StartScreen } from './screens/StartScreen';
-import { HeaderPanel } from './layout/header/HeaderPanel';
+import { PortalHeader } from './layout/header/PortalHeader';
 import { SoundConsentOverlay } from './components/overlays/SoundConsentOverlay';
 import { STORAGE_KEY_SOUND_ENABLED } from '../constants';
 
@@ -86,6 +86,7 @@ export function MillionaireGame({ config }: MillionaireGameProps) {
   );
   const [level11Progress, setLevel11Progress] = useState(0);
   const [isWaitingForLevel11, setIsWaitingForLevel11] = useState(false);
+  const [isHeaderActivated, setIsHeaderActivated] = useState(false);
   const soundConsentKey = useMemo(
     () => `engine:sound-consent-shown:${config.id}`,
     [config.id]
@@ -164,6 +165,7 @@ export function MillionaireGame({ config }: MillionaireGameProps) {
 
   // Wrapper for selectCampaign with sound (campaign select SFX only if user enabled sound)
   const handleSelectCampaign = useCallback((campaign: Campaign) => {
+    setIsHeaderActivated(true);
     // Play campaign-specific select sound if defined, otherwise generic click
     if (campaign.selectSound) {
       audio.playCampaignSelectSound(campaign.selectSound);
@@ -352,9 +354,9 @@ export function MillionaireGame({ config }: MillionaireGameProps) {
           preload="none"
         />
 
-        <div className="max-w-4xl mx-auto w-full flex-1 flex flex-col">
+          <div className="max-w-4xl mx-auto w-full flex-1 flex flex-col">
           {showHeader && (
-            <HeaderPanel
+            <PortalHeader
               config={config}
               theme={theme}
               slideshowScreen={slideshowScreen}
@@ -362,6 +364,7 @@ export function MillionaireGame({ config }: MillionaireGameProps) {
               difficulty={difficultyLevel}
               isMusicPlaying={audio.isMusicPlaying}
               onToggleMusic={audio.toggleMusic}
+              activated={isHeaderActivated}
             />
           )}
 
