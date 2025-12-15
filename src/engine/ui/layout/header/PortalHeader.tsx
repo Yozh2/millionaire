@@ -455,6 +455,11 @@ type PortalAnimState = {
   nextSrc: string;
 };
 
+type CachedImage = {
+  source: CanvasImageSource;
+  release: () => void;
+};
+
 function usePortalCanvas({
   canvasRef,
   containerRef,
@@ -475,6 +480,7 @@ function usePortalCanvas({
   const maxDpr = 2;
   const targetFps = 60;
   const maxCachedImages = 12;
+  const maxRasterPixels = 1_600_000;
 
   const tokenRef = useRef(0);
   const sizeRef = useRef({ w: 0, h: 0, dpr: 1 });
@@ -498,7 +504,7 @@ function usePortalCanvas({
     nextSrc: '',
   });
 
-  const imageCacheRef = useRef(new Map<string, CanvasImageSource>());
+  const imageCacheRef = useRef(new Map<string, CachedImage>());
   const pendingLoadsRef = useRef(new Map<string, Promise<void>>());
   const layersRef = useRef<LayerDef[]>(makeLayers(cfg));
   const portalMaskRef = useRef<HTMLCanvasElement | null>(null);
@@ -524,7 +530,11 @@ function usePortalCanvas({
       const cache = imageCacheRef.current;
 
       for (const key of Array.from(cache.keys())) {
-        if (!keepSet.has(key)) cache.delete(key);
+        if (!keepSet.has(key)) {
+          const entry = cache.get(key);
+          cache.delete(key);
+          entry?.release();
+        }
       }
 
       while (cache.size > maxCachedImages) {
@@ -540,7 +550,9 @@ function usePortalCanvas({
           }
           continue;
         }
+        const entry = cache.get(oldestKey);
         cache.delete(oldestKey);
+        entry?.release();
       }
     },
     [maxCachedImages]
@@ -611,14 +623,59 @@ function usePortalCanvas({
     maxDpr,
   ]);
 
+  const rasterizeImage = useCallback(
+    async (src: string): Promise<CachedImage> => {
+      const img = await loadImage(src);
+      const { w, h, dpr } = sizeRef.current;
+
+      const desiredW = Math.max(1, Math.floor(w * dpr));
+      const desiredH = Math.max(1, Math.floor(h * dpr));
+      const desiredPixels = desiredW * desiredH;
+
+      const scale =
+        desiredPixels > maxRasterPixels
+          ? Math.sqrt(maxRasterPixels / Math.max(1, desiredPixels))
+          : 1;
+
+      const rasterW = Math.max(1, Math.floor(desiredW * scale));
+      const rasterH = Math.max(1, Math.floor(desiredH * scale));
+
+      const canvas = document.createElement('canvas');
+      canvas.width = rasterW;
+      canvas.height = rasterH;
+
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        ctx.imageSmoothingEnabled = true;
+        drawCoverImage(ctx, img, rasterW, rasterH);
+      }
+
+      try {
+        // Help WebKit drop decoded backing store sooner.
+        img.src = '';
+      } catch {
+        // ignore
+      }
+
+      return {
+        source: canvas,
+        release: () => {
+          canvas.width = 0;
+          canvas.height = 0;
+        },
+      };
+    },
+    [maxRasterPixels]
+  );
+
   const ensureImage = useCallback((src: string) => {
     if (!src) return;
     if (imageCacheRef.current.has(src)) return;
     if (pendingLoadsRef.current.has(src)) return;
 
-    const p = loadImage(src)
-      .then((imgOrCanvas) => {
-        imageCacheRef.current.set(src, imgOrCanvas);
+    const p = rasterizeImage(src)
+      .then((entry) => {
+        imageCacheRef.current.set(src, entry);
       })
       .catch(() => {})
       .finally(() => {
@@ -626,7 +683,7 @@ function usePortalCanvas({
       });
 
     pendingLoadsRef.current.set(src, p);
-  }, []);
+  }, [rasterizeImage]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -660,15 +717,15 @@ function usePortalCanvas({
       if (!currentSrc) return;
 
       const cache = imageCacheRef.current;
-      const img = cache.get(currentSrc);
-      if (!img) {
+      const entry = cache.get(currentSrc);
+      if (!entry) {
         ensureImage(currentSrc);
         scheduleNext();
         return;
       }
 
       cache.delete(currentSrc);
-      cache.set(currentSrc, img);
+      cache.set(currentSrc, entry);
       pruneImageCache([currentSrc, st.nextSrc]);
 
       const portalMask = portalMaskRef.current;
@@ -681,6 +738,7 @@ function usePortalCanvas({
         return;
       }
 
+      const img = entry.source;
       const timeNow = nowMs();
       const frameBudgetMs = 1000 / Math.max(1, targetFps);
       if (timeNow - lastFrameMsRef.current < frameBudgetMs) {
@@ -925,6 +983,7 @@ function usePortalCanvas({
         idleMotionEnabled,
         maxDpr,
         targetFps,
+        maxRasterPixels,
         currentSrc: stateRef.current.currentSrc,
         nextSrc: stateRef.current.nextSrc,
         canvas: {
@@ -965,6 +1024,7 @@ function usePortalCanvas({
     ensureLoop,
     idleMotionEnabled,
     maxDpr,
+    maxRasterPixels,
     pruneImageCache,
     reduceMotion,
     stopLoop,
