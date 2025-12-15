@@ -167,7 +167,11 @@ export function useButtonFsm({
           : hitTest(e.currentTarget, e.clientX, e.clientY);
 
       setIsOver(over);
-      suppressNextClickRef.current = !over;
+      // If we don't use pointer capture, the browser's native click handling for mouse/pen
+      // is already reliable. Suppressing click based on hitTest can break in Safari where
+      // pointer coordinates may be unreliable for some pointer events.
+      suppressNextClickRef.current =
+        isTouch ? !over : enablePointerCapture ? !over : false;
 
       if (over) {
         setState('Activate');

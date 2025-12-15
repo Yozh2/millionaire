@@ -178,15 +178,12 @@ export function MillionaireGame({ config }: MillionaireGameProps) {
   // Sound on button press (mousedown/touchstart) - synced with button landing animation
   const handleActionButtonPress = useCallback(
     (e?: PointerEvent<Element>) => {
-      // iOS Safari requires sound to start inside the user gesture handler.
-      // Avoid setTimeout for touch pointers, otherwise SFX won't play.
-      if (e?.pointerType === 'touch') {
-        audio.playSoundEffect('actionButton');
-        return;
-      }
+      // Only play for primary click/tap.
+      // Safari may report `button !== 0` for touch pointers.
+      if (e && e.button !== 0 && e.pointerType !== 'touch') return;
 
-      // Sync with button landing/dust puff (~50ms) for mouse/pen.
-      setTimeout(() => audio.playSoundEffect('actionButton'), 100);
+      // Safari (especially iOS) requires audio to start inside the user gesture handler.
+      audio.playSoundEffect('actionButton');
     },
     [audio]
   );
