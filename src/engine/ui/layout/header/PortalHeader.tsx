@@ -180,10 +180,14 @@ function wobbleScale(
   const v1 = 1.0 + 0.1 * s3;
   const v2 = 1.0 + 0.07 * s1;
 
+  // Big features
+  // IMPORTANT: keep angular frequencies integer-valued.
+  // Fractional values (e.g. 0.5) break 2π periodicity so angle=0 and angle=2π no longer match,
+  // which shows up as a seam / phase break where the path closes.
   const lump =
-    0.1 * Math.sin((angle + anglePhase) * 1.0 + (time + timePhase) * 0.33 * v1) +
-    0.07 * Math.sin((angle + anglePhase) * 2.0 - (time + timePhase) * 0.21 * v2) +
-    0.05 * Math.sin((angle - anglePhase * 0.7) * 0.5 + (time - timePhase * 0.6) * 0.18);
+    0.11 * Math.sin((angle + anglePhase) * 1.0 + (time + timePhase) * 0.33 * v1) +
+    0.08 * Math.sin((angle + anglePhase) * 2.0 - (time + timePhase) * 0.21 * v2) +
+    0.06 * Math.sin((angle - anglePhase * 0.6) * 4.0 + (time - timePhase * 0.4) * 0.18);
 
   const fine =
     0.082 * Math.sin(2 * (angle + anglePhase) + (time + timePhase) * 1.05 * v1) +

@@ -101,6 +101,7 @@ type PortalConfig = {
   // Portal geometry
   targetAspect: number; // 950/300
   portalMargin: number; // safe padding inside canvas
+  portalScale: number; // overall portal scale (0..1), applied before layers/wobble
   superN: number; // 2=ellipse, higher=more rectangular
 
   // Wobble timing & intensity
@@ -152,6 +153,7 @@ const DEFAULT_CFG: PortalConfig = {
 
   targetAspect: 950 / 300,
   portalMargin: 0.06,
+  portalScale: 0.84,
   superN: 2.7,
 
   portalDetail: 0.92,
@@ -384,6 +386,12 @@ function drawSceneB(ctx: CanvasRenderingContext2D, w: number, h: number) {
 
 function getPortalHalfDims(cfg: PortalConfig) {
   // Half sizes "a" (x radius) and "b" (y radius) that fit inside the canvas.
+  // IMPORTANT:
+  // - base dims are computed to fit inside the canvas
+  // - THEN we apply portalScale to ensure we still fit after:
+  //   - outer layer upscaling (layerScaleOuter)
+  //   - wobble overshoot
+  //   - blur feather that visually extends beyond the curve
   const maxH = cfg.height * 0.5 * (1 - cfg.portalMargin * 2);
   const maxW = cfg.width * 0.5 * (1 - cfg.portalMargin * 2);
 
@@ -391,7 +399,8 @@ function getPortalHalfDims(cfg: PortalConfig) {
   const a = Math.min(maxW, b * cfg.targetAspect);
   const b2 = Math.min(b, a / cfg.targetAspect);
 
-  return { a, b: b2 };
+  const s = clamp01(cfg.portalScale);
+  return { a: a * s, b: b2 * s };
 }
 
 function superellipsePoint(u: number, a: number, b: number, n: number) {
@@ -423,10 +432,13 @@ function wobbleScale(u: number, t: number, detail: number, profile: "portal" | "
   const v2 = 1.0 + 0.07 * s1;
 
   // Big features
+  // IMPORTANT: all angular frequencies are INTEGERS.
+  // If you use fractional frequencies (e.g. 0.5), u=0 and u=2π won't match,
+  // which creates a visible seam / "phase break" on the right edge.
   const lump =
-    0.10 * Math.sin((u + pu) * 1.0 + (t + pt) * 0.33 * v1) +
-    0.07 * Math.sin((u + pu) * 2.0 - (t + pt) * 0.21 * v2) +
-    0.05 * Math.sin((u - pu * 0.7) * 0.5 + (t - pt * 0.6) * 0.18);
+    0.11 * Math.sin((u + pu) * 1.0 + (t + pt) * 0.33 * v1) +
+    0.08 * Math.sin((u + pu) * 2.0 - (t + pt) * 0.21 * v2) +
+    0.06 * Math.sin((u - pu * 0.6) * 4.0 + (t - pt * 0.4) * 0.18);
 
   // Fine edge motion
   const fine =
@@ -1108,6 +1120,14 @@ export default function HeaderCanvas() {
                 max={6}
                 step={0.1}
                 onChange={(v) => upd("superN", v)}
+              />
+              <SliderRow
+                label="Portal scale"
+                value={cfg.portalScale}
+                min={0.6}
+                max={1.0}
+                step={0.01}
+                onChange={(v) => upd("portalScale", v)}
               />
             </div>
 
