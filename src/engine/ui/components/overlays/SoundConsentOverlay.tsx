@@ -5,64 +5,7 @@ import type { GameConfig } from '../../../types';
 import { Panel, PanelHeader } from '../panel';
 import { LifelineButton } from '../buttons';
 import { useTheme } from '../../theme';
-
-function AirPodsProIcon() {
-  return (
-    <svg
-      viewBox="0 0 96 64"
-      width="68"
-      height="52"
-      aria-hidden="true"
-      focusable="false"
-      style={{ filter: 'drop-shadow(0 0 18px rgba(0,0,0,0.45))' }}
-    >
-      <defs>
-        <linearGradient id="airpods_g" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="rgba(255,255,255,0.95)" />
-          <stop offset="1" stopColor="rgba(255,255,255,0.55)" />
-        </linearGradient>
-        <linearGradient id="airpods_hi" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor="rgba(255,255,255,0.95)" />
-          <stop offset="1" stopColor="rgba(255,255,255,0.2)" />
-        </linearGradient>
-      </defs>
-
-      {/* Left earbud */}
-      <path
-        d="M23 15c0-6 5-11 11-11h2c6 0 11 5 11 11v12c0 7-6 13-13 13s-11-4-11-10V15z"
-        fill="url(#airpods_g)"
-        opacity="0.95"
-      />
-      <path
-        d="M30 44V30c0-2 2-4 4-4h2c2 0 4 2 4 4v14c0 4-2 6-5 6s-5-2-5-6z"
-        fill="url(#airpods_g)"
-        opacity="0.92"
-      />
-      <path
-        d="M28 16c0-4 3-7 7-7h2c4 0 7 3 7 7v6c0 4-3 7-7 7h-2c-4 0-7-3-7-7v-6z"
-        fill="url(#airpods_hi)"
-        opacity="0.35"
-      />
-
-      {/* Right earbud */}
-      <path
-        d="M73 15c0-6-5-11-11-11h-2c-6 0-11 5-11 11v12c0 7 6 13 13 13s11-4 11-10V15z"
-        fill="url(#airpods_g)"
-        opacity="0.95"
-      />
-      <path
-        d="M66 44V30c0-2-2-4-4-4h-2c-2 0-4 2-4 4v14c0 4 2 6 5 6s5-2 5-6z"
-        fill="url(#airpods_g)"
-        opacity="0.92"
-      />
-      <path
-        d="M68 16c0-4-3-7-7-7h-2c-4 0-7 3-7 7v6c0 4 3 7 7 7h2c4 0 7-3 7-7v-6z"
-        fill="url(#airpods_hi)"
-        opacity="0.35"
-      />
-    </svg>
-  );
-}
+import { DefaultHeadphonesIcon } from '../../icons/DefaultIcons';
 
 function VolumeOnIcon() {
   return <span aria-hidden="true">🔊</span>;
@@ -86,6 +29,7 @@ export function SoundConsentOverlay({
   isClosing = false,
 }: SoundConsentOverlayProps) {
   const theme = useTheme();
+  const HeadphonesIcon = config.icons?.headphones ?? DefaultHeadphonesIcon;
 
   const copy = useMemo(() => {
     const defaults = {
@@ -134,7 +78,7 @@ export function SoundConsentOverlay({
           <PanelHeader>{copy.title}</PanelHeader>
 
           <div className="p-5 md:p-6 flex flex-col items-center text-center gap-4">
-            <AirPodsProIcon />
+            <HeadphonesIcon />
 
             <div
               className={`leading-relaxed whitespace-pre-line ${theme.textSecondary}`}

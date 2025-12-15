@@ -592,6 +592,8 @@ export interface GameConfig {
     lifelineAudience?: ComponentType;
     /** Star icon for difficulty rating */
     star?: ComponentType;
+    /** Icon for the initial sound consent panel (headphones) */
+    headphones?: ComponentType;
 
     /**
      * v1 legacy icon keys

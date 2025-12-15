@@ -13,6 +13,13 @@ export const DefaultAudienceHintIcon = () => (
   <span className="inline-block">📊</span>
 );
 
+// Sound Consent / Audio UI
+export const DefaultHeadphonesIcon = () => (
+  <div className="w-16 h-16 mx-auto flex items-center justify-center text-5xl">
+    🎧
+  </div>
+);
+
 // End Screen Icons
 export const DefaultTrophyIcon = () => (
   <div className="w-24 h-24 mx-auto flex items-center justify-center text-6xl">
