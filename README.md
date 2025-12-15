@@ -1,310 +1,90 @@
-# 🎯 Millionaire Quiz Engine
+# Millionaire Quiz Engine
 
-<div align="center">
+A reusable “Who Wants to Be a Millionaire?”‑style quiz engine built with React + TypeScript. The engine is content‑agnostic: specific games are implemented as “mods” via `GameConfig`.
 
-![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
-![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
-![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
-![Vite](https://img.shields.io/badge/Vite-B73BFE?style=for-the-badge&logo=vite&logoColor=FFD62E)
+- Play: `https://yozh2.github.io/millionaire/`
 
-**Универсальный движок викторины "Кто хочет стать миллионером"**
+## Games (current)
 
-*Создавайте тематические игры с уникальными темами, вопросами и озвучкой!*
+Games are registered in `src/app/registry/gameRegistry.ts`.
 
-<br />
+| Game ID | Title | Language | Notes |
+|---|---|---|---|
+| `poc` | Proof of Concept | RU | Minimal engine demo (can run with no external assets) |
+| `bg3` | Baldur's Gate III | RU |  |
+| `sky-cotl` | Sky: Children of the Light | EN |  |
+| `transformers` | Transformers (comics) | RU |  |
 
-[![Play Now](https://img.shields.io/badge/🎮_ИГРАТЬ_СЕЙЧАС-F59E0B?style=for-the-badge&logoColor=white)](https://yozh2.github.io/millionaire/)
+## Repository layout
 
-</div>
+- `src/app/**` — app shell (selector UI, registry).
+- `src/pages/**` — app pages (routing targets).
+- `src/engine/**` — the engine.
+- `src/games/**` — game content / mods.
+- `scripts/**` — build helpers + sandboxes (not part of runtime).
+- `public/**` — optional runtime assets (manifests, images, sounds). The engine itself should not hard‑require this directory.
 
----
+## Engine architecture (high‑level)
 
-## 📜 О проекте
+The engine is intentionally split into layers:
 
-**Millionaire Quiz Engine** — это переиспользуемый движок для создания тематических викторин в стиле телешоу "Кто хочет стать миллионером". Движок полностью отделён от контента игр, что позволяет легко создавать новые тематические версии.
+- `src/engine/game/**` — pure domain logic (state machine, reducer, selectors, lifelines, prizes, session). No React/DOM.
+- `src/engine/ui/**` — React UI (screens, panels, components, layout, theme, styles).
+- `src/engine/audio/**` — music + SFX/voice players (with fallbacks and “stop handles”).
+- `src/engine/assets/**` + `src/engine/services/AssetLoader.ts` — manifest‑based asset loading; must be resilient when manifests/assets are missing.
 
-### 🎮 Доступные игры
+Terminology used across code/docs:
 
-| Игра | Описание | Статус |
-|------|----------|--------|
-| ⚔️ **BG3 Edition** | Baldur's Gate 3 и Forgotten Realms | ✅ Готова |
-| 🤖 **Transformers** | Вселенная Трансформеров | 🚧 В разработке |
+- `lifeline` — a special ability (not “hint”).
+- `prizeLadder` — prize ladder (always this name).
+- `rewardKind` — `trophy | money | defeat`.
 
----
+## Running locally
 
-## ✨ Возможности движка
-
-- 🎭 **Кампании** — несколько режимов сложности с уникальными темами
-- 🎨 **Динамические темы** — ~40 настраиваемых Tailwind-классов на тему
-- 🎵 **Звуковая система** — музыка, звуки UI, голоса с fallback на oscillator
-- 🎲 **Подсказки** — 50:50, голосование, совет с озвучкой
-- 💰 **Гарантированные призы** — настраиваемые несгораемые суммы
-- 📱 **Адаптивный дизайн** — работает на мобильных устройствах
-- 🔌 **Плагинная архитектура** — добавляйте новые игры простым созданием конфига
-
----
-
-## 🏗️ Архитектура
-
-```
-millionaire/
-├── public/
-│   └── games/                    # Ассеты игр
-│       ├── bg3/                  # BG3: music/, sounds/, voices/
-│       ├── transformers/         # Transformers: music/, sounds/, voices/
-│       └── shared/               # Общие fallback ассеты
-│
-├── src/
-│   ├── engine/                   # 🎮 Ядро движка (переиспользуемый)
-│   │   ├── components/           # MillionaireGame, StartScreen, GameScreen, EndScreen
-│   │   ├── hooks/                # useGameState, useAudio
-│   │   ├── context/              # ThemeProvider
-│   │   ├── types/                # GameConfig, Question, Campaign, ThemeColors
-│   │   └── utils/                # Asset loader, audio player
-│   │
-│   ├── games/                    # 🎯 Конфигурации игр
-│   │   ├── bg3/                  # BG3: config, questions, themes, icons
-│   │   ├── poc/                  # Proof of Concept (тестовая игра)
-│   │   └── transformers/         # Transformers (в разработке)
-│   │
-│   ├── pages/                    # Страницы роутинга
-│   │   ├── BG3Page.tsx
-│   │   └── PocPage.tsx
-│   │
-│   ├── app/components/           # Компоненты приложения (селектор, тестовые страницы)
-│   │   └── GameSelector.tsx      # Выбор игры
-│   │
-│   └── App.tsx                   # Роутер
-```
-
----
-
-## 🚀 Быстрый старт
-
-### Играть онлайн
-
-**[yozh2.github.io/millionaire](https://yozh2.github.io/millionaire/)**
-
-### Запуск локально
+Prereqs: Node.js + npm.
 
 ```bash
-git clone https://github.com/Yozh2/millionaire.git
-cd millionaire
 npm install
 npm run dev
 ```
 
-Откройте [http://localhost:5173](http://localhost:5173)
+Useful commands:
 
----
-
-## 🎮 Создание новой игры
-
-### 1. Создайте конфигурацию
-
-```typescript
-// src/games/mygame/config.ts
-import { GameConfig } from '../../engine/types';
-
-export const myGameConfig: GameConfig = {
-  id: 'mygame',                    // Путь к ассетам
-  title: 'Моя Игра',
-  subtitle: 'Подзаголовок',
-  campaigns: [...],                // Режимы сложности
-  questions: {...},                // Вопросы по кампаниям
-  companions: [...],               // Персонажи для подсказок
-  strings: {...},                  // Тексты UI
-  lifelines: {...},                // Настройки подсказок
-  prizes: {...},                   // Призовые суммы
-  audio: {...},                    // Настройки звука
-};
+```bash
+npm test
+npm run lint
+npm run build
 ```
 
-### 2. Добавьте ассеты
+## Adding a new game
 
-```
-public/games/mygame/
-├── music/          # Фоновая музыка
-├── sounds/         # Звуки UI
-└── voices/         # Голоса компаньонов
-```
+1. Create a new directory: `src/games/<gameId>/`.
+2. Add campaigns:
+   - `src/games/<gameId>/campaigns/<campaignId>/campaign.ts`
+   - `src/games/<gameId>/campaigns/<campaignId>/questions.ts`
+   - `src/games/<gameId>/campaigns/<campaignId>/theme.ts`
+3. Add `src/games/<gameId>/config.ts` exporting `<gameId>Config: GameConfig`.
+4. Register the game in `src/app/registry/gameRegistry.ts` (card meta + lazy `getConfig()` import).
+5. Optional: add `public/` assets (sounds/images) and regenerate manifests.
 
-### 3. Создайте страницу и роут
+## Assets and manifests
 
-```typescript
-// src/pages/MyGamePage.tsx
-import { MillionaireGame } from '../engine';
-import { myGameConfig } from '../games/mygame';
+Manifests are generated on `dev`/`build` via `npm run generate:manifests`:
 
-export default function MyGamePage() {
-  return <MillionaireGame config={myGameConfig} />;
-}
-```
+- `scripts/generate-asset-manifest.js` → `public/asset-manifest.json`
+- `scripts/generate-image-manifest.js` → image manifests for slideshows / headers
 
-### 4. Добавьте в роутер и селектор
+Design goal: if manifests/assets are missing, the engine should still start (with safe fallbacks where possible).
 
----
+## UX notes
 
-## 🎵 Система загрузки ассетов
+- Audio autoplay is restricted in browsers. On the first load (per session), the engine shows a “headphones / enable sound?” prompt to obtain a user gesture and let the player choose sound on/off.
+- The app disables right‑click context menu and image dragging to make casual asset copying harder.
 
-Приоритет загрузки:
-1. **Game-specific**: `/games/{gameId}/sounds/Click.ogg`
-2. **Shared fallback**: `/games/shared/sounds/Click.ogg`
-3. **Oscillator** (только для звуков)
-4. **Silent** (для музыки/голосов)
+## Styling
 
----
+Engine styles are bundled by the engine itself (`src/engine/index.ts` imports `src/engine/ui/styles/engine.css`) and scoped under the `.engine` root class to avoid leaking styles into the host app.
 
-## 🖼️ Структура изображений для слайд-шоу
+## License
 
-Движок поддерживает анимированные фоны-слайдшоу с режимом наложения screen (Add-like).
-Изображения загружаются автоматически из структуры папок с каскадным fallback.
-
-### Полная структура папок
-
-```
-public/
-├── icons/                                  # Favicon fallback для движка
-│   └── favicon.svg
-│
-├── images/                                 # Fallback изображения для движка
-│   ├── start/                              # Стартовый экран
-│   │   └── *.jpg
-│   ├── play/                               # Экраны основной игры (fallback)
-│   │   ├── easy/                           # Лёгкие вопросы
-│   │   │   └── *.jpg
-│   │   ├── medium/                         # Средние вопросы
-│   │   │   └── *.jpg
-│   │   └── hard/                           # Сложные вопросы
-│   │       └── *.jpg
-│   └── end/                                # Экраны конца игры (fallback)
-│       ├── won/                            # Победа
-│       │   └── *.jpg
-│       ├── took/                           # Забор денег
-│       │   └── *.jpg
-│       └── lost/                           # Поражение
-│           └── *.jpg
-│
-└── games/
-    └── bg3/                                # Пример игры BG3
-        ├── icons/                          # Иконки игры
-        │   └── favicon.svg
-        │
-        ├── images/
-        │   ├── start/                      # Стартовый экран игры (fallback)
-        │   │   └── *.jpg
-        │   │
-        │   ├── campaigns/                  # Картинки по кампаниям
-        │   │   ├── hero/                   # Кампания "Герой"
-        │   │   │   ├── start/              # Экран выбора кампании
-        │   │   │   │   └── *.jpg
-        │   │   │   ├── play/               # Игра в кампании
-        │   │   │   │   ├── easy/           # Лёгкие вопросы
-        │   │   │   │   │   └── *.jpg
-        │   │   │   │   ├── medium/         # Средние вопросы
-        │   │   │   │   │   └── *.jpg
-        │   │   │   │   └── hard/           # Сложные вопросы
-        │   │   │   │       └── *.jpg
-        │   │   │   └── end/                # Конец игры в кампании
-        │   │   │       ├── won/            # Победа
-        │   │   │       │   └── *.jpg
-        │   │   │       ├── took/           # Забор денег
-        │   │   │       │   └── *.jpg
-        │   │   │       └── lost/           # Поражение
-        │   │   │           └── *.jpg
-        │   │   │
-        │   │   └── villain/                # Кампания "Злодей"
-        │   │       ├── start/
-        │   │       ├── play/
-        │   │       │   ├── easy/
-        │   │       │   ├── medium/
-        │   │       │   └── hard/
-        │   │       └── end/
-        │   │           ├── won/
-        │   │           ├── took/
-        │   │           └── lost/
-        │   │
-        │   └── end/                        # Конец игры (fallback для игры)
-        │       ├── won/
-        │       │   └── *.jpg
-        │       ├── took/
-        │       │   └── *.jpg
-        │       └── lost/
-        │           └── *.jpg
-        │
-        ├── music/
-        ├── sounds/
-        └── voices/
-```
-
-### Порядок поиска изображений
-
-| Экран | Приоритет поиска |
-|-------|------------------|
-| **Start (без кампании)** | 1. `/games/{id}/images/start/` → 2. `/images/start/` |
-| **Start (кампания hero)** | 1. `/games/{id}/images/campaigns/hero/start/` → 2. `/games/{id}/images/start/` → 3. `/images/start/` |
-| **Play (easy, hero)** | 1. `/games/{id}/images/campaigns/hero/play/easy/` → 2. `/images/play/easy/` |
-| **Play (medium, hero)** | 1. `/games/{id}/images/campaigns/hero/play/medium/` → 2. `/images/play/medium/` |
-| **Play (hard, hero)** | 1. `/games/{id}/images/campaigns/hero/play/hard/` → 2. `/images/play/hard/` |
-| **Won (hero)** | 1. `/games/{id}/images/campaigns/hero/end/won/` → 2. `/games/{id}/images/end/won/` → 3. `/images/end/won/` |
-| **Took (hero)** | 1. `/games/{id}/images/campaigns/hero/end/took/` → 2. `/games/{id}/images/end/took/` → 3. `/images/end/took/` |
-| **Lost (hero)** | 1. `/games/{id}/images/campaigns/hero/end/lost/` → 2. `/games/{id}/images/end/lost/` → 3. `/images/end/lost/` |
-
-### Автогенерация манифеста
-
-При запуске `npm run dev` или `npm run build` автоматически сканируются папки
-и создаётся `manifest.json` со списком изображений.
-
----
-
-## 📝 Скрипты
-
-| Команда | Описание |
-|---------|----------|
-| `npm run dev` | Dev-сервер на localhost:5173 |
-| `npm run build` | Production сборка в /dist |
-| `npm run preview` | Предпросмотр билда |
-| `npm run deploy` | Деплой на GitHub Pages |
-
----
-
-## 🧯 Troubleshooting (Safari)
-
-Если в Safari (Activity Monitor → **Safari Graphics and Media / com.apple.WebKit.GPU**) со временем раздувается память, проверьте canvas‑эффекты в хедере.
-
-- `PortalHeader` использует `<canvas>` и blur/filters; для Safari автоматически включается более “щадящий” режим (ограничение DPR, отключение blur, остановка idle‑анимации).
-- Для диагностики в dev‑сборке доступно: `window.__millionairePortalHeader.getState()` (и `start() / stop() / clearCache()`).
-
-## 🛠️ Технологии
-
-- **React 18** + **TypeScript** — UI и типизация
-- **Vite** — быстрая сборка
-- **Tailwind CSS** — стилизация
-- **Web Audio API** — звуки и музыка
-- **React Router** — маршрутизация
-
----
-
-## 🤝 Вклад в проект
-
-Pull requests приветствуются! Особенно:
-- 🎮 Новые тематические игры
-- 📝 Вопросы для существующих игр
-- 🎨 Улучшения UI/UX
-- 🐛 Исправление багов
-
----
-
-## 📜 Лицензия
-
-MIT License
-
----
-
-<div align="center">
-
-**🎯 Quiz Your Knowledge 🎯**
-
-*Made with ❤️ by [Yozh2](https://github.com/Yozh2)*
-
-</div>
+MIT

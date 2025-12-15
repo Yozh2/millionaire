@@ -156,420 +156,12 @@
 
 ### 3.1 Дерево `src/` и `scripts/` (точное, из `tree`)
 
-#### 3.1.1 Tree output
+#### 3.1.1 Команда
 
-```text
-src
-├── .DS_Store
-├── app
-│   ├── components
-│   │   ├── GameSelector.test.tsx
-│   │   ├── GameSelector.tsx
-│   │   └── index.ts
-│   └── registry
-│       ├── gameRegistry.ts
-│       └── index.ts
-├── App.tsx
-├── engine
-│   ├── .DS_Store
-│   ├── assets
-│   │   └── paths.ts
-│   ├── audio
-│   │   ├── useMusicPlayer.ts
-│   │   └── useSoundPlayer.ts
-│   ├── constants.ts
-│   ├── index.ts
-│   ├── services
-│   │   ├── AssetLoader.ts
-│   │   ├── index.ts
-│   │   ├── logger.ts
-│   │   └── types.ts
-│   ├── types
-│   │   └── index.ts
-│   ├── ui
-│   │   ├── components
-│   │   │   ├── cards
-│   │   │   │   └── campaign
-│   │   │   │       └── CampaignCard.tsx
-│   │   │   ├── errors
-│   │   │   │   └── ErrorBoundary.tsx
-│   │   │   └── panel
-│   │   │       ├── index.ts
-│   │   │       ├── Panel.tsx
-│   │   │       └── PanelHeader.tsx
-│   │   ├── effects
-│   │   │   └── ParticleCanvas.tsx
-│   │   ├── hooks
-│   │   │   ├── index.ts
-│   │   │   ├── useAssetPreloader.ts
-│   │   │   ├── useAudio.ts
-│   │   │   ├── useEffects.ts
-│   │   │   ├── useFavicon.ts
-│   │   │   └── useGameState.ts
-│   │   ├── icons
-│   │   │   └── DefaultIcons.tsx
-│   │   ├── layout
-│   │   │   └── header
-│   │   │       ├── HeaderPanel.tsx
-│   │   │       └── HeaderSlideshow.tsx
-│   │   ├── MillionaireGame.tsx
-│   │   ├── panels
-│   │   │   ├── AnswersPanel.tsx
-│   │   │   ├── CampaignSelectionPanel.tsx
-│   │   │   ├── LifelineResultPanel.tsx
-│   │   │   ├── lifelines
-│   │   │   │   ├── LifelineAudiencePanel.tsx
-│   │   │   │   └── LifelinePhonePanel.tsx
-│   │   │   ├── LifelinesPanel.tsx
-│   │   │   ├── PrizeLadderPanel.tsx
-│   │   │   ├── QuestionPanel.tsx
-│   │   │   └── ResultPanel.tsx
-│   │   ├── screens
-│   │   │   ├── EndScreen.tsx
-│   │   │   ├── GameScreen.tsx
-│   │   │   ├── LoadingScreen.tsx
-│   │   │   └── StartScreen.tsx
-│   │   └── theme
-│   │       ├── index.ts
-│   │       └── ThemeContext.tsx
-│   └── utils
-│       ├── assetLoader.ts
-│       ├── audioPlayer.ts
-│       ├── index.ts
-│       └── questionGenerator.ts
-├── games
-│   ├── .DS_Store
-│   ├── bg3
-│   │   ├── campaigns
-│   │   │   ├── darkUrge
-│   │   │   │   ├── campaign.ts
-│   │   │   │   ├── questions.ts
-│   │   │   │   └── theme.ts
-│   │   │   ├── hero
-│   │   │   │   ├── campaign.ts
-│   │   │   │   ├── questions.ts
-│   │   │   │   └── theme.ts
-│   │   │   └── mindFlayer
-│   │   │       ├── campaign.ts
-│   │   │       ├── questions.ts
-│   │   │       └── theme.ts
-│   │   ├── config.ts
-│   │   ├── icons.tsx
-│   │   ├── index.ts
-│   │   ├── questions.ts
-│   │   └── themes.ts
-│   ├── index.ts
-│   ├── poc
-│   │   ├── campaigns
-│   │   │   ├── easy
-│   │   │   │   ├── campaign.ts
-│   │   │   │   ├── questions.ts
-│   │   │   │   └── theme.ts
-│   │   │   └── hard
-│   │   │       ├── campaign.ts
-│   │   │       ├── questions.ts
-│   │   │       └── theme.ts
-│   │   ├── config.ts
-│   │   ├── icons.tsx
-│   │   ├── index.ts
-│   │   ├── questions.ts
-│   │   └── themes.ts
-│   ├── sky-cotl
-│   │   ├── campaigns
-│   │   │   └── journey
-│   │   │       ├── campaign.ts
-│   │   │       ├── questions.ts
-│   │   │       └── theme.ts
-│   │   ├── config.ts
-│   │   ├── icons.tsx
-│   │   ├── index.ts
-│   │   ├── questions.ts
-│   │   └── themes.ts
-│   └── transformers
-│       ├── campaigns
-│       │   ├── autocracy
-│       │   │   ├── campaign.ts
-│       │   │   ├── questions.ts
-│       │   │   └── theme.ts
-│       │   ├── megatron
-│       │   │   ├── campaign.ts
-│       │   │   ├── questions.ts
-│       │   │   └── theme.ts
-│       │   └── skybound
-│       │       ├── campaign.ts
-│       │       ├── questions.ts
-│       │       └── theme.ts
-│       ├── config.ts
-│       ├── icons.tsx
-│       ├── index.ts
-│       ├── questions.ts
-│       └── themes.ts
-├── index.css
-├── main.tsx
-├── pages
-│   ├── EffectsSandboxPage.tsx
-│   ├── index.ts
-│   ├── RegisteredGamePage.tsx
-│   └── SandboxPage.tsx
-├── styles
-│   ├── animations.css
-│   ├── base.css
-│   ├── buttons.css
-│   ├── fonts.css
-│   ├── glare.css
-│   └── prize-ladder.css
-├── tailwind.css
-└── vite-env.d.ts
+- `tree -a -I "node_modules|dist|public" src`
+- `tree -a -I "node_modules|dist|public" scripts`
 
-45 directories, 116 files
-
-scripts
-├── comics_parser.py
-├── convert_mp3_to_ogg.sh
-├── generate-asset-manifest.js
-├── generate-image-manifest.js
-└── sandbox
-    ├── g1_names_to_json.py
-    ├── G1_translations.csv
-    ├── millionaire-sounds.html
-    └── test-prizes.js
-
-2 directories, 8 files
-```
-
-#### 3.1.1.1 Tree output (обновлено 2025‑12‑14)
-
-```text
-src
-├── .DS_Store
-├── app
-│   ├── components
-│   │   ├── GameSelector.test.tsx
-│   │   ├── GameSelector.tsx
-│   │   └── index.ts
-│   └── registry
-│       ├── gameRegistry.ts
-│       └── index.ts
-├── App.tsx
-├── engine
-│   ├── .DS_Store
-│   ├── assets
-│   │   └── paths.ts
-│   ├── audio
-│   │   ├── useMusicPlayer.ts
-│   │   └── useSoundPlayer.ts
-│   ├── constants.ts
-│   ├── game
-│   │   ├── index.ts
-│   │   ├── lifelines
-│   │   │   ├── audience.ts
-│   │   │   ├── fifty.ts
-│   │   │   ├── host.ts
-│   │   │   ├── index.ts
-│   │   │   ├── phone.ts
-│   │   │   └── switch.ts
-│   │   ├── prizes
-│   │   │   ├── calculatePrizeLadder.ts
-│   │   │   ├── getGuaranteedPrize.ts
-│   │   │   └── index.ts
-│   │   ├── questions
-│   │   │   ├── getQuestionDifficulty.ts
-│   │   │   ├── index.ts
-│   │   │   └── selectQuestionsFromPool.ts
-│   │   ├── session
-│   │   │   ├── createGameSession.ts
-│   │   │   └── index.ts
-│   │   ├── state
-│   │   │   ├── actions.ts
-│   │   │   ├── index.ts
-│   │   │   ├── lifelines.v1.test.ts
-│   │   │   ├── machine.ts
-│   │   │   ├── reducer.ts
-│   │   │   ├── resolveAnswer.ts
-│   │   │   ├── selectors.ts
-│   │   │   └── types.ts
-│   │   └── utils
-│   │       └── shuffleArray.ts
-│   ├── index.ts
-│   ├── services
-│   │   ├── AssetLoader.ts
-│   │   ├── index.ts
-│   │   ├── logger.ts
-│   │   └── types.ts
-│   ├── types
-│   │   └── index.ts
-│   ├── ui
-│   │   ├── components
-│   │   │   ├── buttons
-│   │   │   │   ├── ActionButton.tsx
-│   │   │   │   ├── AnswerButton.tsx
-│   │   │   │   ├── BaseButton.tsx
-│   │   │   │   ├── index.ts
-│   │   │   │   ├── LifelineButton.tsx
-│   │   │   │   ├── types.ts
-│   │   │   │   ├── useButtonFsm.ts
-│   │   │   │   └── VolumeButton.tsx
-│   │   │   ├── cards
-│   │   │   │   └── campaign
-│   │   │   │       ├── CampaignCard.tsx
-│   │   │   │       └── useCampaignCardFsm.ts
-│   │   │   ├── errors
-│   │   │   │   └── ErrorBoundary.tsx
-│   │   │   └── panel
-│   │   │       ├── index.ts
-│   │   │       ├── Panel.tsx
-│   │   │       └── PanelHeader.tsx
-│   │   ├── effects
-│   │   │   └── ParticleCanvas.tsx
-│   │   ├── hooks
-│   │   │   ├── index.ts
-│   │   │   ├── useAssetPreloader.ts
-│   │   │   ├── useAudio.ts
-│   │   │   ├── useEffects.ts
-│   │   │   ├── useFavicon.ts
-│   │   │   └── useGameState.ts
-│   │   ├── icons
-│   │   │   └── DefaultIcons.tsx
-│   │   ├── layout
-│   │   │   └── header
-│   │   │       ├── HeaderPanel.tsx
-│   │   │       └── HeaderSlideshow.tsx
-│   │   ├── MillionaireGame.tsx
-│   │   ├── panels
-│   │   │   ├── AnswersPanel.tsx
-│   │   │   ├── CampaignSelectionPanel.tsx
-│   │   │   ├── LifelineResultPanel.tsx
-│   │   │   ├── lifelines
-│   │   │   │   ├── LifelineAudiencePanel.tsx
-│   │   │   │   ├── LifelineDoublePanel.tsx
-│   │   │   │   ├── LifelineHostPanel.tsx
-│   │   │   │   ├── LifelinePhonePanel.tsx
-│   │   │   │   └── LifelineSwitchPanel.tsx
-│   │   │   ├── LifelinesPanel.tsx
-│   │   │   ├── PrizeLadderPanel.tsx
-│   │   │   ├── QuestionPanel.tsx
-│   │   │   └── ResultPanel.tsx
-│   │   ├── screens
-│   │   │   ├── EndScreen.tsx
-│   │   │   ├── GameScreen.tsx
-│   │   │   ├── LoadingScreen.tsx
-│   │   │   └── StartScreen.tsx
-│   │   └── theme
-│   │       ├── index.ts
-│   │       └── ThemeContext.tsx
-│   └── utils
-│       ├── assetLoader.ts
-│       ├── audioPlayer.ts
-│       ├── index.ts
-│       └── questionGenerator.ts
-├── games
-│   ├── .DS_Store
-│   ├── bg3
-│   │   ├── campaigns
-│   │   │   ├── darkUrge
-│   │   │   │   ├── campaign.ts
-│   │   │   │   ├── questions.ts
-│   │   │   │   └── theme.ts
-│   │   │   ├── hero
-│   │   │   │   ├── campaign.ts
-│   │   │   │   ├── questions.ts
-│   │   │   │   └── theme.ts
-│   │   │   └── mindFlayer
-│   │   │       ├── campaign.ts
-│   │   │       ├── questions.ts
-│   │   │       └── theme.ts
-│   │   ├── config.ts
-│   │   ├── icons.tsx
-│   │   ├── index.ts
-│   │   ├── questions.ts
-│   │   └── themes.ts
-│   ├── index.ts
-│   ├── poc
-│   │   ├── campaigns
-│   │   │   ├── easy
-│   │   │   │   ├── campaign.ts
-│   │   │   │   ├── questions.ts
-│   │   │   │   └── theme.ts
-│   │   │   └── hard
-│   │   │       ├── campaign.ts
-│   │   │       ├── questions.ts
-│   │   │       └── theme.ts
-│   │   ├── config.ts
-│   │   ├── icons.tsx
-│   │   ├── index.ts
-│   │   ├── questions.ts
-│   │   └── themes.ts
-│   ├── sky-cotl
-│   │   ├── campaigns
-│   │   │   └── journey
-│   │   │       ├── campaign.ts
-│   │   │       ├── questions.ts
-│   │   │       └── theme.ts
-│   │   ├── config.ts
-│   │   ├── icons.tsx
-│   │   ├── index.ts
-│   │   ├── questions.ts
-│   │   └── themes.ts
-│   └── transformers
-│       ├── campaigns
-│       │   ├── autocracy
-│       │   │   ├── campaign.ts
-│       │   │   ├── questions.ts
-│       │   │   └── theme.ts
-│       │   ├── megatron
-│       │   │   ├── campaign.ts
-│       │   │   ├── questions.ts
-│       │   │   └── theme.ts
-│       │   └── skybound
-│       │       ├── campaign.ts
-│       │       ├── questions.ts
-│       │       └── theme.ts
-│       ├── config.ts
-│       ├── icons.tsx
-│       ├── index.ts
-│       ├── questions.ts
-│       └── themes.ts
-├── index.css
-├── main.tsx
-├── pages
-│   ├── EffectsSandboxPage.tsx
-│   ├── index.ts
-│   ├── RegisteredGamePage.tsx
-│   └── SandboxPage.tsx
-├── styles
-│   ├── animations.css
-│   ├── base.css
-│   ├── buttons.css
-│   ├── fonts.css
-│   ├── glare.css
-│   └── prize-ladder.css
-├── tailwind.css
-└── vite-env.d.ts
-
-53 directories, 152 files
-
-scripts
-├── comics_parser.py
-├── convert_mp3_to_ogg.sh
-├── generate-asset-manifest.js
-├── generate-image-manifest.js
-└── sandbox
-    ├── floating_card.html
-    ├── g1_names_to_json.py
-    ├── G1_translations.csv
-    ├── millionaire-sounds.html
-    └── test-prizes.js
-
-2 directories, 9 files
-```
-
-#### 3.1.1.2 Изменения после Этапа 14 (styles)
-
-- `src/styles/*` переехали в `src/engine/ui/styles/*` (директория `src/styles/` теперь пустая и не используется).
-- Engine‑CSS подключается из `src/engine/index.ts` (engine сам тянет свои стили), а `src/index.css` содержит только `tailwind.css`.
-- Wrapper‑класс engine: `.engine` (вместо `.millionaire-engine`).
-
-#### 3.1.1.3 Tree output (обновлено 2025‑12‑14)
+#### 3.1.2 Tree output (обновлено 2025‑12‑15)
 
 ```text
 src
@@ -618,6 +210,7 @@ src
 │   │   │   ├── lifelines.v1.test.ts
 │   │   │   ├── machine.ts
 │   │   │   ├── reducer.ts
+│   │   │   ├── reducer.v0.test.ts
 │   │   │   ├── resolveAnswer.ts
 │   │   │   ├── selectors.ts
 │   │   │   ├── selectors.v0.test.ts
@@ -650,6 +243,8 @@ src
 │   │   │   │       └── useCampaignCardFsm.ts
 │   │   │   ├── errors
 │   │   │   │   └── ErrorBoundary.tsx
+│   │   │   ├── overlays
+│   │   │   │   └── SoundConsentOverlay.tsx
 │   │   │   └── panel
 │   │   │       ├── index.ts
 │   │   │       ├── Panel.tsx
@@ -668,7 +263,9 @@ src
 │   │   ├── layout
 │   │   │   └── header
 │   │   │       ├── HeaderPanel.tsx
-│   │   │       └── HeaderSlideshow.tsx
+│   │   │       ├── HeaderSlideshow.tsx
+│   │   │       ├── PortalHeader.tsx
+│   │   │       └── useHeaderImages.ts
 │   │   ├── MillionaireGame.tsx
 │   │   ├── panels
 │   │   │   ├── AnswersPanel.tsx
@@ -781,11 +378,10 @@ src
 │   ├── index.ts
 │   ├── RegisteredGamePage.tsx
 │   └── SandboxPage.tsx
-├── styles
 ├── tailwind.css
 └── vite-env.d.ts
 
-54 directories, 158 files
+54 directories, 162 files
 
 scripts
 ├── comics_parser.py
@@ -797,16 +393,25 @@ scripts
     ├── g1_names_to_json.py
     ├── G1_translations.csv
     ├── millionaire-sounds.html
+    ├── portal_header.tsx
     └── test-prizes.js
 
-2 directories, 9 files
+2 directories, 10 files
 ```
 
-#### 3.1.2 Комментарии по структуре (что сейчас смущает)
+#### 3.1.3 Заметки
 
-- Проблема “двух UI” устранена: весь React‑UI живёт в `src/engine/ui/**` (Этап 9).
-- Вне `engine/ui/**` оставляем только не‑UI: audio/assets/services/types/utils (+ `engine/game/**`).
-- Доменный слой уже выделен в `src/engine/game/**`; следующий шаг — расширять покрытие (lifelines/prizes/session) и добавлять unit‑тесты на домен.
+- `.DS_Store` — локальный мусор macOS. В репозитории не должен быть tracked (достаточно `.gitignore`).
+- `src/styles/` — legacy‑директория (удалена в рамках pre‑merge cleanup; в `main` её быть не должно).
+- `scripts/sandbox/*` — прототипы/песочницы для визуала и аудио, не используются в runtime сборке.
+- `public/` намеренно исключён из tree‑снимка: движок должен запускаться даже без него.
+
+#### 3.1.4 Комментарии по структуре (что сейчас важно)
+
+- Проблема “двух UI” устранена: весь React‑UI живёт в `src/engine/ui/**`.
+- Вне `engine/ui/**` оставляем только не‑UI: `engine/game` (домен), `engine/audio`, `engine/assets`, `engine/services`, `engine/types`, `engine/utils`.
+- Доменный слой уже выделен в `src/engine/game/**` и покрывается unit‑тестами; UI держим тонким оркестратором.
+
 
 ### 3.2 Комментарии по каждому файлу (назначение + заметка для рефакторинга)
 
@@ -814,8 +419,8 @@ scripts
 
 - `src/.DS_Store` — мусор (macOS), удалить и запретить в репозитории.
 - `src/App.tsx` — маршрутизация SPA; цель: генерировать роуты из `GameRegistry` вместо ручного списка.
-- `src/main.tsx` — вход, `BrowserRouter basename`, обработка GitHub Pages 404; оставить, но вынести базовые константы/роутер‑хелперы при необходимости.
-- `src/index.css` — агрегатор app‑CSS; сейчас импортирует только `tailwind.css` (engine‑styles подключаются внутри engine).
+- `src/main.tsx` — вход, `BrowserRouter basename`, обработка GitHub Pages 404 + глобальная блокировка `contextmenu` и drag для `<img>` (анти‑копирование ассетов; в dev есть bypass через модификаторы).
+- `src/index.css` — агрегатор app‑CSS: импортирует `tailwind.css` + минимальные app‑правила (например, запрет drag для `img`); engine‑styles подключаются внутри engine.
 - `src/tailwind.css` — tailwind layers; ок.
 - `src/vite-env.d.ts` — типы Vite; ок.
 
@@ -872,8 +477,8 @@ scripts
 - `src/engine/ui/MillionaireGame.tsx` — UI‑точка входа engine (компоновка экранов + wiring hooks).
 - `src/engine/ui/screens/*` — экраны (Start/Game/End/Loading).
 - `src/engine/ui/panels/*` — панели, которые оркестрирует `GameScreen`.
-- `src/engine/ui/components/*` — UI‑примитивы (Panel, CampaignCard, ErrorBoundary, …).
-- `src/engine/ui/layout/*` — layout‑слой (header и будущие shells).
+- `src/engine/ui/components/*` — UI‑примитивы (Panel, buttons, CampaignCard, overlays вроде `SoundConsentOverlay`, ErrorBoundary, …).
+- `src/engine/ui/layout/*` — layout‑слой (в т.ч. `layout/header/PortalHeader` + `useHeaderImages`).
 - `src/engine/ui/effects/*` — canvas/визуальные эффекты.
 - `src/engine/ui/icons/*` — DefaultIcons (дефолтный icon pack).
 - `src/engine/ui/theme/*` — ThemeContext/ThemeProvider.
@@ -941,6 +546,8 @@ scripts
 - `scripts/convert_mp3_to_ogg.sh` — конвертер медиа; цель: перенести в `scripts/media/`.
 - `scripts/comics_parser.py` — парсер данных; цель: перенести в `scripts/data/` и задокументировать зависимость от сети.
 - `scripts/sandbox/millionaire-sounds.html` — ручная песочница звуков; цель: оставить в sandbox.
+- `scripts/sandbox/portal_header.tsx` — прототип PortalHeader (портальный header/маски/blur); цель: хранить как reference.
+- `scripts/sandbox/floating_card.html` — прототип поведения CampaignCard (tilt/hover/levitate + glare‑блик); цель: хранить как reference.
 - `scripts/sandbox/test-prizes.js` — ручная проверка ladder; цель: возможно заменить unit‑тестами в `engine/game/prizes`.
 - `scripts/sandbox/g1_names_to_json.py` — data утилита; цель: `scripts/data/`.
 - `scripts/sandbox/G1_translations.csv` — данные для утилит; цель: `scripts/data/`.
@@ -1502,6 +1109,12 @@ PoC и базовый engine должны запускаться без `public/
   - Убрать дубли CSS‑логики из панелей: панели только композируют кнопки.
   - Acceptance: кнопки переиспользуемы, `glare` и press‑cancel работают одинаково везде.
 
+- ✅ **Этап 12. Header v1: layout‑header (PortalHeader)**
+  - Вынести header в `src/engine/ui/layout/header/*` как глобальный layout‑слой.
+  - Заменить panel‑header на `PortalHeader` (canvas‑портал + транзишены), использовать единый резолвер `useHeaderImages`.
+  - Ограничить триггеры смены: только выбор кампании и смена сложности (не клики по ответам/лайфлайнам/громкости).
+  - Acceptance: header прозрачный (накладывается на общий background), не блокирует UI (click‑through), смена изображений без дерганий.
+
 - ✅ **Этап 13. Lifelines v1: host/switch/double**
   - Реализовать доменную механику + UI‑панели для `host`, `switch`, `double`.
   - Привести `GameConfig.lifelines`/`strings`/`audio.sounds` к финальному набору ключей (deprecated алиасы оставить на переходный период).
@@ -1531,10 +1144,11 @@ PoC и базовый engine должны запускаться без `public/
     - выбор “со звуком” позволяет браузеру разблокировать звук (user gesture) и включает main menu audio;
     - выбор “без звука” сохраняет “тишину” и не ломает UX.
 
-- ⬜ **Этап 12. Header v1: настоящий layout‑header (не Panel) (отложено)**
-  - ✅ Вынести header из экранов в `src/engine/ui/layout/header/*` как глобальный layout‑слой.
-  - ⬜ Стабилизировать “портал”/слойность: изображения под панели, анимации смены, виньетка/маски.
-  - ⬜ Acceptance: header живёт поверх экранов, меняется по `GameState` и кампании без дерганий.
+- ⬜ **Этап 18. Pre‑merge cleanup**
+  - Удалить `src/styles/` (пустая legacy‑директория).
+  - Перепроверить, что `.DS_Store` нигде не tracked (в т.ч. в `public/`).
+  - Освежить `docs/refactoring_plan.md` и `README.md`, прогнать `npm test`, `npm run lint`, `npm run build`.
+  - Merge `refactoring` → `main` и push.
 
 ---
 
@@ -1594,3 +1208,5 @@ PoC и базовый engine должны запускаться без `public/
 - 2025‑12‑14 (codex): фикс SFX: `useSoundPlayer.playSoundEffect()` теперь резолвит `lifeline*`/`takeMoneyButton` и корректно фолбэчится на legacy `hint*` **только если** v2 ключ отсутствует (исправляет проигрывание кастомных звуков в BG3/Transformers).
 - 2025‑12‑14 (codex): ✅ Этап 17: добавлен sound‑consent overlay (наушники + “включить звук?”) после загрузки и до выбора кампании (в сессии показывается один раз); убрано принудительное включение звука на клике CampaignCard; исправлен `useButtonFsm` (press‑cancel больше не ломается из‑за pointerleave при CSS‑transform), добавлены `systemStrings.soundConsent*` (Sky‑CotL: EN).
 - 2025‑12‑15 (codex): Safari memory/GPU fix: `PortalHeader` переведён на “лёгкий” режим по умолчанию (3 слоя, blur off, без drop-shadow), добавлен dev‑инспектор `window.__millionairePortalHeader`, картинки для хедера кэшируются даунскейленными; аудио: прелоад/декод только для SFX, музыка прелоадится через `HTMLAudioElement` (без ArrayBuffer в JS), `checkFileExists` получил fallback на range‑GET (autoplay/track switching восстановлены), `npm test/lint/build` зелёные.
+- 2025‑12‑15 (codex): ✅ Этап 12 завершён: `PortalHeader` внедрён как layout‑header (не Panel), показ/смена изображений унифицированы через `useHeaderImages`, лишние триггеры смены убраны, header click‑through не ломает UI.
+- 2025‑12‑15 (codex): диздок: обновлён раздел `3.1` (актуальный `tree` + убраны устаревшие снапшоты), добавлен Этап 18 (pre‑merge cleanup).
