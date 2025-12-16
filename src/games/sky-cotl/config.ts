@@ -85,7 +85,7 @@ export const skyCotlConfig: GameConfig = {
     introText:
       'Welcome, Child of the Light. Answer 15 questions, use 3 lifelines, and collect a sky-high prize.',
     selectPath: 'CHOOSE YOUR JOURNEY',
-    startButton: 'START',
+    startButton: 'FLY',
 
     // Game screen - Question panel
     questionHeader: 'Question #{n}',
@@ -97,10 +97,10 @@ export const skyCotlConfig: GameConfig = {
     prizesHeader: 'PRIZE LADDER',
 
     // Lifelines
-    lifelinePhoneHeader: 'CALL A FRIEND',
-    lifelineAudienceHeader: 'ASK THE CROWD',
+    lifelinePhoneHeader: 'ASK THE SPIRIT',
+    lifelineAudienceHeader: 'ASK THE CHAT',
     lifelineSenderLabel: 'From:',
-    lifelineAudienceLabel: 'The crowd says:',
+    lifelineAudienceLabel: 'The chat says:',
 
     // Companion phrases
     companionPhrases: {
@@ -108,7 +108,7 @@ export const skyCotlConfig: GameConfig = {
         'I’m sure it’s "{answer}".',
         'No doubt — "{answer}".',
         'Trust me: "{answer}".',
-        'My light points to "{answer}".',
+        'I bet my red candles on "{answer}".',
       ],
       uncertain: [
         'I think it might be "{answer}".',
@@ -118,12 +118,12 @@ export const skyCotlConfig: GameConfig = {
     },
 
     // End screens
-    wonTitle: 'YOU DID IT!',
-    wonText: 'Your light shines brightest. Congratulations!',
-    wonHeader: 'VICTORY',
+    wonTitle: 'ASCENDED',
+    wonText: 'You ascended to the Orbit!',
+    wonHeader: 'ASCENDED',
 
-    lostTitle: 'GAME OVER',
-    lostText: 'That was the wrong answer.',
+    lostTitle: 'DIMMED LIGHT',
+    lostText: 'Your light has dimmed.',
     lostHeader: 'DEFEAT',
     correctAnswerLabel: 'Correct answer:',
 
@@ -131,7 +131,7 @@ export const skyCotlConfig: GameConfig = {
     tookMoneyText: 'A wise choice — safe and bright.',
     tookMoneyHeader: 'WALK AWAY',
 
-    newGameButton: 'NEW GAME',
+    newGameButton: 'HOME',
 
     // Footer
     footer: '☁️ Fly, explore, and share the light ☁️',
@@ -143,13 +143,13 @@ export const skyCotlConfig: GameConfig = {
 
   lifelines: {
     fifty: { name: '50:50', icon: '✨', enabled: true },
-    phone: { name: 'Call', icon: '📞', enabled: true },
-    audience: { name: 'Crowd', icon: '📊', enabled: true },
-    double: { name: 'Second Flight', icon: '🪽', enabled: true },
+    phone: { name: 'Ask Spirit', icon: '📞', enabled: true },
+    audience: { name: 'Ask Chat', icon: '📊', enabled: true },
+    double: { name: 'Re-login', icon: '🪽', enabled: true },
   },
 
   actions: {
-    takeMoney: { name: 'Take', icon: '🕯️', enabled: true },
+    takeMoney: { name: 'Home', icon: '🕯️', enabled: true },
   },
 
   prizes: {
