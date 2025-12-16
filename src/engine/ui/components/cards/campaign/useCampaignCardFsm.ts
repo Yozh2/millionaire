@@ -234,7 +234,7 @@ export function useCampaignCardFsm({
       }
 
       // Stop loop when everything is still and not active.
-      if (!m.isActive) {
+      if (!m.isActive && !isOverRef.current) {
         const still =
           Math.abs(m.y) < 0.05 && Math.abs(m.v) < 0.25 && m.bobAmp < 0.05;
         const tiltStill = Math.abs(m.tiltX) < 0.05 && Math.abs(m.tiltY) < 0.05;
@@ -345,8 +345,9 @@ export function useCampaignCardFsm({
       }, EASE_MS);
     };
 
-    const onPointerEnter: PointerEventHandler<HTMLButtonElement> = () => {
+    const onPointerEnter: PointerEventHandler<HTMLButtonElement> = (e) => {
       setIsOver(true);
+      motionRef.current.lastPointer = { x: e.clientX, y: e.clientY };
       startLoop();
       setState((prev) => {
         if (!selected && prev === 'Idle') return 'Hover';

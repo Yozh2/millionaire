@@ -63,17 +63,15 @@ export function GameScreen({
   // Get icons from config or use defaults
   const CoinIcon = config.icons?.coin || DefaultCoinIcon;
   const PhoneLifelineIcon =
-    config.icons?.lifelinePhone || config.icons?.phoneHint || DefaultPhoneHintIcon;
+    config.icons?.lifelinePhone || DefaultPhoneHintIcon;
 
-  const lifelineConfigFifty = config.lifelines.fifty ?? config.lifelines.fiftyFifty;
-  const lifelineConfigPhone = config.lifelines.phone ?? config.lifelines.phoneAFriend;
-  const lifelineConfigAudience = config.lifelines.audience ?? config.lifelines.askAudience;
+  const lifelineConfigFifty = config.lifelines.fifty;
+  const lifelineConfigPhone = config.lifelines.phone;
+  const lifelineConfigAudience = config.lifelines.audience;
   const lifelineConfigHost = config.lifelines.host;
   const lifelineConfigSwitch = config.lifelines.switch;
   const lifelineConfigDouble = config.lifelines.double;
-  const takeMoneyConfig =
-    config.actions?.takeMoney ??
-    config.lifelines.takeMoney ?? { name: 'Take Money', icon: '💰', enabled: true };
+  const takeMoneyConfig = config.actions.takeMoney;
 
   const getButtonCenterOrigin = (target: HTMLElement): { x: number; y: number } => {
     const rect = target.getBoundingClientRect();

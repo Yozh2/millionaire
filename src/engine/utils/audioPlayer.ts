@@ -232,30 +232,8 @@ const OSCILLATOR_SOUNDS: Record<string, OscillatorSoundConfig> = {
     ],
     delayBetween: 0.15,
   },
-  /**
-   * v1 legacy key
-   * @deprecated use `actionButton`
-   */
-  bigButton: {
-    tones: [
-      { frequency: 294, duration: 0.2, type: 'sawtooth', volume: 0.2 },
-      { frequency: 392, duration: 0.2, type: 'sawtooth', volume: 0.25 },
-      { frequency: 523, duration: 0.3, type: 'sawtooth', volume: 0.3 },
-    ],
-    delayBetween: 0.15,
-  },
 
   // 50:50 lifeline - reduce answers magical zap
-  hintReduceButton: {
-    tones: [
-      { frequency: 1200, duration: 0.05, type: 'square', volume: 0.15 },
-      { frequency: 800, duration: 0.05, type: 'square', volume: 0.15 },
-      { frequency: 1000, duration: 0.1, type: 'sine', volume: 0.2 },
-    ],
-    delayBetween: 0.04,
-  },
-
-  // v2 aliases (lifeline* / takeMoneyButton)
   lifelineFifty: {
     tones: [
       { frequency: 1200, duration: 0.05, type: 'square', volume: 0.15 },
@@ -266,15 +244,6 @@ const OSCILLATOR_SOUNDS: Record<string, OscillatorSoundConfig> = {
   },
 
   // Phone a friend lifeline
-  hintCallButton: {
-    tones: [
-      { frequency: 600, duration: 0.1, type: 'sine', volume: 0.2 },
-      { frequency: 800, duration: 0.1, type: 'sine', volume: 0.2 },
-      { frequency: 1000, duration: 0.15, type: 'sine', volume: 0.25 },
-    ],
-    delayBetween: 0.08,
-  },
-
   lifelinePhone: {
     tones: [
       { frequency: 600, duration: 0.1, type: 'sine', volume: 0.2 },
@@ -294,15 +263,6 @@ const OSCILLATOR_SOUNDS: Record<string, OscillatorSoundConfig> = {
   },
 
   // Ask the audience lifeline
-  hintVoteButton: {
-    tones: [
-      { frequency: 300, duration: 0.1, type: 'triangle', volume: 0.2 },
-      { frequency: 400, duration: 0.1, type: 'triangle', volume: 0.2 },
-      { frequency: 500, duration: 0.15, type: 'triangle', volume: 0.25 },
-    ],
-    delayBetween: 0.06,
-  },
-
   lifelineAudience: {
     tones: [
       { frequency: 300, duration: 0.1, type: 'triangle', volume: 0.2 },
@@ -330,17 +290,7 @@ const OSCILLATOR_SOUNDS: Record<string, OscillatorSoundConfig> = {
     delayBetween: 0.04,
   },
 
-  // Take money lifeline - coin sounds
-  hintTakeMoneyButton: {
-    tones: [
-      { frequency: 523, duration: 0.12, type: 'triangle', volume: 0.25 },
-      { frequency: 659, duration: 0.12, type: 'triangle', volume: 0.25 },
-      { frequency: 784, duration: 0.12, type: 'triangle', volume: 0.25 },
-      { frequency: 1047, duration: 0.3, type: 'triangle', volume: 0.3 },
-    ],
-    delayBetween: 0.1,
-  },
-
+  // Take money action - coin sounds
   takeMoneyButton: {
     tones: [
       { frequency: 523, duration: 0.12, type: 'triangle', volume: 0.25 },
@@ -668,11 +618,11 @@ const SOUND_TYPE_MAP: Record<string, string> = {
   // Button sounds
   AnswerClick: 'answerButton',
   BigButtonPress: 'actionButton',
-  // Hint button sounds
-  HintReduce: 'hintReduceButton',
-  HintCall: 'hintCallButton',
-  HintVote: 'hintVoteButton',
-  HintTakeMoney: 'hintTakeMoneyButton',
+  // Legacy hint filenames (map to lifeline/take money oscillator keys)
+  HintReduce: 'lifelineFifty',
+  HintCall: 'lifelinePhone',
+  HintVote: 'lifelineAudience',
+  HintTakeMoney: 'takeMoneyButton',
   // Lifeline button sounds (v2)
   LifelineFifty: 'lifelineFifty',
   LifelinePhone: 'lifelinePhone',

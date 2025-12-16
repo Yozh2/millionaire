@@ -79,12 +79,10 @@ export function LifelineResultPanel({
 
   const headerText = (() => {
     if (displayed.type === 'phone') {
-      return config.strings.lifelinePhoneHeader ?? config.strings.hintPhoneHeader;
+      return config.strings.lifelinePhoneHeader;
     }
     if (displayed.type === 'audience') {
-      return (
-        config.strings.lifelineAudienceHeader ?? config.strings.hintAudienceHeader
-      );
+      return config.strings.lifelineAudienceHeader;
     }
     if (displayed.type === 'host') {
       return config.lifelines.host?.name ?? 'Помощь ведущего';
@@ -95,8 +93,7 @@ export function LifelineResultPanel({
     return config.lifelines.double?.name ?? 'Право на ошибку';
   })();
 
-  const senderLabel =
-    config.strings.lifelineSenderLabel ?? config.strings.hintSenderLabel;
+  const senderLabel = config.strings.lifelineSenderLabel;
 
   return (
     <Panel

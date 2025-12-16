@@ -223,22 +223,6 @@ export interface LifelinesConfig {
   host?: LifelineConfig;
   switch?: LifelineConfig;
   double?: LifelineConfig;
-
-  /**
-   * v1 legacy lifeline keys
-   * @deprecated use v2 ids (`fifty|phone|audience`)
-   */
-  fiftyFifty?: LifelineConfig;
-  /** @deprecated use v2 ids (`fifty|phone|audience`) */
-  phoneAFriend?: LifelineConfig;
-  /** @deprecated use v2 ids (`fifty|phone|audience`) */
-  askAudience?: LifelineConfig;
-
-  /**
-   * Take the Money (legacy placement)
-   * @deprecated use `GameConfig.actions.takeMoney`
-   */
-  takeMoney?: ActionConfig;
 }
 
 // ============================================
@@ -280,16 +264,8 @@ export interface SoundEffects {
   answerButton?: string;
   /** Action button press (start game / restart) */
   actionButton?: string;
-  /**
-   * v1 legacy key
-   * @deprecated use `actionButton`
-   */
-  bigButton?: string;
 
-  /**
-   * v2 lifeline SFX keys (preferred)
-   * Note: during migration the engine also supports `hint*` keys as aliases.
-   */
+  /** Lifeline SFX keys */
   lifelineFifty?: string;
   lifelinePhone?: string;
   lifelineAudience?: string;
@@ -299,18 +275,6 @@ export interface SoundEffects {
 
   /** Take money action button SFX (not a lifeline) */
   takeMoneyButton?: string;
-
-  /**
-   * v1 legacy keys
-   * @deprecated use `lifeline*` / `takeMoneyButton`
-   */
-  hintReduceButton?: string;
-  /** @deprecated use `lifeline*` / `takeMoneyButton` */
-  hintCallButton?: string;
-  /** @deprecated use `lifeline*` / `takeMoneyButton` */
-  hintVoteButton?: string;
-  /** @deprecated use `lifeline*` / `takeMoneyButton` */
-  hintTakeMoneyButton?: string;
 
   /** Victory - winning the game sound (epic fanfare) */
   victory?: string;
@@ -373,18 +337,6 @@ export interface GameStrings {
   lifelineAudienceHeader: string;
   lifelineSenderLabel: string;
   lifelineAudienceLabel: string;
-
-  /**
-   * v1 legacy hint strings
-   * @deprecated use `lifeline*` fields
-   */
-  hintPhoneHeader?: string;
-  /** @deprecated use `lifeline*` fields */
-  hintAudienceHeader?: string;
-  /** @deprecated use `lifeline*` fields */
-  hintSenderLabel?: string;
-  /** @deprecated use `lifeline*` fields */
-  hintAudienceLabel?: string;
 
   // Companion phrases (with {answer} placeholder)
   companionPhrases: {
@@ -466,16 +418,6 @@ export type LifelineResult =
   | LifelineSwitchResult
   | LifelineDoubleResult
   | null;
-
-/**
- * v1 legacy names (kept for compatibility during migration)
- * @deprecated use `Lifeline*` / `LifelineResult`
- */
-export type PhoneHint = LifelinePhoneResult;
-/** @deprecated use `Lifeline*` / `LifelineResult` */
-export type AudienceHint = LifelineAudienceResult;
-/** @deprecated use `Lifeline*` / `LifelineResult` */
-export type Hint = LifelineResult;
 
 // ============================================
 // Header Slideshow Types
@@ -567,10 +509,10 @@ export interface GameConfig {
   lifelines: LifelinesConfig;
 
   /**
-   * Non-lifeline action buttons (v1).
+   * Non-lifeline action buttons.
    * @example takeMoney button shown in PrizeLadderPanel.
    */
-  actions?: {
+  actions: {
     takeMoney: ActionConfig;
   };
 
@@ -610,14 +552,6 @@ export interface GameConfig {
     star?: ComponentType;
     /** Icon for the initial sound consent panel (headphones) */
     headphones?: ComponentType;
-
-    /**
-     * v1 legacy icon keys
-     * @deprecated use `lifelinePhone` / `lifelineAudience`
-     */
-    phoneHint?: ComponentType;
-    /** @deprecated use `lifelinePhone` / `lifelineAudience` */
-    audienceHint?: ComponentType;
   };
 
   /**

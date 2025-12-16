@@ -1,5 +1,13 @@
 import { useCallback, useEffect, useMemo, useReducer } from 'react';
-import type { Campaign, Companion, GameConfig, GameState, Hint, LifelineResult, PrizeLadder, Question } from '../../types';
+import type {
+  Campaign,
+  Companion,
+  GameConfig,
+  GameState,
+  LifelineResult,
+  PrizeLadder,
+  Question,
+} from '../../types';
 import { logger } from '../../services';
 import {
   createGameSession,
@@ -47,18 +55,8 @@ export interface GameStateData {
   /** Answers eliminated by 50:50 */
   eliminatedAnswers: number[];
 
-  /** Current hint being displayed (legacy name) */
-  hint: Hint;
-
   /** Current lifeline result overlay (preferred name) */
   lifelineResult: LifelineResult;
-
-  /** Lifeline availability (legacy keys) */
-  lifelines: {
-    fiftyFifty: boolean;
-    phoneAFriend: boolean;
-    askAudience: boolean;
-  };
 
   /** Lifeline availability (preferred ids) */
   lifelineAvailability: {
@@ -110,26 +108,14 @@ export interface GameStateActions {
     displayIndex: number
   ) => Promise<'correct' | 'wrong' | 'won' | 'retry' | 'ignored'>;
 
-  /** Take current winnings and leave (legacy name) */
-  takeTheMoney: () => void;
-
   /** Take current winnings and leave (preferred name) */
   takeMoney: () => void;
-
-  /** Use 50:50 lifeline (legacy name) */
-  useFiftyFifty: () => void;
 
   /** Use 50:50 lifeline (preferred name) */
   useLifelineFifty: () => void;
 
-  /** Use Phone a Friend lifeline - returns companion for voice playback (legacy name) */
-  usePhoneAFriend: () => Companion | null;
-
   /** Use Phone-a-Friend lifeline (preferred name) */
   useLifelinePhone: () => Companion | null;
-
-  /** Use Ask the Audience lifeline (legacy name) */
-  useAskAudience: () => void;
 
   /** Use Ask-the-Audience lifeline (preferred name) */
   useLifelineAudience: () => void;
@@ -142,9 +128,6 @@ export interface GameStateActions {
 
   /** Use Double Dip lifeline (preferred name) */
   useLifelineDouble: () => void;
-
-  /** Clear current hint (legacy name) */
-  clearHint: () => void;
 
   /** Clear current lifeline result overlay (preferred name) */
   clearLifelineResult: () => void;
@@ -189,15 +172,6 @@ export const useGameState = (config: GameConfig): UseGameStateReturn => {
   const lifelineAvailability = useMemo(
     () => state.lifelineAvailability,
     [state.lifelineAvailability]
-  );
-
-  const lifelines = useMemo(
-    () => ({
-      fiftyFifty: lifelineAvailability.fifty,
-      phoneAFriend: lifelineAvailability.phone,
-      askAudience: lifelineAvailability.audience,
-    }),
-    [lifelineAvailability]
   );
 
   const selectCampaign = useCallback(
@@ -293,11 +267,11 @@ export const useGameState = (config: GameConfig): UseGameStateReturn => {
     [state]
   );
 
-  const takeTheMoney = useCallback(() => {
+  const takeMoney = useCallback(() => {
     dispatch({ type: 'TAKE_MONEY' });
   }, []);
 
-  const useFiftyFifty = useCallback(() => {
+  const useLifelineFifty = useCallback(() => {
     if (!state.lifelineAvailability.fifty) return;
     if (state.selectedAnswerDisplayIndex !== null) return;
     const question = selectCurrentQuestionData(state);
@@ -312,7 +286,7 @@ export const useGameState = (config: GameConfig): UseGameStateReturn => {
     });
   }, [state]);
 
-  const usePhoneAFriend = useCallback((): Companion | null => {
+  const useLifelinePhone = useCallback((): Companion | null => {
     if (!state.lifelineAvailability.phone) return null;
     if (state.selectedAnswerDisplayIndex !== null) return null;
     const question = selectCurrentQuestionData(state);
@@ -344,7 +318,7 @@ export const useGameState = (config: GameConfig): UseGameStateReturn => {
     return companion;
   }, [config, state]);
 
-  const useAskAudience = useCallback(() => {
+  const useLifelineAudience = useCallback(() => {
     if (!state.lifelineAvailability.audience) return;
     if (state.selectedAnswerDisplayIndex !== null) return;
     const question = selectCurrentQuestionData(state);
@@ -415,15 +389,9 @@ export const useGameState = (config: GameConfig): UseGameStateReturn => {
     dispatch({ type: 'APPLY_LIFELINE_DOUBLE', result: { type: 'double', stage: 'armed' } });
   }, [state]);
 
-  const clearHint = useCallback(() => {
+  const clearLifelineResult = useCallback(() => {
     dispatch({ type: 'CLEAR_LIFELINE_RESULT' });
   }, []);
-
-  const takeMoney = takeTheMoney;
-  const clearLifelineResult = clearHint;
-  const useLifelineFifty = useFiftyFifty;
-  const useLifelinePhone = usePhoneAFriend;
-  const useLifelineAudience = useAskAudience;
 
   return {
     gameState: state.phase,
@@ -435,9 +403,7 @@ export const useGameState = (config: GameConfig): UseGameStateReturn => {
     prizeLadder: state.prizeLadder,
     shuffledAnswers: state.shuffledAnswers,
     eliminatedAnswers: state.eliminatedAnswerDisplayIndices,
-    hint: state.lifelineResult,
     lifelineResult: state.lifelineResult,
-    lifelines,
     lifelineAvailability,
     doubleDipArmed: state.doubleDipArmed,
     doubleDipStrikeUsed: state.doubleDipStrikeUsed,
@@ -452,18 +418,13 @@ export const useGameState = (config: GameConfig): UseGameStateReturn => {
     forceWin,
     newGame,
     handleAnswer,
-    takeTheMoney,
     takeMoney,
-    useFiftyFifty,
     useLifelineFifty,
-    usePhoneAFriend,
     useLifelinePhone,
-    useAskAudience,
     useLifelineAudience,
     useLifelineHost,
     useLifelineSwitch,
     useLifelineDouble,
-    clearHint,
     clearLifelineResult,
   };
 };
