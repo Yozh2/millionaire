@@ -4,26 +4,6 @@
  * Simple emoji-based icons for testing the engine.
  */
 
-import type { CampaignIconProps } from '../../engine/types';
-
-/**
- * Classic mode icon (blue diamond)
- */
-export const EasyIcon = ({ className }: CampaignIconProps) => (
-  <div className={`mx-auto flex items-center justify-center text-4xl leading-none ${className ?? 'w-16 h-16'}`}>
-    💎
-  </div>
-);
-
-/**
- * Gold/Hard mode icon (gold bar)
- */
-export const HardIcon = ({ className }: CampaignIconProps) => (
-  <div className={`mx-auto flex items-center justify-center text-4xl leading-none ${className ?? 'w-16 h-16'}`}>
-    🏆
-  </div>
-);
-
 /**
  * Trophy icon for winning
  */

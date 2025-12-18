@@ -1,6 +1,6 @@
-import type { QuestionPool } from '../../../../engine/types';
+import type { QuestionPool } from '@engine/types';
 
-export const darkUrgeQuestionPool: QuestionPool = {
+export const questions: QuestionPool = {
   easy: [
     {
       question: 'Кем был Тёмный Соблазн до потери памяти?',
@@ -140,4 +140,3 @@ export const darkUrgeQuestionPool: QuestionPool = {
     },
   ],
 };
-

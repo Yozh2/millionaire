@@ -1,10 +1,10 @@
-import type { ThemeColors } from '../../../../engine/types';
+import type { ThemeColors } from '@engine/types';
 
 /**
  * Gold Millionaire theme for "Hard" campaign
  * Deep blue with gold/amber accents for higher stakes feel
  */
-export const hardTheme: ThemeColors = {
+export const theme: ThemeColors = {
   primary: 'amber',
   textPrimary: 'text-amber-100',
   textSecondary: 'text-amber-200',
@@ -35,4 +35,3 @@ export const hardTheme: ThemeColors = {
   borderImageColors: '#f59e0b, #0f0f0f',
   headerBorderColor: '#ca8a04',
 };
-

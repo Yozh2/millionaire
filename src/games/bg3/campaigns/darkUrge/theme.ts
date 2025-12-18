@@ -1,7 +1,7 @@
-import type { ThemeColors } from '../../../../engine/types';
+import type { ThemeColors } from '@engine/types';
 
 /** Dark Urge mode theme - sinister red colors */
-export const darkUrgeTheme: ThemeColors = {
+export const theme: ThemeColors = {
   primary: 'red',
   textPrimary: 'text-red-400',
   textSecondary: 'text-red-200',
@@ -32,4 +32,3 @@ export const darkUrgeTheme: ThemeColors = {
   borderImageColors: '#dc2626, #450a0a',
   headerBorderColor: '#450a0a',
 };
-

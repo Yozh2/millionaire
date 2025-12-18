@@ -5,168 +5,76 @@
  * All UI strings are in English (game exception).
  */
 
-import type { DrawCoinFunction, GameConfig } from '../../engine/types';
+import type { GameConfig } from '@engine/types';
+import { createDefaultAudioConfig } from '@engine/audio/defaultAudio';
 import { skyJourneyCampaign } from './campaigns/journey/campaign';
-import { skyJourneyQuestionPool } from './campaigns/journey/questions';
 import {
-  WingedLightTrophyIcon,
-  FallenStarIcon,
   CandleIcon,
+  FallenStarIcon,
   SmallCandleCoinIcon,
   StarIcon,
+  WingedLightTrophyIcon,
+  drawCandleCoin,
 } from './icons';
-import { gameRegistry } from './registry';
-
-const drawCandleCoin: DrawCoinFunction = (ctx, size, colorIndex) => {
-  const waxColors = ['#ffffff', '#e2e8f0', '#f8fafc'];
-  const flameColors = ['#fbbf24', '#f59e0b', '#fde047'];
-  const strokeColors = ['#94a3b8', '#cbd5e1', '#64748b'];
-
-  const s = size;
-  const w = s * 0.28;
-  const h = s * 0.55;
-  const r = s * 0.08;
-
-  // Candle body (rounded rect)
-  const x = -w / 2;
-  const y = h * 0.05;
-  ctx.beginPath();
-  ctx.moveTo(x + r, y);
-  ctx.lineTo(x + w - r, y);
-  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
-  ctx.lineTo(x + w, y + h - r);
-  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
-  ctx.lineTo(x + r, y + h);
-  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
-  ctx.lineTo(x, y + r);
-  ctx.quadraticCurveTo(x, y, x + r, y);
-  ctx.closePath();
-
-  ctx.fillStyle = waxColors[colorIndex % waxColors.length];
-  ctx.fill();
-  ctx.strokeStyle = strokeColors[colorIndex % strokeColors.length];
-  ctx.lineWidth = 1.25;
-  ctx.stroke();
-
-  // Flame (teardrop)
-  ctx.beginPath();
-  ctx.moveTo(0, -s * 0.40);
-  ctx.bezierCurveTo(s * 0.20, -s * 0.25, s * 0.18, -s * 0.02, 0, 0);
-  ctx.bezierCurveTo(-s * 0.18, -s * 0.02, -s * 0.20, -s * 0.25, 0, -s * 0.40);
-  ctx.closePath();
-
-  ctx.fillStyle = flameColors[colorIndex % flameColors.length];
-  ctx.fill();
-};
+import {
+  skyCotlActionNames,
+  skyCotlCompanions,
+  skyCotlCurrency,
+  skyCotlLifelineNames,
+  skyCotlStrings,
+  skyCotlSubtitle,
+  skyCotlTitle,
+} from './strings';
 
 export const skyCotlConfig: GameConfig = {
   id: 'sky-cotl',
 
-  title: 'WHO WANTS TO BE A MILLIONAIRE',
-  subtitle: 'Sky: Children of the Light Edition',
-
   emoji: '☁️',
-  registry: gameRegistry,
+
+  title: skyCotlTitle,
+  subtitle: skyCotlSubtitle,
+
+  registry: {
+    registryVisible: true,
+    order: 40,
+    card: {
+      title: 'SKY',
+      subtitle: 'Children of the Light Edition',
+      description: 'A 15-question quiz about Sky: Children of the Light (English-only)',
+      emoji: '☁️',
+      gradient: 'from-sky-500 via-sky-400 to-emerald-500',
+      borderColor: 'border-sky-300',
+      available: true,
+    },
+  },
 
   campaigns: [skyJourneyCampaign],
 
-  questionPools: {
-    journey: skyJourneyQuestionPool,
-  },
-
-  companions: [
-    { id: 'guide', name: 'The Guide' },
-    { id: 'traveler', name: 'Fellow Traveler' },
-    { id: 'elder', name: 'An Elder' },
-  ],
-
-  strings: {
-    // Start screen
-    introText:
-      'Welcome, Child of the Light. Answer 15 questions, use 3 lifelines, and collect a sky-high prize.',
-    selectPath: 'CHOOSE YOUR JOURNEY',
-    startButton: 'FLY',
-
-    // Game screen - Question panel
-    questionHeader: 'Question #{n}',
-
-    // Game screen - Lifelines
-    lifelinesHeader: 'LIFELINES',
-
-    // Game screen - Prize ladder
-    prizesHeader: 'PRIZE LADDER',
-
-    // Lifelines
-    lifelinePhoneHeader: 'ASK THE SPIRIT',
-    lifelineAudienceHeader: 'ASK THE CHAT',
-    lifelineSenderLabel: 'From:',
-    lifelineAudienceLabel: 'The chat says:',
-
-    // Companion phrases
-    companionPhrases: {
-      confident: [
-        'I’m sure it’s "{answer}".',
-        'No doubt — "{answer}".',
-        'Trust me: "{answer}".',
-        'I bet my red candles on "{answer}".',
-      ],
-      uncertain: [
-        'I think it might be "{answer}".',
-        'Not certain… maybe "{answer}"?',
-        'I’d guess "{answer}", but I’m not 100%.',
-      ],
-    },
-
-    // End screens
-    wonTitle: 'ASCENDED',
-    wonText: 'You ascended to the Orbit!',
-    wonHeader: 'ASCENDED',
-
-    lostTitle: 'DIMMED LIGHT',
-    lostText: 'Your light has dimmed.',
-    lostHeader: 'DEFEAT',
-    correctAnswerLabel: 'Correct answer:',
-
-    tookMoneyTitle: 'YOU TOOK THE CANDLES',
-    tookMoneyText: 'A wise choice — safe and bright.',
-    tookMoneyHeader: 'WALK AWAY',
-
-    newGameButton: 'HOME',
-
-    // Footer
-    footer: '☁️ Fly, explore, and share the light ☁️',
-
-    // Music toggle
-    musicOn: 'Turn music off',
-    musicOff: 'Turn music on',
-  },
+  companions: skyCotlCompanions,
+  strings: skyCotlStrings,
 
   lifelines: {
-    fifty: { name: '50:50', icon: '✨', enabled: true },
-    phone: { name: 'Ask Spirit', icon: '📞', enabled: true },
-    audience: { name: 'Ask Chat', icon: '📊', enabled: true },
-    double: { name: 'Re-login', icon: '🪽', enabled: true },
+    fifty: { name: skyCotlLifelineNames.fifty, icon: '✨', enabled: true },
+    phone: { name: skyCotlLifelineNames.phone, icon: '📞', enabled: true },
+    audience: { name: skyCotlLifelineNames.audience, icon: '📊', enabled: true },
+    double: { name: skyCotlLifelineNames.double, icon: '🪽', enabled: true },
   },
 
   actions: {
-    takeMoney: { name: 'Home', icon: '🕯️', enabled: true },
+    takeMoney: { name: skyCotlActionNames.takeMoney, icon: '🕯️', enabled: true },
   },
 
   prizes: {
     maxPrize: 1000000,
-    currency: 'candles',
+    currency: skyCotlCurrency,
     guaranteedFractions: [1 / 3, 2 / 3, 1],
   },
 
-  audio: {
+  audio: createDefaultAudioConfig({
     musicVolume: 0.2,
     soundVolume: 1.0,
     voiceVolume: 1.0,
-    // No external audio yet - oscillator fallbacks only
-    sounds: {
-      lifelineDouble: 'DoubleDip.ogg',
-    },
-  },
+  }),
 
   endIcons: {
     won: WingedLightTrophyIcon,

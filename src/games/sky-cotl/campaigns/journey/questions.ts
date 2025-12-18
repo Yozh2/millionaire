@@ -1,11 +1,11 @@
-import type { QuestionPool } from '../../../../engine/types';
+import type { QuestionPool } from '@engine/types';
 
 /**
  * Sky: Children of the Light - Question Pool
  *
  * All questions are in English (game exception).
  */
-export const skyJourneyQuestionPool: QuestionPool = {
+export const questions: QuestionPool = {
   easy: [
     {
       question: 'Who developed Sky: Children of the Light?',
@@ -88,4 +88,3 @@ export const skyJourneyQuestionPool: QuestionPool = {
     },
   ],
 };
-

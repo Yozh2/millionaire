@@ -1,10 +1,10 @@
-import type { ThemeColors } from '../../../../engine/types';
+import type { ThemeColors } from '@engine/types';
 
 /**
  * Classic Millionaire theme for "Easy" campaign
  * Deep blue with purple accents - the iconic WWTBAM look
  */
-export const easyTheme: ThemeColors = {
+export const theme: ThemeColors = {
   primary: 'blue',
   textPrimary: 'text-blue-100',
   textSecondary: 'text-blue-200',
@@ -35,4 +35,3 @@ export const easyTheme: ThemeColors = {
   borderImageColors: '#6366f1, #0a1628',
   headerBorderColor: '#4338ca',
 };
-

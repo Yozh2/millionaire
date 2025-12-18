@@ -5,12 +5,20 @@
  */
 
 export { pocConfig, pocConfig as default } from './config';
-export { easyQuestionPool, hardQuestionPool } from './questions';
-export { easyTheme, hardTheme } from './themes';
 export {
-  EasyIcon,
-  HardIcon,
   TrophyIcon,
   FailIcon,
   MoneyIcon,
 } from './icons';
+export {
+  pocTitle,
+  pocSubtitle,
+  pocStrings,
+  pocCompanions,
+  pocCurrency,
+  pocLifelineNames,
+  pocActionNames,
+  pocCampaignStrings,
+} from './strings';
+export { easyCampaign } from './campaigns/easy/campaign';
+export { hardCampaign } from './campaigns/hard/campaign';

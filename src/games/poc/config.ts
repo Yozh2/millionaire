@@ -5,110 +5,72 @@
  * Uses oscillator sounds only, no external assets.
  */
 
-import type { GameConfig } from '../../engine/types';
+import type { GameConfig } from '@engine/types';
+import { createDefaultAudioConfig } from '@engine/audio/defaultAudio';
 import { easyCampaign } from './campaigns/easy/campaign';
 import { hardCampaign } from './campaigns/hard/campaign';
-import { easyQuestionPool } from './campaigns/easy/questions';
-import { hardQuestionPool } from './campaigns/hard/questions';
-import { TrophyIcon, FailIcon, MoneyIcon } from './icons';
-import { gameRegistry } from './registry';
-
-// ============================================
-// Main Config
-// ============================================
+import { FailIcon, MoneyIcon, TrophyIcon } from './icons';
+import {
+  pocActionNames,
+  pocCompanions,
+  pocCurrency,
+  pocLifelineNames,
+  pocStrings,
+  pocSubtitle,
+  pocTitle,
+} from './strings';
 
 export const pocConfig: GameConfig = {
   id: 'poc',
 
-  title: 'КТО ХОЧЕТ СТАТЬ МИЛЛИОНЕРОМ',
-  subtitle: 'ТЕСТ ДВИЖКА',
-
   emoji: '⚙️',
-  registry: gameRegistry,
+
+  title: pocTitle,
+  subtitle: pocSubtitle,
+
+  registry: {
+    registryVisible: true,
+    order: 10,
+    card: {
+      title: 'PROOF OF CONCEPT',
+      subtitle: 'Тестовая игра',
+      description: 'Минимальная демонстрация движка без внешних ассетов',
+      emoji: '⚙️',
+      gradient: 'from-slate-700 via-slate-600 to-slate-800',
+      borderColor: 'border-slate-500',
+      available: true,
+    },
+  },
 
   campaigns: [easyCampaign, hardCampaign],
 
-  questionPools: {
-    easy: easyQuestionPool,
-    hard: hardQuestionPool,
-  },
-
-  companions: [
-    { id: 'alexey', name: 'Алексей' },
-    { id: 'maria', name: 'Мария' },
-    { id: 'sergey', name: 'Сергей' },
-  ],
-
-  strings: {
-    introText:
-      'Проверь свои знания! Ответь на вопросы, чтобы выиграть главный приз.',
-    selectPath: 'ВЫБЕРИТЕ СЛОЖНОСТЬ',
-    startButton: 'НАЧАТЬ ИГРУ',
-
-    questionHeader: '#{n}',
-
-    lifelinesHeader: 'ПОДСКАЗКИ',
-    prizesHeader: 'ПРИЗЫ',
-
-    lifelinePhoneHeader: 'СОВЕТ ДРУГА',
-    lifelineAudienceHeader: 'ОПРОС ЗАЛА',
-    lifelineSenderLabel: 'От:',
-    lifelineAudienceLabel: 'Зал считает:',
-
-    companionPhrases: {
-      confident: ['Я уверен, что это "{answer}"', 'Точно "{answer}"'],
-      uncertain: ['Может быть "{answer}"?', 'Думаю, это "{answer}"'],
-    },
-
-    wonTitle: '🎉 ПОБЕДА!',
-    wonText: 'Поздравляем! Вы выиграли главный приз!',
-    wonHeader: 'ПОБЕДА',
-
-    lostTitle: '❌ ИГРА ОКОНЧЕНА',
-    lostText: 'Неправильный ответ!',
-    lostHeader: 'ПОРАЖЕНИЕ',
-    correctAnswerLabel: 'Правильный ответ:',
-
-    tookMoneyTitle: '💰 ДЕНЬГИ ЗАБРАНЫ',
-    tookMoneyText: 'Умный выбор!',
-    tookMoneyHeader: 'ПРИЗ ПОЛУЧЕН',
-
-    newGameButton: 'ИГРАТЬ СНОВА',
-
-    footer: '★ Тестовый движок викторины ★',
-
-    musicOn: 'Выкл. музыку',
-    musicOff: 'Вкл. музыку',
-  },
+  companions: pocCompanions,
+  strings: pocStrings,
 
   lifelines: {
-    fifty: { name: '50:50', icon: '⚡', enabled: true },
-    phone: { name: 'Звонок', icon: '📞', enabled: true },
-    audience: { name: 'Зал', icon: '📊', enabled: true },
-    host: { name: 'Ведущий', icon: '🎭', enabled: true },
-    switch: { name: 'Замена', icon: '🔁', enabled: true },
-    double: { name: 'Ошибиться', icon: '🎯', enabled: true },
+    fifty: { name: pocLifelineNames.fifty, icon: '⚡', enabled: true },
+    phone: { name: pocLifelineNames.phone, icon: '📞', enabled: true },
+    audience: { name: pocLifelineNames.audience, icon: '📊', enabled: true },
+    host: { name: pocLifelineNames.host, icon: '🎭', enabled: true },
+    switch: { name: pocLifelineNames.switch, icon: '🔁', enabled: true },
+    double: { name: pocLifelineNames.double, icon: '🎯', enabled: true },
   },
 
   actions: {
-    takeMoney: { name: 'Забрать', icon: '💰', enabled: true },
+    takeMoney: { name: pocActionNames.takeMoney, icon: '💰', enabled: true },
   },
 
   prizes: {
     maxPrize: 1000000,
-    currency: '$',
+    currency: pocCurrency,
     guaranteedFractions: [1 / 3, 2 / 3, 1],
   },
 
-  audio: {
+  audio: createDefaultAudioConfig({
     musicVolume: 0.2,
     soundVolume: 1.0,
     voiceVolume: 1.0,
-    // No music/sound files - uses oscillator fallbacks only
-    sounds: {
-      lifelineDouble: 'DoubleDip.ogg',
-    },
-  },
+  }),
 
   endIcons: {
     won: TrophyIcon,

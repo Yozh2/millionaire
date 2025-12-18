@@ -1,5 +1,5 @@
 import type { ComponentType } from 'react';
-import type { GameConfig, GameRegistryCardMeta, GameRegistryMeta } from '../../engine/types';
+import type { GameConfig, GameRegistryCardMeta, GameRegistryMeta } from '@engine/types';
 
 export type GameCardMeta = GameRegistryCardMeta;
 
@@ -24,37 +24,27 @@ export interface PageRegistryEntry {
 
 export type RegistryEntry = GameRegistryEntry | PageRegistryEntry;
 
-type GameRegistryModule = { gameRegistry?: GameRegistryMeta; default?: GameRegistryMeta };
+type GameConfigModule = { default: GameConfig };
 
-const GAME_REGISTRY_MODULES = import.meta.glob('../../games/*/registry.ts', {
+const GAME_CONFIG_MODULES = import.meta.glob('../../games/*/config.ts', {
   eager: true,
-}) as Record<string, GameRegistryModule>;
-
-const GAME_CONFIG_IMPORTERS = import.meta.glob('../../games/*/config.ts') as Record<
-  string,
-  () => Promise<{ default: GameConfig }>
->;
+}) as Record<string, GameConfigModule>;
 
 const extractGameIdFromPath = (path: string): string | null => {
-  const match = path.match(/\/games\/([^/]+)\/registry\.ts$/);
+  const match = path.match(/\/games\/([^/]+)\/config\.ts$/);
   return match?.[1] ?? null;
 };
 
 const buildGameEntries = (): GameRegistryEntry[] => {
   const entries: GameRegistryEntry[] = [];
 
-  for (const [path, mod] of Object.entries(GAME_REGISTRY_MODULES)) {
+  for (const [path, mod] of Object.entries(GAME_CONFIG_MODULES)) {
     const id = extractGameIdFromPath(path);
     if (!id) continue;
 
-    const meta = mod.gameRegistry ?? mod.default;
+    const config = mod.default;
+    const meta: GameRegistryMeta | undefined = config.registry;
     if (!meta) continue;
-
-    const configImporter = GAME_CONFIG_IMPORTERS[`../../games/${id}/config.ts`];
-    if (!configImporter) {
-      console.warn(`[registry] Missing config for game: ${id}`);
-      continue;
-    }
 
     entries.push({
       kind: 'game',
@@ -64,7 +54,7 @@ const buildGameEntries = (): GameRegistryEntry[] => {
       order: meta.order,
       card: meta.card,
       devOnly: meta.devOnly,
-      getConfig: async () => (await configImporter()).default,
+      getConfig: async () => config,
     });
   }
 

@@ -1,6 +1,6 @@
-import type { QuestionPool } from '../../../../engine/types';
+import type { QuestionPool } from '@engine/types';
 
-export const megatronQuestionPool: QuestionPool = {
+export const questions: QuestionPool = {
   easy: [
     {
       question:

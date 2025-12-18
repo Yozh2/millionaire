@@ -5,41 +5,32 @@
  * These components wrap SVG files for use in React.
  */
 
-import type { CampaignIconProps } from '../../engine/types';
+import type { DrawCoinFunction } from '@engine/types';
+import { gameIconsFile } from '@public';
 
-const ICONS_PATH = `${import.meta.env.BASE_URL}games/bg3/icons`;
+// ============================================
+// Custom Coin Drawing - Simple gold coin
+// ============================================
 
-/** Mind Flayer (Illithid) icon - represents the tadpole storyline */
-export const MindFlayerIcon = ({ className }: CampaignIconProps) => (
-  <img
-    src={`${ICONS_PATH}/mind-flayer.png`}
-    alt="Mind Flayer"
-    className={`mx-auto object-contain ${className ?? 'w-24 h-24'}`}
-  />
-);
+export const drawGoldCoin: DrawCoinFunction = (ctx, size, colorIndex) => {
+  const colors = ['#fbbf24', '#fcd34d', '#f59e0b'];
+  const strokeColors = ['#b45309', '#d97706', '#92400e'];
+  const radius = size / 2;
 
-/** Dark Urge icon - represents the Bhaalspawn origin */
-export const DarkUrgeIcon = ({ className }: CampaignIconProps) => (
-  <img
-    src={`${ICONS_PATH}/dark-urge.png`}
-    alt="Dark Urge"
-    className={`mx-auto object-contain ${className ?? 'w-24 h-24'}`}
-  />
-);
-
-/** Hero icon - represents the Hero origin */
-export const HeroIcon = ({ className }: CampaignIconProps) => (
-  <img
-    src={`${ICONS_PATH}/heroes.png`}
-    alt="Hero"
-    className={`mx-auto object-contain ${className ?? 'w-24 h-24'}`}
-  />
-);
+  // Simple gold circle
+  ctx.beginPath();
+  ctx.arc(0, 0, radius, 0, Math.PI * 2);
+  ctx.fillStyle = colors[colorIndex % colors.length];
+  ctx.fill();
+  ctx.strokeStyle = strokeColors[colorIndex % strokeColors.length];
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+};
 
 /** Trophy icon for victory screen */
 export const TrophyIcon = () => (
   <img
-    src={`${ICONS_PATH}/trophy.svg`}
+    src={gameIconsFile('bg3', 'trophy.svg')}
     alt="Trophy"
     className="w-24 h-24 mx-auto animate-bounce"
   />
@@ -48,7 +39,7 @@ export const TrophyIcon = () => (
 /** Money/coin icon for took money screen - stack of fantasy gold coins */
 export const MoneyIcon = () => (
   <img
-    src={`${ICONS_PATH}/money.svg`}
+    src={gameIconsFile('bg3', 'money.svg')}
     alt="Gold Coins"
     className="w-24 h-24 mx-auto"
   />
@@ -57,7 +48,7 @@ export const MoneyIcon = () => (
 /** Critical fail - D20 dice showing 1 */
 export const CriticalFailIcon = () => (
   <img
-    src={`${ICONS_PATH}/critical-fail.svg`}
+    src={gameIconsFile('bg3', 'critical-fail.svg')}
     alt="Critical Fail"
     className="w-20 h-20 mx-auto"
   />
@@ -66,7 +57,7 @@ export const CriticalFailIcon = () => (
 /** Small coin icon for inline use - fantasy gold with G */
 export const CoinIcon = () => (
   <img
-    src={`${ICONS_PATH}/coin.svg`}
+    src={gameIconsFile('bg3', 'coin.svg')}
     alt="Coin"
     className="w-5 h-5 inline mr-1"
   />

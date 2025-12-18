@@ -2,45 +2,35 @@
  * Transformers Game Icons
  *
  * Icons loaded from /public/games/transformers/icons/
- * Campaign faction icons.
  */
 
-import type { CampaignIconProps } from '../../engine/types';
+import type { DrawCoinFunction } from '@engine/types';
+import { gameIconsFile } from '@public';
 
-const ICONS_PATH = `${import.meta.env.BASE_URL}games/transformers/icons`;
+// ============================================
+// Custom Energon Crystal Drawing - simple pink/blue crystal
+// ============================================
 
-/**
- * Autocracy campaign icon
- */
-export const AutocracyIcon = ({ className }: CampaignIconProps) => (
-  <img
-    src={`${ICONS_PATH}/Autocracy.png`}
-    alt="Autocracy"
-    className={`mx-auto object-contain ${className ?? 'w-14 h-14'}`}
-  />
-);
+export const drawEnergonCrystal: DrawCoinFunction = (ctx, size, colorIndex) => {
+  const colors = ['#FF69B4', '#00BFFF', '#DA70D6']; // Pink, Blue, Orchid
+  const glowColors = ['#FFB6C1', '#87CEEB', '#DDA0DD'];
 
-/**
- * Megatron campaign icon
- */
-export const MegatronIcon = ({ className }: CampaignIconProps) => (
-  <img
-    src={`${ICONS_PATH}/Megatron.png`}
-    alt="Megatron"
-    className={`mx-auto object-contain ${className ?? 'w-14 h-14'}`}
-  />
-);
+  const halfSize = size / 2;
 
-/**
- * Skybound campaign icon
- */
-export const SkyboundIcon = ({ className }: CampaignIconProps) => (
-  <img
-    src={`${ICONS_PATH}/Skybound.png`}
-    alt="Skybound"
-    className={`mx-auto object-contain ${className ?? 'w-14 h-14'}`}
-  />
-);
+  // Simple diamond/crystal shape
+  ctx.beginPath();
+  ctx.moveTo(0, -halfSize); // Top
+  ctx.lineTo(halfSize * 0.6, 0); // Right
+  ctx.lineTo(0, halfSize); // Bottom
+  ctx.lineTo(-halfSize * 0.6, 0); // Left
+  ctx.closePath();
+
+  ctx.fillStyle = colors[colorIndex % colors.length];
+  ctx.fill();
+  ctx.strokeStyle = glowColors[colorIndex % glowColors.length];
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+};
 
 /**
  * Victory icon - Matrix of Leadership
@@ -48,7 +38,7 @@ export const SkyboundIcon = ({ className }: CampaignIconProps) => (
 export const MatrixIcon = () => (
   <div className="w-28 h-28 mx-auto flex items-center justify-center">
     <img
-      src={`${ICONS_PATH}/MatrixTrophyShine.png`}
+      src={gameIconsFile('transformers', 'MatrixTrophyShine.png')}
       alt="Matrix of Leadership"
       className="h-28 w-auto animate-pulse"
     />
@@ -70,7 +60,7 @@ export const DestroyedIcon = () => (
 export const EnergonIcon = () => (
   <div className="h-40 mx-auto flex items-center justify-center">
     <img
-      src={`${ICONS_PATH}/Energon.png`}
+      src={gameIconsFile('transformers', 'Energon.png')}
       alt="Energon"
       className="h-40 w-auto"
     />
@@ -83,7 +73,7 @@ export const EnergonIcon = () => (
 export const BrokenSparkIcon = () => (
   <div className="w-24 h-24 mx-auto flex items-center justify-center">
     <img
-      src={`${ICONS_PATH}/BrokenSpark.png`}
+      src={gameIconsFile('transformers', 'BrokenSpark.png')}
       alt="Broken Spark"
       className="w-20 h-20"
     />

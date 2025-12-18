@@ -1,11 +1,11 @@
-import type { ThemeColors } from '../../../../engine/types';
+import type { ThemeColors } from '@engine/types';
 
 /**
  * Sky: Children of the Light - Theme
  *
  * Soft sky tones: white clouds, blue sky, green grass.
  */
-export const skyJourneyTheme: ThemeColors = {
+export const theme: ThemeColors = {
   primary: 'sky',
   isLight: true,
 
@@ -68,4 +68,3 @@ export const skyJourneyTheme: ThemeColors = {
 
   borderImageColors: '#38bdf8, rgba(255,255,255,0.55), #22c55e',
 };
-

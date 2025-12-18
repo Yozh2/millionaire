@@ -1,9 +1,9 @@
-import type { QuestionPool } from '../../../../engine/types';
+import type { QuestionPool } from '@engine/types';
 
 /**
  * Questions for "Hard" campaign - science and expert knowledge
  */
-export const hardQuestionPool: QuestionPool = {
+export const questions: QuestionPool = {
   easy: [
     {
       question: 'Чему равен квадратный корень из 144?',
@@ -86,4 +86,3 @@ export const hardQuestionPool: QuestionPool = {
     },
   ],
 };
-

@@ -1,7 +1,7 @@
-import type { ThemeColors } from '../../../../engine/types';
+import type { ThemeColors } from '@engine/types';
 
 /** Mind Flayer mode theme - mysterious purple colors */
-export const mindFlayerTheme: ThemeColors = {
+export const theme: ThemeColors = {
   primary: 'purple',
   textPrimary: 'text-purple-400',
   textSecondary: 'text-purple-200',
@@ -32,4 +32,3 @@ export const mindFlayerTheme: ThemeColors = {
   borderImageColors: '#7c3aed, #3b0764',
   headerBorderColor: '#3b0764',
 };
-

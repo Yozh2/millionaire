@@ -1,6 +1,6 @@
-import type { QuestionPool } from '../../../../engine/types';
+import type { QuestionPool } from '@engine/types';
 
-export const heroQuestionPool: QuestionPool = {
+export const questions: QuestionPool = {
   easy: [
     {
       question:
@@ -94,4 +94,3 @@ export const heroQuestionPool: QuestionPool = {
     },
   ],
 };
-

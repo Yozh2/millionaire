@@ -1,6 +1,6 @@
-import type { QuestionPool } from '../../../../engine/types';
+import type { QuestionPool } from '@engine/types';
 
-export const mindFlayerQuestionPool: QuestionPool = {
+export const questions: QuestionPool = {
   easy: [
     {
       question: 'Как называется древняя империя, создавшая Корону Карсуса?',
@@ -123,4 +123,3 @@ export const mindFlayerQuestionPool: QuestionPool = {
     },
   ],
 };
-

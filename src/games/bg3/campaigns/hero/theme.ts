@@ -1,7 +1,7 @@
-import type { ThemeColors } from '../../../../engine/types';
+import type { ThemeColors } from '@engine/types';
 
 /** Hero mode theme - warm amber/gold colors */
-export const heroTheme: ThemeColors = {
+export const theme: ThemeColors = {
   primary: 'amber',
   textPrimary: 'text-amber-400',
   textSecondary: 'text-amber-200',
@@ -32,4 +32,3 @@ export const heroTheme: ThemeColors = {
   borderImageColors: '#92400e, #451a03',
   headerBorderColor: '#451a03',
 };
-

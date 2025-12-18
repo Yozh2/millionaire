@@ -1,9 +1,9 @@
-import type { QuestionPool } from '../../../../engine/types';
+import type { QuestionPool } from '@engine/types';
 
 /**
  * Questions for "Easy" campaign - general knowledge
  */
-export const easyQuestionPool: QuestionPool = {
+export const questions: QuestionPool = {
   easy: [
     {
       question: 'Сколько будет 2 + 2?',
@@ -31,4 +31,3 @@ export const easyQuestionPool: QuestionPool = {
     },
   ],
 };
-

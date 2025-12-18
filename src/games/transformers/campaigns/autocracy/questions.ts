@@ -1,6 +1,6 @@
-import type { QuestionPool } from '../../../../engine/types';
+import type { QuestionPool } from '@engine/types';
 
-export const autocracyQuestionPool: QuestionPool = {
+export const questions: QuestionPool = {
   easy: [
     {
       question:
@@ -20,7 +20,7 @@ export const autocracyQuestionPool: QuestionPool = {
         'Каон',
         'Иакон',
         'Праксус',
-        'Нион',
+        'Найон',
       ],
       correct: 3,
     },
@@ -92,7 +92,7 @@ export const autocracyQuestionPool: QuestionPool = {
     },
     {
       question:
-        'Какого нейтрала Зета Прайм посылает искать Пакс в Нион?',
+        'Какого нейтрала Зета Прайм посылает искать Пакс в Найон?',
       answers: [
         'Хот Рода',
         'Спрингера',
@@ -103,7 +103,7 @@ export const autocracyQuestionPool: QuestionPool = {
     },
     {
       question:
-        'Где прячется Хот Род в Нионе от отряда Пакса?',
+        'Где прячется Хот Род в Найоне от отряда Пакса?',
       answers: [
         'В Колкуларе',
         'В Акроплексе',
@@ -114,7 +114,7 @@ export const autocracyQuestionPool: QuestionPool = {
     },
     {
       question:
-        'Как зовут гиганта под Нионом до его пробуждения?',
+        'Как зовут гиганта под Найоном до его пробуждения?',
       answers: [
         'Акроплекс',
         'Метроплекс',
@@ -125,7 +125,7 @@ export const autocracyQuestionPool: QuestionPool = {
     },
     {
       question:
-        'Кто фактически взрывает Нион и Омега-деструкторы?',
+        'Кто фактически взрывает Найон и Омега-деструкторы?',
       answers: [
         'Орион Пакс',
         'Хот Род',
@@ -293,7 +293,7 @@ export const autocracyQuestionPool: QuestionPool = {
     },
     {
       question:
-        'Какую роль Орион Пакс и Проул играют в битве за Нион?',
+        'Какую роль Орион Пакс и Проул играют в битве за Найон?',
       answers: [
         'Минёры',
         'Приманка',
@@ -304,7 +304,7 @@ export const autocracyQuestionPool: QuestionPool = {
     },
     {
       question:
-        'Почему повстанцы решают подорвать Нион?',
+        'Почему повстанцы решают подорвать Найон?',
       answers: [
         'Мало боеприпасов',
         'Боязнь Мегатрона',
@@ -315,7 +315,7 @@ export const autocracyQuestionPool: QuestionPool = {
     },
     {
       question:
-        'Какую "мораль" Зета Прайм формулирует после Ниона?',
+        'Какую "мораль" Зета Прайм формулирует после Найона?',
       answers: [
         'Мир любой ценой',
         'Побеждает сильный',
@@ -328,7 +328,7 @@ export const autocracyQuestionPool: QuestionPool = {
       question:
         'Куда десептиконы везут раненого Ориона Пакса после казни?',
       answers: [
-        'Нион',
+        'Найон',
         'Ультрикс',
         'Колкулар',
         'Андергрид',
@@ -362,7 +362,7 @@ export const autocracyQuestionPool: QuestionPool = {
     },
     {
       question:
-        'Какой совет Орион Пакс даёт Хот Роду о Нионе?',
+        'Какой совет Орион Пакс даёт Хот Роду о Найоне?',
       answers: [
         'Забыть всё',
         'Принять выбор',
@@ -399,7 +399,7 @@ export const autocracyQuestionPool: QuestionPool = {
       answers: [
         'Трион-сквер',
         'Колкулар',
-        'Нион',
+        'Найон',
         'Ультрикс',
       ],
       correct: 0,
@@ -430,7 +430,7 @@ export const autocracyQuestionPool: QuestionPool = {
       question:
         'Где Орион Пакс приходит в сознание перед находкой Матрицы?',
       answers: [
-        'Нион',
+        'Найон',
         'Андергрид',
         'Колкулар',
         'Ультрикс',

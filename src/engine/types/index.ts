@@ -7,7 +7,26 @@ import { ComponentType } from 'react';
 
 export interface CampaignIconProps {
   className?: string;
+  size?: CampaignIconSize;
 }
+
+export type CampaignIconSize = 'sm' | 'md' | 'lg';
+
+export const CAMPAIGN_ICON_SIZE_CLASS: Record<CampaignIconSize, string> = {
+  sm: 'w-14 h-14',
+  md: 'w-16 h-16',
+  lg: 'w-24 h-24',
+} as const;
+
+export const getCampaignIconSizeClass = (size: CampaignIconSize = 'md'): string =>
+  CAMPAIGN_ICON_SIZE_CLASS[size];
+
+/**
+ * Shared icon className building blocks used across games.
+ * Keep these in one place so icon styling stays consistent.
+ */
+export const baseImgIconClass = 'mx-auto object-contain';
+export const baseCenteredIconClass = 'mx-auto flex items-center justify-center';
 
 /**
  * Custom coin drawing function for particle effects.
@@ -145,6 +164,9 @@ export interface Campaign {
 
   /** Color theme for this campaign */
   theme: ThemeColors;
+
+  /** Question pool for this campaign */
+  questions: QuestionPool;
 
   /** Music track filename for this campaign (optional) */
   musicTrack?: string;
@@ -455,6 +477,12 @@ export interface HeaderSlideshowConfig {
   /** Opacity of the slideshow overlay (default: 1) */
   opacity?: number;
   /**
+   * Image ordering strategy.
+   * - `alphabetical` (default) shows images in filename order.
+   * - `random` shuffles the list once and cycles through it.
+   */
+  imageOrder?: 'alphabetical' | 'random';
+  /**
    * Enable expensive blur-based effects in the header (e.g. PortalHeader mask blur / backdrop blur).
    * Default: false
    */
@@ -495,9 +523,6 @@ export interface GameConfig {
 
   /** Available campaigns/difficulties (2-N) */
   campaigns: Campaign[];
-
-  /** Question pools grouped by campaign ID */
-  questionPools: Record<string, QuestionPool>;
 
   /** Companions for "Phone a Friend" (can be empty) */
   companions: Companion[];

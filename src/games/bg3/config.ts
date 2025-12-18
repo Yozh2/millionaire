@@ -4,209 +4,85 @@
  * Complete configuration for the BG3 edition of the quiz game.
  */
 
-import { GameConfig, Companion, DrawCoinFunction } from '../../engine/types';
+import type { GameConfig } from '@engine/types';
+import { createDefaultAudioConfig } from '@engine/audio/defaultAudio';
+import { darkUrgeCampaign } from './campaigns/darkUrge/campaign';
 import { heroCampaign } from './campaigns/hero/campaign';
 import { mindFlayerCampaign } from './campaigns/mindFlayer/campaign';
-import { darkUrgeCampaign } from './campaigns/darkUrge/campaign';
 import {
-  TrophyIcon,
-  MoneyIcon,
-  CriticalFailIcon,
   CoinIcon,
+  CriticalFailIcon,
+  MoneyIcon,
   ScrollIcon,
   TavernIcon,
+  TrophyIcon,
+  drawGoldCoin,
 } from './icons';
-import { heroQuestionPool } from './campaigns/hero/questions';
-import { mindFlayerQuestionPool } from './campaigns/mindFlayer/questions';
-import { darkUrgeQuestionPool } from './campaigns/darkUrge/questions';
-import { gameRegistry } from './registry';
-
-// ============================================
-// Custom Coin Drawing - Simple gold coin
-// ============================================
-
-const drawGoldCoin: DrawCoinFunction = (ctx, size, colorIndex) => {
-  const colors = ['#fbbf24', '#fcd34d', '#f59e0b'];
-  const strokeColors = ['#b45309', '#d97706', '#92400e'];
-  const radius = size / 2;
-
-  // Simple gold circle
-  ctx.beginPath();
-  ctx.arc(0, 0, radius, 0, Math.PI * 2);
-  ctx.fillStyle = colors[colorIndex % colors.length];
-  ctx.fill();
-  ctx.strokeStyle = strokeColors[colorIndex % strokeColors.length];
-  ctx.lineWidth = 1.5;
-  ctx.stroke();
-};
-
-// ============================================
-// Companions
-// ============================================
-
-const companions: Companion[] = [
-  { id: 'astarion', name: 'Астарион', voiceFile: 'Astarion.ogg' },
-  { id: 'gale', name: 'Гейл', voiceFile: 'Gale.ogg' },
-  { id: 'shadowheart', name: 'Шэдоухарт', voiceFile: 'Shadowheart.ogg' },
-  { id: 'karlach', name: 'Карлах', voiceFile: 'Karlach.ogg' },
-];
-
-// ============================================
-// Main Config
-// ============================================
+import {
+  bg3ActionNames,
+  bg3Companions,
+  bg3Currency,
+  bg3LifelineNames,
+  bg3Strings,
+  bg3Subtitle,
+  bg3Title,
+} from './strings';
 
 export const bg3Config: GameConfig = {
   id: 'bg3',
 
-  title: 'КТО ХОЧЕТ СТАТЬ МИЛЛИОНЕРОМ',
-  subtitle: "Baldur's Gate III Edition",
-
   emoji: '⚔️',
-  registry: gameRegistry,
-
-  // Georgia - классический шрифт для фэнтези-тематики
   fontFamily: 'Georgia, "Times New Roman", serif',
+
+  title: bg3Title,
+  subtitle: bg3Subtitle,
+
+  registry: {
+    registryVisible: true,
+    order: 20,
+    card: {
+      title: "BALDUR'S GATE III",
+      subtitle: 'Edition',
+      description: "Викторина по Baldur's Gate III",
+      emoji: '⚔️',
+      gradient: 'from-amber-700 via-amber-600 to-amber-800',
+      borderColor: 'border-amber-500',
+      available: true,
+    },
+  },
 
   campaigns: [heroCampaign, mindFlayerCampaign, darkUrgeCampaign],
 
-  questionPools: {
-    hero: heroQuestionPool,
-    mindFlayer: mindFlayerQuestionPool,
-    darkUrge: darkUrgeQuestionPool,
-  },
-
-  companions,
-
-  strings: {
-    // Start screen
-    introText:
-      'Искатель приключений! Перед тобой испытание на знание Baldur’s Gate III. ' +
-      '15 вопросов, 3 магические подсказки, 3 000 000 золотых на кону.',
-    selectPath: '✦ ВЫБЕРИ ПУТЬ ✦',
-    startButton: 'В ПРИКЛЮЧЕНИЕ',
-
-    // Game screen - Question panel
-    questionHeader: '#{n}',
-
-    // Game screen - Lifelines
-    lifelinesHeader: '✦ МАГИЧЕСКИЕ СПОСОБНОСТИ ✦',
-
-    // Game screen - Prize ladder
-    prizesHeader: '✦ СОКРОВИЩЕ ✦',
-
-    // Lifelines
-    lifelinePhoneHeader: '✦ МАГИЧЕСКОЕ ПОСЛАНИЕ ✦',
-    lifelineAudienceHeader: '✦ РЕЗУЛЬТАТЫ ГАДАНИЯ ✦',
-    lifelineSenderLabel: 'Отправитель:',
-    lifelineAudienceLabel: 'Мнение таверны:',
-
-    // Companion phrases
-    companionPhrases: {
-      confident: [
-        'Я уверен, что это "{answer}"',
-        'По-моему, правильный ответ — "{answer}"',
-        'Это точно "{answer}"',
-        'Селюнский свет ведёт к "{answer}"',
-        'Астарион уже поднимает бокал за "{answer}"',
-        'Кости судьбы выпали на "{answer}"',
-        'Даже Мысличный червь не спорит: "{answer}"',
-        'Лаэ\'зель потребовала поставить на "{answer}"',
-        'Гейл дал слово архимагов за "{answer}"',
-        'Орфей подтвердил — "{answer}"',
-        'Моя тьма сверхразума шепчет "{answer}"',
-      ],
-      uncertain: [
-        'Думаю, что это "{answer}"',
-        'Рискну сказать "{answer}"',
-        'Возможно, это "{answer}"',
-        'Гадаю на кости — может, "{answer}"',
-        'Оракул в Урдене шепчет про "{answer}", но не уверен',
-        'Иллитид в голове показывает "{answer}", хотя картинка расплывчата',
-        'Жребий жреца лёг на "{answer}", но рука дрогнула',
-        'Шепоты Абсолюта слышат "{answer}", но они редко правы',
-        'Эндаревы карты склоняются к "{answer}"',
-        'Если следовать интуиции Шэдоухарт, то "{answer}" — но без гарантий',
-        'Побочный эффект тэдпола шепчет про "{answer}"',
-      ],
-    },
-
-    // End screens
-    wonTitle: '🏆 ЛЕГЕНДАРНЫЙ ГЕРОЙ 🏆',
-    wonText: 'Вы завоевали величайшее сокровище Фаэруна!',
-    wonHeader: 'КВЕСТ ЗАВЕРШЁН',
-
-    lostTitle: '💀 КРИТИЧЕСКИЙ ПРОВАЛ 💀',
-    lostText: 'Кость брошена. Неверный ответ.',
-    lostHeader: 'КВЕСТ ПРОВАЛЕН',
-    correctAnswerLabel: 'Правильный ответ:',
-
-    tookMoneyTitle: '✨ МУДРЫЙ ВЫБОР ✨',
-    tookMoneyText: 'Разумное решение, искатель приключений',
-    tookMoneyHeader: 'НАГРАДА ПОЛУЧЕНА',
-
-    newGameButton: 'В ЛАГЕРЬ',
-
-    // Footer
-    footer: "✦ By Mystra's Grace ✦",
-
-    // Music toggle
-    musicOn: 'Выключить музыку',
-    musicOff: 'Включить музыку',
-  },
+  companions: bg3Companions,
+  strings: bg3Strings,
 
   lifelines: {
-    fifty: {
-      name: '50:50',
-      icon: '⚡',
-      enabled: true,
-    },
-    phone: {
-      name: 'Послание',
-      icon: '📜',
-      enabled: true,
-    },
-    audience: {
-      name: 'Таверна',
-      icon: '🍺',
-      enabled: true,
-    },
-    double: {
-      name: 'Вдохновение',
-      icon: '🎲',
-      enabled: true,
-    },
+    fifty: { name: bg3LifelineNames.fifty, icon: '⚡', enabled: true },
+    phone: { name: bg3LifelineNames.phone, icon: '📜', enabled: true },
+    audience: { name: bg3LifelineNames.audience, icon: '🍺', enabled: true },
+    double: { name: bg3LifelineNames.double, icon: '🎲', enabled: true },
   },
 
   actions: {
-    takeMoney: {
-      name: 'Забрать',
-      icon: '💰',
-      enabled: true,
-    },
+    takeMoney: { name: bg3ActionNames.takeMoney, icon: '💰', enabled: true },
   },
 
   prizes: {
     maxPrize: 1000000,
-    currency: 'золотых',
-    // Guaranteed at 1/3, 2/3, and final question
+    currency: bg3Currency,
     guaranteedFractions: [1 / 3, 2 / 3, 1],
   },
 
-  audio: {
+  audio: createDefaultAudioConfig({
     musicVolume: 0.2,
     soundVolume: 1.0,
     voiceVolume: 1.0,
-    mainMenuTrack: 'MainMenu.ogg',
-    gameOverTrack: 'GameOver.ogg',
-    sounds: {
-      answerButton: 'AnswerClick.ogg',
-      actionButton: 'BigButtonPress.ogg',
-      lifelineFifty: 'HintReduce.ogg',
-      lifelineAudience: 'HintVote.ogg',
-      takeMoneyButton: 'HintTakeMoney.ogg',
-      lifelineDouble: 'DoubleDip.ogg',
-      defeat: 'Fail.ogg',
-    },
+  }),
+
+  icons: {
+    coin: CoinIcon,
+    lifelinePhone: ScrollIcon,
+    lifelineAudience: TavernIcon,
   },
 
   endIcons: {
@@ -215,20 +91,12 @@ export const bg3Config: GameConfig = {
     tookMoney: MoneyIcon,
   },
 
-  icons: {
-    coin: CoinIcon,
-    lifelinePhone: ScrollIcon,
-    lifelineAudience: TavernIcon,
-  },
-
-  // Custom gold coin particles for win/take money effects
   drawCoinParticle: drawGoldCoin,
 
-  // Header slideshow - images loaded from manifest.json
   headerSlideshow: {
     enabled: true,
     transitionDuration: 1500,
-    displayDuration: 4000,
+    displayDuration: 15000,
     opacity: 1,
   },
 };

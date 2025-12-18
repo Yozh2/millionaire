@@ -4,41 +4,53 @@
  * No external assets yet: simple, hand-drawn SVG/emoji icons.
  */
 
-import type { CampaignIconProps } from '../../engine/types';
+import type { DrawCoinFunction } from '@engine/types';
 
-const baseIconClass = 'w-16 h-16 mx-auto flex items-center justify-center';
+// ============================================
+// Custom Coin Drawing - Candle coin
+// ============================================
 
-export const SkyJourneyIcon = ({ className }: CampaignIconProps) => (
-  <div className={`${baseIconClass} ${className ?? ''}`} aria-label="Sky Journey">
-    <svg
-      viewBox="0 0 56 56"
-      className="w-full h-full"
-      role="img"
-      aria-hidden="true"
-      style={{ filter: 'drop-shadow(0 0 10px rgba(56,189,248,0.55))' }}
-    >
-      {/* Cloud */}
-      <path
-        d="M18 34c-4.4 0-8-3.2-8-7.2 0-3.6 2.8-6.6 6.6-7.1C18.1 15.4 21.8 13 26 13c5.1 0 9.3 3.5 10.4 8.3 4.6.2 8.3 3.6 8.3 7.9 0 4.4-4.1 8-9.1 8H18z"
-        fill="rgba(255,255,255,0.92)"
-        stroke="rgba(56,189,248,0.65)"
-        strokeWidth="1.5"
-      />
-      {/* Little cape/child */}
-      <path
-        d="M28 21c2.3 0 4.2 1.9 4.2 4.2 0 1.6-1 3.1-2.4 3.8l6.5 10.2c-2.6 1.9-5.6 3-8.3 3s-5.7-1.1-8.3-3l6.5-10.2c-1.4-.7-2.4-2.2-2.4-3.8 0-2.3 1.9-4.2 4.2-4.2z"
-        fill="rgba(34,197,94,0.22)"
-        stroke="rgba(34,197,94,0.65)"
-        strokeWidth="1.5"
-      />
-      {/* Star */}
-      <path
-        d="M44 14l1.5 3.4L49 19l-3.5 1.6L44 24l-1.5-3.4L39 19l3.5-1.6L44 14z"
-        fill="rgba(250,204,21,0.95)"
-      />
-    </svg>
-  </div>
-);
+export const drawCandleCoin: DrawCoinFunction = (ctx, size, colorIndex) => {
+  const waxColors = ['#ffffff', '#e2e8f0', '#f8fafc'];
+  const flameColors = ['#fbbf24', '#f59e0b', '#fde047'];
+  const strokeColors = ['#94a3b8', '#cbd5e1', '#64748b'];
+
+  const s = size;
+  const w = s * 0.28;
+  const h = s * 0.55;
+  const r = s * 0.08;
+
+  // Candle body (rounded rect)
+  const x = -w / 2;
+  const y = h * 0.05;
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+
+  ctx.fillStyle = waxColors[colorIndex % waxColors.length];
+  ctx.fill();
+  ctx.strokeStyle = strokeColors[colorIndex % strokeColors.length];
+  ctx.lineWidth = 1.25;
+  ctx.stroke();
+
+  // Flame (teardrop)
+  ctx.beginPath();
+  ctx.moveTo(0, -s * 0.4);
+  ctx.bezierCurveTo(s * 0.2, -s * 0.25, s * 0.18, -s * 0.02, 0, 0);
+  ctx.bezierCurveTo(-s * 0.18, -s * 0.02, -s * 0.2, -s * 0.25, 0, -s * 0.4);
+  ctx.closePath();
+
+  ctx.fillStyle = flameColors[colorIndex % flameColors.length];
+  ctx.fill();
+};
 
 export const WingedLightTrophyIcon = () => (
   <div className="w-24 h-24 mx-auto flex items-center justify-center animate-bounce">
