@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useRef } from 'react';
-import type { GameConfig } from '../types';
+import type { Companion, GameConfig } from '@engine/types';
 import {
   ensureAudioContext,
   warmUpAudioContext,
@@ -11,6 +11,7 @@ import {
 } from '../utils/audioPlayer';
 import { getAssetPaths } from '../utils/assetLoader';
 import type { OscillatorSoundKey } from '../utils/audioPlayer';
+import { resolveCompanionVoiceFilename } from './resolveCompanionVoice';
 
 export type TaggedSoundId = 'campaignSelect';
 
@@ -19,7 +20,8 @@ export interface UseSoundPlayerReturn {
   playSoundFile: (filename: string) => void;
   playTaggedSound: (id: TaggedSoundId, filename: string) => void;
   stopTaggedSound: (id: TaggedSoundId) => void;
-  playCompanionVoice: (voiceFile: string) => Promise<boolean>;
+  playCompanionVoiceFile: (voiceFile: string) => Promise<boolean>;
+  playCompanionVoice: (companion: Companion) => Promise<boolean>;
 }
 
 export function useSoundPlayer(config: GameConfig): UseSoundPlayerReturn {
@@ -171,7 +173,7 @@ export function useSoundPlayer(config: GameConfig): UseSoundPlayerReturn {
     ]
   );
 
-  const playCompanionVoice = useCallback(
+  const playCompanionVoiceFile = useCallback(
     async (voiceFile: string): Promise<boolean> => {
       if (!isSoundEnabled()) return false;
       warmUpIfNeeded();
@@ -180,11 +182,24 @@ export function useSoundPlayer(config: GameConfig): UseSoundPlayerReturn {
     [config.audio.voiceVolume, warmUpIfNeeded]
   );
 
+  const playCompanionVoice = useCallback(
+    async (companion: Companion): Promise<boolean> => {
+      const explicit = companion.voiceFile;
+      if (explicit) return playCompanionVoiceFile(explicit);
+
+      const resolved = await resolveCompanionVoiceFilename(config.id, companion);
+      if (!resolved) return false;
+      return playCompanionVoiceFile(resolved);
+    },
+    [config.id, playCompanionVoiceFile]
+  );
+
   return {
     playSoundEffect,
     playSoundFile,
     playTaggedSound,
     stopTaggedSound,
+    playCompanionVoiceFile,
     playCompanionVoice,
   };
 }

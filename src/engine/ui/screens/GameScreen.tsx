@@ -3,7 +3,7 @@
  */
 
 import { useRef } from 'react';
-import { GameConfig, ThemeColors, EffectsAPI } from '../../types';
+import { EffectsAPI, GameConfig, ThemeColors } from '@engine/types';
 import { UseGameStateReturn } from '../hooks/useGameState';
 import { UseAudioReturn } from '../hooks/useAudio';
 import {
@@ -134,9 +134,7 @@ export function GameScreen({
       triggerLifelinePulse(e.currentTarget, '#3b82f6');
       // Try to play companion voice file first
       let voicePlayed = false;
-      if (companion.voiceFile) {
-        voicePlayed = await audio.playCompanionVoice(companion.voiceFile);
-      }
+      voicePlayed = await audio.playCompanionVoice(companion);
       // Fall back to oscillator call sound if no voice file found
       if (!voicePlayed) {
         audio.playSoundEffect('lifelinePhone');

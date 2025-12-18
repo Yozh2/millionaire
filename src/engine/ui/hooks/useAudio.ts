@@ -7,7 +7,7 @@
  */
 
 import { useCallback, useEffect } from 'react';
-import type { Campaign, GameConfig } from '../../types';
+import type { Campaign, Companion, GameConfig } from '@engine/types';
 import { setGameId } from '../../utils/audioPlayer';
 import { useMusicPlayer } from '../../audio/useMusicPlayer';
 import { useSoundPlayer } from '../../audio/useSoundPlayer';
@@ -35,7 +35,10 @@ export interface UseAudioReturn {
   stopCampaignSelectSound: () => void;
 
   /** Play a companion voice line, returns true if voice was played */
-  playCompanionVoice: (voiceFile: string) => Promise<boolean>;
+  playCompanionVoice: (companion: Companion) => Promise<boolean>;
+
+  /** Play a companion voice line by filename (legacy escape hatch) */
+  playCompanionVoiceFile: (voiceFile: string) => Promise<boolean>;
 
   /** Switch to a new music track (autoPlay forces playback on user action) */
   switchMusicTrack: (trackFile: string | undefined, autoPlay?: boolean) => void;
@@ -76,6 +79,7 @@ export const useAudio = (
     playTaggedSound,
     stopTaggedSound,
     playCompanionVoice,
+    playCompanionVoiceFile,
   } = useSoundPlayer(config);
 
   const stopCampaignSelectSound = useCallback(() => {
@@ -117,6 +121,7 @@ export const useAudio = (
     stopCampaignSelectSound,
 
     playCompanionVoice,
+    playCompanionVoiceFile,
 
     switchMusicTrack: musicPlayer.switchMusicTrack,
     playMainMenu: musicPlayer.playMainMenu,
