@@ -1,5 +1,15 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@engine": ["src/engine/index.ts"],
+      "@engine/*": ["src/engine/*"],
+      "@games": ["src/games/index.ts"],
+      "@games/*": ["src/games/*"],
+      "@app": ["src/app/index.ts"],
+      "@app/*": ["src/app/*"],
+      "@public": ["src/public/index.ts"]
+    },
     "target": "ES2020",
     "useDefineForClassFields": true,
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
