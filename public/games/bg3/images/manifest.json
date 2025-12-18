@@ -4,13 +4,13 @@
       "end": {
         "lost": {
           "images": [
-            "dark-urge-lost.jpg"
+            "01.webp"
           ]
         }
       },
       "start": {
         "images": [
-          "dark-urge-wallpaper.jpg"
+          "01.webp"
         ]
       }
     },
@@ -18,18 +18,18 @@
       "end": {
         "lost": {
           "images": [
-            "hero-lost.jpg"
+            "01.webp"
           ]
         }
       },
       "play": {
         "images": [
-          "heroes.png"
+          "01.webp"
         ]
       },
       "start": {
         "images": [
-          "heroes.jpg"
+          "01.webp"
         ]
       }
     },
@@ -37,29 +37,31 @@
       "end": {
         "lost": {
           "images": [
-            "mind-flayer-lost.jpg"
+            "01.webp"
           ]
         }
       },
       "start": {
         "images": [
-          "mind-flayer-in-the-dark.png"
+          "01.webp"
         ]
       }
     }
   },
   "end": {
-    "images": [
-      "EndingScreen.png"
-    ],
     "lost": {
       "images": [
-        "dead-girls.jpg"
+        "01.webp"
       ]
     },
     "took": {
       "images": [
-        "camp.png"
+        "01.webp"
+      ]
+    },
+    "won": {
+      "images": [
+        "01.webp"
       ]
     }
   }

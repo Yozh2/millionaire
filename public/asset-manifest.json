@@ -20,16 +20,14 @@
           "/games/bg3/icons/coin.svg",
           "/games/bg3/icons/critical-fail.svg",
           "/games/bg3/icons/dark-urge.png",
-          "/games/bg3/icons/dark-urge.svg",
           "/games/bg3/icons/favicon.png",
           "/games/bg3/icons/favicon_256x256.png",
+          "/games/bg3/icons/game-card.png",
           "/games/bg3/icons/heroes-round.png",
           "/games/bg3/icons/heroes.png",
           "/games/bg3/icons/logo.png",
           "/games/bg3/icons/mind-flayer.png",
-          "/games/bg3/icons/mind-flayer.svg",
           "/games/bg3/icons/money.svg",
-          "/games/bg3/icons/sword.svg",
           "/games/bg3/icons/trophy.svg"
         ],
         "sounds": [
@@ -47,13 +45,13 @@
         "startImages": [],
         "campaignStartImages": {
           "darkUrge": [
-            "/games/bg3/images/campaigns/darkUrge/start/dark-urge-wallpaper.jpg"
+            "/games/bg3/images/campaigns/darkUrge/start/01.webp"
           ],
           "hero": [
-            "/games/bg3/images/campaigns/hero/start/heroes.jpg"
+            "/games/bg3/images/campaigns/hero/start/01.webp"
           ],
           "mindFlayer": [
-            "/games/bg3/images/campaigns/mindFlayer/start/mind-flayer-in-the-dark.png"
+            "/games/bg3/images/campaigns/mindFlayer/start/01.webp"
           ]
         }
       },
@@ -62,12 +60,14 @@
         "victoryMusic": "/games/bg3/music/Victory.ogg",
         "tookMoneyMusic": "/games/bg3/music/TookMoney.ogg",
         "endImages": {
-          "won": [],
+          "won": [
+            "/games/bg3/images/end/won/01.webp"
+          ],
           "lost": [
-            "/games/bg3/images/end/lost/dead-girls.jpg"
+            "/games/bg3/images/end/lost/01.webp"
           ],
           "took": [
-            "/games/bg3/images/end/took/camp.png"
+            "/games/bg3/images/end/took/01.webp"
           ]
         }
       },
@@ -94,7 +94,7 @@
             "endImages": {
               "won": [],
               "lost": [
-                "/games/bg3/images/campaigns/darkUrge/end/lost/dark-urge-lost.jpg"
+                "/games/bg3/images/campaigns/darkUrge/end/lost/01.webp"
               ],
               "took": []
             }
@@ -116,7 +116,7 @@
             "endImages": {
               "won": [],
               "lost": [
-                "/games/bg3/images/campaigns/hero/end/lost/hero-lost.jpg"
+                "/games/bg3/images/campaigns/hero/end/lost/01.webp"
               ],
               "took": []
             }
@@ -138,13 +138,42 @@
             "endImages": {
               "won": [],
               "lost": [
-                "/games/bg3/images/campaigns/mindFlayer/end/lost/mind-flayer-lost.jpg"
+                "/games/bg3/images/campaigns/mindFlayer/end/lost/01.webp"
               ],
               "took": []
             }
           }
         }
       }
+    },
+    "sky-cotl": {
+      "cardAssets": {
+        "favicon": null,
+        "logo": "/games/sky-cotl/icons/logo.png"
+      },
+      "level1": {
+        "icons": [
+          "/games/sky-cotl/icons/Logo.png",
+          "/games/sky-cotl/icons/Skykid.png",
+          "/games/sky-cotl/icons/game-card.png"
+        ],
+        "sounds": [],
+        "mainMenuMusic": null,
+        "startImages": [],
+        "campaignStartImages": {}
+      },
+      "level2": {
+        "gameOverMusic": null,
+        "victoryMusic": null,
+        "tookMoneyMusic": null,
+        "endImages": {
+          "won": [],
+          "lost": [],
+          "took": []
+        }
+      },
+      "voices": [],
+      "campaigns": {}
     },
     "transformers": {
       "cardAssets": {
@@ -156,12 +185,12 @@
           "/games/transformers/icons/Autocracy.png",
           "/games/transformers/icons/BrokenSpark.png",
           "/games/transformers/icons/Energon.png",
-          "/games/transformers/icons/MatrixTrophy.png",
           "/games/transformers/icons/MatrixTrophyShine.png",
           "/games/transformers/icons/Megatron.png",
           "/games/transformers/icons/Skybound.png",
           "/games/transformers/icons/favicon.png",
           "/games/transformers/icons/favicon_256x256.png",
+          "/games/transformers/icons/game-card.png",
           "/games/transformers/icons/logo.png"
         ],
         "sounds": [
@@ -178,16 +207,15 @@
         ],
         "mainMenuMusic": "/games/transformers/music/MainMenu.ogg",
         "startImages": [
-          "/games/transformers/images/start/transformers-autobots.png",
-          "/games/transformers/images/start/transformers-dark-of-the-moon.png",
-          "/games/transformers/images/start/transformers-fall-of-cybertron.jpg",
-          "/games/transformers/images/start/transformers-fall-of-cybertron.png",
-          "/games/transformers/images/start/transformers-revenge-of-the-fallen.png",
-          "/games/transformers/images/start/transformers-war-for-cybertron.png",
-          "/games/transformers/images/start/transformers_the_game.png",
-          "/games/transformers/images/start/trasformers-decepticons.png"
+          "/games/transformers/images/start/transformers-fall-of-cybertron.webp",
+          "/games/transformers/images/start/transformers-the-game.webp",
+          "/games/transformers/images/start/transformers-war-for-cybertron.webp"
         ],
-        "campaignStartImages": {}
+        "campaignStartImages": {
+          "megatron": [
+            "/games/transformers/images/campaigns/megatron/start/04.webp"
+          ]
+        }
       },
       "level2": {
         "gameOverMusic": "/games/transformers/music/GameOver.ogg",
@@ -209,7 +237,7 @@
       "campaigns": {
         "autocracy": {
           "level1_1": {
-            "music": "/games/transformers/music/Autocracy.ogg",
+            "music": "/games/transformers/music/autocracy.ogg",
             "musicAlt": null,
             "playImages": {
               "easy": []
@@ -229,27 +257,63 @@
         },
         "megatron": {
           "level1_1": {
-            "music": "/games/transformers/music/Megatron.ogg",
+            "music": "/games/transformers/music/megatron.ogg",
             "musicAlt": null,
             "playImages": {
-              "easy": []
+              "easy": [
+                "/games/transformers/images/campaigns/megatron/play/easy/01.webp",
+                "/games/transformers/images/campaigns/megatron/play/easy/02.webp",
+                "/games/transformers/images/campaigns/megatron/play/easy/03.webp",
+                "/games/transformers/images/campaigns/megatron/play/easy/04.webp"
+              ]
             }
           },
           "level2": {
             "playImages": {
-              "medium": [],
-              "hard": []
+              "medium": [
+                "/games/transformers/images/campaigns/megatron/play/medium/01.webp",
+                "/games/transformers/images/campaigns/megatron/play/medium/02.webp",
+                "/games/transformers/images/campaigns/megatron/play/medium/03.webp",
+                "/games/transformers/images/campaigns/megatron/play/medium/04.webp",
+                "/games/transformers/images/campaigns/megatron/play/medium/05.webp"
+              ],
+              "hard": [
+                "/games/transformers/images/campaigns/megatron/play/hard/01.webp",
+                "/games/transformers/images/campaigns/megatron/play/hard/02.webp",
+                "/games/transformers/images/campaigns/megatron/play/hard/03.webp",
+                "/games/transformers/images/campaigns/megatron/play/hard/04.webp",
+                "/games/transformers/images/campaigns/megatron/play/hard/05.webp",
+                "/games/transformers/images/campaigns/megatron/play/hard/06.webp",
+                "/games/transformers/images/campaigns/megatron/play/hard/08.webp",
+                "/games/transformers/images/campaigns/megatron/play/hard/09.webp",
+                "/games/transformers/images/campaigns/megatron/play/hard/10.webp"
+              ]
             },
             "endImages": {
-              "won": [],
-              "lost": [],
-              "took": []
+              "won": [
+                "/games/transformers/images/campaigns/megatron/end/won/01.webp",
+                "/games/transformers/images/campaigns/megatron/end/won/02.webp",
+                "/games/transformers/images/campaigns/megatron/end/won/03.webp"
+              ],
+              "lost": [
+                "/games/transformers/images/campaigns/megatron/end/lost/01.webp",
+                "/games/transformers/images/campaigns/megatron/end/lost/02.webp",
+                "/games/transformers/images/campaigns/megatron/end/lost/03.webp",
+                "/games/transformers/images/campaigns/megatron/end/lost/04.webp",
+                "/games/transformers/images/campaigns/megatron/end/lost/05.webp",
+                "/games/transformers/images/campaigns/megatron/end/lost/06.webp",
+                "/games/transformers/images/campaigns/megatron/end/lost/07.webp"
+              ],
+              "took": [
+                "/games/transformers/images/campaigns/megatron/end/took/01.webp",
+                "/games/transformers/images/campaigns/megatron/end/took/02.webp"
+              ]
             }
           }
         },
         "skybound": {
           "level1_1": {
-            "music": "/games/transformers/music/SkyBound.ogg",
+            "music": "/games/transformers/music/skybound.ogg",
             "musicAlt": null,
             "playImages": {
               "easy": []

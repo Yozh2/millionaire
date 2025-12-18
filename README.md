@@ -73,6 +73,7 @@ Manifests are generated on `dev`/`build` via `npm run generate:manifests`:
 
 - `scripts/generate-asset-manifest.js` → `public/asset-manifest.json`
 - `scripts/generate-image-manifest.js` → image manifests for slideshows / headers
+- `scripts/convert-images.js` → converts `public/images/**` and `public/games/<gameId>/images/**` `.png/.jpg` wallpapers to `.webp` (run: `npm run convert:images -- --dry-run`; macOS: requires `cwebp`, e.g. `brew install webp`)
 
 Design goal: if manifests/assets are missing, the engine should still start (with safe fallbacks where possible).
 

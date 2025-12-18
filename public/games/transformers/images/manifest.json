@@ -1,14 +1,81 @@
 {
+  "campaigns": {
+    "autocracy": {
+      "images": [
+        "01.webp"
+      ]
+    },
+    "megatron": {
+      "end": {
+        "lost": {
+          "images": [
+            "01.webp",
+            "02.webp",
+            "03.webp",
+            "04.webp",
+            "05.webp",
+            "06.webp",
+            "07.webp"
+          ]
+        },
+        "took": {
+          "images": [
+            "01.webp",
+            "02.webp"
+          ]
+        },
+        "won": {
+          "images": [
+            "01.webp",
+            "02.webp",
+            "03.webp"
+          ]
+        }
+      },
+      "play": {
+        "easy": {
+          "images": [
+            "01.webp",
+            "02.webp",
+            "03.webp",
+            "04.webp"
+          ]
+        },
+        "hard": {
+          "images": [
+            "01.webp",
+            "02.webp",
+            "03.webp",
+            "04.webp",
+            "05.webp",
+            "06.webp",
+            "08.webp",
+            "09.webp",
+            "10.webp"
+          ]
+        },
+        "medium": {
+          "images": [
+            "01.webp",
+            "02.webp",
+            "03.webp",
+            "04.webp",
+            "05.webp"
+          ]
+        }
+      },
+      "start": {
+        "images": [
+          "04.webp"
+        ]
+      }
+    }
+  },
   "start": {
     "images": [
-      "transformers-autobots.png",
-      "transformers-dark-of-the-moon.png",
-      "transformers-fall-of-cybertron.jpg",
-      "transformers-fall-of-cybertron.png",
-      "transformers-revenge-of-the-fallen.png",
-      "transformers-war-for-cybertron.png",
-      "transformers_the_game.png",
-      "trasformers-decepticons.png"
+      "transformers-fall-of-cybertron.webp",
+      "transformers-the-game.webp",
+      "transformers-war-for-cybertron.webp"
     ]
   }
 }
