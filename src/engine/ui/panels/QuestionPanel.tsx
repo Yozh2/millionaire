@@ -1,5 +1,5 @@
 import type { ComponentType } from 'react';
-import type { ThemeColors } from '../../types';
+import type { ThemeColors } from '@engine/types';
 import { Panel, PanelHeader } from '../components/panel';
 
 interface QuestionPanelProps {

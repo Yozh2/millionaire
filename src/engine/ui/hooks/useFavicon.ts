@@ -15,6 +15,7 @@
  */
 
 import { useEffect, useState, useRef } from 'react';
+import { gameDir, publicDir } from '@public';
 
 /** Default engine emoji favicon */
 const DEFAULT_ENGINE_EMOJI = '🎯';
@@ -61,10 +62,6 @@ async function imageExists(url: string): Promise<boolean> {
 /**
  * Get base URL for assets.
  */
-function getBaseUrl(): string {
-  return import.meta.env.BASE_URL;
-}
-
 /**
  * Find the first existing favicon from a list of base paths.
  */
@@ -180,9 +177,8 @@ export async function resolveGameIcon(
   gameId: string,
   gameEmoji?: string
 ): Promise<string> {
-  const baseUrl = getBaseUrl();
-  const gameBase = `${baseUrl}games/${gameId}/icons`;
-  const sharedBase = `${baseUrl}icons`;
+  const gameBase = gameDir(gameId, 'icons');
+  const sharedBase = publicDir('icons');
 
   // 1) Try game-specific icons (svg/png/ico)
   const gameIcon = await findFavicon([gameBase]);
@@ -215,8 +211,7 @@ export async function resolveGameIcon(
  * @returns URL to favicon (file or data URI)
  */
 export async function resolveSharedIcon(): Promise<string> {
-  const baseUrl = getBaseUrl();
-  const sharedBase = `${baseUrl}icons`;
+  const sharedBase = publicDir('icons');
 
   const sharedIcon = await findFavicon([sharedBase]);
   if (sharedIcon) {
@@ -244,7 +239,6 @@ export function useFavicon(
     const updateIcons = async () => {
       const runId = ++updateCounter.current;
 
-      const baseUrl = getBaseUrl();
       let faviconUrl: string;
 
       if (gameId) {

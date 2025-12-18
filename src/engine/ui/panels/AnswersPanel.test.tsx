@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import type { ThemeColors } from '../../types';
+import type { ThemeColors } from '@engine/types';
 import { AnswersPanel } from './AnswersPanel';
 
 describe('AnswersPanel', () => {

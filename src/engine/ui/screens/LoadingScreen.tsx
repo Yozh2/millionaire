@@ -7,7 +7,7 @@
 
 import { useEffect, useState } from 'react';
 
-import type { ThemeColors } from '../../types';
+import type { ThemeColors } from '@engine/types';
 
 /** Props for LoadingScreen component */
 export interface LoadingScreenProps {

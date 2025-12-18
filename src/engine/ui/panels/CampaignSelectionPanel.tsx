@@ -1,5 +1,5 @@
 import type { PointerEvent } from 'react';
-import type { Campaign, GameConfig, ThemeColors } from '../../types';
+import type { Campaign, GameConfig, ThemeColors } from '@engine/types';
 import { ActionButton } from '../components/buttons';
 import { Panel, PanelHeader } from '../components/panel';
 import { CampaignCard } from '../components/cards/campaign/CampaignCard';

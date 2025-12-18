@@ -3,7 +3,7 @@
  */
 
 import type { PointerEvent } from 'react';
-import { GameConfig, Campaign, ThemeColors } from '../../types';
+import { Campaign, GameConfig, ThemeColors } from '@engine/types';
 import { CampaignSelectionPanel } from '../panels/CampaignSelectionPanel';
 
 interface StartScreenProps {

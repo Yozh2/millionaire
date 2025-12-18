@@ -1,4 +1,4 @@
-import type { ThemeColors } from '../../../types';
+import type { ThemeColors } from '@engine/types';
 
 interface LifelineAudiencePanelProps {
   theme: ThemeColors;

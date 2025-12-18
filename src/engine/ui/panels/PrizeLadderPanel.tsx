@@ -1,5 +1,5 @@
 import type { MouseEvent } from 'react';
-import type { ActionConfig, ThemeColors } from '../../types';
+import type { ActionConfig, ThemeColors } from '@engine/types';
 import { LifelineButton } from '../components/buttons';
 import { Panel, PanelHeader } from '../components/panel';
 

@@ -5,7 +5,7 @@
  */
 
 import { useEffect, useRef, useCallback } from 'react';
-import type { DrawCoinFunction } from '../../types';
+import type { DrawCoinFunction } from '@engine/types';
 
 // ============================================================================
 // Types

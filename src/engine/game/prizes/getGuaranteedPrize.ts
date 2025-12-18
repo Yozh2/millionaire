@@ -1,4 +1,4 @@
-import type { PrizeLadder } from '../../types';
+import type { PrizeLadder } from '@engine/types';
 
 export const getGuaranteedPrize = (
   currentQuestion: number,
@@ -13,4 +13,3 @@ export const getGuaranteedPrize = (
   const highestGuaranteedIdx = Math.max(...passedGuaranteed);
   return ladder.values[highestGuaranteedIdx];
 };
-

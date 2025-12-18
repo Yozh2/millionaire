@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import type { MouseEvent } from 'react';
 
-import type { GameConfig } from '../../../types';
+import type { GameConfig } from '@engine/types';
 import { Panel, PanelHeader } from '../panel';
 import { LifelineButton } from '../buttons';
 import { useTheme } from '../../theme';

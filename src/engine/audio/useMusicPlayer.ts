@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import type { Campaign, GameConfig } from '../types';
+import type { Campaign, GameConfig } from '@engine/types';
 import { logger } from '../services';
 import {
   ensureAudioContext,

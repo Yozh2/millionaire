@@ -1,5 +1,5 @@
 import type { MouseEvent, MutableRefObject } from 'react';
-import type { ThemeColors } from '../../types';
+import type { ThemeColors } from '@engine/types';
 import { AnswerButton } from '../components/buttons';
 
 interface AnswersPanelProps {

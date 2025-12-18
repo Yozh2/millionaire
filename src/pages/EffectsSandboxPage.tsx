@@ -3,7 +3,7 @@
  */
 
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { ParticleCanvas, useEffects } from '../engine';
+import { ParticleCanvas, useEffects } from '@engine';
 
 // Demo type for canvas effect cards
 type DemoId =

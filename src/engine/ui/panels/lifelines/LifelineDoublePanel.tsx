@@ -1,4 +1,4 @@
-import type { LifelineDoubleResult } from '../../../types';
+import type { LifelineDoubleResult } from '@engine/types';
 
 interface LifelineDoublePanelProps {
   icon: string;
@@ -20,4 +20,3 @@ export function LifelineDoublePanel({ icon, result }: LifelineDoublePanelProps) 
 }
 
 export default LifelineDoublePanel;
-

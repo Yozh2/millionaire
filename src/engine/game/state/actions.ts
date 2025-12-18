@@ -4,7 +4,7 @@ import type {
   LifelineHostResult,
   LifelinePhoneResult,
   LifelineSwitchResult,
-} from '../../types';
+} from '@engine/types';
 import type { GameSession } from '../session';
 import type { LifelineAvailabilityState } from './types';
 

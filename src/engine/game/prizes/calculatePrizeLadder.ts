@@ -1,4 +1,4 @@
-import type { PrizeLadder, PrizesConfig } from '../../types';
+import type { PrizeLadder, PrizesConfig } from '@engine/types';
 
 const CLASSIC_MULTIPLIERS_15 = [
   0.0001, // 100 / 1M

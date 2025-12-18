@@ -1,4 +1,4 @@
-import type { Question, QuestionPool } from '../../types';
+import type { Question, QuestionPool } from '@engine/types';
 import { MAX_QUESTIONS_PER_TIER, DIFFICULTY_TIERS } from '../../constants';
 import { shuffleArray } from '../utils/shuffleArray';
 

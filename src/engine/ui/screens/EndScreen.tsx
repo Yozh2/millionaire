@@ -4,7 +4,7 @@
 
 import { useEffect, useRef, useCallback } from 'react';
 import type { PointerEvent } from 'react';
-import { GameConfig, ThemeColors, EffectsAPI } from '../../types';
+import { EffectsAPI, GameConfig, ThemeColors } from '@engine/types';
 import { UseGameStateReturn } from '../hooks/useGameState';
 import { ResultPanel, type ResultVariant } from '../panels/ResultPanel';
 

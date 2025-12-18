@@ -8,8 +8,9 @@
  */
 
 import { useState, useEffect } from 'react';
-import { Panel, PanelHeader } from '../engine/ui/components/panel';
-import { logger } from '../engine/services';
+import { Panel, PanelHeader } from '@engine/ui/components/panel';
+import { logger } from '@engine/services';
+import { gameImagesDir } from '@public';
 
 // Types
 type SlideshowScreen = 'start' | 'play' | 'won' | 'took' | 'lost';
@@ -39,8 +40,7 @@ interface ResolvedImages {
 }
 
 const GAME_ID = 'bg3';
-// Use import.meta.env.BASE_URL for correct path in dev and production
-const BASE_PATH = `${import.meta.env.BASE_URL}games/${GAME_ID}/images`;
+const BASE_PATH = gameImagesDir(GAME_ID);
 
 export default function SandboxPage() {
   const [manifest, setManifest] = useState<ImageManifest | null>(null);

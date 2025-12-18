@@ -1,4 +1,4 @@
-import type { GameState, LifelineResult, PrizeLadder, Question } from '../../types';
+import type { GameState, LifelineResult, PrizeLadder, Question } from '@engine/types';
 
 export interface LifelineAvailabilityState {
   fifty: boolean;

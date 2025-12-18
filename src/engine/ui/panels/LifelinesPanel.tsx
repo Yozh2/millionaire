@@ -1,5 +1,5 @@
 import type { MouseEvent } from 'react';
-import type { LifelineConfig } from '../../types';
+import type { LifelineConfig } from '@engine/types';
 import { LifelineButton } from '../components/buttons';
 import { Panel } from '../components/panel';
 

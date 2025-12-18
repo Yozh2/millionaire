@@ -1,4 +1,4 @@
-import type { GameState } from '../../types';
+import type { GameState } from '@engine/types';
 import type { GameAction } from './actions';
 
 const allowed: Record<GameState, ReadonlySet<GameAction['type']>> = {

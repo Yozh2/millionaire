@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Navigate } from 'react-router-dom';
-import { MillionaireGame } from '../engine';
-import type { GameConfig } from '../engine/types';
-import { getGameById } from '../app/registry';
+import { MillionaireGame } from '@engine';
+import type { GameConfig } from '@engine/types';
+import { getGameById } from '@app/registry';
 
 interface RegisteredGamePageProps {
   gameId: string;
@@ -70,4 +70,3 @@ export default function RegisteredGamePage({ gameId }: RegisteredGamePageProps) 
 
   return <MillionaireGame config={config} />;
 }
-

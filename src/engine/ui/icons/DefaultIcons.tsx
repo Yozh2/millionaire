@@ -6,6 +6,7 @@
 
 // Game Screen Icons
 export const DefaultCoinIcon = () => <span className="mr-1">🪙</span>;
+
 export const DefaultPhoneHintIcon = () => (
   <span className="inline-block">📞</span>
 );

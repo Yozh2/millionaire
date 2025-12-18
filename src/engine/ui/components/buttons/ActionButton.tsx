@@ -1,5 +1,5 @@
 import type { PointerEvent, ReactNode } from 'react';
-import type { ThemeColors } from '../../../types';
+import type { ThemeColors } from '@engine/types';
 import { BaseButton } from './BaseButton';
 
 interface ActionButtonProps {

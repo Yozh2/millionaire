@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import type { ComponentType } from 'react';
-import type { GameConfig, LifelineResult, ThemeColors } from '../../types';
+import type { GameConfig, LifelineResult, ThemeColors } from '@engine/types';
 import { Panel, PanelHeader } from '../components/panel';
 import { LifelinePhonePanel } from './lifelines/LifelinePhonePanel';
 import { LifelineAudiencePanel } from './lifelines/LifelineAudiencePanel';

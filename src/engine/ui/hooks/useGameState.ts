@@ -7,7 +7,7 @@ import type {
   LifelineResult,
   PrizeLadder,
   Question,
-} from '../../types';
+} from '@engine/types';
 import { logger } from '../../services';
 import {
   createGameSession,

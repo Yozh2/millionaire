@@ -1,4 +1,4 @@
-import type { LifelineSwitchResult } from '../../../types';
+import type { LifelineSwitchResult } from '@engine/types';
 
 interface LifelineSwitchPanelProps {
   icon: string;
@@ -17,4 +17,3 @@ export function LifelineSwitchPanel({ icon }: LifelineSwitchPanelProps) {
 }
 
 export default LifelineSwitchPanel;
-

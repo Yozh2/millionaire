@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import type { PointerEvent, RefObject, ComponentType } from 'react';
-import type { GameConfig, ThemeColors } from '../../types';
+import type { GameConfig, ThemeColors } from '@engine/types';
 import { ActionButton } from '../components/buttons';
 import { Panel, PanelHeader } from '../components/panel';
 import {

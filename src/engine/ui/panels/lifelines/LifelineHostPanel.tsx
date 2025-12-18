@@ -1,4 +1,4 @@
-import type { LifelineHostResult } from '../../../types';
+import type { LifelineHostResult } from '@engine/types';
 
 interface LifelineHostPanelProps {
   icon: string;
@@ -29,4 +29,3 @@ export function LifelineHostPanel({ icon, result }: LifelineHostPanelProps) {
 }
 
 export default LifelineHostPanel;
-

@@ -7,8 +7,8 @@
 
 import { Link } from 'react-router-dom';
 
-import { LoadingScreen, useAssetPreloader, useFavicon } from '../../engine';
-import { GameCard } from '../../engine/ui/components/cards/game/GameCard';
+import { LoadingScreen, useAssetPreloader, useFavicon } from '@engine';
+import { GameCard } from '@engine/ui/components/cards/game/GameCard';
 import { getSelectorEntries, type GameRegistryEntry } from '../registry';
 
 function GameCardTile({ entry }: { entry: GameRegistryEntry }) {

@@ -1,5 +1,5 @@
 import type { GameDomainState } from './types';
-import type { Question } from '../../types';
+import type { Question } from '@engine/types';
 import { gameReducer } from './reducer';
 import { resolveAnswer } from './resolveAnswer';
 import { getHostSuggestion } from '../lifelines/host';
@@ -205,4 +205,3 @@ describe('lifelines v1 (host/switch/double)', () => {
     });
   });
 });
-

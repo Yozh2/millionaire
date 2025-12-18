@@ -1,4 +1,4 @@
-import type { Campaign } from '../../../../types';
+import type { Campaign } from '@engine/types';
 import { useRef } from 'react';
 import { useCampaignCardFsm } from './useCampaignCardFsm';
 

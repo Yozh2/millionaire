@@ -7,7 +7,7 @@ import type {
   QuestionDifficulty,
   SlideshowScreen,
   ThemeColors,
-} from '../../../types';
+} from '@engine/types';
 
 interface HeaderPanelProps {
   config: GameConfig;

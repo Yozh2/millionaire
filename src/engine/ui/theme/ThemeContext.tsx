@@ -7,7 +7,7 @@
  */
 
 import React, { createContext, useContext } from 'react';
-import { ThemeColors } from '../../types';
+import { ThemeColors } from '@engine/types';
 
 /** Default slate theme for fallback */
 const defaultTheme: ThemeColors = {
