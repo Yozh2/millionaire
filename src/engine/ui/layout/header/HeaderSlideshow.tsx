@@ -12,8 +12,9 @@
  * See README.md for full directory structure documentation.
  */
 
-import { useState, useEffect, useCallback, useRef } from 'react';
-import type { HeaderSlideshowConfig, SlideshowScreen, QuestionDifficulty } from '../../../types';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import type { HeaderSlideshowConfig, QuestionDifficulty, SlideshowScreen } from '@engine/types';
+import { shuffleArray } from '../../../game/utils/shuffleArray';
 import { useHeaderImages } from './useHeaderImages';
 
 interface HeaderSlideshowProps {
@@ -43,56 +44,77 @@ export const HeaderSlideshow: React.FC<HeaderSlideshowProps> = ({
   const { enabled, transitionDuration, displayDuration, opacity, isLoading, images, basePath, subfolder } =
     useHeaderImages(config, { gameId, campaignId, screen, difficulty });
 
+  const imageOrder = config.imageOrder ?? 'alphabetical';
+  const orderedImages = useMemo(() => {
+    if (images.length === 0) return images;
+    if (imageOrder === 'random') return shuffleArray(images);
+    return [...images].sort((a, b) =>
+      a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' })
+    );
+  }, [imageOrder, images]);
+
   // Slideshow state
   const [currentIndex, setCurrentIndex] = useState(0);
   const [nextIndex, setNextIndex] = useState<number | null>(null);
   const [isTransitioning, setIsTransitioning] = useState(false);
-  const lastIndexRef = useRef<number>(-1);
+  const currentIndexRef = useRef(0);
+  const isTransitioningRef = useRef(false);
+  const transitionTimeoutRef = useRef<number | null>(null);
 
-  // Pick a random image index, avoiding the last one
-  const pickRandomIndex = useCallback(() => {
-    if (images.length <= 1) return 0;
+  useEffect(() => {
+    currentIndexRef.current = currentIndex;
+  }, [currentIndex]);
 
-    let newIndex: number;
-    do {
-      newIndex = Math.floor(Math.random() * images.length);
-    } while (newIndex === lastIndexRef.current && images.length > 1);
-
-    lastIndexRef.current = newIndex;
-    return newIndex;
-  }, [images.length]);
+  useEffect(() => {
+    isTransitioningRef.current = isTransitioning;
+  }, [isTransitioning]);
 
   // Reset when images change
   useEffect(() => {
-    if (images.length === 0) return;
-    const initialIndex = pickRandomIndex();
-    setCurrentIndex(initialIndex);
+    if (orderedImages.length === 0) return;
+    if (transitionTimeoutRef.current !== null) {
+      window.clearTimeout(transitionTimeoutRef.current);
+      transitionTimeoutRef.current = null;
+    }
+    setCurrentIndex(0);
     setNextIndex(null);
     setIsTransitioning(false);
-  }, [images, pickRandomIndex]);
+  }, [orderedImages]);
 
   // Slideshow timer
   useEffect(() => {
-    if (images.length <= 1) return;
+    if (orderedImages.length <= 1) return;
 
     const cycleImage = () => {
-      const next = pickRandomIndex();
+      if (isTransitioningRef.current) return;
+
+      const next = (currentIndexRef.current + 1) % orderedImages.length;
       setNextIndex(next);
       setIsTransitioning(true);
 
-      setTimeout(() => {
+      if (transitionTimeoutRef.current !== null) {
+        window.clearTimeout(transitionTimeoutRef.current);
+      }
+
+      transitionTimeoutRef.current = window.setTimeout(() => {
         setCurrentIndex(next);
         setNextIndex(null);
         setIsTransitioning(false);
       }, transitionDuration);
     };
 
-    const intervalId = setInterval(cycleImage, displayDuration);
-    return () => clearInterval(intervalId);
-  }, [images.length, displayDuration, transitionDuration, pickRandomIndex]);
+    const intervalId = window.setInterval(cycleImage, displayDuration);
+    return () => {
+      window.clearInterval(intervalId);
+      if (transitionTimeoutRef.current !== null) {
+        window.clearTimeout(transitionTimeoutRef.current);
+        transitionTimeoutRef.current = null;
+      }
+    };
+  }, [displayDuration, orderedImages.length, transitionDuration]);
 
   // Don't render if loading, disabled, or no images
-  if (isLoading || !enabled || images.length === 0) return null;
+  if (isLoading || !enabled || orderedImages.length === 0) return null;
 
   // Build full image paths using resolved subfolder
   const getFullPath = (filename: string) => {
@@ -100,9 +122,9 @@ export const HeaderSlideshow: React.FC<HeaderSlideshowProps> = ({
     return `${basePath}/${subfolder}/${filename}`;
   };
 
-  const currentImagePath = getFullPath(images[currentIndex]);
+  const currentImagePath = getFullPath(orderedImages[currentIndex]);
   const nextImagePath =
-    nextIndex !== null ? getFullPath(images[nextIndex]) : null;
+    nextIndex !== null ? getFullPath(orderedImages[nextIndex]) : null;
 
   return (
     <div

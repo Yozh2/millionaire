@@ -3,7 +3,8 @@ import type {
   HeaderSlideshowConfig,
   QuestionDifficulty,
   SlideshowScreen,
-} from '../../../types';
+} from '@engine/types';
+import { gameImagesDir, publicDir } from '@public';
 
 /** Manifest structure matching generate-image-manifest.js output */
 interface ImageManifest {
@@ -145,7 +146,7 @@ export function useHeaderImages(
 ): UseHeaderImagesResult {
   const enabled = slideshowConfig?.enabled ?? true;
   const transitionDuration = slideshowConfig?.transitionDuration ?? 1500;
-  const displayDuration = slideshowConfig?.displayDuration ?? 4000;
+  const displayDuration = slideshowConfig?.displayDuration ?? 15000;
   const opacity = slideshowConfig?.opacity ?? 1;
 
   const [images, setImages] = useState<string[]>([]);
@@ -155,21 +156,11 @@ export function useHeaderImages(
 
   const fallbackPaths = useMemo(() => {
     const paths: Array<{ path: string; campaignPath?: string }> = [];
-    const base = import.meta.env.BASE_URL;
-    const isEndScreen = ['won', 'took', 'lost'].includes(screen);
-
-    if (campaignId) {
-      paths.push({
-        path: `${base}games/${gameId}/images`,
-        campaignPath: `campaigns/${campaignId}`,
-      });
-    }
-
-    if (isEndScreen) {
-      paths.push({ path: `${base}games/${gameId}/images` });
-    }
-
-    paths.push({ path: `${base}images` });
+    paths.push({
+      path: gameImagesDir(gameId),
+      campaignPath: campaignId ? `campaigns/${campaignId}` : undefined,
+    });
+    paths.push({ path: publicDir('images') });
     return paths;
   }, [campaignId, gameId, screen]);
 
@@ -250,4 +241,3 @@ export function useHeaderImages(
 }
 
 export default useHeaderImages;
-

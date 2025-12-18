@@ -5,9 +5,10 @@ import type {
   GameConfig,
   QuestionDifficulty,
   SlideshowScreen,
-  ThemeColors,
-} from '../../../types';
+} from '@engine/types';
 import { VolumeButton } from '../../components/buttons';
+import { PortalHeaderTuner, type PortalHeaderTunerValues } from '../../components/sliders';
+import { shuffleArray } from '../../../game/utils/shuffleArray';
 import { useHeaderImages } from './useHeaderImages';
 
 type Motion = 'open' | 'close';
@@ -21,7 +22,7 @@ function prefersReducedMotion() {
 }
 
 type PortalConfig = {
-  targetAspect: number; // 950/300
+  targetAspect: number; // 960/310
   portalMargin: number; // safe padding inside canvas
   superN: number; // 2=ellipse, higher=more rectangular
 
@@ -57,7 +58,7 @@ type PortalConfig = {
 };
 
 const DEFAULT_PORTAL_CFG: PortalConfig = {
-  targetAspect: 950 / 300,
+  targetAspect: 960 / 310,
   portalMargin: 0.06,
   superN: 2.7,
 
@@ -1044,7 +1045,6 @@ function usePortalCanvas({
 
 interface PortalHeaderProps {
   config: GameConfig;
-  theme: ThemeColors;
   slideshowScreen: SlideshowScreen;
   campaignId?: string;
   difficulty?: QuestionDifficulty;
@@ -1056,7 +1056,6 @@ interface PortalHeaderProps {
 
 export function PortalHeader({
   config,
-  theme,
   slideshowScreen,
   campaignId,
   difficulty,
@@ -1077,6 +1076,15 @@ export function PortalHeader({
       difficulty,
     });
 
+  const imageOrder = config.headerSlideshow?.imageOrder ?? 'alphabetical';
+  const orderedImages = useMemo(() => {
+    if (images.length === 0) return images;
+    if (imageOrder === 'random') return shuffleArray(images);
+    return [...images].sort((a, b) =>
+      a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' })
+    );
+  }, [imageOrder, images]);
+
   const openMs = Math.max(400, Math.round(transitionDuration * 0.65));
   const closeMs = Math.max(250, Math.round(transitionDuration * 0.5));
 
@@ -1095,30 +1103,18 @@ export function PortalHeader({
   const { show, hide } = portal;
 
   const [currentIndex, setCurrentIndex] = useState(0);
-  const lastIndexRef = useRef(-1);
-
-  const pickRandomIndex = useCallback(() => {
-    if (images.length <= 1) return 0;
-    let next = 0;
-    do {
-      next = Math.floor(Math.random() * images.length);
-    } while (next === lastIndexRef.current && images.length > 1);
-    lastIndexRef.current = next;
-    return next;
-  }, [images.length]);
 
   const fullPath = useMemo(() => {
-    const filename = images[currentIndex];
+    const filename = orderedImages[currentIndex];
     if (!filename) return '';
     if (!subfolder) return `${basePath}/${filename}`;
     return `${basePath}/${subfolder}/${filename}`;
-  }, [basePath, currentIndex, images, subfolder]);
+  }, [basePath, currentIndex, orderedImages, subfolder]);
 
   useEffect(() => {
-    if (!enabled || isLoading || images.length === 0) return;
-    const initial = pickRandomIndex();
-    setCurrentIndex(initial);
-  }, [enabled, images, isLoading, pickRandomIndex]);
+    if (!enabled || isLoading || orderedImages.length === 0) return;
+    setCurrentIndex(0);
+  }, [enabled, isLoading, orderedImages]);
 
   useEffect(() => {
     if (!activated) {
@@ -1132,103 +1128,92 @@ export function PortalHeader({
   useEffect(() => {
     if (!activated) return;
     if (!enabled || isLoading) return;
-    if (images.length <= 1) return;
+    if (orderedImages.length <= 1) return;
 
     const intervalId = window.setInterval(() => {
-      const next = pickRandomIndex();
-      setCurrentIndex(next);
+      setCurrentIndex((prev) => (prev + 1) % orderedImages.length);
     }, displayDuration);
 
     return () => window.clearInterval(intervalId);
-  }, [activated, displayDuration, enabled, images.length, isLoading, pickRandomIndex]);
+  }, [activated, displayDuration, enabled, isLoading, orderedImages.length]);
 
-  const isLightTheme = !!theme.isLight;
-  const titleTextClass = theme.textTitle ?? theme.textPrimary;
+  const tunerUiAvailable = useMemo(() => {
+    if (import.meta.env.DEV) return true;
+    try {
+      return localStorage.getItem('engine:portal-header-tuner') === '1';
+    } catch {
+      return false;
+    }
+  }, []);
 
-  const defaultTitleShadow = isLightTheme
-    ? `0 4px 18px rgba(15, 23, 42, 0.20), 0 0 26px ${theme.glowColor}55`
-    : `0 4px 18px rgba(0,0,0,0.8), 0 0 32px rgba(0,0,0,0.7), 0 0 30px ${theme.glowColor}`;
-
-  const titleShadow = theme.headerTextShadow ?? defaultTitleShadow;
-
-  const defaultBackdrop = isLightTheme
-    ? 'radial-gradient(ellipse at center, rgba(255,255,255,0.85) 20%, rgba(255,255,255,0.35) 55%, rgba(255,255,255,0) 78%)'
-    : 'radial-gradient(ellipse at center, rgba(0,0,0,0.55) 25%, rgba(0,0,0,0.25) 50%, rgba(0,0,0,0) 75%)';
-
-  const backdrop = theme.headerTextBackdrop ?? defaultBackdrop;
+  const [tuner, setTuner] = useState<PortalHeaderTunerValues>({
+    translateY: 0,
+    scale: 1,
+    panelsOverlap: 56,
+  });
+  const translateY = Math.round(tuner.translateY);
+  const scale = tuner.scale;
+  const panelsOverlapPx = Math.round(tuner.panelsOverlap);
+  const minHeightPx = Math.round(162 * scale);
 
   return (
     <div
-      className={`mb-4 relative ${className}`}
+      className={`relative ${className}`}
       style={{
-        minHeight: 156,
+        minHeight: minHeightPx,
+        marginTop: translateY,
+        marginBottom: -panelsOverlapPx,
         opacity: activated ? 1 : 0,
         transition: 'opacity 260ms ease',
         pointerEvents: activated ? 'none' : 'none',
       }}
     >
       <div
-        ref={containerRef}
-        className="relative w-full"
+        className="absolute top-0 left-0 flex justify-center"
         style={{
-          aspectRatio: '950 / 300',
-          width: 'min(1120px, calc(100% + 96px))',
+          width: '100vw',
+          marginLeft: 'calc(50% - 50vw)',
           background: 'transparent',
           overflow: 'visible',
-          left: '50%',
-          transform: 'translateX(-50%)',
         }}
       >
-        <canvas
-          ref={canvasRef}
-          className="absolute inset-0 w-full h-full"
+        <div
+          ref={containerRef}
+          className="relative"
           style={{
-            pointerEvents: 'none',
+            width: 'min(1120px, calc(100% + 96px))',
+            aspectRatio: '960 / 310',
+            transform: `scale(${scale})`,
+            transformOrigin: 'top center',
           }}
-        />
-
-        <div className="absolute inset-0 p-4 flex flex-col justify-center pointer-events-none">
-          <div className="relative max-w-5xl mx-auto text-center flex items-center justify-center min-h-[165px] md:min-h-[175px]">
-            <div
-              className="pointer-events-none absolute inset-x-6 top-2 h-32"
-              style={{
-                background: backdrop,
-                filter: enableBlur ? 'blur(18px)' : 'none',
-                opacity: isLightTheme ? 0.9 : 0.95,
-              }}
-              aria-hidden="true"
-            />
-            <div className="relative z-10 space-y-1">
-              <h1
-                className={`text-2xl md:text-3xl font-bold tracking-wider transition-colors duration-500 ${titleTextClass}`}
-                style={{
-                  textShadow: titleShadow,
-                }}
-              >
-                {config.title}
-              </h1>
-              <h2
-                className={`text-lg tracking-wide transition-colors duration-500 ${titleTextClass}`}
-                style={{
-                  lineHeight: '1.5',
-                  fontStyle: 'italic',
-                  textShadow: titleShadow,
-                }}
-              >
-                {config.subtitle}
-              </h2>
-            </div>
-          </div>
+        >
+          <canvas
+            ref={canvasRef}
+            className="absolute inset-0 w-full h-full"
+            style={{
+              pointerEvents: 'none',
+            }}
+          />
         </div>
       </div>
 
-      <div className="absolute top-3 right-3 pointer-events-auto">
+      <div className="fixed top-3 right-3 z-[250] pointer-events-auto flex flex-col items-end gap-2">
         <VolumeButton
           onClick={onToggleMusic}
           title={isMusicPlaying ? config.strings.musicOn : config.strings.musicOff}
         >
           {isMusicPlaying ? '🔊' : '🔇'}
         </VolumeButton>
+
+        {tunerUiAvailable && (
+          <div className="mt-3">
+            <PortalHeaderTuner
+              storageKey={`engine:portal-header-tuner:${config.id}`}
+              disabled={!activated}
+              onChange={setTuner}
+            />
+          </div>
+        )}
       </div>
     </div>
   );

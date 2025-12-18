@@ -9,7 +9,7 @@
  * - Manages asset preloading across loading levels
  */
 
-import { useEffect, useCallback, useMemo, useState } from 'react';
+import { useEffect, useCallback, useMemo, useRef, useState } from 'react';
 import type { PointerEvent } from 'react';
 
 import { ThemeProvider } from './theme';
@@ -21,13 +21,14 @@ import {
   useAssetPreloader,
 } from './hooks';
 import { assetLoader, logger } from '../services';
-import { GameConfig, ThemeColors, Campaign, DEFAULT_FONT_FAMILY } from '../types';
+import { Campaign, DEFAULT_FONT_FAMILY, GameConfig, ThemeColors } from '@engine/types';
 import { EndScreen } from './screens/EndScreen';
 import { GameScreen } from './screens/GameScreen';
 import { LoadingScreen } from './screens/LoadingScreen';
 import { ParticleCanvas } from './effects/ParticleCanvas';
 import { StartScreen } from './screens/StartScreen';
 import { PortalHeader } from './layout/header/PortalHeader';
+import { PortalHeaderTitle, type PortalHeaderTitlePhase } from './layout/header/PortalHeaderTitle';
 import { SoundConsentOverlay } from './components/overlays/SoundConsentOverlay';
 import { STORAGE_KEY_SOUND_ENABLED } from '../constants';
 
@@ -86,7 +87,6 @@ export function MillionaireGame({ config }: MillionaireGameProps) {
   );
   const [level11Progress, setLevel11Progress] = useState(0);
   const [isWaitingForLevel11, setIsWaitingForLevel11] = useState(false);
-  const [isHeaderActivated, setIsHeaderActivated] = useState(false);
   const soundConsentKey = useMemo(
     () => `engine:sound-consent-shown:${config.id}`,
     [config.id]
@@ -99,6 +99,12 @@ export function MillionaireGame({ config }: MillionaireGameProps) {
     }
   });
   const [isSoundConsentClosing, setIsSoundConsentClosing] = useState(false);
+
+  // Intro title lifecycle: show once when header portal first reveals (start),
+  // then evaporate on first campaign selection; show again only after NEW_GAME.
+  const [introTitlePhase, setIntroTitlePhase] = useState<PortalHeaderTitlePhase | null>(null);
+  const [isIntroTitleDismissed, setIsIntroTitleDismissed] = useState(false);
+  const introTitleTriggeredRef = useRef(false);
 
   useEffect(() => {
     try {
@@ -165,7 +171,11 @@ export function MillionaireGame({ config }: MillionaireGameProps) {
 
   // Wrapper for selectCampaign with sound (campaign select SFX only if user enabled sound)
   const handleSelectCampaign = useCallback((campaign: Campaign) => {
-    setIsHeaderActivated(true);
+    if (!isIntroTitleDismissed) {
+      setIsIntroTitleDismissed(true);
+      setIntroTitlePhase((prev) => (prev && prev !== 'exit' ? 'exit' : prev));
+    }
+
     // Play campaign-specific select sound if defined, otherwise generic click
     if (campaign.selectSound) {
       audio.playCampaignSelectSound(campaign.selectSound);
@@ -173,7 +183,7 @@ export function MillionaireGame({ config }: MillionaireGameProps) {
       audio.playSoundEffect('answerButton');
     }
     gameState.selectCampaign(campaign);
-  }, [audio, gameState]);
+  }, [audio, gameState, isIntroTitleDismissed]);
 
   // Sound on button press (mousedown/touchstart) - synced with button landing animation
   const handleActionButtonPress = useCallback(
@@ -224,6 +234,9 @@ export function MillionaireGame({ config }: MillionaireGameProps) {
   // Wrapper for newGame with music switch
   const handleNewGame = useCallback(() => {
     audio.playMainMenu();
+    introTitleTriggeredRef.current = false;
+    setIsIntroTitleDismissed(false);
+    setIntroTitlePhase(null);
     gameState.newGame();
   }, [audio, gameState]);
 
@@ -272,6 +285,24 @@ export function MillionaireGame({ config }: MillionaireGameProps) {
     showHeader &&
     gameState.gameState === 'start' &&
     (!isSoundConsentDone || isSoundConsentClosing);
+  const isHeaderActivated =
+    showHeader && !showSoundConsent;
+
+  useEffect(() => {
+    if (introTitleTriggeredRef.current) return;
+    if (isIntroTitleDismissed) return;
+    if (!isHeaderActivated) return;
+    if (gameState.gameState !== 'start') return;
+    if (gameState.selectedCampaign) return;
+
+    introTitleTriggeredRef.current = true;
+    setIntroTitlePhase('enter');
+  }, [
+    gameState.gameState,
+    gameState.selectedCampaign,
+    isHeaderActivated,
+    isIntroTitleDismissed,
+  ]);
 
   const slideshowScreen = useMemo(() => {
     if (gameState.gameState === 'playing') return 'play';
@@ -356,19 +387,31 @@ export function MillionaireGame({ config }: MillionaireGameProps) {
           preload="none"
         />
 
-        <div className="w-full flex-1 flex flex-col">
-          {showHeader && (
-            <PortalHeader
-              config={config}
-              theme={theme}
-              slideshowScreen={slideshowScreen}
-              campaignId={gameState.selectedCampaign?.id}
-              difficulty={difficultyLevel}
-              isMusicPlaying={audio.isMusicPlaying}
-              onToggleMusic={audio.toggleMusic}
-              activated={isHeaderActivated}
-              className="z-0 -mt-3 md:-mt-4 -mb-12 md:-mb-16"
-            />
+          <div className="w-full flex-1 flex flex-col">
+            {showHeader && (
+            <div className="relative overflow-visible z-0">
+              {introTitlePhase && (
+                <PortalHeaderTitle
+                  config={config}
+                  theme={theme}
+                  phase={introTitlePhase}
+                  onEntered={() =>
+                    setIntroTitlePhase((prev) => (prev === 'enter' ? 'shown' : prev))
+                  }
+                  onExited={() => setIntroTitlePhase(null)}
+                />
+              )}
+
+              <PortalHeader
+                config={config}
+                slideshowScreen={slideshowScreen}
+                campaignId={gameState.selectedCampaign?.id}
+                difficulty={difficultyLevel}
+                isMusicPlaying={audio.isMusicPlaying}
+                onToggleMusic={audio.toggleMusic}
+                activated={isHeaderActivated}
+              />
+            </div>
           )}
 
           <div className="relative z-10 max-w-4xl mx-auto w-full flex-1 flex flex-col">
