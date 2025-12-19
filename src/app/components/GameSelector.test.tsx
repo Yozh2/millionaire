@@ -8,11 +8,6 @@ vi.mock('../../engine', async () => {
   return {
     ...actual,
     useFavicon: vi.fn(),
-    useGameIcon: (_id: string, fallbackEmoji: string) => ({
-      iconUrl: null,
-      isEmoji: true,
-      emoji: fallbackEmoji,
-    }),
     useAssetPreloader: () => ({
       isLoading: false,
       progress: 100,

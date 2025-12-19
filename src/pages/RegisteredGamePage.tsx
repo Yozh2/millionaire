@@ -65,7 +65,7 @@ export default function RegisteredGamePage({ gameId }: RegisteredGamePageProps) 
   }
 
   if (!config) {
-    return <RegistryLoadingScreen title={`Загрузка: ${entry.card.title}...`} />;
+    return <RegistryLoadingScreen title={`Загрузка: ${entry.gameTitle}...`} />;
   }
 
   return <MillionaireGame config={config} />;

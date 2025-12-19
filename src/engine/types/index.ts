@@ -661,16 +661,6 @@ export interface GameConfig {
 // App Registry Types (optional)
 // ============================================
 
-export interface GameRegistryCardMeta {
-  title: string;
-  subtitle: string;
-  description: string;
-  emoji: string;
-  gradient: string;
-  borderColor: string;
-  available: boolean;
-}
-
 export interface GameRegistryMeta {
   /** Show this game in the main selector UI */
   registryVisible: boolean;
@@ -680,8 +670,10 @@ export interface GameRegistryMeta {
   routePath?: string;
   /** Sorting (lower first) */
   order?: number;
-  /** Card display metadata */
-  card: GameRegistryCardMeta;
+  /** Title shown in GameSelector */
+  gameTitle: string;
+  /** Whether game is playable (otherwise "coming soon") */
+  available?: boolean;
 }
 
 // ============================================

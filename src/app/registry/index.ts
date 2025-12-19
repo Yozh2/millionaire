@@ -4,9 +4,7 @@ export {
   getPageEntries,
   getGameById,
   getSelectorEntries,
-  type GameCardMeta,
   type GameRegistryEntry,
   type PageRegistryEntry,
   type RegistryEntry,
 } from './gameRegistry';
-

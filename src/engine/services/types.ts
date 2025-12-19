@@ -46,8 +46,8 @@ export interface CampaignAssets {
 export interface GameAssets {
   /** Assets for GameSelector cards */
   cardAssets: {
+    gameCard: string | null;
     favicon: string | null;
-    logo: string | null;
   };
   /** Level 1: StartScreen assets */
   level1: {

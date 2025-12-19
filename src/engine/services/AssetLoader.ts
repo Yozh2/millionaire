@@ -186,14 +186,12 @@ class AssetLoader {
         assets.push(...manifest.engine.images);
         assets.push(...manifest.engine.sounds);
 
-        // Game card assets (favicon + logo for all games)
+        // GameSelector card assets:
+        // - prefer game-card (portrait) when present
+        // - otherwise fallback to favicon
         for (const game of Object.values(manifest.games)) {
-          if (game.cardAssets.favicon) {
-            assets.push(game.cardAssets.favicon);
-          }
-          if (game.cardAssets.logo) {
-            assets.push(game.cardAssets.logo);
-          }
+          if (game.cardAssets.gameCard) assets.push(game.cardAssets.gameCard);
+          else if (game.cardAssets.favicon) assets.push(game.cardAssets.favicon);
         }
         break;
 

@@ -41,15 +41,8 @@ export const transformersConfig: GameConfig = {
   registry: {
     registryVisible: true,
     order: 30,
-    card: {
-      title: 'TRANSFORMERS',
-      subtitle: 'COMICS EDITION',
-      description: 'Викторина по комиксам про Трансформеров',
-      emoji: '🤖',
-      gradient: 'from-purple-700 via-red-600 to-purple-800',
-      borderColor: 'border-purple-500',
-      available: true,
-    },
+    gameTitle: 'TRANSFORMERS',
+    available: true,
   },
 
   campaigns: [megatronCampaign, autocracyCampaign, skyboundCampaign],

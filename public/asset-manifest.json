@@ -10,8 +10,8 @@
   "games": {
     "bg3": {
       "cardAssets": {
-        "favicon": "/games/bg3/icons/favicon.png",
-        "logo": "/games/bg3/icons/logo.png"
+        "gameCard": "/games/bg3/icons/game-card.png",
+        "favicon": "/games/bg3/icons/favicon.png"
       },
       "level1": {
         "icons": [
@@ -148,8 +148,8 @@
     },
     "sky-cotl": {
       "cardAssets": {
-        "favicon": null,
-        "logo": "/games/sky-cotl/icons/logo.png"
+        "gameCard": "/games/sky-cotl/icons/game-card.png",
+        "favicon": "/games/sky-cotl/icons/favicon.ico"
       },
       "level1": {
         "icons": [
@@ -177,8 +177,8 @@
     },
     "transformers": {
       "cardAssets": {
-        "favicon": "/games/transformers/icons/favicon.png",
-        "logo": "/games/transformers/icons/logo.png"
+        "gameCard": "/games/transformers/icons/game-card.png",
+        "favicon": "/games/transformers/icons/favicon.png"
       },
       "level1": {
         "icons": [

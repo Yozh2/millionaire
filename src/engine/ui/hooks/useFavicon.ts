@@ -278,9 +278,9 @@ export function useFavicon(
       // Set apple-touch-icon (only if file exists)
       const searchPaths: string[] = [];
       if (gameId) {
-        searchPaths.push(`${baseUrl}games/${gameId}/icons`);
+        searchPaths.push(gameDir(gameId, 'icons'));
       }
-      searchPaths.push(`${baseUrl}icons`);
+      searchPaths.push(publicDir('icons'));
 
       const appleTouchIconUrl = await findAppleTouchIcon(searchPaths);
       if (runId !== updateCounter.current) {

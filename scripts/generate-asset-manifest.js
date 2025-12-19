@@ -27,6 +27,7 @@ const OUTPUT_FILE = join(PUBLIC_DIR, 'asset-manifest.json');
 
 const IMAGE_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.webp', '.gif', '.svg'];
 const AUDIO_EXTENSIONS = ['.ogg', '.mp3', '.wav', '.m4a'];
+const FAVICON_NAMES = ['favicon.png', 'favicon.svg', 'favicon.ico'];
 
 /**
  * Check file type by extension.
@@ -41,6 +42,13 @@ function isAudioFile(filename) {
 
 function isAssetFile(filename) {
   return isImageFile(filename) || isAudioFile(filename);
+}
+
+function findFirstExistingFile(dirPath, names) {
+  for (const name of names) {
+    if (existsSync(join(dirPath, name))) return name;
+  }
+  return null;
 }
 
 /**
@@ -147,20 +155,26 @@ function scanGames() {
  * Scan assets for a specific game.
  */
 function scanGameAssets(gameDir, gameId) {
+  const iconsDir = join(gameDir, 'icons');
+  const gameCardFilename = existsSync(join(iconsDir, 'game-card.png'))
+    ? 'game-card.png'
+    : null;
+  const faviconFilename = findFirstExistingFile(iconsDir, FAVICON_NAMES);
+
   const game = {
     // Level 0: For GameSelector cards
     cardAssets: {
-      favicon: existsSync(join(gameDir, 'icons', 'favicon.png'))
-        ? `/games/${gameId}/icons/favicon.png`
+      gameCard: gameCardFilename
+        ? `/games/${gameId}/icons/${gameCardFilename}`
         : null,
-      logo: existsSync(join(gameDir, 'icons', 'logo.png'))
-        ? `/games/${gameId}/icons/logo.png`
+      favicon: faviconFilename
+        ? `/games/${gameId}/icons/${faviconFilename}`
         : null,
     },
 
     // Level 1: StartScreen assets
     level1: {
-      icons: getFilesFromDir(join(gameDir, 'icons')),
+      icons: getFilesFromDir(iconsDir),
       sounds: getFilesFromDir(join(gameDir, 'sounds'), isAudioFile),
       mainMenuMusic: existsSync(join(gameDir, 'music', 'MainMenu.ogg'))
         ? `/games/${gameId}/music/MainMenu.ogg`

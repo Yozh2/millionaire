@@ -35,7 +35,6 @@ export type {
   PrizesConfig,
   SoundEffects,
   GameRegistryMeta,
-  GameRegistryCardMeta,
   AudioConfig,
   GameStrings,
   GameState,

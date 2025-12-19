@@ -1,7 +1,5 @@
 import type { ComponentType } from 'react';
-import type { GameConfig, GameRegistryCardMeta, GameRegistryMeta } from '@engine/types';
-
-export type GameCardMeta = GameRegistryCardMeta;
+import type { GameConfig, GameRegistryMeta } from '@engine/types';
 
 export interface GameRegistryEntry {
   kind: 'game';
@@ -9,7 +7,9 @@ export interface GameRegistryEntry {
   routePath: string;
   registryVisible: boolean;
   order?: number;
-  card: GameCardMeta;
+  gameTitle: string;
+  emoji: string;
+  available: boolean;
   devOnly?: boolean;
   getConfig: () => Promise<GameConfig>;
 }
@@ -52,7 +52,9 @@ const buildGameEntries = (): GameRegistryEntry[] => {
       routePath: meta.routePath ?? `/${id}`,
       registryVisible: meta.registryVisible,
       order: meta.order,
-      card: meta.card,
+      gameTitle: meta.gameTitle,
+      emoji: config.emoji ?? '🎯',
+      available: meta.available ?? true,
       devOnly: meta.devOnly,
       getConfig: async () => config,
     });

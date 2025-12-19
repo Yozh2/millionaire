@@ -1,100 +1,121 @@
-import type { CSSProperties } from 'react';
-import { useGameIcon } from '../../../hooks/useFavicon';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { gameIconsFile } from '@public';
+import { useGameCardFsm } from './useGameCardFsm';
+
+const FALLBACK_FAVICONS = ['favicon.png', 'favicon.svg', 'favicon.ico'] as const;
 
 export interface GameCardProps {
   gameId: string;
-  title: string;
-  subtitle: string;
-  description: string;
+  gameTitle: string;
   fallbackEmoji: string;
-  gradientClass: string;
-  borderColorClass: string;
   available: boolean;
+  onSelect?: () => void;
+  ariaLabel?: string;
   className?: string;
 }
 
 export function GameCard({
   gameId,
-  title,
-  subtitle,
-  description,
+  gameTitle,
   fallbackEmoji,
-  gradientClass,
-  borderColorClass,
   available,
+  onSelect,
+  ariaLabel,
   className = '',
 }: GameCardProps) {
-  const { iconUrl, isEmoji, emoji } = useGameIcon(gameId, fallbackEmoji);
+  const emoji = fallbackEmoji || '🎯';
+  const buttonRef = useRef<HTMLButtonElement | null>(null);
+  const fsm = useGameCardFsm({ ref: buttonRef, interactive: available });
 
-  const glowByBorder: CSSProperties = {
-    ['--game-glow' as string]: 'rgba(255, 255, 255, 0.22)',
-  };
+  const sources = useMemo(
+    () => [
+      gameIconsFile(gameId, 'game-card.png'),
+      ...FALLBACK_FAVICONS.map((name) => gameIconsFile(gameId, name)),
+    ],
+    [gameId]
+  );
+
+  const [srcIndex, setSrcIndex] = useState(0);
+  useEffect(() => setSrcIndex(0), [gameId]);
+
+  const imageSrc = srcIndex < sources.length ? sources[srcIndex] : null;
+  const isGameCardArt = srcIndex === 0 && !!imageSrc;
 
   return (
-    <div
+    <button
+      type="button"
+      ref={buttonRef}
       data-testid="game-card"
       data-available={available ? 'true' : 'false'}
+      data-card-state={fsm.state}
+      {...fsm.eventHandlers}
       className={[
-        'game-card relative overflow-hidden rounded-xl border-4 p-6',
-        borderColorClass,
-        `bg-gradient-to-b ${gradientClass}`,
+        'game-card relative bg-transparent',
+        'w-[176px] sm:w-[196px] md:w-[216px]',
+        'flex flex-col items-stretch gap-3',
+        'focus:outline-none focus-visible:ring-2 focus-visible:ring-white/60',
         available ? 'cursor-pointer' : 'opacity-55 cursor-not-allowed',
         className,
       ].join(' ')}
-      style={glowByBorder}
+      aria-label={ariaLabel}
+      disabled={!available}
+      onClick={() => {
+        if (!available) return;
+        onSelect?.();
+      }}
     >
-      <div
-        aria-hidden="true"
-        className="game-card-glass absolute inset-0 bg-gradient-to-b from-white/12 via-transparent to-black/40"
-      />
-      <div
-        aria-hidden="true"
-        className="game-card-glass absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent"
-      />
-      <div
-        aria-hidden="true"
-        className="game-card-glare absolute"
-      />
-      <div
-        aria-hidden="true"
-        className="game-card-frame absolute inset-2 border border-white/10"
-      />
-
-      {!available && (
-        <div className="absolute top-4 right-4 bg-black/55 text-white/80 px-3 py-1 rounded-full text-xs">
-          Скоро
+      <div className="game-card-face relative overflow-hidden rounded-xl border-4 w-full aspect-[2/3]">
+        <div aria-hidden="true" className="absolute inset-0">
+          {imageSrc ? (
+            <img
+              src={imageSrc}
+              alt=""
+              className={[
+                'w-full h-full',
+                isGameCardArt ? 'object-cover' : 'object-contain p-10',
+              ].join(' ')}
+              loading="lazy"
+              draggable={false}
+              onError={() => setSrcIndex((i) => i + 1)}
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center bg-gradient-to-b from-white/10 via-black/20 to-black/60">
+              <span className="text-6xl leading-none drop-shadow-sm">{emoji}</span>
+            </div>
+          )}
         </div>
-      )}
 
-      <div className="relative h-full flex flex-col justify-between gap-5">
-        <div className="flex items-start justify-between gap-4">
-          <div className="relative w-14 h-14 flex items-center justify-center">
-            <div aria-hidden="true" className="game-card-icon-glow" />
-            {isEmoji || !iconUrl ? (
-              <span className="text-5xl leading-none">{emoji}</span>
-            ) : (
-              <img
-                src={iconUrl}
-                alt={`${gameId} icon`}
-                className="w-12 h-12 object-contain"
-              />
-            )}
+        <div
+          aria-hidden="true"
+          className="game-card-glass absolute inset-0 bg-gradient-to-b from-white/8 via-transparent to-black/60"
+        />
+        <div
+          aria-hidden="true"
+          className="game-card-glass absolute inset-0 bg-gradient-to-br from-white/12 via-transparent to-transparent"
+        />
+        <div
+          aria-hidden="true"
+          className="game-card-glare absolute"
+        />
+        <div
+          aria-hidden="true"
+          className="game-card-frame absolute inset-2 border border-white/10"
+        />
+
+        {!available && (
+          <div className="absolute top-4 right-4 bg-black/55 text-white/80 px-3 py-1 rounded-full text-xs">
+            Скоро
           </div>
-        </div>
-
-        <div className="relative">
-          <h2 className="text-xl font-extrabold tracking-wide text-white drop-shadow-sm">
-            {title}
-          </h2>
-          <p className="text-sm text-white/75 mt-1">{subtitle}</p>
-          <p className="text-sm text-white/70 mt-4 leading-relaxed">
-            {description}
-          </p>
-        </div>
+        )}
       </div>
-    </div>
+
+      <div className="relative w-full px-1">
+        <span className="game-card-title block text-sm font-extrabold tracking-wide text-white drop-shadow-sm text-center truncate">
+          {gameTitle}
+        </span>
+      </div>
+    </button>
   );
 }
 
 export default GameCard;
-

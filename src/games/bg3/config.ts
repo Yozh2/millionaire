@@ -40,15 +40,8 @@ export const bg3Config: GameConfig = {
   registry: {
     registryVisible: true,
     order: 20,
-    card: {
-      title: "BALDUR'S GATE III",
-      subtitle: 'Edition',
-      description: "Викторина по Baldur's Gate III",
-      emoji: '⚔️',
-      gradient: 'from-amber-700 via-amber-600 to-amber-800',
-      borderColor: 'border-amber-500',
-      available: true,
-    },
+    gameTitle: "BALDUR'S GATE III",
+    available: true,
   },
 
   campaigns: [heroCampaign, mindFlayerCampaign, darkUrgeCampaign],

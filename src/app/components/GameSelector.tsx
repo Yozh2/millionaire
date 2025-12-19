@@ -5,47 +5,36 @@
  * Shows available games as cards with descriptions.
  */
 
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import { LoadingScreen, useAssetPreloader, useFavicon } from '@engine';
 import { GameCard } from '@engine/ui/components/cards/game/GameCard';
 import { getSelectorEntries, type GameRegistryEntry } from '../registry';
 
-function GameCardTile({ entry }: { entry: GameRegistryEntry }) {
-  const game = entry.card;
-
-  const content = (
+function GameCardTile({
+  entry,
+  onSelect,
+}: {
+  entry: GameRegistryEntry;
+  onSelect: (routePath: string) => void;
+}) {
+  return (
     <GameCard
       gameId={entry.id}
-      title={game.title}
-      subtitle={game.subtitle}
-      description={game.description}
-      fallbackEmoji={game.emoji}
-      gradientClass={game.gradient}
-      borderColorClass={game.borderColor}
-      available={game.available}
-      className="h-full min-h-64"
+      gameTitle={entry.gameTitle}
+      fallbackEmoji={entry.emoji}
+      available={entry.available}
+      ariaLabel={`Играть: ${entry.gameTitle}`}
+      onSelect={() => onSelect(entry.routePath)}
     />
   );
-
-  if (game.available) {
-    return (
-      <Link
-        to={entry.routePath}
-        aria-label={`Играть: ${game.title}`}
-        className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-white/60 rounded-xl"
-      >
-        {content}
-      </Link>
-    );
-  }
-
-  return content;
 }
 
 export function GameSelector() {
   // Set page favicon (shared icons → default emoji)
   useFavicon(null);
+
+  const navigate = useNavigate();
 
   // Preload Level 0 assets (engine + game card icons)
   const { isLoading, progress } = useAssetPreloader('level0');
@@ -82,9 +71,13 @@ export function GameSelector() {
         </div>
 
         {/* Game Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="flex flex-wrap justify-center gap-6">
           {games.map((entry) => (
-            <GameCardTile key={entry.id} entry={entry} />
+            <GameCardTile
+              key={entry.id}
+              entry={entry}
+              onSelect={(routePath) => entry.available && navigate(routePath)}
+            />
           ))}
         </div>
 
