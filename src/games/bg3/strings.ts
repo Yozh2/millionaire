@@ -18,8 +18,8 @@ export const bg3Companions: Companion[] = [
 
 export const bg3Strings: GameStrings = {
   introText:
-    'Искатель приключений! Перед тобой испытание на знание Baldur’s Gate III. ' +
-    '15 вопросов, 3 магические подсказки, 3 000 000 золотых на кону.',
+    'Искатель приключений!\nПеред тобой испытание на знание Baldur’s Gate III. ' +
+    '15 вопросов, магические подсказки, миллион золотых на кону',
   selectPath: '✦ ВЫБЕРИ ПУТЬ ✦',
   startButton: 'В ПРИКЛЮЧЕНИЕ',
 

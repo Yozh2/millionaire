@@ -28,7 +28,7 @@ export function CampaignSelectionPanel({
       <PanelHeader>{config.strings.selectPath}</PanelHeader>
       <div className="text-center py-8 px-4">
         <p
-          className={`${theme.textSecondary} text-base mb-6 max-w-md mx-auto leading-relaxed`}
+          className={`${theme.textSecondary} text-base mb-6 max-w-md mx-auto leading-relaxed whitespace-pre-line`}
         >
           {config.strings.introText}
         </p>
