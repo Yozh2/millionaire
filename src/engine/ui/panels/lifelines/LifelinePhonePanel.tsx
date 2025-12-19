@@ -1,6 +1,8 @@
 import type { ComponentType } from 'react';
+import type { ThemeColors } from '@engine/types';
 
 interface LifelinePhonePanelProps {
+  theme: ThemeColors;
   icon: ComponentType;
   senderLabel: string;
   name: string;
@@ -8,6 +10,7 @@ interface LifelinePhonePanelProps {
 }
 
 export function LifelinePhonePanel({
+  theme,
   icon: Icon,
   senderLabel,
   name,
@@ -15,10 +18,10 @@ export function LifelinePhonePanel({
 }: LifelinePhonePanelProps) {
   return (
     <div>
-      <p className="text-amber-400 text-xs mb-1 italic">
+      <p className={`${theme.textAccent} text-xs mb-1 italic`}>
         <Icon /> {senderLabel} {name}
       </p>
-      <p className="text-amber-300 italic">{text}</p>
+      <p className={`${theme.textAccent} italic`}>{text}</p>
     </div>
   );
 }

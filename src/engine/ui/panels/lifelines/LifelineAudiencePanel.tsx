@@ -3,14 +3,17 @@ import type { ThemeColors } from '@engine/types';
 interface LifelineAudiencePanelProps {
   theme: ThemeColors;
   percentages: number[];
+  label?: string;
 }
 
 export function LifelineAudiencePanel({
   theme,
   percentages,
+  label,
 }: LifelineAudiencePanelProps) {
   return (
     <div>
+      {label && <p className={`text-xs mb-2 ${theme.textAccent}`}>{label}</p>}
       <div className="grid grid-cols-4 gap-2">
         {percentages.map((p, i) => (
           <div key={i} className="text-center">
@@ -23,7 +26,7 @@ export function LifelineAudiencePanel({
                 style={{ height: `${p}%` }}
               />
             </div>
-            <span className={`text-xs ${theme.textPrimary}`}>
+            <span className={`text-xs ${theme.textAccent}`}>
               [{['A', 'B', 'C', 'D'][i]}] {p}%
             </span>
           </div>

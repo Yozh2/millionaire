@@ -94,6 +94,12 @@ export function LifelineResultPanel({
   })();
 
   const senderLabel = config.strings.lifelineSenderLabel;
+  const audienceLabel = config.strings.lifelineAudienceLabel;
+  const switchText = config.strings.lifelineSwitchText ?? 'Вопрос заменён. Продолжаем.';
+  const doubleTextArmed =
+    config.strings.lifelineDoubleArmedText ?? 'Можно ошибиться один раз — и выбрать ответ повторно.';
+  const doubleTextUsed =
+    config.strings.lifelineDoubleUsedText ?? 'Первый промах принят. Выбери ещё раз.';
 
   return (
     <Panel
@@ -105,6 +111,7 @@ export function LifelineResultPanel({
       <div className="p-3">
         {displayed.type === 'phone' && (
           <LifelinePhonePanel
+            theme={theme}
             icon={PhoneLifelineIcon}
             senderLabel={senderLabel}
             name={displayed.name}
@@ -113,11 +120,16 @@ export function LifelineResultPanel({
         )}
 
         {displayed.type === 'audience' && (
-          <LifelineAudiencePanel theme={theme} percentages={displayed.percentages} />
+          <LifelineAudiencePanel
+            theme={theme}
+            percentages={displayed.percentages}
+            label={audienceLabel}
+          />
         )}
 
         {displayed.type === 'host' && (
           <LifelineHostPanel
+            theme={theme}
             icon={config.lifelines.host?.icon ?? '🎭'}
             result={displayed}
           />
@@ -125,15 +137,19 @@ export function LifelineResultPanel({
 
         {displayed.type === 'switch' && (
           <LifelineSwitchPanel
+            theme={theme}
             icon={config.lifelines.switch?.icon ?? '🔁'}
             result={displayed}
+            text={switchText}
           />
         )}
 
         {displayed.type === 'double' && (
           <LifelineDoublePanel
+            theme={theme}
             icon={config.lifelines.double?.icon ?? '🎯'}
             result={displayed}
+            text={displayed.stage === 'armed' ? doubleTextArmed : doubleTextUsed}
           />
         )}
       </div>

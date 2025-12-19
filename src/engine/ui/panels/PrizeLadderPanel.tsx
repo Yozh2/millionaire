@@ -29,6 +29,13 @@ export function PrizeLadderPanel({
   const takeMoneyBase =
     'px-3 py-2 text-sm border-3 h-12 w-full flex items-center justify-center gap-2';
 
+  const prizeTextCurrent = theme.prizeTextCurrent ?? theme.textSecondary;
+  const prizeTextPassed = theme.prizeTextPassed ?? theme.textMuted;
+  const prizeTextFuture = theme.prizeTextFuture ?? 'text-stone-300';
+  const prizeBgGuaranteed = theme.prizeBgGuaranteed ?? 'bg-yellow-950/40';
+  const prizeTextGuaranteed = theme.prizeTextGuaranteed ?? 'text-yellow-600';
+  const prizeBorderGuaranteed = theme.prizeBorderGuaranteed ?? 'border-yellow-700';
+
   return (
     <Panel className="p-1 h-fit">
       <PanelHeader>{prizesHeader}</PanelHeader>
@@ -48,19 +55,19 @@ export function PrizeLadderPanel({
               key={index}
               className={`text-xs px-2 py-1 relative transition-all border-l-4 prize-row ${
                 isCurrent
-                  ? `${theme.bgPrizeCurrent} ${theme.textSecondary} ${theme.borderLight} shadow-lg prize-row-current`
+                  ? `${theme.bgPrizeCurrent} ${prizeTextCurrent} ${theme.prizeBorderCurrent ?? theme.borderLight} shadow-lg prize-row-current`
                   : isPassed
-                    ? `${theme.bgPrizePassed} ${theme.textMuted} ${theme.border}`
+                    ? `${theme.bgPrizePassed} ${prizeTextPassed} ${theme.prizeBorderPassed ?? theme.border}`
                     : isGuaranteed
-                      ? 'bg-yellow-950/40 text-yellow-600 border-yellow-700'
-                      : 'text-stone-300 border-stone-700'
+                      ? `${prizeBgGuaranteed} ${prizeTextGuaranteed} ${prizeBorderGuaranteed}`
+                      : `${prizeTextFuture} border-stone-700`
               }`}
               data-active={isCurrent ? 'true' : 'false'}
               data-passed={isPassed ? 'true' : 'false'}
               style={
                 isCurrent
                   ? {
-                      boxShadow: `0 0 15px ${theme.glow}`,
+                      boxShadow: `0 0 15px ${theme.prizeGlowCurrent ?? theme.glow}`,
                       borderStyle: 'solid',
                     }
                   : { borderStyle: 'solid' }

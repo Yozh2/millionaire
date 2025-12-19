@@ -2,6 +2,7 @@ import type { MouseEvent } from 'react';
 import type { LifelineConfig } from '@engine/types';
 import { LifelineButton } from '../components/buttons';
 import { Panel } from '../components/panel';
+import { useTheme } from '../theme';
 
 interface LifelinesPanelProps {
   selectedAnswer: number | null;
@@ -43,8 +44,12 @@ export function LifelinesPanel({
   onSwitch,
   onDouble,
 }: LifelinesPanelProps) {
+  const theme = useTheme();
   const lifelineBase =
     'px-3 py-2 text-sm border-3 h-12 w-full min-w-[132px] flex items-center justify-center gap-2';
+  const disabledLifelineClass = theme.isLight
+    ? 'bg-gradient-to-b from-white/85 via-slate-100/75 to-white/85 border-slate-300 text-slate-400 cursor-not-allowed'
+    : 'bg-stone-950 border-stone-800 text-stone-600 cursor-not-allowed';
 
   const isLifelineEnabled = (
     config: LifelineConfig | undefined,
@@ -71,7 +76,7 @@ export function LifelinesPanel({
           className={`${lifelineBase} ${
             lifelineAvailability.fifty && canUse
               ? 'bg-gradient-to-b from-orange-700 to-orange-900 border-orange-500 text-orange-100'
-              : 'bg-stone-950 border-stone-800 text-stone-600 cursor-not-allowed'
+              : disabledLifelineClass
           }`}
           glow="rgba(249, 115, 22, 0.5)"
           boxShadow={
@@ -89,7 +94,7 @@ export function LifelinesPanel({
           className={`${lifelineBase} ${
             lifelineAvailability.phone && canUse
               ? 'bg-gradient-to-b from-blue-700 to-blue-900 border-blue-500 text-blue-100'
-              : 'bg-stone-950 border-stone-800 text-stone-600 cursor-not-allowed'
+              : disabledLifelineClass
           }`}
           glow="rgba(59, 130, 246, 0.5)"
           boxShadow={
@@ -107,7 +112,7 @@ export function LifelinesPanel({
           className={`${lifelineBase} ${
             lifelineAvailability.audience && canUse
               ? 'bg-gradient-to-b from-teal-700 to-teal-900 border-teal-500 text-teal-100'
-              : 'bg-stone-950 border-stone-800 text-stone-600 cursor-not-allowed'
+              : disabledLifelineClass
           }`}
           glow="rgba(20, 184, 166, 0.5)"
           boxShadow={
@@ -126,7 +131,7 @@ export function LifelinesPanel({
             className={`${lifelineBase} ${
               isLifelineEnabled(lifelineConfigHost, lifelineAvailability.host) && canUse
                 ? 'bg-gradient-to-b from-purple-700 to-purple-950 border-purple-500 text-purple-100'
-                : 'bg-stone-950 border-stone-800 text-stone-600 cursor-not-allowed'
+                : disabledLifelineClass
             }`}
             glow="rgba(168, 85, 247, 0.5)"
             boxShadow={
@@ -146,7 +151,7 @@ export function LifelinesPanel({
             className={`${lifelineBase} ${
               isLifelineEnabled(lifelineConfigSwitch, lifelineAvailability.switch) && canUse
                 ? 'bg-gradient-to-b from-fuchsia-700 to-fuchsia-950 border-fuchsia-500 text-fuchsia-100'
-                : 'bg-stone-950 border-stone-800 text-stone-600 cursor-not-allowed'
+                : disabledLifelineClass
             }`}
             glow="rgba(217, 70, 239, 0.5)"
             boxShadow={
@@ -166,7 +171,7 @@ export function LifelinesPanel({
             className={`${lifelineBase} ${
               isLifelineEnabled(lifelineConfigDouble, lifelineAvailability.double) && canUse
                 ? 'bg-gradient-to-b from-rose-700 to-rose-950 border-rose-500 text-rose-100'
-                : 'bg-stone-950 border-stone-800 text-stone-600 cursor-not-allowed'
+                : disabledLifelineClass
             }`}
             glow="rgba(244, 63, 94, 0.5)"
             boxShadow={

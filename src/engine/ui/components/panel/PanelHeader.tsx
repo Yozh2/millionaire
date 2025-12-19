@@ -32,7 +32,7 @@ export const PanelHeader: React.FC<PanelHeaderProps> = ({
 
   return (
     <div
-      className={`bg-gradient-to-r ${theme.bgHeader} px-3 py-2 border-b-4 transition-all duration-300 ${alignmentClass} ${headerTextClass} text-sm tracking-wide`}
+      className={`${theme.headerGradientClass ?? 'bg-gradient-to-r'} ${theme.bgHeader} px-3 py-2 border-b-4 transition-all duration-300 ${alignmentClass} ${headerTextClass} text-sm tracking-wide`}
       style={{
         boxShadow: `0 2px 10px ${theme.glow}`,
         textShadow,
