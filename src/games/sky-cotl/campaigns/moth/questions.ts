@@ -1,10 +1,5 @@
 import type { QuestionPool } from '@engine/types';
 
-/**
- * Sky: Children of the Light - Question Pool
- *
- * All questions are in English (game exception).
- */
 export const questions: QuestionPool = {
   easy: [
     {
@@ -13,18 +8,18 @@ export const questions: QuestionPool = {
       correct: 0,
     },
     {
-      question: 'What is Sky primarily focused on?',
-      answers: ['Social exploration', 'Base building', 'Turn-based combat', 'Puzzle-only levels'],
+      question: 'Which realm does the main journey start in?',
+      answers: ['Isle of Dawn', 'Hidden Forest', 'Valley of Triumph', 'Eye of Eden'],
       correct: 0,
     },
     {
-      question: 'Which realm do new players start in?',
-      answers: ['Isle of Dawn', 'Golden Wasteland', 'Vault of Knowledge', 'Eye of Eden'],
+      question: 'What increases your cape’s flight power?',
+      answers: ['Winged Light', 'Hearts', 'Friendship level', 'Regular Candles'],
       correct: 0,
     },
     {
-      question: 'What do you collect to increase your cape’s flight power?',
-      answers: ['Winged Light', 'Coins', 'Armor', 'Keys'],
+      question: 'What do you mainly unlock by reliving a spirit’s memories?',
+      answers: ['Emotes and progression nodes', 'New weapons', 'Mounts', 'Combat skills'],
       correct: 0,
     },
     {
@@ -41,12 +36,7 @@ export const questions: QuestionPool = {
     },
     {
       question: 'Which realm is famous for rain and dark waters?',
-      answers: ['Hidden Forest', 'Valley of Triumph', 'Isle of Dawn', 'Daylight Prairie'],
-      correct: 0,
-    },
-    {
-      question: 'What do you mainly unlock by reliving a spirit’s memories?',
-      answers: ['Emotes and progression nodes', 'New weapons', 'Mounts', 'Skill trees for combat'],
+      answers: ['Hidden Forest', 'Isle of Dawn', 'Daylight Prairie', 'Valley of Triumph'],
       correct: 0,
     },
     {
@@ -56,7 +46,17 @@ export const questions: QuestionPool = {
     },
     {
       question: 'What is “Home” in Sky?',
-      answers: ['The social hub between realms', 'A private house building mode', 'A dungeon', 'A leaderboard screen'],
+      answers: [
+        'The social hub between realms',
+        'A private house building mode',
+        'A dungeon',
+        'A leaderboard screen',
+      ],
+      correct: 0,
+    },
+    {
+      question: 'Which is a well-known alternate hub location?',
+      answers: ['Aviary Village', 'The Abyss', 'Starlight Desert', 'The Void'],
       correct: 0,
     },
   ],
@@ -64,11 +64,6 @@ export const questions: QuestionPool = {
     {
       question: 'On which platform did Sky first launch?',
       answers: ['iOS', 'PC', 'PlayStation', 'Nintendo Switch'],
-      correct: 0,
-    },
-    {
-      question: 'Which realm features fast-paced slides and races?',
-      answers: ['Valley of Triumph', 'Hidden Forest', 'Golden Wasteland', 'Isle of Dawn'],
       correct: 0,
     },
     {
@@ -83,7 +78,17 @@ export const questions: QuestionPool = {
     },
     {
       question: 'What is the main way to quickly recharge your cape’s light?',
-      answers: ['Stand near a lit source (candles/fires) or other players', 'Open a treasure chest', 'Sleep at Home', 'Equip a different cape'],
+      answers: [
+        'Stand near a lit source (candles/fires) or other players',
+        'Open a treasure chest',
+        'Sleep at Home',
+        'Equip a different cape',
+      ],
+      correct: 0,
+    },
+    {
+      question: 'What do you collect to increase your cape’s flight power?',
+      answers: ['Winged Light', 'Coins', 'Armor', 'Keys'],
       correct: 0,
     },
   ],

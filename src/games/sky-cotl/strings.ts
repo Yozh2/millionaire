@@ -1,14 +1,13 @@
 import type { Companion, GameStrings } from '@engine/types';
+import { applyNoBreakMarkupDeep } from '@engine/utils';
 
 export const skyCotlTitle = 'WHO WANTS TO BE A MILLIONAIRE';
 export const skyCotlSubtitle = 'Sky: Children of the Light Edition';
 
 export const skyCotlCampaignStrings = {
-  journey: {
-    name: 'SKY JOURNEY',
-    label: 'One campaign',
-    iconAriaLabel: 'Sky Journey',
-  },
+  moth: { name: 'MOTH', label: 'Newcomer', iconAlt: 'Moth' },
+  skykid: { name: 'SKYKID', label: 'Experienced', iconAlt: 'Skykid' },
+  ikeman: { name: 'IKEMAN', label: 'Veteran', iconAlt: 'Ikeman' },
 } as const;
 
 export const skyCotlCompanions: Companion[] = [
@@ -17,21 +16,24 @@ export const skyCotlCompanions: Companion[] = [
   { id: 'elder', name: 'An Elder' },
 ];
 
-export const skyCotlStrings: GameStrings = {
-  introText:
-    'Welcome, Child of the Light. Answer 15 questions, use 3 lifelines, and collect a sky-high prize.',
-  selectPath: 'CHOOSE YOUR JOURNEY',
+export const skyCotlStrings: GameStrings = applyNoBreakMarkupDeep({
+  introText: '{Skykid, take the path}\n{Fifteen answers in soft light}\n{A million candles}',
+  selectPath: 'CHOOSE YOUR PATH',
   startButton: 'FLY',
 
-  questionHeader: 'Question #{n}',
+  questionHeader: '#{n}',
 
   lifelinesHeader: 'LIFELINES',
-  prizesHeader: 'PRIZE LADDER',
+  prizesHeader: 'CANDLE RUN',
 
   lifelinePhoneHeader: 'ASK THE SPIRIT',
   lifelineAudienceHeader: 'ASK THE CHAT',
   lifelineSenderLabel: 'From:',
   lifelineAudienceLabel: 'The chat says:',
+
+  lifelineSwitchText: 'Question replaced. Keep going.',
+  lifelineDoubleArmedText: 'You can make one mistake — and answer again.',
+  lifelineDoubleUsedText: 'First mistake accepted. Choose again.',
 
   companionPhrases: {
     confident: [
@@ -66,13 +68,13 @@ export const skyCotlStrings: GameStrings = {
 
   musicOn: 'Turn music off',
   musicOff: 'Turn music on',
-};
+});
 
 export const skyCotlLifelineNames = {
   fifty: '50:50',
   phone: 'Ask Spirit',
   audience: 'Ask Chat',
-  double: 'Re-login',
+  double: 'Home Trick',
 } as const;
 
 export const skyCotlActionNames = {

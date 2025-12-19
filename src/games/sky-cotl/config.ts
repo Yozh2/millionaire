@@ -1,13 +1,17 @@
 /**
  * Sky: Children of the Light - Game Configuration
  *
- * Single-campaign edition (for now).
- * All UI strings are in English (game exception).
+ * Three-path edition:
+ * - Moth (newcomer)
+ * - Skykid (experienced)
+ * - Ikeman (veteran)
  */
 
 import type { GameConfig } from '@engine/types';
 import { createDefaultAudioConfig } from '@engine/audio/defaultAudio';
-import { skyJourneyCampaign } from './campaigns/journey/campaign';
+import { mothCampaign } from './campaigns/moth/campaign';
+import { skykidCampaign } from './campaigns/skykid/campaign';
+import { ikemanCampaign } from './campaigns/ikeman/campaign';
 import {
   CandleIcon,
   FallenStarIcon,
@@ -41,16 +45,16 @@ export const skyCotlConfig: GameConfig = {
     available: true,
   },
 
-  campaigns: [skyJourneyCampaign],
+  campaigns: [mothCampaign, skykidCampaign, ikemanCampaign],
 
   companions: skyCotlCompanions,
   strings: skyCotlStrings,
 
   lifelines: {
     fifty: { name: skyCotlLifelineNames.fifty, icon: '✨', enabled: true },
-    phone: { name: skyCotlLifelineNames.phone, icon: '📞', enabled: true },
+    phone: { name: skyCotlLifelineNames.phone, icon: '💭', enabled: true },
     audience: { name: skyCotlLifelineNames.audience, icon: '📊', enabled: true },
-    double: { name: skyCotlLifelineNames.double, icon: '🪽', enabled: true },
+    double: { name: skyCotlLifelineNames.double, icon: '📲', enabled: true },
   },
 
   actions: {
@@ -83,7 +87,7 @@ export const skyCotlConfig: GameConfig = {
   drawCoinParticle: drawCandleCoin,
 
   headerSlideshow: {
-    enabled: false,
+    enabled: true,
   },
 
   systemStrings: {
@@ -91,8 +95,7 @@ export const skyCotlConfig: GameConfig = {
     loadingGameSubtitle: 'Preparing your journey',
     loadingCampaignTitle: 'Preparing campaign…',
     soundConsentTitle: 'Sound',
-    soundConsentMessage:
-      'This game is best experienced with headphones.\nEnable sound?',
+    soundConsentMessage: 'This game is best experienced with headphones.\nEnable sound?',
     soundConsentEnableLabel: 'With sound',
     soundConsentDisableLabel: 'Without sound',
   },

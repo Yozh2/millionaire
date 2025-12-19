@@ -21,4 +21,6 @@ export {
   StarIcon,
   drawCandleCoin,
 } from './icons';
-export { skyJourneyCampaign } from './campaigns/journey/campaign';
+export { mothCampaign } from './campaigns/moth/campaign';
+export { skykidCampaign } from './campaigns/skykid/campaign';
+export { ikemanCampaign } from './campaigns/ikeman/campaign';

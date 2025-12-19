@@ -1,34 +1,26 @@
 import type { ThemeColors } from '@engine/types';
 
-/**
- * Sky: Children of the Light - Theme
- *
- * Soft sky tones: white clouds, blue sky, green grass.
- */
 export const theme: ThemeColors = {
   primary: 'sky',
   isLight: true,
 
-  // Full-screen background: sky → horizon → grass
   bgGradient:
     'linear-gradient(180deg,' +
-    ' #eaf7ff 0%,' + // cloud-white
-    ' #bfe9ff 18%,' + // pale sky
-    ' #7dd3fc 55%,' + // sky
-    ' #60a5fa 70%,' + // deep sky
+    ' #f8fafc 0%,' + // near-white
+    ' #e0f2fe 18%,' + // sky-100
+    ' #7dd3fc 48%,' + // sky-300
+    ' #38bdf8 68%,' + // sky-400
     ' #22c55e 100%' + // grass
     ')',
 
-  // Body text
   textPrimary: 'text-slate-800',
   textSecondary: 'text-slate-700',
   textMuted: 'text-slate-600',
   textAccent: 'text-sky-700',
 
-  // Header text
   textTitle: 'text-slate-700',
   textHeader: 'text-white/95',
-  headerTextShadow: '0 4px 18px rgba(15, 23, 42, 0.18), 0 0 22px rgba(56, 189, 248, 0.35)',
+  headerTextShadow: '0 4px 18px rgba(15, 23, 42, 0.18), 0 0 22px rgba(56, 189, 248, 0.45)',
   headerTextBackdrop:
     'radial-gradient(ellipse at center, rgba(255,255,255,0.82) 18%, rgba(255,255,255,0.35) 55%, rgba(255,255,255,0) 78%)',
   panelHeaderTextShadow: '0 1px 2px rgba(15, 23, 42, 0.22)',
@@ -37,14 +29,12 @@ export const theme: ThemeColors = {
   borderLight: 'border-sky-200',
   borderHover: 'hover:border-sky-400',
 
-  // Panels are "cloud glass"
   bgPanel: 'from-white/85 via-sky-50/80 to-white/85',
   bgPanelFrom: 'rgba(255, 255, 255, 0.90)',
   bgPanelVia: 'rgba(224, 242, 254, 0.80)', // sky-100
   bgPanelTo: 'rgba(255, 255, 255, 0.88)',
 
-  // Header & buttons keep a readable sky gradient
-  bgHeader: 'from-sky-400 via-sky-300 to-sky-400',
+  bgHeader: 'from-sky-400 via-sky-300 to-emerald-400',
   bgHeaderVia: '#7dd3fc',
   headerBorderColor: '#38bdf8',
 
@@ -59,7 +49,7 @@ export const theme: ThemeColors = {
   textLifeline: 'text-white',
   borderLifeline: 'border-sky-200',
 
-  bgPrizeCurrent: 'bg-sky-500/30',
+  bgPrizeCurrent: 'bg-sky-500/25',
   bgPrizePassed: 'bg-emerald-500/15',
 
   glow: 'rgba(56, 189, 248, 0.55)',
