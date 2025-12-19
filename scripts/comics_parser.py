@@ -22,32 +22,10 @@ OUTPUT_FILE = "transformers_comics.md"
 
 # ВСТАВЬ СВОЙ СПИСОК ССЫЛОК СЮДА (многострочный plaintext)
 LINKS_TEXT = """
-https://tfwiki.net/wiki/Transformers_(2023)_issue_1
-https://tfwiki.net/wiki/Transformers_(2023)_issue_2
-https://tfwiki.net/wiki/Transformers_(2023)_issue_3
-https://tfwiki.net/wiki/Transformers_(2023)_issue_4
-https://tfwiki.net/wiki/Transformers_(2023)_issue_5
-https://tfwiki.net/wiki/Transformers_(2023)_issue_6
-https://tfwiki.net/wiki/Transformers_(2023)_issue_7
-https://tfwiki.net/wiki/Transformers_(2023)_issue_8
-https://tfwiki.net/wiki/Transformers_(2023)_issue_9
-https://tfwiki.net/wiki/Transformers_(2023)_issue_10
-https://tfwiki.net/wiki/Transformers_(2023)_issue_11
-https://tfwiki.net/wiki/Transformers_(2023)_issue_12
-https://tfwiki.net/wiki/Transformers_(2023)_issue_13
-https://tfwiki.net/wiki/Transformers_(2023)_issue_14
-https://tfwiki.net/wiki/Transformers_(2023)_issue_15
-https://tfwiki.net/wiki/Transformers_(2023)_issue_16
-https://tfwiki.net/wiki/Transformers_(2023)_issue_17
-https://tfwiki.net/wiki/Transformers_(2023)_issue_18
-https://tfwiki.net/wiki/Transformers_(2023)_issue_19
-https://tfwiki.net/wiki/Transformers_(2023)_issue_20
-https://tfwiki.net/wiki/Transformers_(2023)_issue_21
-https://tfwiki.net/wiki/Transformers_(2023)_issue_22
-https://tfwiki.net/wiki/Transformers_(2023)_issue_23
-https://tfwiki.net/wiki/Transformers_(2023)_issue_24
-https://tfwiki.net/wiki/Transformers_(2023)_issue_25
-https://tfwiki.net/wiki/Transformers_(2023)_issue_26
+https://tfwiki.net/wiki/Megatron_Origin_issue_1
+https://tfwiki.net/wiki/Megatron_Origin_issue_2
+https://tfwiki.net/wiki/Megatron_Origin_issue_3
+https://tfwiki.net/wiki/Megatron_Origin_issue_4
 """.strip()
 
 
