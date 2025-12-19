@@ -1,15 +1,27 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import type { MutableRefObject } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type MutableRefObject,
+} from 'react';
 
 import type {
   GameConfig,
   QuestionDifficulty,
   SlideshowScreen,
 } from '@engine/types';
-import { VolumeButton } from '../../components/buttons';
-import { PortalHeaderTuner, type PortalHeaderTunerValues } from '../../components/sliders';
-import { shuffleArray } from '../../../game/utils/shuffleArray';
+import { VolumeButton } from '@engine/ui/components/buttons';
+import {
+  PortalHeaderTuner,
+  type PortalHeaderTunerValues
+} from '@engine/ui/components/sliders';
+import { DEFAULT_PORTAL_HEADER_TUNER_VALUES } from '@engine/ui/components/sliders/portalHeaderTunerDefaults';
 import { useHeaderImages } from './useHeaderImages';
+import { usePortalTunerUi } from './portal/usePortalTunerUi';
+import { PortalHeaderCanvasLayer } from './portal/PortalHeaderCanvasLayer';
+import { useViewportAnchorTop } from './portal/useViewportAnchorTop';
 
 type Motion = 'open' | 'close';
 
@@ -59,22 +71,22 @@ type PortalConfig = {
 
 const DEFAULT_PORTAL_CFG: PortalConfig = {
   targetAspect: 960 / 310,
-  portalMargin: 0.06,
+  portalMargin: 0.05,
   superN: 2.7,
 
-  portalDetail: 0.92,
+  portalDetail: 0.9,
   revealDetail: 1.1,
   portalTSpeed: 0.55,
-  revealTSpeed: 0.78,
+  revealTSpeed: 0.8,
 
   layersCount: 3,
   layerScaleInner: 0.9,
-  layerScaleOuter: 1.13,
+  layerScaleOuter: 1.1,
   layerAlphaInner: 1.0,
-  layerAlphaOuter: 0.18,
+  layerAlphaOuter: 0.1,
 
   gapOpen: 0.12,
-  gapClose: 0.09,
+  gapClose: 0.1,
   openDelayGamma: 1.8,
   closeDelayGamma: 0.65,
 
@@ -468,6 +480,7 @@ function usePortalCanvas({
   openMs,
   closeMs,
   opacity,
+  onLayoutSize,
 }: {
   canvasRef: MutableRefObject<HTMLCanvasElement | null>;
   containerRef: MutableRefObject<HTMLDivElement | null>;
@@ -475,6 +488,7 @@ function usePortalCanvas({
   openMs: number;
   closeMs: number;
   opacity: number;
+  onLayoutSize?: (size: { w: number; h: number }) => void;
 }): PortalCanvasHandle {
   const reduceMotion = useMemo(() => prefersReducedMotion(), []);
   const idleMotionEnabled = !reduceMotion;
@@ -568,11 +582,13 @@ function usePortalCanvas({
     if (!el) return;
 
     const update = () => {
-      const rect = el.getBoundingClientRect();
-      const w = Math.max(1, Math.round(rect.width));
-      const h = Math.max(1, Math.round(rect.height));
+      // IMPORTANT: avoid getBoundingClientRect() here because it includes CSS transforms (e.g. tuner scale),
+      // which leads to double-scaling and visible horizontal drift. clientWidth/Height reflect layout size.
+      const w = Math.max(1, Math.round(el.clientWidth));
+      const h = Math.max(1, Math.round(el.clientHeight));
       const dpr = Math.max(1, Math.min(maxDpr, window.devicePixelRatio || 1));
       sizeRef.current = { w, h, dpr };
+      onLayoutSize?.({ w, h });
 
       const canvas = canvasRef.current;
       if (!canvas) return;
@@ -581,8 +597,6 @@ function usePortalCanvas({
       const pixelH = Math.max(1, Math.floor(h * dpr));
       if (canvas.width !== pixelW) canvas.width = pixelW;
       if (canvas.height !== pixelH) canvas.height = pixelH;
-      canvas.style.width = `${w}px`;
-      canvas.style.height = `${h}px`;
 
       const enableBlur = cfg.enableBlur;
       const layersCount = Math.max(1, Math.round(cfg.layersCount));
@@ -622,6 +636,7 @@ function usePortalCanvas({
     cfg.featherMult,
     cfg.layersCount,
     maxDpr,
+    onLayoutSize,
   ]);
 
   const rasterizeImage = useCallback(
@@ -1051,6 +1066,8 @@ interface PortalHeaderProps {
   isMusicPlaying: boolean;
   onToggleMusic: () => void;
   activated: boolean;
+  onPanelsCeilingChange?: (ceilingPx: number) => void;
+  onPortalHeightChange?: (heightPx: number) => void;
   className?: string;
 }
 
@@ -1063,10 +1080,14 @@ export function PortalHeader({
   onToggleMusic,
   activated,
   className = '',
+  onPanelsCeilingChange,
+  onPortalHeightChange,
 }: PortalHeaderProps) {
+  const rootRef = useRef<HTMLDivElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const enableBlur = config.headerSlideshow?.enableBlur ?? false;
+  const [portalBaseHeight, setPortalBaseHeight] = useState(0);
 
   const { enabled, isLoading, images, basePath, subfolder, displayDuration, transitionDuration, opacity } =
     useHeaderImages(config.headerSlideshow, {
@@ -1076,14 +1097,17 @@ export function PortalHeader({
       difficulty,
     });
 
-  const imageOrder = config.headerSlideshow?.imageOrder ?? 'alphabetical';
+  const orderMode: 'alphabetical' | 'random' =
+    slideshowScreen === 'play'
+      ? (config.headerSlideshow?.campaignImageOrder ?? 'random')
+      : 'random';
+
   const orderedImages = useMemo(() => {
-    if (images.length === 0) return images;
-    if (imageOrder === 'random') return shuffleArray(images);
+    if (orderMode !== 'alphabetical') return images;
     return [...images].sort((a, b) =>
       a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' })
     );
-  }, [imageOrder, images]);
+  }, [images, orderMode]);
 
   const openMs = Math.max(400, Math.round(transitionDuration * 0.65));
   const closeMs = Math.max(250, Math.round(transitionDuration * 0.5));
@@ -1099,6 +1123,7 @@ export function PortalHeader({
     openMs,
     closeMs,
     opacity,
+    onLayoutSize: useCallback(({ h }) => setPortalBaseHeight(h), []),
   });
   const { show, hide } = portal;
 
@@ -1113,8 +1138,12 @@ export function PortalHeader({
 
   useEffect(() => {
     if (!enabled || isLoading || orderedImages.length === 0) return;
-    setCurrentIndex(0);
-  }, [enabled, isLoading, orderedImages]);
+    setCurrentIndex(
+      orderMode === 'random'
+        ? Math.floor(Math.random() * orderedImages.length)
+        : 0
+    );
+  }, [enabled, isLoading, orderMode, orderedImages]);
 
   useEffect(() => {
     if (!activated) {
@@ -1131,91 +1160,79 @@ export function PortalHeader({
     if (orderedImages.length <= 1) return;
 
     const intervalId = window.setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % orderedImages.length);
+      setCurrentIndex((prev) => {
+        if (orderMode === 'alphabetical') return (prev + 1) % orderedImages.length;
+        let next = 0;
+        do {
+          next = Math.floor(Math.random() * orderedImages.length);
+        } while (next === prev && orderedImages.length > 1);
+        return next;
+      });
     }, displayDuration);
 
     return () => window.clearInterval(intervalId);
-  }, [activated, displayDuration, enabled, isLoading, orderedImages.length]);
+  }, [activated, displayDuration, enabled, isLoading, orderMode, orderedImages.length]);
 
-  const tunerUiAvailable = useMemo(() => {
-    if (import.meta.env.DEV) return true;
-    try {
-      return localStorage.getItem('engine:portal-header-tuner') === '1';
-    } catch {
-      return false;
-    }
-  }, []);
+  const tunerUiAvailable = usePortalTunerUi();
 
-  const [tuner, setTuner] = useState<PortalHeaderTunerValues>({
-    translateY: 0,
-    scale: 1,
-    panelsOverlap: 56,
-  });
+  const [tuner, setTuner] = useState<PortalHeaderTunerValues>(
+    DEFAULT_PORTAL_HEADER_TUNER_VALUES
+  );
   const translateY = Math.round(tuner.translateY);
   const scale = tuner.scale;
-  const panelsOverlapPx = Math.round(tuner.panelsOverlap);
-  const minHeightPx = Math.round(162 * scale);
+  const panelsCeilingPx = Math.round(tuner.panelsOverlap);
+  const minHeightPx = Math.max(1, Math.round((portalBaseHeight || 162) * scale));
+  const headerTopPx = useViewportAnchorTop(rootRef);
+  const safeTranslateY = Math.max(translateY, -Math.round(headerTopPx));
+
+  useEffect(() => {
+    onPanelsCeilingChange?.(panelsCeilingPx);
+  }, [onPanelsCeilingChange, panelsCeilingPx]);
+
+  useEffect(() => {
+    onPortalHeightChange?.(minHeightPx);
+  }, [minHeightPx, onPortalHeightChange]);
 
   return (
-    <div
-      className={`relative ${className}`}
-      style={{
-        minHeight: minHeightPx,
-        marginTop: translateY,
-        marginBottom: -panelsOverlapPx,
-        opacity: activated ? 1 : 0,
-        transition: 'opacity 260ms ease',
-        pointerEvents: activated ? 'none' : 'none',
-      }}
-    >
+    <>
+      <PortalHeaderCanvasLayer
+        translateY={safeTranslateY}
+        scale={scale}
+        active={activated}
+        containerRef={containerRef}
+        canvasRef={canvasRef}
+      />
+
       <div
-        className="absolute top-0 left-0 flex justify-center"
+        className={`relative overflow-visible max-w-4xl mx-auto w-full ${className}`}
+        ref={rootRef}
         style={{
-          width: '100vw',
-          marginLeft: 'calc(50% - 50vw)',
-          background: 'transparent',
-          overflow: 'visible',
+          minHeight: minHeightPx,
+          opacity: activated ? 1 : 0,
+          transition: 'opacity 260ms ease',
+          pointerEvents: 'none',
         }}
       >
-        <div
-          ref={containerRef}
-          className="relative"
-          style={{
-            width: 'min(1120px, calc(100% + 96px))',
-            aspectRatio: '960 / 310',
-            transform: `scale(${scale})`,
-            transformOrigin: 'top center',
-          }}
-        >
-          <canvas
-            ref={canvasRef}
-            className="absolute inset-0 w-full h-full"
-            style={{
-              pointerEvents: 'none',
-            }}
-          />
+        <div className="fixed top-3 right-3 z-[250] pointer-events-auto flex flex-col items-end gap-2">
+          <VolumeButton
+            onClick={onToggleMusic}
+            title={isMusicPlaying ? config.strings.musicOn : config.strings.musicOff}
+          >
+            {isMusicPlaying ? '🔊' : '🔇'}
+          </VolumeButton>
+
+          {tunerUiAvailable && (
+            <div className="mt-3">
+              <PortalHeaderTuner
+                storageKey={`engine:portal-header-tuner:${config.id}`}
+                disabled={!activated}
+                onChange={setTuner}
+              />
+            </div>
+          )}
         </div>
       </div>
-
-      <div className="fixed top-3 right-3 z-[250] pointer-events-auto flex flex-col items-end gap-2">
-        <VolumeButton
-          onClick={onToggleMusic}
-          title={isMusicPlaying ? config.strings.musicOn : config.strings.musicOff}
-        >
-          {isMusicPlaying ? '🔊' : '🔇'}
-        </VolumeButton>
-
-        {tunerUiAvailable && (
-          <div className="mt-3">
-            <PortalHeaderTuner
-              storageKey={`engine:portal-header-tuner:${config.id}`}
-              disabled={!activated}
-              onChange={setTuner}
-            />
-          </div>
-        )}
-      </div>
-    </div>
+    </>
   );
 }
 

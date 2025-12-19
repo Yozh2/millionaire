@@ -93,6 +93,8 @@ export interface ThemeColors {
   textTitle?: string;
   /** Optional text color for PanelHeader (falls back to textSecondary). */
   textHeader?: string;
+  /** Optional PanelHeader gradient direction class (defaults to bg-gradient-to-r). */
+  headerGradientClass?: string;
 
   // Border colors
   border: string;
@@ -134,6 +136,22 @@ export interface ThemeColors {
   // Prize ladder
   bgPrizeCurrent: string;
   bgPrizePassed: string;
+  /** Optional prize ladder text override for the current row (defaults to textSecondary). */
+  prizeTextCurrent?: string;
+  /** Optional prize ladder text override for passed rows (defaults to textMuted). */
+  prizeTextPassed?: string;
+  /** Optional prize ladder text override for future rows (defaults to text-stone-300). */
+  prizeTextFuture?: string;
+  /** Optional prize ladder styling override for guaranteed rows. */
+  prizeBgGuaranteed?: string;
+  prizeTextGuaranteed?: string;
+  prizeBorderGuaranteed?: string;
+  /** Optional prize ladder border override for the current row (falls back to borderLight). */
+  prizeBorderCurrent?: string;
+  /** Optional prize ladder border override for passed rows (falls back to border). */
+  prizeBorderPassed?: string;
+  /** Optional prize ladder glow override for the current row (falls back to glow). */
+  prizeGlowCurrent?: string;
 
   // Glow effects
   glow: string;
@@ -360,6 +378,14 @@ export interface GameStrings {
   lifelineSenderLabel: string;
   lifelineAudienceLabel: string;
 
+  /**
+   * Optional lifeline result texts (for non-preferred lifelines / engine messages).
+   * Use these to localize engine-provided lifeline result panels.
+   */
+  lifelineSwitchText?: string;
+  lifelineDoubleArmedText?: string;
+  lifelineDoubleUsedText?: string;
+
   // Companion phrases (with {answer} placeholder)
   companionPhrases: {
     confident: string[];
@@ -477,11 +503,13 @@ export interface HeaderSlideshowConfig {
   /** Opacity of the slideshow overlay (default: 1) */
   opacity?: number;
   /**
-   * Image ordering strategy.
-   * - `alphabetical` (default) shows images in filename order.
-   * - `random` shuffles the list once and cycles through it.
+   * Campaign (in-game) slideshow ordering strategy.
+   * Applies only to the `play` screen; start/end screens are always random.
+   *
+   * - `random` (default) picks a random image each cycle.
+   * - `alphabetical` cycles through images in filename order.
    */
-  imageOrder?: 'alphabetical' | 'random';
+  campaignImageOrder?: 'alphabetical' | 'random';
   /**
    * Enable expensive blur-based effects in the header (e.g. PortalHeader mask blur / backdrop blur).
    * Default: false

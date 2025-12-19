@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { VerticalSlider } from './VerticalSlider';
+import { DEFAULT_PORTAL_HEADER_TUNER_VALUES } from './portalHeaderTunerDefaults';
 
 export type PortalHeaderTunerValues = {
   translateY: number;
@@ -12,12 +13,6 @@ export type PortalHeaderTunerProps = {
   storageKey: string;
   disabled?: boolean;
   onChange: (values: PortalHeaderTunerValues) => void;
-};
-
-const DEFAULT_VALUES: PortalHeaderTunerValues = {
-  translateY: 0,
-  scale: 1,
-  panelsOverlap: 56,
 };
 
 function clamp(value: number, min: number, max: number) {
@@ -48,31 +43,31 @@ export function PortalHeaderTuner({
   const [values, setValues] = useState<PortalHeaderTunerValues>(() => {
     try {
       const raw = localStorage.getItem(valuesKey);
-      if (!raw) return DEFAULT_VALUES;
+      if (!raw) return DEFAULT_PORTAL_HEADER_TUNER_VALUES;
       const parsed = JSON.parse(raw) as Partial<Record<keyof PortalHeaderTunerValues, unknown>>;
       const translateYRaw =
-        typeof parsed.translateY === 'number' ? parsed.translateY : DEFAULT_VALUES.translateY;
+        typeof parsed.translateY === 'number' ? parsed.translateY : DEFAULT_PORTAL_HEADER_TUNER_VALUES.translateY;
       const scaleRaw =
-        typeof parsed.scale === 'number' ? parsed.scale : DEFAULT_VALUES.scale;
+        typeof parsed.scale === 'number' ? parsed.scale : DEFAULT_PORTAL_HEADER_TUNER_VALUES.scale;
       const panelsOverlapRaw =
-        typeof parsed.panelsOverlap === 'number' ? parsed.panelsOverlap : DEFAULT_VALUES.panelsOverlap;
+        typeof parsed.panelsOverlap === 'number' ? parsed.panelsOverlap : DEFAULT_PORTAL_HEADER_TUNER_VALUES.panelsOverlap;
       return {
-        translateY: clamp(readNumber(String(translateYRaw), DEFAULT_VALUES.translateY), -120, 80),
-        scale: clamp(readNumber(String(scaleRaw), DEFAULT_VALUES.scale), 0.8, 1.3),
+        translateY: clamp(readNumber(String(translateYRaw), DEFAULT_PORTAL_HEADER_TUNER_VALUES.translateY), -120, 80),
+        scale: clamp(readNumber(String(scaleRaw), DEFAULT_PORTAL_HEADER_TUNER_VALUES.scale), 0.8, 1.3),
         panelsOverlap: clamp(
-          readNumber(String(panelsOverlapRaw), DEFAULT_VALUES.panelsOverlap),
+          readNumber(String(panelsOverlapRaw), DEFAULT_PORTAL_HEADER_TUNER_VALUES.panelsOverlap),
           -220,
           220
         ),
       };
     } catch {
-      return DEFAULT_VALUES;
+      return DEFAULT_PORTAL_HEADER_TUNER_VALUES;
     }
   });
 
   useEffect(() => {
     if (disabled) return;
-    onChange(isOpen ? values : DEFAULT_VALUES);
+    onChange(isOpen ? values : DEFAULT_PORTAL_HEADER_TUNER_VALUES);
   }, [disabled, isOpen, onChange, values]);
 
   useEffect(() => {

@@ -14,7 +14,6 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { HeaderSlideshowConfig, QuestionDifficulty, SlideshowScreen } from '@engine/types';
-import { shuffleArray } from '../../../game/utils/shuffleArray';
 import { useHeaderImages } from './useHeaderImages';
 
 interface HeaderSlideshowProps {
@@ -44,14 +43,15 @@ export const HeaderSlideshow: React.FC<HeaderSlideshowProps> = ({
   const { enabled, transitionDuration, displayDuration, opacity, isLoading, images, basePath, subfolder } =
     useHeaderImages(config, { gameId, campaignId, screen, difficulty });
 
-  const imageOrder = config.imageOrder ?? 'alphabetical';
+  const orderMode: 'alphabetical' | 'random' =
+    screen === 'play' ? (config.campaignImageOrder ?? 'random') : 'random';
+
   const orderedImages = useMemo(() => {
-    if (images.length === 0) return images;
-    if (imageOrder === 'random') return shuffleArray(images);
+    if (orderMode !== 'alphabetical') return images;
     return [...images].sort((a, b) =>
       a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' })
     );
-  }, [imageOrder, images]);
+  }, [images, orderMode]);
 
   // Slideshow state
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -76,10 +76,14 @@ export const HeaderSlideshow: React.FC<HeaderSlideshowProps> = ({
       window.clearTimeout(transitionTimeoutRef.current);
       transitionTimeoutRef.current = null;
     }
-    setCurrentIndex(0);
+    setCurrentIndex(
+      orderMode === 'random'
+        ? Math.floor(Math.random() * orderedImages.length)
+        : 0
+    );
     setNextIndex(null);
     setIsTransitioning(false);
-  }, [orderedImages]);
+  }, [orderMode, orderedImages]);
 
   // Slideshow timer
   useEffect(() => {
@@ -88,7 +92,19 @@ export const HeaderSlideshow: React.FC<HeaderSlideshowProps> = ({
     const cycleImage = () => {
       if (isTransitioningRef.current) return;
 
-      const next = (currentIndexRef.current + 1) % orderedImages.length;
+      const next =
+        orderMode === 'alphabetical'
+          ? (currentIndexRef.current + 1) % orderedImages.length
+          : (() => {
+              let candidate = 0;
+              do {
+                candidate = Math.floor(Math.random() * orderedImages.length);
+              } while (
+                candidate === currentIndexRef.current &&
+                orderedImages.length > 1
+              );
+              return candidate;
+            })();
       setNextIndex(next);
       setIsTransitioning(true);
 
@@ -111,7 +127,7 @@ export const HeaderSlideshow: React.FC<HeaderSlideshowProps> = ({
         transitionTimeoutRef.current = null;
       }
     };
-  }, [displayDuration, orderedImages.length, transitionDuration]);
+  }, [displayDuration, orderMode, orderedImages.length, transitionDuration]);
 
   // Don't render if loading, disabled, or no images
   if (isLoading || !enabled || orderedImages.length === 0) return null;

@@ -22,7 +22,7 @@ interface ImageManifest {
     took?: { images?: string[] };
     lost?: { images?: string[] };
   };
-  campaigns?: Record<string, ImageManifest>;
+  campaigns?: Record<string, unknown>;
 }
 
 /** Cache for loaded manifests */
@@ -47,76 +47,49 @@ async function loadManifest(basePath: string): Promise<ImageManifest | null> {
   }
 }
 
-interface ManifestResult {
-  images: string[];
-  subfolder: string;
+const asRecord = (v: unknown): Record<string, unknown> | null =>
+  v && typeof v === 'object' ? (v as Record<string, unknown>) : null;
+
+function getImagesAtPath(node: unknown, parts: string[]): string[] {
+  let cur: unknown = node;
+  for (const part of parts) {
+    const rec = asRecord(cur);
+    if (!rec) return [];
+    cur = rec[part];
+  }
+  const rec = asRecord(cur);
+  const images = rec?.images;
+  return Array.isArray(images) ? (images as string[]) : [];
 }
 
-function getImagesFromManifest(
-  manifest: ImageManifest | null,
+function findFirstMatch(
+  nodes: Array<{ node: unknown; basePath: string }>,
+  partsList: string[][]
+): { images: string[]; basePath: string; subfolder: string } | null {
+  for (const { node, basePath } of nodes) {
+    for (const parts of partsList) {
+      const images = getImagesAtPath(node, parts);
+      if (images.length > 0) {
+        return { images, basePath, subfolder: parts.join('/') };
+      }
+    }
+  }
+  return null;
+}
+
+function partsForScreen(
   screen: SlideshowScreen,
   difficulty?: QuestionDifficulty
-): ManifestResult {
-  if (!manifest) return { images: [], subfolder: '' };
-
-  const getStartFallback = (): ManifestResult => ({
-    images: manifest.start?.images || [],
-    subfolder: 'start',
-  });
-
-  switch (screen) {
-    case 'start':
-      return {
-        images: manifest.start?.images || [],
-        subfolder: 'start',
-      };
-
-    case 'play': {
-      if (difficulty && manifest.play?.[difficulty]?.images?.length) {
-        return {
-          images: manifest.play[difficulty].images!,
-          subfolder: `play/${difficulty}`,
-        };
-      }
-      if (manifest.play?.images?.length) {
-        return {
-          images: manifest.play.images,
-          subfolder: 'play',
-        };
-      }
-      return getStartFallback();
-    }
-
-    case 'won':
-      if (manifest.end?.won?.images?.length) {
-        return { images: manifest.end.won.images, subfolder: 'end/won' };
-      }
-      if (manifest.end?.images?.length) {
-        return { images: manifest.end.images, subfolder: 'end' };
-      }
-      return getStartFallback();
-
-    case 'took':
-      if (manifest.end?.took?.images?.length) {
-        return { images: manifest.end.took.images, subfolder: 'end/took' };
-      }
-      if (manifest.end?.images?.length) {
-        return { images: manifest.end.images, subfolder: 'end' };
-      }
-      return getStartFallback();
-
-    case 'lost':
-      if (manifest.end?.lost?.images?.length) {
-        return { images: manifest.end.lost.images, subfolder: 'end/lost' };
-      }
-      if (manifest.end?.images?.length) {
-        return { images: manifest.end.images, subfolder: 'end' };
-      }
-      return getStartFallback();
-
-    default:
-      return { images: [], subfolder: '' };
+): string[][] {
+  if (screen === 'start') return [['start'], []];
+  if (screen === 'play') {
+    const parts: string[][] = [];
+    if (difficulty) parts.push(['play', difficulty]);
+    parts.push(['play']);
+    parts.push([]);
+    return parts;
   }
+  return [['end', screen], ['end'], []];
 }
 
 export interface UseHeaderImagesResult {
@@ -154,15 +127,8 @@ export function useHeaderImages(
   const [subfolder, setSubfolder] = useState<string>('');
   const [isLoading, setIsLoading] = useState(true);
 
-  const fallbackPaths = useMemo(() => {
-    const paths: Array<{ path: string; campaignPath?: string }> = [];
-    paths.push({
-      path: gameImagesDir(gameId),
-      campaignPath: campaignId ? `campaigns/${campaignId}` : undefined,
-    });
-    paths.push({ path: publicDir('images') });
-    return paths;
-  }, [campaignId, gameId, screen]);
+  const gameBasePath = useMemo(() => gameImagesDir(gameId), [gameId]);
+  const engineBasePath = useMemo(() => publicDir('images'), []);
 
   useEffect(() => {
     if (!enabled) {
@@ -173,41 +139,52 @@ export function useHeaderImages(
     let cancelled = false;
 
     async function resolveImages() {
-      for (const { path, campaignPath } of fallbackPaths) {
-        if (cancelled) return;
+      if (cancelled) return;
 
-        const manifest = await loadManifest(path);
-        if (!manifest) continue;
+      const gameManifest = await loadManifest(gameBasePath);
+      const engineManifest = await loadManifest(engineBasePath);
 
-        let resolvedImages: string[] = [];
-        let resolvedSubfolder = '';
-        let resolvedBasePath = path;
+      const nodes: Array<{ node: unknown; basePath: string }> = [];
 
-        if (campaignPath && campaignId && manifest.campaigns) {
-          const campaignManifest = manifest.campaigns[campaignId];
-          const result = getImagesFromManifest(
-            campaignManifest,
-            screen,
-            difficulty
-          );
-          resolvedImages = result.images;
-          resolvedSubfolder = result.subfolder;
-          if (resolvedImages.length > 0) {
-            resolvedBasePath = `${path}/${campaignPath}`;
-          }
+      if (campaignId && gameManifest?.campaigns) {
+        const campaigns = gameManifest.campaigns;
+        const campaignsRecord = asRecord(campaigns);
+        const campaignNode = campaignsRecord?.[campaignId];
+
+        if (campaignNode) {
+          nodes.push({
+            node: campaignNode,
+            basePath: `${gameBasePath}/campaigns/${campaignId}`,
+          });
         }
 
-        if (resolvedImages.length === 0) {
-          const result = getImagesFromManifest(manifest, screen, difficulty);
-          resolvedImages = result.images;
-          resolvedSubfolder = result.subfolder;
-        }
+        nodes.push({ node: campaigns, basePath: `${gameBasePath}/campaigns` });
+      }
 
-        if (resolvedImages.length > 0) {
+      if (gameManifest) nodes.push({ node: gameManifest, basePath: gameBasePath });
+      if (engineManifest) nodes.push({ node: engineManifest, basePath: engineBasePath });
+
+      const match = findFirstMatch(nodes, partsForScreen(screen, difficulty));
+      if (match) {
+        if (!cancelled) {
+          setImages(match.images);
+          setBasePath(match.basePath);
+          setSubfolder(match.subfolder);
+          setIsLoading(false);
+        }
+        return;
+      }
+
+      if (screen !== 'start') {
+        const startFallback = findFirstMatch(
+          nodes.filter((n) => n.basePath === gameBasePath || n.basePath === engineBasePath),
+          partsForScreen('start')
+        );
+        if (startFallback) {
           if (!cancelled) {
-            setImages(resolvedImages);
-            setBasePath(resolvedBasePath);
-            setSubfolder(resolvedSubfolder);
+            setImages(startFallback.images);
+            setBasePath(startFallback.basePath);
+            setSubfolder(startFallback.subfolder);
             setIsLoading(false);
           }
           return;
@@ -226,7 +203,7 @@ export function useHeaderImages(
     return () => {
       cancelled = true;
     };
-  }, [campaignId, difficulty, enabled, fallbackPaths, screen]);
+  }, [campaignId, difficulty, enabled, engineBasePath, gameBasePath, screen]);
 
   return {
     enabled,

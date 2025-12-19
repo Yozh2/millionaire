@@ -30,6 +30,7 @@ import { StartScreen } from './screens/StartScreen';
 import { PortalHeader } from './layout/header/PortalHeader';
 import { PortalHeaderTitle, type PortalHeaderTitlePhase } from './layout/header/PortalHeaderTitle';
 import { SoundConsentOverlay } from './components/overlays/SoundConsentOverlay';
+import { DEFAULT_PORTAL_HEADER_TUNER_VALUES } from '@engine/ui/components/sliders/portalHeaderTunerDefaults';
 import { STORAGE_KEY_SOUND_ENABLED } from '../constants';
 
 interface MillionaireGameProps {
@@ -287,6 +288,26 @@ export function MillionaireGame({ config }: MillionaireGameProps) {
     (!isSoundConsentDone || isSoundConsentClosing);
   const isHeaderActivated =
     showHeader && !showSoundConsent;
+  const [panelsCeilingPx, setPanelsCeilingPx] = useState(() =>
+    Math.round(DEFAULT_PORTAL_HEADER_TUNER_VALUES.panelsOverlap)
+  );
+  const [portalHeightPx, setPortalHeightPx] = useState(0);
+
+  const effectivePanelsCeilingPx = useMemo(() => {
+    if (!showHeader) return 0;
+
+    const overlapRatio = 0.45;
+    const minPanelsTopPx = 130;
+    const maxOverlapByRatio = portalHeightPx
+      ? Math.max(0, Math.round(portalHeightPx * overlapRatio))
+      : 220;
+    const maxOverlapByMinTop = portalHeightPx
+      ? Math.max(0, portalHeightPx - minPanelsTopPx)
+      : 220;
+    const maxOverlapPx = Math.min(220, maxOverlapByRatio, maxOverlapByMinTop);
+
+    return Math.max(panelsCeilingPx, -maxOverlapPx);
+  }, [panelsCeilingPx, portalHeightPx, showHeader]);
 
   useEffect(() => {
     if (introTitleTriggeredRef.current) return;
@@ -410,12 +431,20 @@ export function MillionaireGame({ config }: MillionaireGameProps) {
                 isMusicPlaying={audio.isMusicPlaying}
                 onToggleMusic={audio.toggleMusic}
                 activated={isHeaderActivated}
+                onPanelsCeilingChange={setPanelsCeilingPx}
+                onPortalHeightChange={setPortalHeightPx}
               />
             </div>
           )}
 
           <div className="relative z-10 max-w-4xl mx-auto w-full flex-1 flex flex-col">
-            <div key={gameState.gameState} className={screenWrapperClass}>
+            <div
+              key={gameState.gameState}
+              className={screenWrapperClass}
+              style={{
+                marginTop: effectivePanelsCeilingPx,
+              }}
+            >
               {/* Start Screen */}
               {gameState.gameState === 'start' &&
                 !level1Preload.isLoading &&
