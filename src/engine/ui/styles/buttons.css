@@ -5,6 +5,9 @@
   --glare-width: 60%;
   --glare-duration: 0.45s;
   --glare-press-duration: 0.2s;
+  /* Keep glare a bit softer than action buttons. */
+  --glare-opacity: 0.78;
+  --glare-blur: 5px;
 }
 
 
@@ -21,6 +24,16 @@
   transform: scale(0.97) translateY(2px);
   box-shadow: inset 0 3px 8px rgba(0, 0, 0, 0.4);
   transition: transform 0.05s ease-out, box-shadow 0.05s ease-out;
+}
+
+/* Disabled answers: keep them visually "pressed in" like a used/locked button. */
+.engine .answer-btn:disabled {
+  transform: scale(0.97) translateY(2px);
+}
+
+/* Selected answer: return to "ground level" even though answers become disabled after selection. */
+.engine .answer-btn.answer-btn--selected:disabled {
+  transform: scale(1) translateY(0);
 }
 
 /* ============================================
@@ -89,6 +102,17 @@
   }
 }
 
+/* FSM-driven hover (keeps visual lift in sync with glare on browsers where :hover is quirky). */
+@media (hover: hover) and (pointer: fine) {
+  .engine .action-btn[data-btn-state='Hover']:not(:disabled) {
+    transform: scale(1.08);
+    filter: brightness(1.15);
+    box-shadow:
+      0 8px 25px rgba(0, 0, 0, 0.3),
+      0 0 40px var(--btn-glow, rgba(255, 200, 0, 0.3));
+  }
+}
+
 /* Touch devices: active state acts as hover+press combined */
 @media (hover: none) {
   .engine .action-btn:not(:disabled):active {
@@ -96,6 +120,15 @@
     filter: brightness(0.85);
     animation: dust-puff 0.5s ease-out forwards;
   }
+}
+
+/* Ensure press-down starts immediately on :active (important for Chrome device emulation quirks). */
+.engine .action-btn:not(:disabled):active {
+  transform: scale(0.94);
+  filter: brightness(0.85);
+  transition:
+    transform 0.08s ease-out,
+    filter 0.08s ease-out;
 }
 
 /* ---- STATE 3: ACTIVE/PRESS (slammed down, dark, glare ←, dust puff) ---- */
@@ -110,6 +143,22 @@
   }
 }
 
+/* FSM-driven press: ensures the button "slams down" at the same time as press glare (esp. on touch). */
+.engine .action-btn[data-btn-state='Press']:not(:disabled) {
+  transform: scale(0.94);
+  filter: brightness(0.85);
+  animation: dust-puff 0.5s ease-out forwards;
+  transition:
+    transform 0.08s ease-out,
+    filter 0.08s ease-out;
+}
+
+/* Disabled action buttons: keep them pressed in (same position as press). */
+.engine .action-btn:disabled {
+  transform: scale(0.94);
+  filter: brightness(0.85);
+}
+
 /* ============================================
    Lifeline Buttons (50:50, Phone, Audience, etc.)
    Glow on hover, press effect
@@ -118,9 +167,11 @@
   transform: scale(1) translateY(0);
   transition: transform 0.12s ease-out, box-shadow 0.12s ease-out, filter 0.12s ease-out;
   --glare-width: 60%;
-  --glare-blur: 3.5px;
+  /* Slightly softer glare than action. */
+  --glare-blur: 4.5px;
   --glare-duration: 0.3s;
   --glare-press-duration: 0.2s;
+  --glare-opacity: 0.78;
 }
 
 /* Hover state - lift up and glow */
@@ -143,4 +194,10 @@
     inset 0 2px 8px rgba(0, 0, 0, 0.3);
   filter: brightness(0.95);
   transition: transform 0.06s ease-out, box-shadow 0.06s ease-out, filter 0.06s ease-out;
+}
+
+/* Disabled lifelines: keep them visually "pressed in" like a used/locked button. */
+.engine .lifeline-btn:disabled {
+  transform: scale(0.95) translateY(2px);
+  filter: brightness(0.85);
 }

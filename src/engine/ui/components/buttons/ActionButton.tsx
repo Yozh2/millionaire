@@ -24,7 +24,8 @@ export function ActionButton({
       disabled={disabled}
       onClick={onClick}
       onPointerDown={onPointerDown}
-      enablePointerCapture={false}
+      enablePointerCapture={true}
+      glareRestart="pointer"
       className={`glare action-btn px-8 py-3 font-bold text-lg tracking-wide border-4 ${className}`}
       style={{
         ['--btn-glow' as string]: theme.glow,

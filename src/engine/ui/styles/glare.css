@@ -8,9 +8,33 @@
       translateX(var(--glare-end, 150%));
   }
 }
+
+/* Identical keyframes under a different name so we can force-restart the animation. */
+@keyframes glare-sweep-alt {
+  0% {
+    transform: skewX(var(--glare-skew, -25deg))
+      translateX(var(--glare-start, -150%));
+  }
+  100% {
+    transform: skewX(var(--glare-skew, -25deg))
+      translateX(var(--glare-end, 150%));
+  }
+}
  
 
 @keyframes glare-sweep-reverse {
+  0% {
+    transform: skewX(var(--glare-skew, -25deg))
+      translateX(var(--glare-end, 150%));
+  }
+  100% {
+    transform: skewX(var(--glare-skew, -25deg))
+      translateX(var(--glare-start, -150%));
+  }
+}
+
+/* Identical keyframes under a different name so we can force-restart the animation. */
+@keyframes glare-sweep-reverse-alt {
   0% {
     transform: skewX(var(--glare-skew, -25deg))
       translateX(var(--glare-end, 150%));
@@ -61,25 +85,41 @@
   z-index: 10;
 }
 
+/* Desktop / real hover: drive glare from :hover/:active, and force-restart by toggling data-glare-phase. */
 @media (hover: hover) and (pointer: fine) {
-  .engine .glare:not(:disabled):hover::before {
+  .engine .glare:not(:disabled):hover[data-glare-phase='a']::before {
     animation: glare-sweep var(--glare-duration, 0.5s) ease-out forwards;
+  }
+  .engine .glare:not(:disabled):hover[data-glare-phase='b']::before {
+    animation: glare-sweep-alt var(--glare-duration, 0.5s) ease-out forwards;
   }
 }
 
-.engine .glare:not(:disabled):active::before {
+/* Active/press glare should work everywhere (including touch), even if hover media queries don't match. */
+.engine .glare:not(:disabled):active[data-glare-phase='a']::before {
   animation: glare-sweep-reverse var(--glare-press-duration, 0.2s) ease-out
     forwards;
 }
+.engine .glare:not(:disabled):active[data-glare-phase='b']::before {
+  animation: glare-sweep-reverse-alt var(--glare-press-duration, 0.2s) ease-out
+    forwards;
+}
 
-/* Button FSM support (v0): use data attribute instead of relying only on :hover/:active */
-@media (hover: hover) and (pointer: fine) {
-  .engine .glare[data-btn-state='Hover']:not(:disabled)::before {
+/* Touch / no hover: use our Button FSM states for reliable "press" and "release" glare. */
+@media (hover: none) {
+  .engine .glare[data-btn-state='Activate'][data-glare-phase='a']:not(:disabled)::before {
     animation: glare-sweep var(--glare-duration, 0.5s) ease-out forwards;
   }
-}
+  .engine .glare[data-btn-state='Activate'][data-glare-phase='b']:not(:disabled)::before {
+    animation: glare-sweep-alt var(--glare-duration, 0.5s) ease-out forwards;
+  }
 
-.engine .glare[data-btn-state='Press']:not(:disabled)::before {
-  animation: glare-sweep-reverse var(--glare-press-duration, 0.2s) ease-out
-    forwards;
+  .engine .glare[data-btn-state='Press'][data-glare-phase='a']:not(:disabled)::before {
+    animation: glare-sweep-reverse var(--glare-press-duration, 0.2s) ease-out
+      forwards;
+  }
+  .engine .glare[data-btn-state='Press'][data-glare-phase='b']:not(:disabled)::before {
+    animation: glare-sweep-reverse-alt var(--glare-press-duration, 0.2s) ease-out
+      forwards;
+  }
 }

@@ -30,6 +30,9 @@ export function AnswersPanel({
       'relative px-4 py-3 text-left transition-all duration-300 ' +
       'cursor-pointer text-sm border-4 ';
 
+    const isSelected = selectedAnswer !== null && displayIndex === selectedAnswer;
+    const selectedClass = isSelected ? ' answer-btn--selected' : '';
+
     if (eliminatedAnswers.includes(displayIndex)) {
       return (
         base +
@@ -50,7 +53,8 @@ export function AnswersPanel({
         return (
           base +
           'bg-gradient-to-br from-emerald-800 to-emerald-950 ' +
-          'text-emerald-200 border-emerald-500 shadow-xl animate-pulse'
+          'text-emerald-200 border-emerald-500 shadow-xl animate-pulse' +
+          selectedClass
         );
       }
 
@@ -58,9 +62,15 @@ export function AnswersPanel({
         return (
           base +
           'bg-gradient-to-br from-red-900 to-red-950 ' +
-          'text-red-300 border-red-600 shadow-lg'
+          'text-red-300 border-red-600 shadow-lg animate-pulse' +
+          selectedClass
         );
       }
+
+      // After selection, all other answers should look like "50:50 eliminated" ones.
+      return (
+        base + 'opacity-30 cursor-not-allowed bg-stone-950 text-stone-700 border-stone-900'
+      );
     }
 
     return (

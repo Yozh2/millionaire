@@ -38,6 +38,7 @@ describe('AnswersPanel', () => {
     const buttons = screen.getAllByRole('button');
     expect(buttons[0]?.className).toContain('from-red-900');
     expect(buttons[1]?.className).not.toContain('from-emerald-800');
+    expect(buttons[1]?.className).toContain('opacity-30');
   });
 
   it('reveals correct answer when wrong selection and Double Dip is not active', () => {
@@ -45,11 +46,16 @@ describe('AnswersPanel', () => {
     const buttons = screen.getAllByRole('button');
     expect(buttons[0]?.className).toContain('from-red-900');
     expect(buttons[1]?.className).toContain('from-emerald-800');
+    expect(buttons[2]?.className).toContain('opacity-30');
+    expect(buttons[3]?.className).toContain('opacity-30');
   });
 
   it('still highlights correct selection even when Double Dip is active', () => {
     renderPanel({ selectedAnswer: 1, preventCorrectRevealOnWrongSelection: true });
     const buttons = screen.getAllByRole('button');
     expect(buttons[1]?.className).toContain('from-emerald-800');
+    expect(buttons[0]?.className).toContain('opacity-30');
+    expect(buttons[2]?.className).toContain('opacity-30');
+    expect(buttons[3]?.className).toContain('opacity-30');
   });
 });
