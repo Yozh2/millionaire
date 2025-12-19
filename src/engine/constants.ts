@@ -57,3 +57,13 @@ export const PARTICLE_EFFECT_DURATION_MS = 3000;
 
 /** Key for persisted sound preference */
 export const STORAGE_KEY_SOUND_ENABLED = 'millionaire_sound_enabled';
+
+// ============================================
+// Typography
+// ============================================
+
+/** Non-breaking space character (U+00A0). Handy for preventing unwanted wraps in UI strings. */
+export const nbsp = '\u00A0';
+
+/** Alias for `nbsp` (U+00A0). */
+export const NBSP = nbsp;

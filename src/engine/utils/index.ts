@@ -32,3 +32,5 @@ export {
   getGuaranteedPrize,
   getQuestionDifficulty,
 } from './questionGenerator';
+
+export { applyNoBreakMarkup, applyNoBreakMarkupDeep } from './noBreakMarkup';

@@ -121,4 +121,6 @@ export {
   ANSWER_REVEAL_DURATION_MS,
   PARTICLE_EFFECT_DURATION_MS,
   STORAGE_KEY_SOUND_ENABLED,
+  nbsp,
+  NBSP,
 } from './constants';
