@@ -614,30 +614,88 @@ const tryPlayFile = async (
 /**
  * Map sound type names to oscillator keys
  */
+const normalizeSoundName = (name: string): string =>
+  name.toLowerCase().replace(/[^a-z0-9]/g, '');
+
 const SOUND_TYPE_MAP: Record<string, string> = {
   // Button sounds
-  AnswerClick: 'answerButton',
-  BigButtonPress: 'actionButton',
+  answerclick: 'answerButton',
+  answerbutton: 'answerButton',
+  bigbuttonpress: 'actionButton',
+  actionpress: 'actionButton',
+
   // Legacy hint filenames (map to lifeline/take money oscillator keys)
-  HintReduce: 'lifelineFifty',
-  HintCall: 'lifelinePhone',
-  HintVote: 'lifelineAudience',
-  HintTakeMoney: 'takeMoneyButton',
+  hintreduce: 'lifelineFifty',
+  hintcall: 'lifelinePhone',
+  hintvote: 'lifelineAudience',
+  hinttakemoney: 'takeMoneyButton',
+
   // Lifeline button sounds (v2)
-  LifelineFifty: 'lifelineFifty',
-  LifelinePhone: 'lifelinePhone',
-  LifelineAudience: 'lifelineAudience',
-  LifelineHost: 'lifelineHost',
-  LifelineSwitch: 'lifelineSwitch',
-  LifelineDouble: 'lifelineDouble',
-  DoubleDip: 'lifelineDouble',
+  lifelinefifty: 'lifelineFifty',
+  lifelinephone: 'lifelinePhone',
+  lifelineaudience: 'lifelineAudience',
+  lifelinehost: 'lifelineHost',
+  lifelineswitch: 'lifelineSwitch',
+  lifelinedouble: 'lifelineDouble',
+  doubledip: 'lifelineDouble',
+
   // Take money action sound (v2)
-  TakeMoney: 'takeMoneyButton',
+  takemoney: 'takeMoneyButton',
+  took: 'takeMoneyButton',
+  money: 'takeMoneyButton',
+
   // Game event sounds
-  Victory: 'victory',
-  Fail: 'defeat',
-  Correct: 'correct',
-  Next: 'correct',
+  victory: 'victory',
+  won: 'victory',
+  fail: 'defeat',
+  defeat: 'defeat',
+  lost: 'defeat',
+  correct: 'correct',
+  next: 'correct',
+};
+
+const uniqueStrings = (items: string[]): string[] => [...new Set(items)];
+
+const getSoundFilenameAliases = (filename: string): string[] => {
+  const extMatch = filename.match(/\.(mp3|ogg|wav)$/i);
+  const ext = extMatch ? extMatch[0] : '';
+  const base = ext ? filename.slice(0, -ext.length) : filename;
+  const normalizedBase = normalizeSoundName(base);
+
+  const aliases: string[] = [];
+
+  const add = (...names: string[]) => {
+    for (const name of names) {
+      if (!name) continue;
+      aliases.push(ext ? `${name}${ext}` : name);
+    }
+  };
+
+  // New ↔ legacy conventions (files)
+  if (normalizedBase === 'victory') add('won', 'Victory');
+  if (normalizedBase === 'won') add('victory', 'Victory');
+
+  if (normalizedBase === 'defeat') add('lost', 'Fail', 'GameOver');
+  if (normalizedBase === 'lost') add('defeat', 'Fail', 'GameOver');
+  if (normalizedBase === 'fail') add('defeat', 'lost', 'GameOver');
+
+  if (normalizedBase === 'correct') add('next', 'Next', 'Correct');
+  if (normalizedBase === 'next') add('correct', 'Correct');
+
+  if (normalizedBase === 'money') add('took', 'TookMoney', 'TakeMoney', 'action-press');
+  if (normalizedBase === 'took') add('money', 'TookMoney', 'TakeMoney');
+
+  // Legacy button names
+  if (normalizedBase === 'actionpress') add('BigButtonPress');
+  if (normalizedBase === 'answerclick') add('AnswerClick');
+
+  // Legacy lifeline names
+  if (normalizedBase === 'lifelinefifty') add('HintReduce', 'LifelineFifty');
+  if (normalizedBase === 'lifelinephone') add('HintCall', 'LifelinePhone');
+  if (normalizedBase === 'lifelineaudience') add('HintVote', 'LifelineAudience');
+  if (normalizedBase === 'takemoney') add('HintTakeMoney', 'TakeMoney', 'TookMoney');
+
+  return uniqueStrings(aliases).filter((a) => a !== filename);
 };
 
 /**
@@ -646,14 +704,15 @@ const SOUND_TYPE_MAP: Record<string, string> = {
 const getSoundTypeFromFilename = (filename: string): string | null => {
   // Remove extension
   const name = filename.replace(/\.(mp3|ogg|wav)$/i, '');
+  const normalized = normalizeSoundName(name);
 
-  // Check direct mapping
-  if (SOUND_TYPE_MAP[name]) {
-    return SOUND_TYPE_MAP[name];
+  // Check mapping (normalized)
+  if (SOUND_TYPE_MAP[normalized]) {
+    return SOUND_TYPE_MAP[normalized];
   }
 
   // Check if it starts with "Selected" (mode select sound)
-  if (name.startsWith('Selected')) {
+  if (normalized.startsWith('selected')) {
     return 'modeSelect';
   }
 
@@ -672,16 +731,20 @@ export const playSound = async (
 ): Promise<PlayResult> => {
   if (!soundEnabled) return 'none';
 
-  const paths = getAssetPaths('sounds', filename, currentGameId);
+  const candidates = uniqueStrings([filename, ...getSoundFilenameAliases(filename)]);
 
-  // 1. Try game-specific path
-  if (await tryPlayFile(paths.specific, volume)) {
-    return 'file';
-  }
+  for (const candidate of candidates) {
+    const paths = getAssetPaths('sounds', candidate, currentGameId);
 
-  // 2. Try fallback path
-  if (await tryPlayFile(paths.fallback, volume)) {
-    return 'file';
+    // 1. Try game-specific path
+    if (await tryPlayFile(paths.specific, volume)) {
+      return 'file';
+    }
+
+    // 2. Try fallback path
+    if (await tryPlayFile(paths.fallback, volume)) {
+      return 'file';
+    }
   }
 
   // 3. Try oscillator fallback

@@ -88,28 +88,33 @@ export function useMusicPlayer(
 
   useEffect(() => {
     const loadInitialTrack = async () => {
-      if (!config.audio.mainMenuTrack) return;
+      const trackFile = config.audio.menuTrack ?? 'menu.ogg';
+      const candidates = [trackFile, 'menu.ogg', 'MainMenu.ogg'];
 
-      const paths = getAssetPaths('music', config.audio.mainMenuTrack, config.id);
+      for (const candidate of candidates) {
+        if (!candidate) continue;
+        const paths = getAssetPaths('music', candidate, config.id);
 
-      if (
-        getPreloadedAudioSrc(paths.specific) ||
-        (await checkFileExists(paths.specific))
-      ) {
-        setCurrentTrack(paths.specific);
-        return;
-      }
+        if (
+          getPreloadedAudioSrc(paths.specific) ||
+          (await checkFileExists(paths.specific))
+        ) {
+          setCurrentTrack(paths.specific);
+          return;
+        }
 
-      if (
-        getPreloadedAudioSrc(paths.fallback) ||
-        (await checkFileExists(paths.fallback))
-      ) {
-        setCurrentTrack(paths.fallback);
+        if (
+          getPreloadedAudioSrc(paths.fallback) ||
+          (await checkFileExists(paths.fallback))
+        ) {
+          setCurrentTrack(paths.fallback);
+          return;
+        }
       }
     };
 
     void loadInitialTrack();
-  }, [config.id, config.audio.mainMenuTrack]);
+  }, [config.id, config.audio.menuTrack]);
 
   useEffect(() => {
     const savedPreference = getSavedSoundPreference();
@@ -258,11 +263,6 @@ export function useMusicPlayer(
     setAudioSource,
   ]);
 
-  const playMainMenu = useCallback(() => {
-    const shouldAutoPlay = musicEverEnabled.current && !userDisabledMusic.current;
-    void switchMusicTrack(config.audio.mainMenuTrack, shouldAutoPlay);
-  }, [config.audio.mainMenuTrack, switchMusicTrack]);
-
   const tryPlayTrackWithFallback = useCallback(
     async (trackFiles: (string | undefined)[], autoPlay: boolean = false): Promise<boolean> => {
       for (const trackFile of trackFiles) {
@@ -278,25 +278,56 @@ export function useMusicPlayer(
     [loadTrack, switchMusicTrack]
   );
 
+  const playMainMenu = useCallback(() => {
+    const shouldAutoPlay = musicEverEnabled.current && !userDisabledMusic.current;
+    void tryPlayTrackWithFallback(
+      [config.audio.menuTrack, 'menu.ogg', 'MainMenu.ogg'],
+      shouldAutoPlay
+    );
+  }, [config.audio.menuTrack, tryPlayTrackWithFallback]);
+
   const playGameOver = useCallback(() => {
-    void tryPlayTrackWithFallback([config.audio.gameOverTrack], true);
-  }, [config.audio.gameOverTrack, tryPlayTrackWithFallback]);
+    void tryPlayTrackWithFallback(
+      [config.audio.defeatTrack, 'defeat.ogg', 'lost.ogg', 'GameOver.ogg'],
+      true
+    );
+  }, [config.audio.defeatTrack, tryPlayTrackWithFallback]);
 
   const playVictory = useCallback(() => {
     void tryPlayTrackWithFallback(
-      [config.audio.victoryTrack, config.audio.gameOverTrack],
+      [
+        config.audio.victoryTrack,
+        'victory.ogg',
+        'won.ogg',
+        config.audio.defeatTrack,
+        'defeat.ogg',
+        'lost.ogg',
+        'Victory.ogg',
+      ],
       true
     );
-  }, [config.audio.gameOverTrack, config.audio.victoryTrack, tryPlayTrackWithFallback]);
+  }, [config.audio.defeatTrack, config.audio.victoryTrack, tryPlayTrackWithFallback]);
 
   const playTakeMoney = useCallback(() => {
     void tryPlayTrackWithFallback(
-      [config.audio.takeMoneyTrack, config.audio.victoryTrack, config.audio.gameOverTrack],
+      [
+        config.audio.moneyTrack,
+        'money.ogg',
+        'took.ogg',
+        config.audio.victoryTrack,
+        'victory.ogg',
+        'won.ogg',
+        config.audio.defeatTrack,
+        'defeat.ogg',
+        'lost.ogg',
+        'Money.ogg',
+        'TookMoney.ogg',
+      ],
       true
     );
   }, [
-    config.audio.gameOverTrack,
-    config.audio.takeMoneyTrack,
+    config.audio.defeatTrack,
+    config.audio.moneyTrack,
     config.audio.victoryTrack,
     tryPlayTrackWithFallback,
   ]);
@@ -318,9 +349,12 @@ export function useMusicPlayer(
 
   const playCampaignMusic = useCallback(
     (campaign: Campaign) => {
-      void switchMusicTrack(campaign.musicTrack, true);
+      void tryPlayTrackWithFallback(
+        [campaign.musicTrack, config.audio.menuTrack, 'menu.ogg'],
+        true
+      );
     },
-    [switchMusicTrack]
+    [config.audio.menuTrack, tryPlayTrackWithFallback]
   );
 
   const stopMusic = useCallback(() => {

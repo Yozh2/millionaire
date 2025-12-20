@@ -39,6 +39,7 @@ export function CampaignSelectionPanel({
             {config.campaigns.map((campaign) => (
               <CampaignCard
                 key={campaign.id}
+                gameId={config.id}
                 campaign={campaign}
                 selected={selectedCampaign?.id === campaign.id}
                 isLightTheme={isLightTheme}

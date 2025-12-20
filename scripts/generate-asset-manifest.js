@@ -28,6 +28,7 @@ const OUTPUT_FILE = join(PUBLIC_DIR, 'asset-manifest.json');
 const IMAGE_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.webp', '.gif', '.svg'];
 const AUDIO_EXTENSIONS = ['.ogg', '.mp3', '.wav', '.m4a'];
 const FAVICON_NAMES = ['favicon.png', 'favicon.svg', 'favicon.ico'];
+const GAME_CARD_NAMES = ['game-card.webp', 'game-card.png'];
 
 /**
  * Check file type by extension.
@@ -156,10 +157,31 @@ function scanGames() {
  */
 function scanGameAssets(gameDir, gameId) {
   const iconsDir = join(gameDir, 'icons');
-  const gameCardFilename = existsSync(join(iconsDir, 'game-card.png'))
-    ? 'game-card.png'
-    : null;
-  const faviconFilename = findFirstExistingFile(iconsDir, FAVICON_NAMES);
+  const faviconDir = join(gameDir, 'favicon');
+
+  const gameCardFilename = findFirstExistingFile(iconsDir, GAME_CARD_NAMES);
+  const faviconInFaviconDir = findFirstExistingFile(faviconDir, FAVICON_NAMES);
+  const faviconInIconsDir = findFirstExistingFile(iconsDir, FAVICON_NAMES);
+  const faviconFilename = faviconInFaviconDir ?? faviconInIconsDir;
+  const mainMenuMusicFilename = findFirstExistingFile(join(gameDir, 'music'), [
+    'menu.ogg',
+    'MainMenu.ogg',
+  ]);
+  const lostMusicFilename = findFirstExistingFile(join(gameDir, 'music'), [
+    'defeat.ogg',
+    'lost.ogg',
+    'GameOver.ogg',
+  ]);
+  const wonMusicFilename = findFirstExistingFile(join(gameDir, 'music'), [
+    'victory.ogg',
+    'won.ogg',
+    'Victory.ogg',
+  ]);
+  const tookMusicFilename = findFirstExistingFile(join(gameDir, 'music'), [
+    'money.ogg',
+    'took.ogg',
+    'TookMoney.ogg',
+  ]);
 
   const game = {
     // Level 0: For GameSelector cards
@@ -168,7 +190,9 @@ function scanGameAssets(gameDir, gameId) {
         ? `/games/${gameId}/icons/${gameCardFilename}`
         : null,
       favicon: faviconFilename
-        ? `/games/${gameId}/icons/${faviconFilename}`
+        ? faviconInFaviconDir
+          ? `/games/${gameId}/favicon/${faviconFilename}`
+          : `/games/${gameId}/icons/${faviconFilename}`
         : null,
     },
 
@@ -176,8 +200,8 @@ function scanGameAssets(gameDir, gameId) {
     level1: {
       icons: getFilesFromDir(iconsDir),
       sounds: getFilesFromDir(join(gameDir, 'sounds'), isAudioFile),
-      mainMenuMusic: existsSync(join(gameDir, 'music', 'MainMenu.ogg'))
-        ? `/games/${gameId}/music/MainMenu.ogg`
+      mainMenuMusic: mainMenuMusicFilename
+        ? `/games/${gameId}/music/${mainMenuMusicFilename}`
         : null,
       startImages: getFilesRecursive(join(gameDir, 'images', 'start')),
       campaignStartImages: {},
@@ -185,14 +209,11 @@ function scanGameAssets(gameDir, gameId) {
 
     // Level 2: End game assets (loaded during gameplay)
     level2: {
-      gameOverMusic: existsSync(join(gameDir, 'music', 'GameOver.ogg'))
-        ? `/games/${gameId}/music/GameOver.ogg`
+      gameOverMusic: lostMusicFilename ? `/games/${gameId}/music/${lostMusicFilename}`
         : null,
-      victoryMusic: existsSync(join(gameDir, 'music', 'Victory.ogg'))
-        ? `/games/${gameId}/music/Victory.ogg`
+      victoryMusic: wonMusicFilename ? `/games/${gameId}/music/${wonMusicFilename}`
         : null,
-      tookMoneyMusic: existsSync(join(gameDir, 'music', 'TookMoney.ogg'))
-        ? `/games/${gameId}/music/TookMoney.ogg`
+      tookMoneyMusic: tookMusicFilename ? `/games/${gameId}/music/${tookMusicFilename}`
         : null,
       endImages: {
         won: getFilesRecursive(join(gameDir, 'images', 'end', 'won')),
@@ -259,13 +280,16 @@ function scanGameAssets(gameDir, gameId) {
 
     // Known system music files to exclude from campaign detection
     const systemMusicFiles = [
+      'menu',
       'mainmenu',
-      'gameover',
       'victory',
-      'tookmoney',
-      'win',
-      'lose',
+      'won',
+      'defeat',
       'lost',
+      'money',
+      'took',
+      'gameover',
+      'tookmoney',
     ];
 
     // Get existing campaign IDs (lowercase for comparison)

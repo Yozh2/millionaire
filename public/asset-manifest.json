@@ -10,53 +10,49 @@
   "games": {
     "bg3": {
       "cardAssets": {
-        "gameCard": "/games/bg3/icons/game-card.png",
-        "favicon": "/games/bg3/icons/favicon.png"
+        "gameCard": "/games/bg3/icons/game-card.webp",
+        "favicon": "/games/bg3/favicon/favicon.svg"
       },
       "level1": {
         "icons": [
-          "/games/bg3/icons/apple-touch-icon.png",
-          "/games/bg3/icons/coin.png",
-          "/games/bg3/icons/dark-urge.png",
-          "/games/bg3/icons/favicon.png",
-          "/games/bg3/icons/favicon_256x256.png",
-          "/games/bg3/icons/game-card.png",
-          "/games/bg3/icons/gold1.webp",
-          "/games/bg3/icons/gold2.webp",
-          "/games/bg3/icons/gold3.webp",
-          "/games/bg3/icons/heroes.png",
+          "/games/bg3/icons/darkurge.webp",
+          "/games/bg3/icons/game-card.webp",
+          "/games/bg3/icons/hero.webp",
+          "/games/bg3/icons/logo.webp",
           "/games/bg3/icons/lost.webp",
-          "/games/bg3/icons/mind-flayer.png"
+          "/games/bg3/icons/mindflayer.webp",
+          "/games/bg3/icons/money.webp",
+          "/games/bg3/icons/treasure.webp"
         ],
         "sounds": [
-          "/games/bg3/sounds/AnswerClick.ogg",
-          "/games/bg3/sounds/BigButtonPress.ogg",
-          "/games/bg3/sounds/CampaignDarkUrge.ogg",
-          "/games/bg3/sounds/CampaignHero.ogg",
-          "/games/bg3/sounds/CampaignMindFlayer.ogg",
-          "/games/bg3/sounds/Fail.ogg",
-          "/games/bg3/sounds/HintReduce.ogg",
-          "/games/bg3/sounds/HintTakeMoney.ogg",
-          "/games/bg3/sounds/HintVote.ogg"
+          "/games/bg3/sounds/action-press.ogg",
+          "/games/bg3/sounds/answer-click.ogg",
+          "/games/bg3/sounds/defeat.ogg",
+          "/games/bg3/sounds/lifeline-audience.ogg",
+          "/games/bg3/sounds/lifeline-fifty.ogg",
+          "/games/bg3/sounds/money.ogg",
+          "/games/bg3/sounds/select-darkurge.ogg",
+          "/games/bg3/sounds/select-hero.ogg",
+          "/games/bg3/sounds/select-mindflayer.ogg"
         ],
-        "mainMenuMusic": "/games/bg3/music/MainMenu.ogg",
+        "mainMenuMusic": "/games/bg3/music/menu.ogg",
         "startImages": [],
         "campaignStartImages": {
-          "darkUrge": [
-            "/games/bg3/images/campaigns/darkUrge/start/01.webp"
+          "darkurge": [
+            "/games/bg3/images/campaigns/darkurge/start/01.webp"
           ],
           "hero": [
             "/games/bg3/images/campaigns/hero/start/01.webp"
           ],
-          "mindFlayer": [
-            "/games/bg3/images/campaigns/mindFlayer/start/01.webp"
+          "mindflayer": [
+            "/games/bg3/images/campaigns/mindflayer/start/01.webp"
           ]
         }
       },
       "level2": {
-        "gameOverMusic": "/games/bg3/music/GameOver.ogg",
-        "victoryMusic": "/games/bg3/music/Victory.ogg",
-        "tookMoneyMusic": "/games/bg3/music/TookMoney.ogg",
+        "gameOverMusic": "/games/bg3/music/defeat.ogg",
+        "victoryMusic": "/games/bg3/music/victory.ogg",
+        "tookMoneyMusic": "/games/bg3/music/money.ogg",
         "endImages": {
           "won": [
             "/games/bg3/images/end/won/01.webp"
@@ -76,9 +72,9 @@
         "/games/bg3/voices/Shadowheart.ogg"
       ],
       "campaigns": {
-        "darkUrge": {
+        "darkurge": {
           "level1_1": {
-            "music": "/games/bg3/music/darkUrge.ogg",
+            "music": "/games/bg3/music/darkurge.ogg",
             "musicAlt": null,
             "playImages": {
               "easy": []
@@ -92,7 +88,7 @@
             "endImages": {
               "won": [],
               "lost": [
-                "/games/bg3/images/campaigns/darkUrge/end/lost/01.webp"
+                "/games/bg3/images/campaigns/darkurge/end/lost/01.webp"
               ],
               "took": []
             }
@@ -120,9 +116,9 @@
             }
           }
         },
-        "mindFlayer": {
+        "mindflayer": {
           "level1_1": {
-            "music": "/games/bg3/music/mindFlayer.ogg",
+            "music": "/games/bg3/music/mindflayer.ogg",
             "musicAlt": null,
             "playImages": {
               "easy": []
@@ -136,7 +132,7 @@
             "endImages": {
               "won": [],
               "lost": [
-                "/games/bg3/images/campaigns/mindFlayer/end/lost/01.webp"
+                "/games/bg3/images/campaigns/mindflayer/end/lost/01.webp"
               ],
               "took": []
             }
@@ -146,14 +142,14 @@
     },
     "sky-cotl": {
       "cardAssets": {
-        "gameCard": "/games/sky-cotl/icons/game-card.png",
-        "favicon": "/games/sky-cotl/icons/favicon.ico"
+        "gameCard": "/games/sky-cotl/icons/game-card.webp",
+        "favicon": null
       },
       "level1": {
         "icons": [
-          "/games/sky-cotl/icons/Logo.png",
-          "/games/sky-cotl/icons/Skykid.png",
-          "/games/sky-cotl/icons/game-card.png"
+          "/games/sky-cotl/icons/game-card.webp",
+          "/games/sky-cotl/icons/logo.webp",
+          "/games/sky-cotl/icons/skykid.webp"
         ],
         "sounds": [],
         "mainMenuMusic": null,
@@ -175,35 +171,33 @@
     },
     "transformers": {
       "cardAssets": {
-        "gameCard": "/games/transformers/icons/game-card.png",
-        "favicon": "/games/transformers/icons/favicon.png"
+        "gameCard": "/games/transformers/icons/game-card.webp",
+        "favicon": null
       },
       "level1": {
         "icons": [
-          "/games/transformers/icons/Autocracy.png",
-          "/games/transformers/icons/BrokenSpark.png",
-          "/games/transformers/icons/Energon.png",
-          "/games/transformers/icons/MatrixTrophyShine.png",
-          "/games/transformers/icons/Megatron.png",
-          "/games/transformers/icons/Skybound.png",
-          "/games/transformers/icons/favicon.png",
-          "/games/transformers/icons/favicon_256x256.png",
-          "/games/transformers/icons/game-card.png",
-          "/games/transformers/icons/logo.png"
+          "/games/transformers/icons/autocracy.webp",
+          "/games/transformers/icons/game-card.webp",
+          "/games/transformers/icons/logo.webp",
+          "/games/transformers/icons/lost.webp",
+          "/games/transformers/icons/megatron.webp",
+          "/games/transformers/icons/money.webp",
+          "/games/transformers/icons/skybound.webp",
+          "/games/transformers/icons/treasure.webp"
         ],
         "sounds": [
-          "/games/transformers/sounds/AnswerClick.ogg",
-          "/games/transformers/sounds/BigButtonPress.ogg",
-          "/games/transformers/sounds/CampaignAutocracy.ogg",
-          "/games/transformers/sounds/CampaignMegatron.ogg",
-          "/games/transformers/sounds/CampaignSkybound.ogg",
-          "/games/transformers/sounds/Fail.ogg",
-          "/games/transformers/sounds/HintCall.ogg",
-          "/games/transformers/sounds/HintReduce.ogg",
-          "/games/transformers/sounds/HintVote.ogg",
-          "/games/transformers/sounds/Next.ogg"
+          "/games/transformers/sounds/action-press.ogg",
+          "/games/transformers/sounds/answer-click.ogg",
+          "/games/transformers/sounds/correct.ogg",
+          "/games/transformers/sounds/defeat.ogg",
+          "/games/transformers/sounds/lifeline-audience.ogg",
+          "/games/transformers/sounds/lifeline-fifty.ogg",
+          "/games/transformers/sounds/lifeline-phone.ogg",
+          "/games/transformers/sounds/select-autocracy.ogg",
+          "/games/transformers/sounds/select-megatron.ogg",
+          "/games/transformers/sounds/select-skybound.ogg"
         ],
-        "mainMenuMusic": "/games/transformers/music/MainMenu.ogg",
+        "mainMenuMusic": "/games/transformers/music/menu.ogg",
         "startImages": [
           "/games/transformers/images/start/transformers-fall-of-cybertron.webp",
           "/games/transformers/images/start/transformers-the-game.webp",
@@ -216,9 +210,9 @@
         }
       },
       "level2": {
-        "gameOverMusic": "/games/transformers/music/GameOver.ogg",
-        "victoryMusic": "/games/transformers/music/Victory.ogg",
-        "tookMoneyMusic": "/games/transformers/music/TookMoney.ogg",
+        "gameOverMusic": "/games/transformers/music/defeat.ogg",
+        "victoryMusic": "/games/transformers/music/victory.ogg",
+        "tookMoneyMusic": "/games/transformers/music/money.ogg",
         "endImages": {
           "won": [],
           "lost": [],
@@ -238,7 +232,10 @@
             "music": "/games/transformers/music/autocracy.ogg",
             "musicAlt": null,
             "playImages": {
-              "easy": []
+              "easy": [
+                "/games/transformers/images/campaigns/autocracy/play/easy/01.webp",
+                "/games/transformers/images/campaigns/autocracy/play/easy/02.webp"
+              ]
             }
           },
           "level2": {

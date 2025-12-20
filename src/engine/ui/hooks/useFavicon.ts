@@ -4,10 +4,11 @@
  * Dynamically updates favicon and apple-touch-icon based on game context.
  *
  * Priority for game pages (highest to lowest):
- * 1. Game-specific icons: /games/{gameId}/icons/
- * 2. Shared fallback icons: /icons/
+ * 1. Game-specific favicons: /games/{gameId}/favicon/
+ * 2. Game-specific icons: /games/{gameId}/icons/
  * 3. Game's emoji from config
- * 4. Default engine emoji: 🎯
+ * 4. Shared fallback icons: /icons/
+ * 5. Default engine emoji: 🎯
  *
  * Priority for GameSelector page:
  * 1. Shared icons: /icons/
@@ -22,16 +23,14 @@ const DEFAULT_ENGINE_EMOJI = '🎯';
 
 /**
  * Supported favicon filenames in order of preference.
- * Safari prefers larger icons, so we try bigger sizes first.
  */
-const FAVICON_NAMES = [
-  'favicon.png',
-  'favicon.svg',
-  'favicon.ico',
-];
+const FAVICON_NAMES = ['favicon.svg', 'favicon-96x96.png', 'favicon.png', 'favicon.ico'];
 
 /** Apple touch icon filename */
 const APPLE_TOUCH_ICON_NAME = 'apple-touch-icon.png';
+
+/** Web app manifest filename */
+const WEB_MANIFEST_NAME = 'site.webmanifest';
 
 /**
  * Create emoji favicon as data URI.
@@ -60,8 +59,21 @@ async function imageExists(url: string): Promise<boolean> {
 }
 
 /**
- * Get base URL for assets.
+ * Check if a non-image file exists at the given URL.
+ * Rejects HTML to avoid SPA fallback.
  */
+async function fileExistsNotHtml(url: string): Promise<boolean> {
+  try {
+    const response = await fetch(url, { method: 'HEAD' });
+    if (!response.ok) return false;
+
+    const contentType = (response.headers.get('Content-Type') || '').toLowerCase();
+    return !contentType.startsWith('text/html');
+  } catch {
+    return false;
+  }
+}
+
 /**
  * Find the first existing favicon from a list of base paths.
  */
@@ -73,6 +85,21 @@ async function findFavicon(basePaths: string[]): Promise<string | null> {
         return url;
       }
     }
+  }
+  return null;
+}
+
+/**
+ * Find a specific file in a list of base paths.
+ */
+async function findFile(
+  basePaths: string[],
+  filename: string,
+  exists: (url: string) => Promise<boolean>
+): Promise<string | null> {
+  for (const basePath of basePaths) {
+    const url = `${basePath}/${filename}`;
+    if (await exists(url)) return url;
   }
   return null;
 }
@@ -92,63 +119,24 @@ async function findAppleTouchIcon(
   return null;
 }
 
-let currentFaviconHref: string | null = null;
-let currentAppleHref: string | null = null;
+type HeadTagSpec =
+  | { tagName: 'link'; attrs: Record<string, string> }
+  | { tagName: 'meta'; attrs: Record<string, string> };
+
+let currentHeadSignature: string | null = null;
 
 /**
- * Update or create a link element in the document head.
- * Skips work if href is unchanged to avoid flicker and double-set (StrictMode).
+ * Remove existing favicon-related head tags (both static and previously injected).
  */
-function updateLinkElement(
-  rel: 'icon' | 'apple-touch-icon',
-  href: string,
-  type?: string,
-  sizes?: string
-): void {
-  const prevHref = rel === 'icon' ? currentFaviconHref : currentAppleHref;
-  if (prevHref === href) {
-    logDebug(`${rel} unchanged`, href);
-    return;
-  }
-
-  // Remove existing link to force browser refresh (Safari workaround)
-  const existingLinks = document.querySelectorAll(
-    `link[rel="${rel}"], link[rel="shortcut icon"]`
-  );
-  existingLinks.forEach((link) => link.remove());
-
-  // Add cache-busting for non-data URIs (Safari fix)
-  const finalHref = href.startsWith('data:')
-    ? href
-    : `${href}?v=${Date.now()}`;
-
-  // Create new link element
-  const link = document.createElement('link');
-  link.rel = rel;
-  link.href = finalHref;
-  if (type) {
-    link.type = type;
-  }
-  if (sizes) {
-    link.setAttribute('sizes', sizes);
-  }
-  document.head.appendChild(link);
-
-  if (rel === 'icon') {
-    currentFaviconHref = href;
-  } else {
-    currentAppleHref = href;
-  }
-}
-
-/**
- * Get MIME type for favicon based on extension.
- */
-function getFaviconType(url: string): string {
-  if (url.endsWith('.svg')) return 'image/svg+xml';
-  if (url.endsWith('.png')) return 'image/png';
-  if (url.endsWith('.ico')) return 'image/x-icon';
-  return 'image/png';
+function clearFaviconHeadTags(): void {
+  const selectors = [
+    'link[rel="icon"]',
+    'link[rel="shortcut icon"]',
+    'link[rel="apple-touch-icon"]',
+    'link[rel="manifest"]',
+    'meta[name="apple-mobile-web-app-title"]',
+  ];
+  document.querySelectorAll(selectors.join(', ')).forEach((el) => el.remove());
 }
 
 /**
@@ -166,6 +154,171 @@ const logDebug = (...args: unknown[]) => {
   }
 };
 
+function withCacheBust(url: string, cacheBust: string): string {
+  if (url.startsWith('data:')) return url;
+  const sep = url.includes('?') ? '&' : '?';
+  return `${url}${sep}v=${cacheBust}`;
+}
+
+function headSignature(tags: HeadTagSpec[]): string {
+  return JSON.stringify(tags);
+}
+
+function applyHeadTags(tags: HeadTagSpec[]): void {
+  const signature = headSignature(tags);
+  if (signature === currentHeadSignature) {
+    logDebug('head tags unchanged');
+    return;
+  }
+
+  clearFaviconHeadTags();
+
+  const cacheBust = String(Date.now());
+
+  for (const tag of tags) {
+    const el = document.createElement(tag.tagName);
+
+    for (const [key, value] of Object.entries(tag.attrs)) {
+      if (tag.tagName === 'link' && key === 'href') {
+        const rel = tag.attrs.rel;
+        const shouldBust =
+          rel === 'icon' ||
+          rel === 'shortcut icon' ||
+          rel === 'apple-touch-icon';
+        (el as HTMLLinkElement).href = shouldBust
+          ? withCacheBust(value, cacheBust)
+          : value;
+      } else {
+        el.setAttribute(key, value);
+      }
+    }
+
+    document.head.appendChild(el);
+  }
+
+  currentHeadSignature = signature;
+}
+
+async function resolveHeadFaviconTags(
+  gameId: string | null,
+  gameEmoji?: string
+): Promise<HeadTagSpec[]> {
+  // Shared base (always available)
+  const sharedIconsBase = publicDir('icons');
+
+  const searchBases: string[] = [];
+  if (gameId) {
+    // Optional, per-game favicon folder (highest priority)
+    searchBases.push(gameDir(gameId, 'favicon'));
+    // Back-compat: older game icons folder
+    searchBases.push(gameDir(gameId, 'icons'));
+  }
+  searchBases.push(sharedIconsBase);
+
+  const [iconSvg, iconPng96, iconPngLegacy, iconIco] = await Promise.all([
+    findFile(searchBases, 'favicon.svg', imageExists),
+    findFile(searchBases, 'favicon-96x96.png', imageExists),
+    findFile(searchBases, 'favicon.png', imageExists),
+    findFile(searchBases, 'favicon.ico', imageExists),
+  ]);
+
+  // If we have no file-based favicon at all, fall back to emoji cascade.
+  const hasAnyFileIcon = Boolean(iconSvg || iconPng96 || iconPngLegacy || iconIco);
+  if (!hasAnyFileIcon) {
+    const fallbackEmoji = gameId ? gameEmoji : undefined;
+    const emoji = fallbackEmoji || DEFAULT_ENGINE_EMOJI;
+    return [
+      {
+        tagName: 'link',
+        attrs: {
+          rel: 'icon',
+          type: 'image/svg+xml',
+          href: createEmojiFavicon(emoji),
+          sizes: 'any',
+        },
+      },
+    ];
+  }
+
+  const tags: HeadTagSpec[] = [];
+
+  if (iconPng96) {
+    tags.push({
+      tagName: 'link',
+      attrs: {
+        rel: 'icon',
+        type: 'image/png',
+        href: iconPng96,
+        sizes: '96x96',
+      },
+    });
+  } else if (iconPngLegacy) {
+    tags.push({
+      tagName: 'link',
+      attrs: {
+        rel: 'icon',
+        type: 'image/png',
+        href: iconPngLegacy,
+        sizes: '32x32',
+      },
+    });
+  }
+
+  if (iconSvg) {
+    tags.push({
+      tagName: 'link',
+      attrs: { rel: 'icon', type: 'image/svg+xml', href: iconSvg },
+    });
+  }
+
+  if (iconIco) {
+    tags.push({
+      tagName: 'link',
+      attrs: { rel: 'shortcut icon', href: iconIco },
+    });
+  }
+
+  // Apple-touch-icon + Apple title (optional)
+  const appleTouchIconUrl = await findAppleTouchIcon(searchBases);
+  if (appleTouchIconUrl) {
+    tags.push({
+      tagName: 'link',
+      attrs: {
+        rel: 'apple-touch-icon',
+        sizes: '180x180',
+        href: appleTouchIconUrl,
+      },
+    });
+  }
+
+  if (gameId) {
+    tags.push({
+      tagName: 'meta',
+      attrs: {
+        name: 'apple-mobile-web-app-title',
+        content: `M ${gameId.toUpperCase()}`,
+      },
+    });
+  }
+
+  // Manifest (optional; game-specific folder only)
+  if (gameId) {
+    const manifestUrl = await findFile(
+      [gameDir(gameId, 'favicon')],
+      WEB_MANIFEST_NAME,
+      fileExistsNotHtml
+    );
+    if (manifestUrl) {
+      tags.push({
+        tagName: 'link',
+        attrs: { rel: 'manifest', href: manifestUrl },
+      });
+    }
+  }
+
+  return tags;
+}
+
 /**
  * Resolve game icon URL with fallback cascade.
  *
@@ -177,11 +330,12 @@ export async function resolveGameIcon(
   gameId: string,
   gameEmoji?: string
 ): Promise<string> {
-  const gameBase = gameDir(gameId, 'icons');
+  const gameFaviconBase = gameDir(gameId, 'favicon');
+  const gameIconsBase = gameDir(gameId, 'icons');
   const sharedBase = publicDir('icons');
 
-  // 1) Try game-specific icons (svg/png/ico)
-  const gameIcon = await findFavicon([gameBase]);
+  // 1) Try game-specific icons (favicon folder, then legacy icons folder)
+  const gameIcon = await findFavicon([gameFaviconBase, gameIconsBase]);
   if (gameIcon) {
     logDebug('game icon found', gameIcon);
     return gameIcon;
@@ -239,58 +393,14 @@ export function useFavicon(
     const updateIcons = async () => {
       const runId = ++updateCounter.current;
 
-      let faviconUrl: string;
+      const tags = await resolveHeadFaviconTags(gameId, gameEmoji);
 
-      if (gameId) {
-        // Game page: game icons → shared icons → game emoji → default emoji
-        faviconUrl = await resolveGameIcon(gameId, gameEmoji);
-      } else {
-        // Selector page: shared icons → default emoji
-        faviconUrl = await resolveSharedIcon();
-      }
-
-      // Bail out if a newer update started
       if (runId !== updateCounter.current) {
         logDebug('favicon update skipped (stale)', { gameId, runId });
         return;
       }
 
-      // Set favicon with proper size attribute for Safari
-      const isDataUri = faviconUrl.startsWith('data:');
-      const faviconType = isDataUri
-        ? 'image/svg+xml'
-        : getFaviconType(faviconUrl);
-
-      // Determine size from filename or default
-      let sizes: string | undefined;
-      if (faviconUrl.includes('256')) {
-        sizes = '256x256';
-      } else if (faviconUrl.includes('128')) {
-        sizes = '128x128';
-      } else if (faviconUrl.endsWith('.svg') || isDataUri) {
-        sizes = 'any';
-      } else {
-        sizes = '32x32';
-      }
-
-      updateLinkElement('icon', faviconUrl, faviconType, sizes);
-
-      // Set apple-touch-icon (only if file exists)
-      const searchPaths: string[] = [];
-      if (gameId) {
-        searchPaths.push(gameDir(gameId, 'icons'));
-      }
-      searchPaths.push(publicDir('icons'));
-
-      const appleTouchIconUrl = await findAppleTouchIcon(searchPaths);
-      if (runId !== updateCounter.current) {
-        logDebug('apple icon update skipped (stale)', { gameId, runId });
-        return;
-      }
-
-      if (appleTouchIconUrl) {
-        updateLinkElement('apple-touch-icon', appleTouchIconUrl);
-      }
+      applyHeadTags(tags);
     };
 
     updateIcons();

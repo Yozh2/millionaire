@@ -6,8 +6,9 @@ export {
   gameFile,
   gameIconsDir,
   gameIconsFile,
+  gameFaviconDir,
+  gameFaviconFile,
   gameImagesDir,
   gameImagesFile,
   type GamePublicDir,
 } from '@engine/assets/public';
-

@@ -1,23 +1,13 @@
 /**
  * Baldur's Gate 3 - Game Configuration
- *
- * Complete configuration for the BG3 edition of the quiz game.
  */
 
 import type { GameConfig } from '@engine/types';
 import { createDefaultAudioConfig } from '@engine/audio/defaultAudio';
-import { darkUrgeCampaign } from './campaigns/darkUrge/campaign';
+import { darkurgeCampaign } from './campaigns/darkUrge/campaign';
 import { heroCampaign } from './campaigns/hero/campaign';
-import { mindFlayerCampaign } from './campaigns/mindFlayer/campaign';
-import {
-  CoinIcon,
-  CriticalFailIcon,
-  MoneyIcon,
-  ScrollIcon,
-  TavernIcon,
-  TrophyIcon,
-  drawGoldCoin,
-} from './icons';
+import { mindflayerCampaign } from './campaigns/mindFlayer/campaign';
+import { ScrollIcon, TavernIcon } from './icons';
 import {
   bg3ActionNames,
   bg3Companions,
@@ -44,7 +34,7 @@ export const bg3Config: GameConfig = {
     available: true,
   },
 
-  campaigns: [heroCampaign, mindFlayerCampaign, darkUrgeCampaign],
+  campaigns: [heroCampaign, mindflayerCampaign, darkurgeCampaign],
 
   companions: bg3Companions,
   strings: bg3Strings,
@@ -73,18 +63,9 @@ export const bg3Config: GameConfig = {
   }),
 
   icons: {
-    coin: CoinIcon,
     lifelinePhone: ScrollIcon,
     lifelineAudience: TavernIcon,
   },
-
-  endIcons: {
-    won: TrophyIcon,
-    lost: CriticalFailIcon,
-    tookMoney: MoneyIcon,
-  },
-
-  drawCoinParticle: drawGoldCoin,
 
   headerSlideshow: {
     enabled: true,

@@ -4,15 +4,7 @@
  */
 
 export { bg3Config, default } from './config';
-export {
-  TrophyIcon,
-  MoneyIcon,
-  CriticalFailIcon,
-  CoinIcon,
-  ScrollIcon,
-  TavernIcon,
-  drawGoldCoin,
-} from './icons';
+export { ScrollIcon, TavernIcon } from './icons';
 export {
   bg3Title,
   bg3Subtitle,
@@ -24,5 +16,5 @@ export {
   bg3CampaignStrings,
 } from './strings';
 export { heroCampaign } from './campaigns/hero/campaign';
-export { mindFlayerCampaign } from './campaigns/mindFlayer/campaign';
-export { darkUrgeCampaign } from './campaigns/darkUrge/campaign';
+export { mindflayerCampaign } from './campaigns/mindFlayer/campaign';
+export { darkurgeCampaign } from './campaigns/darkUrge/campaign';

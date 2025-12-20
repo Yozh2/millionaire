@@ -1,8 +1,14 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { gameIconsFile } from '@public';
+import { gameFaviconFile, gameIconsFile } from '@public';
 import { useGameCardFsm } from './useGameCardFsm';
 
 const FALLBACK_FAVICONS = ['favicon.png', 'favicon.svg', 'favicon.ico'] as const;
+const FALLBACK_GAME_FAVICONS = [
+  'favicon-96x96.png',
+  'favicon.png',
+  'favicon.svg',
+  'favicon.ico',
+] as const;
 
 export interface GameCardProps {
   gameId: string;
@@ -29,7 +35,8 @@ export function GameCard({
 
   const sources = useMemo(
     () => [
-      gameIconsFile(gameId, 'game-card.png'),
+      gameIconsFile(gameId, 'game-card.webp'),
+      ...FALLBACK_GAME_FAVICONS.map((name) => gameFaviconFile(gameId, name)),
       ...FALLBACK_FAVICONS.map((name) => gameIconsFile(gameId, name)),
     ],
     [gameId]

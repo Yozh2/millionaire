@@ -8,13 +8,6 @@
 
 export { transformersConfig, transformersConfig as default } from './config';
 export {
-  MatrixIcon,
-  BrokenSparkIcon,
-  EnergonIcon,
-  EnergonCoinIcon,
-  drawEnergonCrystal,
-} from './icons';
-export {
   transformersTitle,
   transformersSubtitle,
   transformersStrings,

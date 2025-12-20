@@ -17,7 +17,13 @@ export const publicFile = (relativePath: string): string =>
 export const publicDir = (relativeDir: string): string =>
   stripTrailingSlash(withBasePath(stripLeadingSlash(relativeDir)));
 
-export type GamePublicDir = 'icons' | 'images' | 'sounds' | 'music' | 'voices';
+export type GamePublicDir =
+  | 'icons'
+  | 'images'
+  | 'sounds'
+  | 'music'
+  | 'voices'
+  | 'favicon';
 
 export const gameDir = (gameId: string, dir: GamePublicDir): string =>
   publicDir(`games/${gameId}/${dir}`);
@@ -29,7 +35,10 @@ export const gameIconsDir = (gameId: string): string => gameDir(gameId, 'icons')
 export const gameIconsFile = (gameId: string, filename: string): string =>
   gameFile(gameId, 'icons', filename);
 
+export const gameFaviconDir = (gameId: string): string => gameDir(gameId, 'favicon');
+export const gameFaviconFile = (gameId: string, filename: string): string =>
+  gameFile(gameId, 'favicon', filename);
+
 export const gameImagesDir = (gameId: string): string => gameDir(gameId, 'images');
 export const gameImagesFile = (gameId: string, filename: string): string =>
   gameFile(gameId, 'images', filename);
-

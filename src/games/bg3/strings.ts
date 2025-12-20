@@ -5,8 +5,8 @@ export const bg3Subtitle = "Baldur's Gate III Edition";
 
 export const bg3CampaignStrings = {
   hero: { name: 'ГЕРОЙ', label: 'Легко', iconAlt: 'Hero' },
-  mindFlayer: { name: 'ИЛЛИТИД', label: 'Сложно', iconAlt: 'Mind Flayer' },
-  darkUrge: { name: 'СОБЛАЗН', label: 'Доблесть', iconAlt: 'Dark Urge' },
+  mindflayer: { name: 'ИЛЛИТИД', label: 'Сложно', iconAlt: 'Mind Flayer' },
+  darkurge: { name: 'СОБЛАЗН', label: 'Доблесть', iconAlt: 'Dark Urge' },
 } as const;
 
 export const bg3Companions: Companion[] = [

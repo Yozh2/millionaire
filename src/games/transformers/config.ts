@@ -13,13 +13,6 @@ import { autocracyCampaign } from './campaigns/autocracy/campaign';
 import { megatronCampaign } from './campaigns/megatron/campaign';
 import { skyboundCampaign } from './campaigns/skybound/campaign';
 import {
-  BrokenSparkIcon,
-  EnergonCoinIcon,
-  EnergonIcon,
-  MatrixIcon,
-  drawEnergonCrystal,
-} from './icons';
-import {
   transformersActionNames,
   transformersCompanions,
   transformersCurrency,
@@ -80,18 +73,6 @@ export const transformersConfig: GameConfig = {
     soundVolume: 1.0,
     voiceVolume: 1.0,
   }),
-
-  icons: {
-    coin: EnergonCoinIcon,
-  },
-
-  endIcons: {
-    won: MatrixIcon,
-    lost: BrokenSparkIcon,
-    tookMoney: EnergonIcon,
-  },
-
-  drawCoinParticle: drawEnergonCrystal,
 
   enableLostSparks: true,
   lostSparkColors: ['#00BFFF', '#87CEEB', '#00CED1', '#1E90FF'],

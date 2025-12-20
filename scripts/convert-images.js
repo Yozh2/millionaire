@@ -5,6 +5,7 @@
  * Targets:
  *   - public/images/**
  *   - public/games/<gameId>/images/**
+ *   - public/games/<gameId>/icons/** (non-favicon only)
  *
  * Converts .png/.jpg/.jpeg → .webp with:
  *   - size: 1920x620 (cover + center crop)
@@ -48,6 +49,7 @@ function parseArgs(argv) {
     width: 1920,
     height: 620,
     quality: 85,
+    iconsQuality: 100,
     srgbProfile:
       process.platform === 'darwin'
         ? '/System/Library/ColorSync/Profiles/sRGB Profile.icc'
@@ -71,6 +73,7 @@ function parseArgs(argv) {
     else if (arg === '--width') options.width = Number(argv[++i]);
     else if (arg === '--height') options.height = Number(argv[++i]);
     else if (arg === '--quality') options.quality = Number(argv[++i]);
+    else if (arg === '--icons-quality') options.iconsQuality = Number(argv[++i]);
     else if (arg === '--concurrency') options.concurrency = Number(argv[++i]);
     else if (arg === '--help' || arg === '-h') options.help = true;
     else {
@@ -93,6 +96,10 @@ function parseArgs(argv) {
 
   if (options.quality < 0 || options.quality > 100) {
     throw new Error('--quality must be 0..100');
+  }
+
+  if (options.iconsQuality < 0 || options.iconsQuality > 100) {
+    throw new Error('--icons-quality must be 0..100');
   }
 
   if (options.concurrency <= 0) {
@@ -118,6 +125,7 @@ Options:
   --width <n>         Output width (default: 1920)
   --height <n>        Output height (default: 620)
   --quality <0..100>  WebP quality (default: 85)
+  --icons-quality <0..100> WebP quality for icons (100 = lossless, default: 100)
   --concurrency <n>   Parallel conversions (default: auto)
   --verbose           Show tool output
   -h, --help          Show help
@@ -127,6 +135,23 @@ Options:
 function isSourceImage(filename) {
   const ext = extname(filename).toLowerCase();
   return SOURCE_EXTENSIONS.has(ext);
+}
+
+function isLikelyFaviconFilename(filename) {
+  const lower = filename.toLowerCase();
+  return (
+    lower === 'favicon.ico' ||
+    lower === 'favicon.png' ||
+    lower === 'favicon.svg' ||
+    lower.startsWith('favicon-') ||
+    lower === 'apple-touch-icon.png' ||
+    lower === 'apple-touch-icon.ico' ||
+    lower === 'site.webmanifest'
+  );
+}
+
+function isSourceIconImage(filename) {
+  return isSourceImage(filename) && !isLikelyFaviconFilename(filename);
 }
 
 function getSubdirectories(dirPath) {
@@ -177,6 +202,21 @@ function getTargetRoots() {
       if (existsSync(imagesDir) && statSync(imagesDir).isDirectory()) {
         roots.push(imagesDir);
       }
+    }
+  }
+
+  return roots;
+}
+
+function getIconRoots() {
+  const roots = [];
+
+  if (!existsSync(GAMES_DIR)) return roots;
+
+  for (const gameId of getSubdirectories(GAMES_DIR)) {
+    const iconsDir = join(GAMES_DIR, gameId, 'icons');
+    if (existsSync(iconsDir) && statSync(iconsDir).isDirectory()) {
+      roots.push(iconsDir);
     }
   }
 
@@ -363,6 +403,65 @@ async function convertOne(inputPath, options) {
   }
 }
 
+async function convertOneIcon(inputPath, options) {
+  const outputPath = buildOutputPath(inputPath);
+  const unique = `${process.pid}.${Date.now()}.${Math.random().toString(16).slice(2)}`;
+  const tmpPngPath = `${outputPath}.tmp.${unique}.png`;
+  const tmpWebpPath = `${outputPath}.tmp.${unique}.webp`;
+
+  if (options.dryRun) {
+    console.log(`DRY  ${inputPath} -> ${outputPath}`);
+    return { inputPath, outputPath, converted: false, deleted: false };
+  }
+
+  rmSync(tmpPngPath, { force: true });
+  rmSync(tmpWebpPath, { force: true });
+
+  const sipsArgs = ['-s', 'format', 'png'];
+  if (options.srgbProfile && existsSync(options.srgbProfile)) {
+    sipsArgs.push('--matchTo', options.srgbProfile);
+  }
+  sipsArgs.push(inputPath, '--out', tmpPngPath);
+
+  const cwebpQualityArgs =
+    options.iconsQuality === 100
+      ? ['-lossless', '-z', '9']
+      : ['-q', String(options.iconsQuality)];
+
+  const cwebpArgs = [
+    ...cwebpQualityArgs,
+    '-m',
+    '6',
+    '-mt',
+    '-metadata',
+    'icc',
+    tmpPngPath,
+    '-o',
+    tmpWebpPath,
+  ];
+
+  try {
+    await spawnAsync(options.sips, sipsArgs, { verbose: options.verbose });
+    await spawnAsync(options.cwebp, cwebpArgs, { verbose: options.verbose });
+
+    if (!existsSync(tmpWebpPath)) {
+      throw new Error(`cwebp did not produce output: ${tmpWebpPath}`);
+    }
+
+    rmSync(outputPath, { force: true });
+    renameSync(tmpWebpPath, outputPath);
+
+    if (!options.keepSource) {
+      unlinkSync(inputPath);
+    }
+
+    return { inputPath, outputPath, converted: true, deleted: !options.keepSource };
+  } finally {
+    rmSync(tmpPngPath, { force: true });
+    rmSync(tmpWebpPath, { force: true });
+  }
+}
+
 async function runWithConcurrency(items, concurrency, worker) {
   const results = new Array(items.length);
   let index = 0;
@@ -405,7 +504,8 @@ async function main() {
   if (resolvedCwebp) options.cwebp = resolvedCwebp;
 
   const roots = getTargetRoots();
-  if (roots.length === 0) {
+  const iconRoots = getIconRoots();
+  if (roots.length === 0 && iconRoots.length === 0) {
     console.log('No target directories found under /public.');
     return;
   }
@@ -432,14 +532,21 @@ async function main() {
     .flatMap((root) => getFilesRecursive(root, isSourceImage))
     .sort();
 
-  if (sourceFiles.length === 0) {
+  const iconSourceFiles = iconRoots
+    .flatMap((root) => getFilesRecursive(root, isSourceIconImage))
+    .sort();
+
+  if (sourceFiles.length === 0 && iconSourceFiles.length === 0) {
     console.log('No .png/.jpg/.jpeg files found to convert.');
     return;
   }
 
   console.log(
-    `Found ${sourceFiles.length} source image(s) under:\n` +
-      roots.map((r) => `  - ${r}`).join('\n') +
+    `Found ${sourceFiles.length} wallpaper source image(s) under:\n` +
+      (roots.length ? roots.map((r) => `  - ${r}`).join('\n') : '  (none)') +
+      '\n\n' +
+      `Found ${iconSourceFiles.length} icon source image(s) under:\n` +
+      (iconRoots.length ? iconRoots.map((r) => `  - ${r}`).join('\n') : '  (none)') +
       '\n',
   );
 
@@ -449,6 +556,16 @@ async function main() {
 
   await runWithConcurrency(sourceFiles, options.concurrency, async (inputPath) => {
     const result = await convertOne(inputPath, options);
+    if (result.converted) converted++;
+    if (result.deleted) deleted++;
+    if (!options.dryRun) {
+      console.log(`OK   ${result.outputPath}`);
+    }
+    return result;
+  });
+
+  await runWithConcurrency(iconSourceFiles, options.concurrency, async (inputPath) => {
+    const result = await convertOneIcon(inputPath, options);
     if (result.converted) converted++;
     if (result.deleted) deleted++;
     if (!options.dryRun) {

@@ -1,6 +1,6 @@
 {
   "campaigns": {
-    "darkUrge": {
+    "darkurge": {
       "end": {
         "lost": {
           "images": [
@@ -33,7 +33,7 @@
         ]
       }
     },
-    "mindFlayer": {
+    "mindflayer": {
       "end": {
         "lost": {
           "images": [

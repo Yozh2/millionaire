@@ -1,8 +1,27 @@
-import type { Campaign } from '@engine/types';
+import type { Campaign, CampaignIconProps } from '@engine/types';
+import { baseImgIconClass, getCampaignIconSizeClass } from '@engine/types';
 import { useRef } from 'react';
 import { useCampaignCardFsm } from './useCampaignCardFsm';
+import { gameIconsFile } from '@public';
+
+const createEmojiSvgDataUrl = (emoji: string): string => {
+  const svg =
+    "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'>" +
+    `<text y='.9em' font-size='90'>${emoji}</text>` +
+    '</svg>';
+  return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+};
+
+const setImgEmojiFallback = (e: unknown, emoji: string): void => {
+  const target = (e as any)?.currentTarget as HTMLImageElement | undefined;
+  if (!target) return;
+  if (target.dataset?.emojiFallbackApplied === 'true') return;
+  target.dataset.emojiFallbackApplied = 'true';
+  target.src = createEmojiSvgDataUrl(emoji);
+};
 
 interface CampaignCardProps {
+  gameId: string;
   campaign: Campaign;
   selected: boolean;
   onSelect: () => void;
@@ -10,12 +29,24 @@ interface CampaignCardProps {
 }
 
 export function CampaignCard({
+  gameId,
   campaign,
   selected,
   onSelect,
   isLightTheme,
 }: CampaignCardProps) {
-  const CampaignIcon = campaign.icon;
+  const CampaignIcon =
+    campaign.icon ??
+    (({ className, size }: CampaignIconProps) => (
+      <img
+        src={gameIconsFile(gameId, `${campaign.id}.webp`)}
+        alt={campaign.name}
+        loading="lazy"
+        draggable={false}
+        className={`${baseImgIconClass} ${className ?? getCampaignIconSizeClass(size)}`}
+        onError={(e) => setImgEmojiFallback(e, '🎯')}
+      />
+    ));
   const buttonRef = useRef<HTMLButtonElement | null>(null);
   const fsm = useCampaignCardFsm({
     ref: buttonRef,

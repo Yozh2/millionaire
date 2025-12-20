@@ -6,25 +6,26 @@ import {
 } from '@engine/constants';
 
 export const STANDARD_MUSIC_TRACKS = {
-  mainMenuTrack: 'MainMenu.ogg',
-  gameOverTrack: 'GameOver.ogg',
-  victoryTrack: 'Victory.ogg',
-  takeMoneyTrack: 'TookMoney.ogg',
+  menuTrack: 'menu.ogg',
+  defeatTrack: 'defeat.ogg',
+  victoryTrack: 'victory.ogg',
+  moneyTrack: 'money.ogg',
 } as const;
 
 export const STANDARD_SOUND_EFFECTS: SoundEffects = {
-  answerButton: 'AnswerClick.ogg',
-  actionButton: 'BigButtonPress.ogg',
+  answerButton: 'answer-click.ogg',
+  actionButton: 'action-press.ogg',
 
-  lifelineFifty: 'HintReduce.ogg',
-  lifelinePhone: 'HintCall.ogg',
-  lifelineAudience: 'HintVote.ogg',
-  lifelineDouble: 'DoubleDip.ogg',
+  lifelineFifty: 'lifeline-fifty.ogg',
+  lifelinePhone: 'lifeline-phone.ogg',
+  lifelineAudience: 'lifeline-audience.ogg',
+  lifelineDouble: 'lifeline-double.ogg',
 
-  takeMoneyButton: 'HintTakeMoney.ogg',
+  takeMoneyButton: 'money.ogg',
 
-  correct: 'Next.ogg',
-  defeat: 'Fail.ogg',
+  victory: 'victory.ogg',
+  correct: 'correct.ogg',
+  defeat: 'defeat.ogg',
 };
 
 export const createDefaultAudioConfig = (
@@ -47,4 +48,3 @@ export const createDefaultAudioConfig = (
     },
   };
 };
-

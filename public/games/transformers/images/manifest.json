@@ -3,7 +3,15 @@
     "autocracy": {
       "images": [
         "01.webp"
-      ]
+      ],
+      "play": {
+        "easy": {
+          "images": [
+            "01.webp",
+            "02.webp"
+          ]
+        }
+      }
     },
     "megatron": {
       "end": {

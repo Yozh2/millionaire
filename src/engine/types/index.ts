@@ -177,8 +177,8 @@ export interface Campaign {
   /** Difficulty label (e.g., 'Легко', 'Сложно') */
   label: string;
 
-  /** Icon component for this campaign */
-  icon: ComponentType<CampaignIconProps>;
+  /** Icon component for this campaign (optional; engine will provide a default). */
+  icon?: ComponentType<CampaignIconProps>;
 
   /** Color theme for this campaign */
   theme: ThemeColors;
@@ -335,17 +335,17 @@ export interface AudioConfig {
   /** Voice lines volume (0-1) */
   voiceVolume: number;
 
-  /** Main menu music track filename (optional) */
-  mainMenuTrack?: string;
+  /** Menu music track filename (optional) */
+  menuTrack?: string;
 
-  /** Game over music track filename (optional) - fallback for all end states */
-  gameOverTrack?: string;
+  /** Defeat music track filename (optional) - fallback for all end states */
+  defeatTrack?: string;
 
   /** Victory music track filename (optional) - plays when player wins */
   victoryTrack?: string;
 
   /** Take money music track filename (optional) - plays when player takes money */
-  takeMoneyTrack?: string;
+  moneyTrack?: string;
 
   /** Sound effects mapping */
   sounds: SoundEffects;
