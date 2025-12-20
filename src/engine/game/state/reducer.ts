@@ -25,7 +25,7 @@ export const gameReducer = (
     case 'START_GAME': {
       return {
         ...state,
-        phase: 'playing',
+        phase: 'play',
         selectedCampaignId: action.campaignId,
         questions: action.session?.questions ?? [],
         prizeLadder: action.session?.prizeLadder ?? { values: [], guaranteed: [] },
@@ -48,7 +48,7 @@ export const gameReducer = (
     case 'FORCE_WIN': {
       return {
         ...state,
-        phase: 'won',
+        phase: 'victory',
         selectedAnswerDisplayIndex: null,
         eliminatedAnswerDisplayIndices: [],
         lifelineResult: null,
@@ -57,7 +57,7 @@ export const gameReducer = (
     }
 
     case 'ANSWER_SELECTED': {
-      if (state.phase !== 'playing') return state;
+      if (state.phase !== 'play') return state;
       if (state.selectedAnswerDisplayIndex !== null) return state;
       if (state.eliminatedAnswerDisplayIndices.includes(action.displayIndex)) return state;
 
@@ -69,7 +69,7 @@ export const gameReducer = (
     }
 
     case 'ANSWER_RESOLVED': {
-      if (state.phase !== 'playing') return state;
+      if (state.phase !== 'play') return state;
       if (state.selectedAnswerDisplayIndex === null) return state;
 
       if (action.outcome === 'retry') {
@@ -105,20 +105,20 @@ export const gameReducer = (
 
       return {
         ...state,
-        phase: action.outcome === 'won' ? 'won' : 'lost',
+        phase: action.outcome === 'victory' ? 'victory' : 'defeat',
         wonPrize: action.wonPrize,
         doubleDipArmed: false,
         doubleDipStrikeUsed: false,
       };
     }
 
-    case 'TAKE_MONEY': {
-      if (state.phase !== 'playing') return state;
+    case 'RETREAT': {
+      if (state.phase !== 'play') return state;
       if (state.currentQuestionIndex === 0) return state;
 
       return {
         ...state,
-        phase: 'took_money',
+        phase: 'retreat',
         wonPrize: state.prizeLadder.values[state.currentQuestionIndex - 1] ?? '0',
         doubleDipArmed: false,
         doubleDipStrikeUsed: false,
@@ -131,7 +131,7 @@ export const gameReducer = (
 
     case 'APPLY_LIFELINE_FIFTY': {
       if (!state.lifelineAvailability.fifty) return state;
-      if (state.phase !== 'playing') return state;
+      if (state.phase !== 'play') return state;
       if (state.selectedAnswerDisplayIndex !== null) return state;
 
       return {
@@ -143,7 +143,7 @@ export const gameReducer = (
 
     case 'APPLY_LIFELINE_PHONE': {
       if (!state.lifelineAvailability.phone) return state;
-      if (state.phase !== 'playing') return state;
+      if (state.phase !== 'play') return state;
       if (state.selectedAnswerDisplayIndex !== null) return state;
 
       return {
@@ -155,7 +155,7 @@ export const gameReducer = (
 
     case 'APPLY_LIFELINE_AUDIENCE': {
       if (!state.lifelineAvailability.audience) return state;
-      if (state.phase !== 'playing') return state;
+      if (state.phase !== 'play') return state;
       if (state.selectedAnswerDisplayIndex !== null) return state;
 
       return {
@@ -167,7 +167,7 @@ export const gameReducer = (
 
     case 'APPLY_LIFELINE_HOST': {
       if (!state.lifelineAvailability.host) return state;
-      if (state.phase !== 'playing') return state;
+      if (state.phase !== 'play') return state;
       if (state.selectedAnswerDisplayIndex !== null) return state;
 
       return {
@@ -179,7 +179,7 @@ export const gameReducer = (
 
     case 'APPLY_LIFELINE_SWITCH': {
       if (!state.lifelineAvailability.switch) return state;
-      if (state.phase !== 'playing') return state;
+      if (state.phase !== 'play') return state;
       if (state.selectedAnswerDisplayIndex !== null) return state;
       if (action.swapWithIndex === state.currentQuestionIndex) return state;
       if (action.swapWithIndex < 0 || action.swapWithIndex >= state.questions.length) {
@@ -205,7 +205,7 @@ export const gameReducer = (
 
     case 'APPLY_LIFELINE_DOUBLE': {
       if (!state.lifelineAvailability.double) return state;
-      if (state.phase !== 'playing') return state;
+      if (state.phase !== 'play') return state;
       if (state.selectedAnswerDisplayIndex !== null) return state;
 
       return {

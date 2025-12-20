@@ -3,7 +3,7 @@ import { selectCurrentDifficulty, selectCurrentPrize, selectGuaranteedPrizeOnLos
 
 function makeState(overrides: Partial<GameDomainState> = {}): GameDomainState {
   const base: GameDomainState = {
-    phase: 'playing',
+    phase: 'play',
     selectedCampaignId: 'x',
     questions: [
       { question: 'Q1', answers: ['A', 'B', 'C', 'D'], correct: 0 },
@@ -54,4 +54,3 @@ describe('state selectors (v0)', () => {
     expect(selectCurrentDifficulty(makeState({ currentQuestionIndex: 0, questions: new Array(15).fill(makeState().questions[0]!) }))).toBeLessThanOrEqual(3);
   });
 });
-

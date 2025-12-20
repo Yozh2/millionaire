@@ -74,9 +74,9 @@ export {
   DefaultPhoneHintIcon,
   DefaultAudienceHintIcon,
   DefaultStarIcon,
-  DefaultTrophyIcon,
-  DefaultFailIcon,
-  DefaultMoneyIcon,
+  DefaultVictoryIcon,
+  DefaultDefeatIcon,
+  DefaultRetreatIcon,
 } from './ui/icons/DefaultIcons';
 
 // =========================

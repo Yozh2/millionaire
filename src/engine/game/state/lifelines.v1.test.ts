@@ -13,9 +13,9 @@ function makeQuestion(correct: number): Question {
   };
 }
 
-function makePlayingState(overrides: Partial<GameDomainState> = {}): GameDomainState {
+function makePlayState(overrides: Partial<GameDomainState> = {}): GameDomainState {
   const base: GameDomainState = {
-    phase: 'playing',
+    phase: 'play',
     selectedCampaignId: 'x',
     questions: [makeQuestion(0), makeQuestion(1), makeQuestion(2)],
     prizeLadder: { values: ['100', '200', '300'], guaranteed: [] },
@@ -98,7 +98,7 @@ describe('lifelines v1 (host/switch/double)', () => {
 
   describe('resolveAnswer', () => {
     it('returns retry on wrong answer when Double Dip is armed and strike not used', () => {
-      const state = makePlayingState({
+      const state = makePlayState({
         wonPrize: '500',
         doubleDipArmed: true,
         doubleDipStrikeUsed: false,
@@ -114,9 +114,9 @@ describe('lifelines v1 (host/switch/double)', () => {
 
   describe('gameReducer', () => {
     it('arms Double Dip and then consumes strike on first mistake', () => {
-      const state0 = makePlayingState({
+      const state0 = makePlayState({
         lifelineAvailability: {
-          ...makePlayingState().lifelineAvailability,
+          ...makePlayState().lifelineAvailability,
           double: true,
         },
       });
@@ -148,14 +148,14 @@ describe('lifelines v1 (host/switch/double)', () => {
 
     it('applies Switch-the-Question by swapping with a future question and clears volatile state', () => {
       const questions = [makeQuestion(0), makeQuestion(1), makeQuestion(2)];
-      const state0 = makePlayingState({
+      const state0 = makePlayState({
         questions,
         currentQuestionIndex: 0,
         eliminatedAnswerDisplayIndices: [1, 3],
         doubleDipArmed: true,
         doubleDipStrikeUsed: true,
         lifelineAvailability: {
-          ...makePlayingState().lifelineAvailability,
+          ...makePlayState().lifelineAvailability,
           switch: true,
         },
       });
@@ -178,9 +178,9 @@ describe('lifelines v1 (host/switch/double)', () => {
     });
 
     it('applies Ask-the-Host by disabling it and setting lifelineResult', () => {
-      const state0 = makePlayingState({
+      const state0 = makePlayState({
         lifelineAvailability: {
-          ...makePlayingState().lifelineAvailability,
+          ...makePlayState().lifelineAvailability,
           host: true,
         },
       });

@@ -5,16 +5,7 @@
 
 export { bg3Config, default } from './config';
 export { ScrollIcon, TavernIcon } from './icons';
-export {
-  bg3Title,
-  bg3Subtitle,
-  bg3Strings,
-  bg3Companions,
-  bg3Currency,
-  bg3LifelineNames,
-  bg3ActionNames,
-  bg3CampaignStrings,
-} from './strings';
+export { campaignStrings, strings } from './strings';
 export { heroCampaign } from './campaigns/hero/campaign';
 export { mindflayerCampaign } from './campaigns/mindFlayer/campaign';
 export { darkurgeCampaign } from './campaigns/darkUrge/campaign';

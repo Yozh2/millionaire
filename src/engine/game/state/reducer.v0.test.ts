@@ -29,7 +29,7 @@ function makeState(overrides: Partial<GameDomainState> = {}): GameDomainState {
 }
 
 describe('gameReducer (core flow)', () => {
-  it('START_GAME moves to playing and resets transient fields', () => {
+  it('START_GAME moves to play and resets transient fields', () => {
     const start = makeState({
       phase: 'start',
       selectedCampaignId: 'old',
@@ -73,7 +73,7 @@ describe('gameReducer (core flow)', () => {
       },
     });
 
-    expect(next.phase).toBe('playing');
+    expect(next.phase).toBe('play');
     expect(next.selectedCampaignId).toBe('new');
     expect(next.currentQuestionIndex).toBe(0);
     expect(next.selectedAnswerDisplayIndex).toBeNull();
@@ -84,16 +84,15 @@ describe('gameReducer (core flow)', () => {
     expect(next.wonPrize).toBe('0');
   });
 
-  it('TAKE_MONEY moves to took_money and uses previous prize', () => {
+  it('RETREAT moves to retreat and uses previous prize', () => {
     const playing = makeState({
-      phase: 'playing',
+      phase: 'play',
       currentQuestionIndex: 2,
       prizeLadder: { values: ['100', '200', '300'], guaranteed: [] },
     });
 
-    const next = gameReducer(playing, { type: 'TAKE_MONEY' });
-    expect(next.phase).toBe('took_money');
+    const next = gameReducer(playing, { type: 'RETREAT' });
+    expect(next.phase).toBe('retreat');
     expect(next.wonPrize).toBe('200');
   });
 });
-

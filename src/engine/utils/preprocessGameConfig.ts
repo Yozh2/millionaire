@@ -82,15 +82,15 @@ export function preprocessGameConfig(rawConfig: GameConfig): GameConfig {
     },
     endIcons: {
       ...rawConfig.endIcons,
-      won:
-        rawConfig.endIcons?.won ??
+      victory:
+        rawConfig.endIcons?.victory ??
         createDefaultEndIcon(gameId, 'treasure.webp', 'Victory', '🏆'),
-      lost:
-        rawConfig.endIcons?.lost ??
-        createDefaultEndIcon(gameId, 'lost.webp', 'Defeat', '❌'),
-      tookMoney:
-        rawConfig.endIcons?.tookMoney ??
-        createDefaultEndIcon(gameId, 'money.webp', 'Money', '💰'),
+      defeat:
+        rawConfig.endIcons?.defeat ??
+        createDefaultEndIcon(gameId, 'defeat.webp', 'Defeat', '❌'),
+      retreat:
+        rawConfig.endIcons?.retreat ??
+        createDefaultEndIcon(gameId, 'retreat.webp', 'Retreat', '💰'),
     },
   };
 }

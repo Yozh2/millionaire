@@ -3,18 +3,9 @@
  */
 
 export { skyCotlConfig, default } from './config';
+export { campaignStrings, strings } from './strings';
 export {
-  skyCotlTitle,
-  skyCotlSubtitle,
-  skyCotlStrings,
-  skyCotlCompanions,
-  skyCotlCurrency,
-  skyCotlLifelineNames,
-  skyCotlActionNames,
-  skyCotlCampaignStrings,
-} from './strings';
-export {
-  WingedLightTrophyIcon,
+  WingedLightVictoryIcon,
   FallenStarIcon,
   CandleIcon,
   SmallCandleCoinIcon,

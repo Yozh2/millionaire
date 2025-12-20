@@ -12,15 +12,8 @@ import { createDefaultAudioConfig } from '@engine/audio/defaultAudio';
 import { autocracyCampaign } from './campaigns/autocracy/campaign';
 import { megatronCampaign } from './campaigns/megatron/campaign';
 import { skyboundCampaign } from './campaigns/skybound/campaign';
-import {
-  transformersActionNames,
-  transformersCompanions,
-  transformersCurrency,
-  transformersLifelineNames,
-  transformersStrings,
-  transformersSubtitle,
-  transformersTitle,
-} from './strings';
+import { drawEnergonCrystal, EnergonCoinIcon } from './icons';
+import { strings } from './strings';
 
 export const transformersConfig: GameConfig = {
   id: 'transformers',
@@ -28,8 +21,8 @@ export const transformersConfig: GameConfig = {
   emoji: '🤖',
   fontFamily: '"Neuropol X Rg", "Roboto", "Helvetica Neue", sans-serif',
 
-  title: transformersTitle,
-  subtitle: transformersSubtitle,
+  title: strings.headerTitle,
+  subtitle: strings.headerSubtitle,
 
   registry: {
     registryVisible: true,
@@ -40,23 +33,23 @@ export const transformersConfig: GameConfig = {
 
   campaigns: [megatronCampaign, autocracyCampaign, skyboundCampaign],
 
-  companions: transformersCompanions,
-  strings: transformersStrings,
+  companions: strings.companions,
+  strings,
 
   lifelines: {
-    fifty: { name: transformersLifelineNames.fifty, icon: '⚡', enabled: true },
-    phone: { name: transformersLifelineNames.phone, icon: '📡', enabled: true },
+    fifty: { name: strings.lifelines.fifty, icon: '⚡', enabled: true },
+    phone: { name: strings.lifelines.phone, icon: '📡', enabled: true },
     audience: {
-      name: transformersLifelineNames.audience,
+      name: strings.lifelines.audience,
       icon: '🤖',
       enabled: true,
     },
-    double: { name: transformersLifelineNames.double, icon: '🛰️', enabled: true },
+    double: { name: strings.lifelines.double, icon: '🛰️', enabled: true },
   },
 
   actions: {
-    takeMoney: {
-      name: transformersActionNames.takeMoney,
+    retreat: {
+      name: strings.retreat,
       icon: '⚡️',
       enabled: true,
     },
@@ -64,7 +57,7 @@ export const transformersConfig: GameConfig = {
 
   prizes: {
     maxPrize: 1000000,
-    currency: transformersCurrency,
+    currency: strings.currency,
     guaranteedFractions: [1 / 3, 2 / 3, 1],
   },
 
@@ -73,6 +66,11 @@ export const transformersConfig: GameConfig = {
     soundVolume: 1.0,
     voiceVolume: 1.0,
   }),
+
+  icons: {
+    coin: EnergonCoinIcon,
+  },
+  drawCoinParticle: drawEnergonCrystal,
 
   enableLostSparks: true,
   lostSparkColors: ['#00BFFF', '#87CEEB', '#00CED1', '#1E90FF'],

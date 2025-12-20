@@ -7,16 +7,7 @@
  */
 
 export { transformersConfig, transformersConfig as default } from './config';
-export {
-  transformersTitle,
-  transformersSubtitle,
-  transformersStrings,
-  transformersCompanions,
-  transformersCurrency,
-  transformersLifelineNames,
-  transformersActionNames,
-  transformersCampaignStrings,
-} from './strings';
+export { campaignStrings, strings } from './strings';
 export { megatronCampaign } from './campaigns/megatron/campaign';
 export { autocracyCampaign } from './campaigns/autocracy/campaign';
 export { skyboundCampaign } from './campaigns/skybound/campaign';

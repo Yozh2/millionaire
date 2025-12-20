@@ -1,9 +1,28 @@
 /**
- * Core type definitions for the Quiz Game Engine.
+ * Core game engine type definitions
  * These types define the contract for game configurations.
  */
 
 import { ComponentType } from 'react';
+
+// =============================
+// App Registry Types (optional)
+// =============================
+
+export interface GameRegistryMeta {
+  /** Title shown in GameSelector */
+  gameTitle: string;
+  /** Show this game in the main selector UI */
+  registryVisible: boolean;
+  /** Whether game is playable (otherwise "coming soon") */
+  available?: boolean;
+  /** Hide from selector in production, keep routes in dev */
+  devOnly?: boolean;
+  /** Optional route override (default: `/${id}`) */
+  routePath?: string;
+  /** Sorting (lower first) */
+  order?: number;
+}
 
 export interface CampaignIconProps {
   className?: string;
@@ -240,7 +259,7 @@ export interface LifelineConfig {
   enabled: boolean;
 }
 
-/** Configuration for a single non-lifeline action button (e.g. take money) */
+/** Configuration for a single non-lifeline action button (e.g. retreat) */
 export interface ActionConfig {
   /** Display name */
   name: string;
@@ -313,8 +332,8 @@ export interface SoundEffects {
   lifelineSwitch?: string;
   lifelineDouble?: string;
 
-  /** Take money action button SFX (not a lifeline) */
-  takeMoneyButton?: string;
+  /** Retreat action button SFX (not a lifeline) */
+  retreatButton?: string;
 
   /** Victory - winning the game sound (epic fanfare) */
   victory?: string;
@@ -344,8 +363,8 @@ export interface AudioConfig {
   /** Victory music track filename (optional) - plays when player wins */
   victoryTrack?: string;
 
-  /** Take money music track filename (optional) - plays when player takes money */
-  moneyTrack?: string;
+  /** Retreat music track filename (optional) - plays when player retreats */
+  retreatTrack?: string;
 
   /** Sound effects mapping */
   sounds: SoundEffects;
@@ -390,18 +409,18 @@ export interface GameStrings {
   };
 
   // End screens
-  wonTitle: string;
-  wonText: string;
-  wonHeader: string;
+  victoryTitle: string;
+  victoryText: string;
+  victoryHeader: string;
 
-  lostTitle: string;
-  lostText: string;
-  lostHeader: string;
+  defeatTitle: string;
+  defeatText: string;
+  defeatHeader: string;
   correctAnswerLabel: string;
 
-  tookMoneyTitle: string;
-  tookMoneyText: string;
-  tookMoneyHeader: string;
+  retreatTitle: string;
+  retreatText: string;
+  retreatHeader: string;
 
   newGameButton: string;
 
@@ -414,14 +433,51 @@ export interface GameStrings {
 }
 
 // ============================================
+// Game Content Module Conventions
+// ============================================
+
+/**
+ * Recommended export shape for `src/games/<gameId>/strings.ts` modules.
+ * This keeps all game-facing naming under a single `strings` namespace while
+ * preserving the engine `GameConfig` contract (`config.strings` stays as UI strings only).
+ */
+export type LifelineNameMap = Pick<
+  Record<LifelineKind, string>,
+  'fifty' | 'phone' | 'audience'
+> &
+  Partial<Record<Exclude<LifelineKind, 'fifty' | 'phone' | 'audience'>, string>>;
+
+export interface CampaignStringsEntry {
+  name: string;
+  label: string;
+  iconAlt?: string;
+  iconAriaLabel?: string;
+}
+
+export type CampaignStringsMap = Record<string, CampaignStringsEntry>;
+
+export interface GameStringsNamespace extends GameStrings {
+  headerTitle: string;
+  headerSubtitle: string;
+  campaigns: CampaignStringsMap;
+  companions: readonly Companion[];
+  /** Human-readable lifeline names used by `GameConfig.lifelines`. */
+  lifelines: LifelineNameMap;
+  /** Human-readable action name used by `GameConfig.actions.retreat`. */
+  retreat: string;
+  /** Currency label used by `GameConfig.prizes.currency`. */
+  currency: string;
+}
+
+// ============================================
 // Game State Types
 // ============================================
 
 /** Possible game states */
-export type GameState = 'start' | 'playing' | 'won' | 'lost' | 'took_money';
+export type GameState = 'start' | 'play' | 'victory' | 'retreat' | 'defeat';
 
 /** Reward kind for end-of-game result */
-export type RewardKind = 'trophy' | 'money' | 'defeat';
+export type RewardKind = 'treasure' | 'retreat' | 'defeat';
 
 /** Lifeline result from "Phone-a-Friend" */
 export interface LifelinePhoneResult {
@@ -472,9 +528,9 @@ export type LifelineResult =
 export type SlideshowScreen =
   | 'start'
   | 'play'
-  | 'won'
-  | 'took'
-  | 'lost';
+  | 'victory'
+  | 'retreat'
+  | 'defeat';
 
 /**
  * Configuration for the header slideshow effect.
@@ -483,7 +539,7 @@ export type SlideshowScreen =
  * Images are loaded automatically from manifest.json based on:
  * - Game ID (e.g., 'bg3')
  * - Campaign ID (e.g., 'hero')
- * - Screen type ('start', 'play', 'won', 'took', 'lost')
+ * - Screen type ('start', 'play', 'victory', 'retreat', 'defeat')
  * - Difficulty ('easy', 'medium', 'hard') for 'play' screen
  *
  * See README.md for full directory structure and fallback order.
@@ -550,7 +606,7 @@ export interface GameConfig {
   campaigns: Campaign[];
 
   /** Companions for "Phone a Friend" (can be empty) */
-  companions: Companion[];
+  companions: readonly Companion[];
 
   /** UI text strings */
   strings: GameStrings;
@@ -558,12 +614,9 @@ export interface GameConfig {
   /** Lifelines configuration */
   lifelines: LifelinesConfig;
 
-  /**
-   * Non-lifeline action buttons.
-   * @example takeMoney button shown in PrizeLadderPanel.
-   */
+  /** Non-lifeline action buttons. */
   actions: {
-    takeMoney: ActionConfig;
+    retreat: ActionConfig;
   };
 
   /** Prize configuration */
@@ -580,12 +633,12 @@ export interface GameConfig {
 
   /**
    * End screen icons (optional, uses defaults if not provided)
-   * Keys: 'won', 'lost', 'tookMoney'
+   * Keys: 'victory', 'defeat', 'retreat'
    */
   endIcons?: {
-    won?: ComponentType;
-    lost?: ComponentType;
-    tookMoney?: ComponentType;
+    victory?: ComponentType;
+    defeat?: ComponentType;
+    retreat?: ComponentType;
   };
 
   /**
@@ -654,24 +707,6 @@ export interface GameConfig {
   };
 }
 
-// ============================================
-// App Registry Types (optional)
-// ============================================
-
-export interface GameRegistryMeta {
-  /** Show this game in the main selector UI */
-  registryVisible: boolean;
-  /** Hide from selector in production, keep routes in dev */
-  devOnly?: boolean;
-  /** Optional route override (default: `/${id}`) */
-  routePath?: string;
-  /** Sorting (lower first) */
-  order?: number;
-  /** Title shown in GameSelector */
-  gameTitle: string;
-  /** Whether game is playable (otherwise "coming soon") */
-  available?: boolean;
-}
 
 // ============================================
 // Effects API Types

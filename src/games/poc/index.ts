@@ -6,19 +6,10 @@
 
 export { pocConfig, pocConfig as default } from './config';
 export {
-  TrophyIcon,
-  FailIcon,
-  MoneyIcon,
+  VictoryIcon as VictoryIcon,
+  DefeatIcon,
+  RetreatIcon,
 } from './icons';
-export {
-  pocTitle,
-  pocSubtitle,
-  pocStrings,
-  pocCompanions,
-  pocCurrency,
-  pocLifelineNames,
-  pocActionNames,
-  pocCampaignStrings,
-} from './strings';
+export { campaignStrings, strings } from './strings';
 export { easyCampaign } from './campaigns/easy/campaign';
 export { hardCampaign } from './campaigns/hard/campaign';

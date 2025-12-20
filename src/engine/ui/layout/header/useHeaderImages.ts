@@ -16,12 +16,9 @@ interface ImageManifest {
     medium?: { images?: string[] };
     hard?: { images?: string[] };
   };
-  end?: {
-    images?: string[];
-    won?: { images?: string[] };
-    took?: { images?: string[] };
-    lost?: { images?: string[] };
-  };
+  victory?: { images?: string[] };
+  retreat?: { images?: string[] };
+  defeat?: { images?: string[] };
   campaigns?: Record<string, unknown>;
 }
 
@@ -89,7 +86,7 @@ function partsForScreen(
     parts.push([]);
     return parts;
   }
-  return [['end', screen], ['end'], []];
+  return [[screen], []];
 }
 
 export interface UseHeaderImagesResult {

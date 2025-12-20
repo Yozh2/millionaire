@@ -9,7 +9,7 @@ export const STANDARD_MUSIC_TRACKS = {
   menuTrack: 'menu.ogg',
   defeatTrack: 'defeat.ogg',
   victoryTrack: 'victory.ogg',
-  moneyTrack: 'money.ogg',
+  retreatTrack: 'retreat.ogg',
 } as const;
 
 export const STANDARD_SOUND_EFFECTS: SoundEffects = {
@@ -21,7 +21,7 @@ export const STANDARD_SOUND_EFFECTS: SoundEffects = {
   lifelineAudience: 'lifeline-audience.ogg',
   lifelineDouble: 'lifeline-double.ogg',
 
-  takeMoneyButton: 'money.ogg',
+  retreatButton: 'retreat.ogg',
 
   victory: 'victory.ogg',
   correct: 'correct.ogg',

@@ -8,7 +8,7 @@ import type {
 import type { GameSession } from '../session';
 import type { LifelineAvailabilityState } from './types';
 
-export type AnswerOutcome = 'correct' | 'wrong' | 'won' | 'retry';
+export type AnswerOutcome = 'correct' | 'defeat' | 'victory' | 'retry';
 
 export type GameAction =
   | { type: 'SELECT_CAMPAIGN'; campaignId: string; session: GameSession | null }
@@ -28,7 +28,7 @@ export type GameAction =
       nextQuestionIndex?: number;
       nextShuffledAnswers?: number[];
     }
-  | { type: 'TAKE_MONEY' }
+  | { type: 'RETREAT' }
   | { type: 'CLEAR_LIFELINE_RESULT' }
   | { type: 'APPLY_LIFELINE_FIFTY'; eliminated: number[] }
   | { type: 'APPLY_LIFELINE_PHONE'; result: LifelinePhoneResult }

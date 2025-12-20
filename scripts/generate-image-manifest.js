@@ -212,7 +212,7 @@ function main() {
     console.log('To add slideshow images, create directories:');
     console.log('  • public/images/start/');
     console.log('  • public/images/play/{easy,medium,hard}/');
-    console.log('  • public/images/end/{won,took,lost}/');
+    console.log('  • public/images/{victory,retreat,defeat}/');
     console.log('  • public/games/{gameId}/images/...\n');
     console.log('See README.md for full structure documentation.\n');
   } else {

@@ -290,8 +290,8 @@ const OSCILLATOR_SOUNDS: Record<string, OscillatorSoundConfig> = {
     delayBetween: 0.04,
   },
 
-  // Take money action - coin sounds
-  takeMoneyButton: {
+  // Retreat action - coin sounds
+  retreatButton: {
     tones: [
       { frequency: 523, duration: 0.12, type: 'triangle', volume: 0.25 },
       { frequency: 659, duration: 0.12, type: 'triangle', volume: 0.25 },
@@ -611,110 +611,32 @@ const tryPlayFile = async (
 // Public API
 // ============================================
 
-/**
- * Map sound type names to oscillator keys
- */
-const normalizeSoundName = (name: string): string =>
-  name.toLowerCase().replace(/[^a-z0-9]/g, '');
+const normalizeSoundStem = (filename: string): string =>
+  filename
+    .replace(/\.(mp3|ogg|wav)$/i, '')
+    .toLowerCase()
+    .trim();
 
-const SOUND_TYPE_MAP: Record<string, string> = {
-  // Button sounds
-  answerclick: 'answerButton',
-  answerbutton: 'answerButton',
-  bigbuttonpress: 'actionButton',
-  actionpress: 'actionButton',
+const getOscillatorKeyFromFilename = (filename: string): OscillatorSoundKey | null => {
+  const stem = normalizeSoundStem(filename);
 
-  // Legacy hint filenames (map to lifeline/take money oscillator keys)
-  hintreduce: 'lifelineFifty',
-  hintcall: 'lifelinePhone',
-  hintvote: 'lifelineAudience',
-  hinttakemoney: 'takeMoneyButton',
+  if (stem.startsWith('select-')) return 'modeSelect';
 
-  // Lifeline button sounds (v2)
-  lifelinefifty: 'lifelineFifty',
-  lifelinephone: 'lifelinePhone',
-  lifelineaudience: 'lifelineAudience',
-  lifelinehost: 'lifelineHost',
-  lifelineswitch: 'lifelineSwitch',
-  lifelinedouble: 'lifelineDouble',
-  doubledip: 'lifelineDouble',
+  if (stem === 'answer-click') return 'answerButton';
+  if (stem === 'action-press') return 'actionButton';
 
-  // Take money action sound (v2)
-  takemoney: 'takeMoneyButton',
-  took: 'takeMoneyButton',
-  money: 'takeMoneyButton',
+  if (stem === 'lifeline-fifty') return 'lifelineFifty';
+  if (stem === 'lifeline-phone') return 'lifelinePhone';
+  if (stem === 'lifeline-audience') return 'lifelineAudience';
+  if (stem === 'lifeline-host') return 'lifelineHost';
+  if (stem === 'lifeline-switch') return 'lifelineSwitch';
+  if (stem === 'lifeline-double') return 'lifelineDouble';
 
-  // Game event sounds
-  victory: 'victory',
-  won: 'victory',
-  fail: 'defeat',
-  defeat: 'defeat',
-  lost: 'defeat',
-  correct: 'correct',
-  next: 'correct',
-};
+  if (stem === 'retreat') return 'retreatButton';
 
-const uniqueStrings = (items: string[]): string[] => [...new Set(items)];
-
-const getSoundFilenameAliases = (filename: string): string[] => {
-  const extMatch = filename.match(/\.(mp3|ogg|wav)$/i);
-  const ext = extMatch ? extMatch[0] : '';
-  const base = ext ? filename.slice(0, -ext.length) : filename;
-  const normalizedBase = normalizeSoundName(base);
-
-  const aliases: string[] = [];
-
-  const add = (...names: string[]) => {
-    for (const name of names) {
-      if (!name) continue;
-      aliases.push(ext ? `${name}${ext}` : name);
-    }
-  };
-
-  // New ↔ legacy conventions (files)
-  if (normalizedBase === 'victory') add('won', 'Victory');
-  if (normalizedBase === 'won') add('victory', 'Victory');
-
-  if (normalizedBase === 'defeat') add('lost', 'Fail', 'GameOver');
-  if (normalizedBase === 'lost') add('defeat', 'Fail', 'GameOver');
-  if (normalizedBase === 'fail') add('defeat', 'lost', 'GameOver');
-
-  if (normalizedBase === 'correct') add('next', 'Next', 'Correct');
-  if (normalizedBase === 'next') add('correct', 'Correct');
-
-  if (normalizedBase === 'money') add('took', 'TookMoney', 'TakeMoney', 'action-press');
-  if (normalizedBase === 'took') add('money', 'TookMoney', 'TakeMoney');
-
-  // Legacy button names
-  if (normalizedBase === 'actionpress') add('BigButtonPress');
-  if (normalizedBase === 'answerclick') add('AnswerClick');
-
-  // Legacy lifeline names
-  if (normalizedBase === 'lifelinefifty') add('HintReduce', 'LifelineFifty');
-  if (normalizedBase === 'lifelinephone') add('HintCall', 'LifelinePhone');
-  if (normalizedBase === 'lifelineaudience') add('HintVote', 'LifelineAudience');
-  if (normalizedBase === 'takemoney') add('HintTakeMoney', 'TakeMoney', 'TookMoney');
-
-  return uniqueStrings(aliases).filter((a) => a !== filename);
-};
-
-/**
- * Extract sound type from filename for oscillator fallback
- */
-const getSoundTypeFromFilename = (filename: string): string | null => {
-  // Remove extension
-  const name = filename.replace(/\.(mp3|ogg|wav)$/i, '');
-  const normalized = normalizeSoundName(name);
-
-  // Check mapping (normalized)
-  if (SOUND_TYPE_MAP[normalized]) {
-    return SOUND_TYPE_MAP[normalized];
-  }
-
-  // Check if it starts with "Selected" (mode select sound)
-  if (normalized.startsWith('selected')) {
-    return 'modeSelect';
-  }
+  if (stem === 'victory') return 'victory';
+  if (stem === 'defeat') return 'defeat';
+  if (stem === 'correct') return 'correct';
 
   return null;
 };
@@ -731,26 +653,22 @@ export const playSound = async (
 ): Promise<PlayResult> => {
   if (!soundEnabled) return 'none';
 
-  const candidates = uniqueStrings([filename, ...getSoundFilenameAliases(filename)]);
+  const paths = getAssetPaths('sounds', filename, currentGameId);
 
-  for (const candidate of candidates) {
-    const paths = getAssetPaths('sounds', candidate, currentGameId);
+  // 1. Try game-specific path
+  if (await tryPlayFile(paths.specific, volume)) {
+    return 'file';
+  }
 
-    // 1. Try game-specific path
-    if (await tryPlayFile(paths.specific, volume)) {
-      return 'file';
-    }
-
-    // 2. Try fallback path
-    if (await tryPlayFile(paths.fallback, volume)) {
-      return 'file';
-    }
+  // 2. Try fallback path
+  if (await tryPlayFile(paths.fallback, volume)) {
+    return 'file';
   }
 
   // 3. Try oscillator fallback
-  const soundType = getSoundTypeFromFilename(filename);
-  if (soundType && OSCILLATOR_SOUNDS[soundType]) {
-    playOscillatorSound(OSCILLATOR_SOUNDS[soundType]);
+  const oscillatorKey = getOscillatorKeyFromFilename(filename);
+  if (oscillatorKey) {
+    playOscillatorSound(OSCILLATOR_SOUNDS[oscillatorKey]);
     return 'oscillator';
   }
 

@@ -106,10 +106,10 @@ export interface GameStateActions {
   /** Handle answer click */
   handleAnswer: (
     displayIndex: number
-  ) => Promise<'correct' | 'wrong' | 'won' | 'retry' | 'ignored'>;
+  ) => Promise<'correct' | 'defeat' | 'victory' | 'retry' | 'ignored'>;
 
-  /** Take current winnings and leave (preferred name) */
-  takeMoney: () => void;
+  /** Take current winnings and leave */
+  retreat: () => void;
 
   /** Use 50:50 lifeline (preferred name) */
   useLifelineFifty: () => void;
@@ -238,7 +238,7 @@ export const useGameState = (config: GameConfig): UseGameStateReturn => {
   const handleAnswer = useCallback(
     async (
       displayIndex: number
-    ): Promise<'correct' | 'wrong' | 'won' | 'retry' | 'ignored'> => {
+    ): Promise<'correct' | 'defeat' | 'victory' | 'retry' | 'ignored'> => {
       if (state.selectedAnswerDisplayIndex !== null) return 'ignored';
       if (state.eliminatedAnswerDisplayIndices.includes(displayIndex)) return 'ignored';
 
@@ -267,8 +267,8 @@ export const useGameState = (config: GameConfig): UseGameStateReturn => {
     [state]
   );
 
-  const takeMoney = useCallback(() => {
-    dispatch({ type: 'TAKE_MONEY' });
+  const retreat = useCallback(() => {
+    dispatch({ type: 'RETREAT' });
   }, []);
 
   const useLifelineFifty = useCallback(() => {
@@ -418,7 +418,7 @@ export const useGameState = (config: GameConfig): UseGameStateReturn => {
     forceWin,
     newGame,
     handleAnswer,
-    takeMoney,
+    retreat,
     useLifelineFifty,
     useLifelinePhone,
     useLifelineAudience,

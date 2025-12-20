@@ -52,7 +52,7 @@ export const drawCandleCoin: DrawCoinFunction = (ctx, size, colorIndex) => {
   ctx.fill();
 };
 
-export const WingedLightTrophyIcon = () => (
+export const WingedLightVictoryIcon = () => (
   <div className="w-24 h-24 mx-auto flex items-center justify-center animate-bounce">
     <div
       className="text-6xl"

@@ -2,11 +2,11 @@ import { canDispatchInPhase } from './machine';
 import type { GameAction } from './actions';
 
 describe('game state machine (v0)', () => {
-  it('allows only safe actions in non-playing phases', () => {
+  it('allows only safe actions in non-play phases', () => {
     const playingOnly: GameAction['type'][] = [
       'ANSWER_SELECTED',
       'ANSWER_RESOLVED',
-      'TAKE_MONEY',
+      'RETREAT',
       'CLEAR_LIFELINE_RESULT',
       'APPLY_LIFELINE_FIFTY',
       'APPLY_LIFELINE_PHONE',
@@ -19,18 +19,17 @@ describe('game state machine (v0)', () => {
 
     for (const actionType of playingOnly) {
       expect(canDispatchInPhase('start', actionType)).toBe(false);
-      expect(canDispatchInPhase('won', actionType)).toBe(false);
-      expect(canDispatchInPhase('lost', actionType)).toBe(false);
-      expect(canDispatchInPhase('took_money', actionType)).toBe(false);
+      expect(canDispatchInPhase('victory', actionType)).toBe(false);
+      expect(canDispatchInPhase('defeat', actionType)).toBe(false);
+      expect(canDispatchInPhase('retreat', actionType)).toBe(false);
     }
   });
 
   it('always allows NEW_GAME', () => {
     expect(canDispatchInPhase('start', 'NEW_GAME')).toBe(true);
-    expect(canDispatchInPhase('playing', 'NEW_GAME')).toBe(true);
-    expect(canDispatchInPhase('won', 'NEW_GAME')).toBe(true);
-    expect(canDispatchInPhase('lost', 'NEW_GAME')).toBe(true);
-    expect(canDispatchInPhase('took_money', 'NEW_GAME')).toBe(true);
+    expect(canDispatchInPhase('play', 'NEW_GAME')).toBe(true);
+    expect(canDispatchInPhase('victory', 'NEW_GAME')).toBe(true);
+    expect(canDispatchInPhase('defeat', 'NEW_GAME')).toBe(true);
+    expect(canDispatchInPhase('retreat', 'NEW_GAME')).toBe(true);
   });
 });
-

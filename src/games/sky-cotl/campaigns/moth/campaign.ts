@@ -5,14 +5,14 @@ import {
   type CampaignIconProps,
 } from '@engine/types';
 import { jsx, jsxs } from 'react/jsx-runtime';
-import { skyCotlCampaignStrings } from '../../strings';
+import { campaignStrings } from '../../strings';
 import { questions } from './questions';
 import { theme } from './theme';
 
 const MothIcon = ({ className, size }: CampaignIconProps) =>
   jsx('div', {
     className: `${baseCenteredIconClass} ${className ?? getCampaignIconSizeClass(size)}`,
-    'aria-label': skyCotlCampaignStrings.moth.iconAlt,
+    'aria-label': campaignStrings.moth.iconAlt,
     children: jsxs('svg', {
       viewBox: '0 0 56 56',
       className: 'w-full h-full',
@@ -54,8 +54,8 @@ const MothIcon = ({ className, size }: CampaignIconProps) =>
 
 export const mothCampaign: Campaign = {
   id: 'moth',
-  name: skyCotlCampaignStrings.moth.name,
-  label: skyCotlCampaignStrings.moth.label,
+  name: campaignStrings.moth.name,
+  label: campaignStrings.moth.label,
   icon: MothIcon,
   theme,
   questions,

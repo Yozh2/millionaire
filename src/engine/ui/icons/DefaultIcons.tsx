@@ -28,19 +28,19 @@ export const DefaultHeadphonesIcon = () => (
 );
 
 // End Screen Icons
-export const DefaultTrophyIcon = () => (
+export const DefaultVictoryIcon = () => (
   <div className="w-24 h-24 mx-auto flex items-center justify-center text-6xl">
     🏆
   </div>
 );
 
-export const DefaultFailIcon = () => (
+export const DefaultDefeatIcon = () => (
   <div className="w-24 h-24 mx-auto flex items-center justify-center text-6xl">
     ❌
   </div>
 );
 
-export const DefaultMoneyIcon = () => (
+export const DefaultRetreatIcon = () => (
   <div className="w-24 h-24 mx-auto flex items-center justify-center text-6xl">
     💰
   </div>

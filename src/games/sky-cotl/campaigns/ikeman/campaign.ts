@@ -5,14 +5,14 @@ import {
   type CampaignIconProps,
 } from '@engine/types';
 import { jsx, jsxs } from 'react/jsx-runtime';
-import { skyCotlCampaignStrings } from '../../strings';
+import { campaignStrings } from '../../strings';
 import { questions } from './questions';
 import { theme } from './theme';
 
 const IkemanIcon = ({ className, size }: CampaignIconProps) =>
   jsx('div', {
     className: `${baseCenteredIconClass} ${className ?? getCampaignIconSizeClass(size)}`,
-    'aria-label': skyCotlCampaignStrings.ikeman.iconAlt,
+    'aria-label': campaignStrings.ikeman.iconAlt,
     children: jsxs('svg', {
       viewBox: '0 0 56 56',
       className: 'w-full h-full',
@@ -48,8 +48,8 @@ const IkemanIcon = ({ className, size }: CampaignIconProps) =>
 
 export const ikemanCampaign: Campaign = {
   id: 'ikeman',
-  name: skyCotlCampaignStrings.ikeman.name,
-  label: skyCotlCampaignStrings.ikeman.label,
+  name: campaignStrings.ikeman.name,
+  label: campaignStrings.ikeman.label,
   icon: IkemanIcon,
   theme,
   questions,

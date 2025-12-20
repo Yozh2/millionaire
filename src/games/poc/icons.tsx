@@ -5,27 +5,27 @@
  */
 
 /**
- * Trophy icon for winning
+ * Treasure icon for victory
  */
-export const TrophyIcon = () => (
-  <div className="w-24 h-24 mx-auto flex items-center justify-center text-6xl animate-bounce">
+export const VictoryIcon = () => (
+  <div className="w-24 h-24 mx-auto flex items-center justify-center text-6xl">
     🏆
   </div>
 );
 
 /**
- * Fail icon for losing
+ * Defeat icon for defeat
  */
-export const FailIcon = () => (
+export const DefeatIcon = () => (
   <div className="w-24 h-24 mx-auto flex items-center justify-center text-6xl">
     ❌
   </div>
 );
 
 /**
- * Money icon for taking money
+ * Retreat icon for retreating
  */
-export const MoneyIcon = () => (
+export const RetreatIcon = () => (
   <div className="w-24 h-24 mx-auto flex items-center justify-center text-6xl">
     💰
   </div>

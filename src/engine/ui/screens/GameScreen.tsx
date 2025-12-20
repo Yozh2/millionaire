@@ -53,7 +53,7 @@ export function GameScreen({
     useLifelineHost: activateLifelineHost,
     useLifelineSwitch: activateLifelineSwitch,
     useLifelineDouble: activateLifelineDouble,
-    takeMoney: takeMoneyAction,
+    retreat: retreatAction,
   } = gameState;
 
   const questionData = questions[currentQuestion];
@@ -75,7 +75,7 @@ export function GameScreen({
   const lifelineConfigHost = config.lifelines.host;
   const lifelineConfigSwitch = config.lifelines.switch;
   const lifelineConfigDouble = config.lifelines.double;
-  const takeMoneyConfig = config.actions.takeMoney;
+  const retreatConfig = config.actions.retreat;
 
   const getButtonCenterOrigin = (target: HTMLElement): { x: number; y: number } => {
     const rect = target.getBoundingClientRect();
@@ -114,13 +114,13 @@ export function GameScreen({
     const result = await handleAnswer(displayIndex);
     if (result === 'correct') {
       audio.playSoundEffect('correct');
-    } else if (result === 'won') {
+    } else if (result === 'victory') {
       // Player won! Play victory sound and music
       audio.playSoundEffect('victory');
       audio.playVictory();
     } else if (result === 'retry') {
       audio.playSoundEffect('lifelineDouble');
-    } else if (result === 'wrong') {
+    } else if (result === 'defeat') {
       audio.playSoundEffect('defeat');
       audio.playGameOver();
     }
@@ -170,15 +170,15 @@ export function GameScreen({
     activateLifelineDouble();
   };
 
-  const handleTakeMoneyWithSound = (_e: React.MouseEvent<HTMLButtonElement>) => {
-    audio.playSoundEffect('takeMoneyButton');
+  const handleRetreatWithSound = (_e: React.MouseEvent<HTMLButtonElement>) => {
+    audio.playSoundEffect('retreatButton');
     if (currentQuestion === 0) {
       onNewGame();
       return;
     }
 
-    audio.playTakeMoney();
-    takeMoneyAction();
+    audio.playRetreat();
+    retreatAction();
   };
 
   const questionNumber = currentQuestion + 1;
@@ -245,9 +245,9 @@ export function GameScreen({
         totalQuestions={totalQuestions}
         theme={theme}
         StarIcon={StarIcon}
-        takeMoneyConfig={takeMoneyConfig}
-        takeMoneyDisabled={selectedAnswer !== null}
-        onTakeMoney={handleTakeMoneyWithSound}
+        retreatConfig={retreatConfig}
+        retreatDisabled={selectedAnswer !== null}
+        onRetreat={handleRetreatWithSound}
       />
     </div>
   );

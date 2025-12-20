@@ -44,7 +44,13 @@ export const getAssetPaths = (
 export const checkFileExists = async (url: string): Promise<boolean> => {
   try {
     const response = await fetch(url, { method: 'HEAD' });
-    if (response.ok) return true;
+    if (!response.ok) return false;
+
+    // Reject SPA fallbacks (Vite/dev servers may return HTML for missing files).
+    const contentType = (response.headers.get('Content-Type') || '').toLowerCase();
+    if (contentType.startsWith('text/html')) return false;
+
+    return true;
   } catch {
     // ignore
   }
@@ -56,7 +62,13 @@ export const checkFileExists = async (url: string): Promise<boolean> => {
       method: 'GET',
       headers: { Range: 'bytes=0-0' },
     });
-    return response.ok || response.status === 206;
+
+    if (!(response.ok || response.status === 206)) return false;
+
+    const contentType = (response.headers.get('Content-Type') || '').toLowerCase();
+    if (contentType.startsWith('text/html')) return false;
+
+    return true;
   } catch {
     return false;
   }

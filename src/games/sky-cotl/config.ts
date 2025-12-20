@@ -7,26 +7,18 @@ import {
   CandleIcon,
   FallenStarIcon,
   SmallCandleCoinIcon,
-  WingedLightTrophyIcon,
+  WingedLightVictoryIcon,
   drawCandleCoin,
 } from './icons';
-import {
-  skyCotlActionNames,
-  skyCotlCompanions,
-  skyCotlCurrency,
-  skyCotlLifelineNames,
-  skyCotlStrings,
-  skyCotlSubtitle,
-  skyCotlTitle,
-} from './strings';
+import { strings } from './strings';
 
 export const skyCotlConfig: GameConfig = {
   id: 'sky-cotl',
 
   emoji: '☁️',
 
-  title: skyCotlTitle,
-  subtitle: skyCotlSubtitle,
+  title: strings.headerTitle,
+  subtitle: strings.headerSubtitle,
 
   registry: {
     registryVisible: true,
@@ -37,23 +29,23 @@ export const skyCotlConfig: GameConfig = {
 
   campaigns: [mothCampaign, skykidCampaign, ikemanCampaign],
 
-  companions: skyCotlCompanions,
-  strings: skyCotlStrings,
+  companions: strings.companions,
+  strings,
 
   lifelines: {
-    fifty: { name: skyCotlLifelineNames.fifty, icon: '✨', enabled: true },
-    phone: { name: skyCotlLifelineNames.phone, icon: '💭', enabled: true },
-    audience: { name: skyCotlLifelineNames.audience, icon: '📊', enabled: true },
-    double: { name: skyCotlLifelineNames.double, icon: '📲', enabled: true },
+    fifty: { name: strings.lifelines.fifty, icon: '✨', enabled: true },
+    phone: { name: strings.lifelines.phone, icon: '💭', enabled: true },
+    audience: { name: strings.lifelines.audience, icon: '📊', enabled: true },
+    double: { name: strings.lifelines.double, icon: '📲', enabled: true },
   },
 
   actions: {
-    takeMoney: { name: skyCotlActionNames.takeMoney, icon: '🕯️', enabled: true },
+    retreat: { name: strings.retreat, icon: '🕯️', enabled: true },
   },
 
   prizes: {
     maxPrize: 1000000,
-    currency: skyCotlCurrency,
+    currency: strings.currency,
     guaranteedFractions: [1 / 3, 2 / 3, 1],
   },
 
@@ -64,9 +56,9 @@ export const skyCotlConfig: GameConfig = {
   }),
 
   endIcons: {
-    won: WingedLightTrophyIcon,
-    lost: FallenStarIcon,
-    tookMoney: CandleIcon,
+    victory: WingedLightVictoryIcon,
+    defeat: FallenStarIcon,
+    retreat: CandleIcon,
   },
 
   icons: {

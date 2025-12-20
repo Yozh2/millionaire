@@ -3,7 +3,7 @@
  *
  * This is the central orchestrator component that:
  * - Accepts a GameConfig to customize the game
- * - Manages game flow between screens (start, playing, end)
+ * - Manages game flow between screens (start, play, end)
  * - Provides theme context to child components
  * - Handles audio integration
  * - Manages asset preloading across loading levels
@@ -142,7 +142,7 @@ export function MillionaireGame({ config: rawConfig }: MillionaireGameProps) {
   // Start Level 2 background loading when game starts
   useEffect(() => {
     if (
-      gameState.gameState === 'playing' &&
+      gameState.gameState === 'play' &&
       gameState.selectedCampaign
     ) {
       assetLoader.preloadInBackground(
@@ -331,15 +331,11 @@ export function MillionaireGame({ config: rawConfig }: MillionaireGameProps) {
   ]);
 
   const slideshowScreen = useMemo(() => {
-    if (gameState.gameState === 'playing') return 'play';
-    if (gameState.gameState === 'won') return 'won';
-    if (gameState.gameState === 'lost') return 'lost';
-    if (gameState.gameState === 'took_money') return 'took';
-    return 'start';
+    return gameState.gameState;
   }, [gameState.gameState]);
 
   const difficultyLevel = useMemo(() => {
-    if (gameState.gameState !== 'playing') return undefined;
+    if (gameState.gameState !== 'play') return undefined;
     const total = gameState.totalQuestions || 0;
     if (total <= 0) return undefined;
 
@@ -350,11 +346,11 @@ export function MillionaireGame({ config: rawConfig }: MillionaireGameProps) {
   }, [gameState.currentQuestion, gameState.gameState, gameState.totalQuestions]);
 
   const screenWrapperClass =
-    gameState.gameState === 'won'
+    gameState.gameState === 'victory'
       ? 'screen-victory'
-      : gameState.gameState === 'lost'
+      : gameState.gameState === 'defeat'
         ? 'screen-defeat'
-        : gameState.gameState === 'took_money'
+        : gameState.gameState === 'retreat'
           ? 'screen-transition-dramatic'
           : 'screen-transition';
 
@@ -465,20 +461,21 @@ export function MillionaireGame({ config: rawConfig }: MillionaireGameProps) {
               )}
 
               {/* Game Screen */}
-              {gameState.gameState === 'playing' && gameState.questions.length > 0 && (
+              {gameState.gameState === 'play' && gameState.questions.length > 0 && (
                 <GameScreen
                   config={config}
                   gameState={gameState}
                   audio={audio}
                   theme={theme}
                   effects={effects}
+                  onNewGame={handleNewGame}
                 />
               )}
 
               {/* End Screen */}
-              {(gameState.gameState === 'won' ||
-                gameState.gameState === 'lost' ||
-                gameState.gameState === 'took_money') && (
+              {(gameState.gameState === 'victory' ||
+                gameState.gameState === 'defeat' ||
+                gameState.gameState === 'retreat') && (
                 <EndScreen
                   config={config}
                   gameState={gameState}

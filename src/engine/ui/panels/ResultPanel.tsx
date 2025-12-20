@@ -5,12 +5,12 @@ import { ActionButton } from '../components/buttons';
 import { Panel, PanelHeader } from '../components/panel';
 import {
   DefaultCoinIcon,
-  DefaultFailIcon,
-  DefaultMoneyIcon,
-  DefaultTrophyIcon,
+  DefaultDefeatIcon,
+  DefaultRetreatIcon,
+  DefaultVictoryIcon,
 } from '../icons/DefaultIcons';
 
-export type ResultVariant = 'won' | 'lost' | 'took_money';
+export type ResultVariant = 'victory' | 'defeat' | 'retreat';
 
 interface ResultPanelProps {
   config: GameConfig;
@@ -45,44 +45,44 @@ export function ResultPanel({
       return fallback;
     };
 
-    if (variant === 'won') {
-      return pick(config.endIcons?.won, <DefaultTrophyIcon />);
+    if (variant === 'victory') {
+      return pick(config.endIcons?.victory, <DefaultVictoryIcon />);
     }
-    if (variant === 'lost') {
-      return pick(config.endIcons?.lost, <DefaultFailIcon />);
+    if (variant === 'defeat') {
+      return pick(config.endIcons?.defeat, <DefaultDefeatIcon />);
     }
-    return pick(config.endIcons?.tookMoney, <DefaultMoneyIcon />);
+    return pick(config.endIcons?.retreat, <DefaultRetreatIcon />);
   }, [config.endIcons, variant]);
 
   const title = useMemo(() => {
-    if (variant === 'won') return config.strings.wonTitle;
-    if (variant === 'lost') return config.strings.lostTitle;
-    return config.strings.tookMoneyTitle;
+    if (variant === 'victory') return config.strings.victoryTitle;
+    if (variant === 'defeat') return config.strings.defeatTitle;
+    return config.strings.retreatTitle;
   }, [config.strings, variant]);
 
   const text = useMemo(() => {
-    if (variant === 'won') return config.strings.wonText;
-    if (variant === 'lost') return config.strings.lostText;
-    return config.strings.tookMoneyText;
+    if (variant === 'victory') return config.strings.victoryText;
+    if (variant === 'defeat') return config.strings.defeatText;
+    return config.strings.retreatText;
   }, [config.strings, variant]);
 
   const header = useMemo(() => {
-    if (variant === 'won') return config.strings.wonHeader;
-    if (variant === 'lost') return config.strings.lostHeader;
-    return config.strings.tookMoneyHeader;
+    if (variant === 'victory') return config.strings.victoryHeader;
+    if (variant === 'defeat') return config.strings.defeatHeader;
+    return config.strings.retreatHeader;
   }, [config.strings, variant]);
 
   const titleColorClass =
-    variant === 'won'
+    variant === 'victory'
       ? 'text-yellow-400'
-      : variant === 'lost'
+      : variant === 'defeat'
         ? 'text-red-400'
         : theme.textPrimary;
 
   const titleTextShadow =
-    variant === 'won'
+    variant === 'victory'
       ? '0 0 25px #facc15, 0 2px 8px #000'
-      : variant === 'lost'
+      : variant === 'defeat'
         ? '0 0 25px #ef4444, 0 2px 8px #000'
         : `0 0 25px ${theme.glowColor}, 0 2px 8px #000`;
 

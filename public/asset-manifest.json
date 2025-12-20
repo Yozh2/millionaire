@@ -15,14 +15,15 @@
       },
       "level1": {
         "icons": [
+          "/games/bg3/icons/coin.webp",
           "/games/bg3/icons/darkurge.webp",
+          "/games/bg3/icons/defeat.webp",
           "/games/bg3/icons/game-card.webp",
           "/games/bg3/icons/hero.webp",
           "/games/bg3/icons/logo.webp",
-          "/games/bg3/icons/lost.webp",
           "/games/bg3/icons/mindflayer.webp",
-          "/games/bg3/icons/money.webp",
-          "/games/bg3/icons/treasure.webp"
+          "/games/bg3/icons/retreat.webp",
+          "/games/bg3/icons/victory.webp"
         ],
         "sounds": [
           "/games/bg3/sounds/action-press.ogg",
@@ -30,7 +31,7 @@
           "/games/bg3/sounds/defeat.ogg",
           "/games/bg3/sounds/lifeline-audience.ogg",
           "/games/bg3/sounds/lifeline-fifty.ogg",
-          "/games/bg3/sounds/money.ogg",
+          "/games/bg3/sounds/retreat.ogg",
           "/games/bg3/sounds/select-darkurge.ogg",
           "/games/bg3/sounds/select-hero.ogg",
           "/games/bg3/sounds/select-mindflayer.ogg"
@@ -50,19 +51,13 @@
         }
       },
       "level2": {
-        "gameOverMusic": "/games/bg3/music/defeat.ogg",
+        "defeatMusic": "/games/bg3/music/defeat.ogg",
         "victoryMusic": "/games/bg3/music/victory.ogg",
-        "tookMoneyMusic": "/games/bg3/music/money.ogg",
+        "retreatMusic": "/games/bg3/music/retreat.ogg",
         "endImages": {
-          "won": [
-            "/games/bg3/images/end/won/01.webp"
-          ],
-          "lost": [
-            "/games/bg3/images/end/lost/01.webp"
-          ],
-          "took": [
-            "/games/bg3/images/end/took/01.webp"
-          ]
+          "victory": [],
+          "defeat": [],
+          "retreat": []
         }
       },
       "voices": [
@@ -86,11 +81,9 @@
               "hard": []
             },
             "endImages": {
-              "won": [],
-              "lost": [
-                "/games/bg3/images/campaigns/darkurge/end/lost/01.webp"
-              ],
-              "took": []
+              "victory": [],
+              "defeat": [],
+              "retreat": []
             }
           }
         },
@@ -108,11 +101,9 @@
               "hard": []
             },
             "endImages": {
-              "won": [],
-              "lost": [
-                "/games/bg3/images/campaigns/hero/end/lost/01.webp"
-              ],
-              "took": []
+              "victory": [],
+              "defeat": [],
+              "retreat": []
             }
           }
         },
@@ -130,11 +121,9 @@
               "hard": []
             },
             "endImages": {
-              "won": [],
-              "lost": [
-                "/games/bg3/images/campaigns/mindflayer/end/lost/01.webp"
-              ],
-              "took": []
+              "victory": [],
+              "defeat": [],
+              "retreat": []
             }
           }
         }
@@ -143,10 +132,11 @@
     "sky-cotl": {
       "cardAssets": {
         "gameCard": "/games/sky-cotl/icons/game-card.webp",
-        "favicon": null
+        "favicon": "/games/sky-cotl/favicon/favicon.svg"
       },
       "level1": {
         "icons": [
+          "/games/sky-cotl/icons/coin.webp",
           "/games/sky-cotl/icons/game-card.webp",
           "/games/sky-cotl/icons/logo.webp",
           "/games/sky-cotl/icons/skykid.webp"
@@ -157,13 +147,13 @@
         "campaignStartImages": {}
       },
       "level2": {
-        "gameOverMusic": null,
+        "defeatMusic": null,
         "victoryMusic": null,
-        "tookMoneyMusic": null,
+        "retreatMusic": null,
         "endImages": {
-          "won": [],
-          "lost": [],
-          "took": []
+          "victory": [],
+          "defeat": [],
+          "retreat": []
         }
       },
       "voices": [],
@@ -172,18 +162,19 @@
     "transformers": {
       "cardAssets": {
         "gameCard": "/games/transformers/icons/game-card.webp",
-        "favicon": null
+        "favicon": "/games/transformers/favicon/favicon.svg"
       },
       "level1": {
         "icons": [
           "/games/transformers/icons/autocracy.webp",
+          "/games/transformers/icons/coin.webp",
+          "/games/transformers/icons/defeat.webp",
           "/games/transformers/icons/game-card.webp",
           "/games/transformers/icons/logo.webp",
-          "/games/transformers/icons/lost.webp",
           "/games/transformers/icons/megatron.webp",
-          "/games/transformers/icons/money.webp",
+          "/games/transformers/icons/retreat.webp",
           "/games/transformers/icons/skybound.webp",
-          "/games/transformers/icons/treasure.webp"
+          "/games/transformers/icons/victory.webp"
         ],
         "sounds": [
           "/games/transformers/sounds/action-press.ogg",
@@ -210,13 +201,13 @@
         }
       },
       "level2": {
-        "gameOverMusic": "/games/transformers/music/defeat.ogg",
+        "defeatMusic": "/games/transformers/music/defeat.ogg",
         "victoryMusic": "/games/transformers/music/victory.ogg",
-        "tookMoneyMusic": "/games/transformers/music/money.ogg",
+        "retreatMusic": "/games/transformers/music/retreat.ogg",
         "endImages": {
-          "won": [],
-          "lost": [],
-          "took": []
+          "victory": [],
+          "defeat": [],
+          "retreat": []
         }
       },
       "voices": [
@@ -244,9 +235,9 @@
               "hard": []
             },
             "endImages": {
-              "won": [],
-              "lost": [],
-              "took": []
+              "victory": [],
+              "defeat": [],
+              "retreat": []
             }
           }
         },
@@ -285,24 +276,9 @@
               ]
             },
             "endImages": {
-              "won": [
-                "/games/transformers/images/campaigns/megatron/end/won/01.webp",
-                "/games/transformers/images/campaigns/megatron/end/won/02.webp",
-                "/games/transformers/images/campaigns/megatron/end/won/03.webp"
-              ],
-              "lost": [
-                "/games/transformers/images/campaigns/megatron/end/lost/01.webp",
-                "/games/transformers/images/campaigns/megatron/end/lost/02.webp",
-                "/games/transformers/images/campaigns/megatron/end/lost/03.webp",
-                "/games/transformers/images/campaigns/megatron/end/lost/04.webp",
-                "/games/transformers/images/campaigns/megatron/end/lost/05.webp",
-                "/games/transformers/images/campaigns/megatron/end/lost/06.webp",
-                "/games/transformers/images/campaigns/megatron/end/lost/07.webp"
-              ],
-              "took": [
-                "/games/transformers/images/campaigns/megatron/end/took/01.webp",
-                "/games/transformers/images/campaigns/megatron/end/took/02.webp"
-              ]
+              "victory": [],
+              "defeat": [],
+              "retreat": []
             }
           }
         },
@@ -320,9 +296,9 @@
               "hard": []
             },
             "endImages": {
-              "won": [],
-              "lost": [],
-              "took": []
+              "victory": [],
+              "defeat": [],
+              "retreat": []
             }
           }
         }

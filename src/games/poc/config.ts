@@ -9,24 +9,16 @@ import type { GameConfig } from '@engine/types';
 import { createDefaultAudioConfig } from '@engine/audio/defaultAudio';
 import { easyCampaign } from './campaigns/easy/campaign';
 import { hardCampaign } from './campaigns/hard/campaign';
-import { FailIcon, MoneyIcon, TrophyIcon } from './icons';
-import {
-  pocActionNames,
-  pocCompanions,
-  pocCurrency,
-  pocLifelineNames,
-  pocStrings,
-  pocSubtitle,
-  pocTitle,
-} from './strings';
+import { DefeatIcon, RetreatIcon, VictoryIcon } from './icons';
+import { strings } from './strings';
 
 export const pocConfig: GameConfig = {
   id: 'poc',
 
   emoji: '⚙️',
 
-  title: pocTitle,
-  subtitle: pocSubtitle,
+  title: strings.headerTitle,
+  subtitle: strings.headerSubtitle,
 
   registry: {
     registryVisible: true,
@@ -37,25 +29,25 @@ export const pocConfig: GameConfig = {
 
   campaigns: [easyCampaign, hardCampaign],
 
-  companions: pocCompanions,
-  strings: pocStrings,
+  companions: strings.companions,
+  strings,
 
   lifelines: {
-    fifty: { name: pocLifelineNames.fifty, icon: '⚡', enabled: true },
-    phone: { name: pocLifelineNames.phone, icon: '📞', enabled: true },
-    audience: { name: pocLifelineNames.audience, icon: '📊', enabled: true },
-    host: { name: pocLifelineNames.host, icon: '🎭', enabled: true },
-    switch: { name: pocLifelineNames.switch, icon: '🔁', enabled: true },
-    double: { name: pocLifelineNames.double, icon: '🎯', enabled: true },
+    fifty: { name: strings.lifelines.fifty, icon: '⚡', enabled: true },
+    phone: { name: strings.lifelines.phone, icon: '📞', enabled: true },
+    audience: { name: strings.lifelines.audience, icon: '📊', enabled: true },
+    host: { name: strings.lifelines.host, icon: '🎭', enabled: true },
+    switch: { name: strings.lifelines.switch, icon: '🔁', enabled: true },
+    double: { name: strings.lifelines.double, icon: '🎯', enabled: true },
   },
 
   actions: {
-    takeMoney: { name: pocActionNames.takeMoney, icon: '💰', enabled: true },
+    retreat: { name: strings.retreat, icon: '💰', enabled: true },
   },
 
   prizes: {
     maxPrize: 1000000,
-    currency: pocCurrency,
+    currency: strings.currency,
     guaranteedFractions: [1 / 3, 2 / 3, 1],
   },
 
@@ -66,9 +58,9 @@ export const pocConfig: GameConfig = {
   }),
 
   endIcons: {
-    won: TrophyIcon,
-    lost: FailIcon,
-    tookMoney: MoneyIcon,
+    victory: VictoryIcon,
+    defeat: DefeatIcon,
+    retreat: RetreatIcon,
   },
 };
 

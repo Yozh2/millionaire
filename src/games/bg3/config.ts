@@ -8,15 +8,7 @@ import { darkurgeCampaign } from './campaigns/darkUrge/campaign';
 import { heroCampaign } from './campaigns/hero/campaign';
 import { mindflayerCampaign } from './campaigns/mindFlayer/campaign';
 import { ScrollIcon, TavernIcon } from './icons';
-import {
-  bg3ActionNames,
-  bg3Companions,
-  bg3Currency,
-  bg3LifelineNames,
-  bg3Strings,
-  bg3Subtitle,
-  bg3Title,
-} from './strings';
+import { strings } from './strings';
 
 export const bg3Config: GameConfig = {
   id: 'bg3',
@@ -24,8 +16,8 @@ export const bg3Config: GameConfig = {
   emoji: '⚔️',
   fontFamily: 'Georgia, "Times New Roman", serif',
 
-  title: bg3Title,
-  subtitle: bg3Subtitle,
+  title: strings.headerTitle,
+  subtitle: strings.headerSubtitle,
 
   registry: {
     registryVisible: true,
@@ -36,23 +28,23 @@ export const bg3Config: GameConfig = {
 
   campaigns: [heroCampaign, mindflayerCampaign, darkurgeCampaign],
 
-  companions: bg3Companions,
-  strings: bg3Strings,
+  companions: strings.companions,
+  strings,
 
   lifelines: {
-    fifty: { name: bg3LifelineNames.fifty, icon: '⚡', enabled: true },
-    phone: { name: bg3LifelineNames.phone, icon: '📜', enabled: true },
-    audience: { name: bg3LifelineNames.audience, icon: '🍺', enabled: true },
-    double: { name: bg3LifelineNames.double, icon: '🎲', enabled: true },
+    fifty: { name: strings.lifelines.fifty, icon: '⚡', enabled: true },
+    phone: { name: strings.lifelines.phone, icon: '📜', enabled: true },
+    audience: { name: strings.lifelines.audience, icon: '🍺', enabled: true },
+    double: { name: strings.lifelines.double, icon: '🎲', enabled: true },
   },
 
   actions: {
-    takeMoney: { name: bg3ActionNames.takeMoney, icon: '💰', enabled: true },
+    retreat: { name: strings.retreat, icon: '💰', enabled: true },
   },
 
   prizes: {
     maxPrize: 1000000,
-    currency: bg3Currency,
+    currency: strings.currency,
     guaranteedFractions: [1 / 3, 2 / 3, 1],
   },
 

@@ -66,7 +66,10 @@ const safeRenderIcon = (Icon?: ComponentType): unknown => {
 
 const unique = <T,>(items: T[]): T[] => [...new Set(items)];
 
-const createSpriteCoinDraw = (sources: string[]): DrawCoinFunction => {
+const createSpriteCoinDraw = (
+  sources: string[],
+  fallbackDraw: DrawCoinFunction
+): DrawCoinFunction => {
   const uniqueSources = unique(sources).filter(Boolean);
   const images: Array<HTMLImageElement | null> = Array.from(
     { length: uniqueSources.length },
@@ -96,7 +99,7 @@ const createSpriteCoinDraw = (sources: string[]): DrawCoinFunction => {
 
   return (ctx, size, colorIndex) => {
     if (uniqueSources.length === 0) {
-      drawDefaultCoin(ctx, size, colorIndex);
+      fallbackDraw(ctx, size, colorIndex);
       return;
     }
 
@@ -111,7 +114,7 @@ const createSpriteCoinDraw = (sources: string[]): DrawCoinFunction => {
       return;
     }
 
-    drawDefaultCoin(ctx, size, colorIndex);
+    fallbackDraw(ctx, size, colorIndex);
   };
 };
 
@@ -137,31 +140,18 @@ const createEmojiCoinDraw = (glyphs: string[]): DrawCoinFunction => {
 };
 
 export const createCoinDrawFromConfig = (config: GameConfig): DrawCoinFunction => {
-  const candidates: Array<ComponentType | undefined> = [
-    config.icons?.coin ?? DefaultCoinIcon,
-    config.endIcons?.tookMoney,
-    config.endIcons?.won,
-  ];
+  if (config.drawCoinParticle) return config.drawCoinParticle;
 
-  const rendered = candidates.map((Icon) => safeRenderIcon(Icon)).filter(Boolean);
+  const coinIcon = config.icons?.coin ?? DefaultCoinIcon;
+  const rendered = safeRenderIcon(coinIcon);
 
-  const sources = unique(
-    rendered
-      .map((node) => firstImgSrc(node))
-      .filter((v): v is string => typeof v === 'string' && v.length > 0)
-  );
-  if (sources.length > 0) {
-    return createSpriteCoinDraw(sources);
-  }
+  const engineFallback = createEmojiCoinDraw(['🪙']);
 
-  const glyphs = unique(
-    rendered
-      .map((node) => firstStringLike(node as ReactChildLike))
-      .filter((v): v is string => typeof v === 'string' && v.length > 0)
-  );
-  if (glyphs.length > 0) {
-    return createEmojiCoinDraw(glyphs);
-  }
+  const src = firstImgSrc(rendered);
+  if (src) return createSpriteCoinDraw([src], engineFallback);
 
-  return config.drawCoinParticle ?? drawDefaultCoin;
+  const glyph = firstStringLike(rendered as ReactChildLike);
+  if (glyph) return createEmojiCoinDraw([glyph]);
+
+  return engineFallback;
 };

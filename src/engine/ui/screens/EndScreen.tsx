@@ -1,5 +1,5 @@
 /**
- * EndScreen - Game over screens (won, lost, took money)
+ * EndScreen - Game over screens (victory, defeat, retreat)
  */
 
 import { useEffect, useRef, useCallback } from 'react';
@@ -51,7 +51,7 @@ export function EndScreen({
 
   // Trigger celebration effects - continuous coin bursts from trophy icon position
   useEffect(() => {
-    if (state === 'won' || (state === 'took_money' && Number(wonPrize) > 0)) {
+    if (state === 'victory' || (state === 'retreat' && Number(wonPrize) > 0)) {
       // Delay to ensure icon is rendered and positioned (0.5 sec for screen load)
       const startDelay = setTimeout(() => {
         // Initial burst from icon position
@@ -82,7 +82,7 @@ export function EndScreen({
   // Trigger lost sparks effect - continuous tiny spark bursts from broken icon
   // Only enabled when config.enableLostSparks is true
   useEffect(() => {
-    if (state === 'lost' && config.enableLostSparks) {
+    if (state === 'defeat' && config.enableLostSparks) {
       // Delay to ensure icon is rendered and positioned (0.5 sec for screen load)
       const startDelay = setTimeout(() => {
         // Initial burst from icon position
@@ -111,7 +111,7 @@ export function EndScreen({
   }, [state, getIconOrigin]); // effects intentionally omitted to prevent re-triggering
 
   const variant: ResultVariant =
-    state === 'won' ? 'won' : state === 'lost' ? 'lost' : 'took_money';
+    state === 'victory' ? 'victory' : state === 'defeat' ? 'defeat' : 'retreat';
 
   return (
     <ResultPanel

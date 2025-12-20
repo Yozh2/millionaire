@@ -167,20 +167,17 @@ function scanGameAssets(gameDir, gameId) {
     'menu.ogg',
     'MainMenu.ogg',
   ]);
-  const lostMusicFilename = findFirstExistingFile(join(gameDir, 'music'), [
+  const defeatMusicFilename = findFirstExistingFile(join(gameDir, 'music'), [
     'defeat.ogg',
-    'lost.ogg',
-    'GameOver.ogg',
+    'Defeat.ogg',
   ]);
-  const wonMusicFilename = findFirstExistingFile(join(gameDir, 'music'), [
+  const victoryMusicFilename = findFirstExistingFile(join(gameDir, 'music'), [
     'victory.ogg',
-    'won.ogg',
     'Victory.ogg',
   ]);
-  const tookMusicFilename = findFirstExistingFile(join(gameDir, 'music'), [
-    'money.ogg',
-    'took.ogg',
-    'TookMoney.ogg',
+  const retreatMusicFilename = findFirstExistingFile(join(gameDir, 'music'), [
+    'retreat.ogg',
+    'Retreat.ogg',
   ]);
 
   const game = {
@@ -209,16 +206,16 @@ function scanGameAssets(gameDir, gameId) {
 
     // Level 2: End game assets (loaded during gameplay)
     level2: {
-      gameOverMusic: lostMusicFilename ? `/games/${gameId}/music/${lostMusicFilename}`
+      defeatMusic: defeatMusicFilename ? `/games/${gameId}/music/${defeatMusicFilename}`
         : null,
-      victoryMusic: wonMusicFilename ? `/games/${gameId}/music/${wonMusicFilename}`
+      victoryMusic: victoryMusicFilename ? `/games/${gameId}/music/${victoryMusicFilename}`
         : null,
-      tookMoneyMusic: tookMusicFilename ? `/games/${gameId}/music/${tookMusicFilename}`
+      retreatMusic: retreatMusicFilename ? `/games/${gameId}/music/${retreatMusicFilename}`
         : null,
       endImages: {
-        won: getFilesRecursive(join(gameDir, 'images', 'end', 'won')),
-        lost: getFilesRecursive(join(gameDir, 'images', 'end', 'lost')),
-        took: getFilesRecursive(join(gameDir, 'images', 'end', 'took')),
+        victory: getFilesRecursive(join(gameDir, 'images', 'victory')),
+        defeat: getFilesRecursive(join(gameDir, 'images', 'defeat')),
+        retreat: getFilesRecursive(join(gameDir, 'images', 'retreat')),
       },
     },
 
@@ -264,9 +261,9 @@ function scanGameAssets(gameDir, gameId) {
             hard: getFilesRecursive(join(campaignDir, 'play', 'hard')),
           },
           endImages: {
-            won: getFilesRecursive(join(campaignDir, 'end', 'won')),
-            lost: getFilesRecursive(join(campaignDir, 'end', 'lost')),
-            took: getFilesRecursive(join(campaignDir, 'end', 'took')),
+            victory: getFilesRecursive(join(campaignDir, 'victory')),
+            defeat: getFilesRecursive(join(campaignDir, 'defeat')),
+            retreat: getFilesRecursive(join(campaignDir, 'retreat')),
           },
         },
       };
@@ -283,13 +280,8 @@ function scanGameAssets(gameDir, gameId) {
       'menu',
       'mainmenu',
       'victory',
-      'won',
       'defeat',
-      'lost',
-      'money',
-      'took',
-      'gameover',
-      'tookmoney',
+      'retreat',
     ];
 
     // Get existing campaign IDs (lowercase for comparison)
@@ -334,9 +326,9 @@ function scanGameAssets(gameDir, gameId) {
             hard: [],
           },
           endImages: {
-            won: [],
-            lost: [],
-            took: [],
+            victory: [],
+            defeat: [],
+            retreat: [],
           },
         },
       };
@@ -352,12 +344,12 @@ function scanGameAssets(gameDir, gameId) {
     Object.values(game.level1.campaignStartImages).flat().length;
 
   const level2Count =
-    (game.level2.gameOverMusic ? 1 : 0) +
+    (game.level2.defeatMusic ? 1 : 0) +
     (game.level2.victoryMusic ? 1 : 0) +
-    (game.level2.tookMoneyMusic ? 1 : 0) +
-    game.level2.endImages.won.length +
-    game.level2.endImages.lost.length +
-    game.level2.endImages.took.length;
+    (game.level2.retreatMusic ? 1 : 0) +
+    game.level2.endImages.victory.length +
+    game.level2.endImages.defeat.length +
+    game.level2.endImages.retreat.length;
 
   console.log(
     `      Level 1: ${level1Count} assets, Level 2: ${level2Count} assets`
@@ -404,9 +396,9 @@ function generateManifest() {
       (game.level1.mainMenuMusic ? 1 : 0) +
       game.level1.startImages.length;
     totalAssets +=
-      (game.level2.gameOverMusic ? 1 : 0) +
+      (game.level2.defeatMusic ? 1 : 0) +
       (game.level2.victoryMusic ? 1 : 0) +
-      (game.level2.tookMoneyMusic ? 1 : 0);
+      (game.level2.retreatMusic ? 1 : 0);
     totalAssets += game.voices.length;
 
     for (const campaign of Object.values(game.campaigns)) {
@@ -416,9 +408,9 @@ function generateManifest() {
       totalAssets +=
         campaign.level2.playImages.medium.length +
         campaign.level2.playImages.hard.length +
-        campaign.level2.endImages.won.length +
-        campaign.level2.endImages.lost.length +
-        campaign.level2.endImages.took.length;
+        campaign.level2.endImages.victory.length +
+        campaign.level2.endImages.defeat.length +
+        campaign.level2.endImages.retreat.length;
     }
   }
 

@@ -52,11 +52,11 @@ export interface UseAudioReturn {
   /** Play victory music (player won all questions) */
   playVictory: () => void;
 
-  /** Play take money music (player took money early) */
-  playTakeMoney: () => void;
+  /** Play retreat music (player retreats early) */
+  playRetreat: () => void;
 
   /** Play end game music based on game state */
-  playEndMusic: (state: 'won' | 'lost' | 'took_money') => void;
+  playEndMusic: (state: 'victory' | 'defeat' | 'retreat') => void;
 
   /** Play campaign-specific music */
   playCampaignMusic: (campaign: Campaign) => void;
@@ -127,7 +127,7 @@ export const useAudio = (
     playMainMenu: musicPlayer.playMainMenu,
     playGameOver: musicPlayer.playGameOver,
     playVictory: musicPlayer.playVictory,
-    playTakeMoney: musicPlayer.playTakeMoney,
+    playRetreat: musicPlayer.playRetreat,
     playEndMusic: musicPlayer.playEndMusic,
     playCampaignMusic: musicPlayer.playCampaignMusic,
     stopMusic,

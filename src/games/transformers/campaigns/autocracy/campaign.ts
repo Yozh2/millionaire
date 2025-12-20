@@ -1,12 +1,12 @@
 import type { Campaign } from '@engine/types';
-import { transformersCampaignStrings } from '../../strings';
+import { campaignStrings } from '../../strings';
 import { questions } from './questions';
 import { theme } from './theme';
 
 export const autocracyCampaign: Campaign = {
   id: 'autocracy',
-  name: transformersCampaignStrings.autocracy.name,
-  label: transformersCampaignStrings.autocracy.label,
+  name: campaignStrings.autocracy.name,
+  label: campaignStrings.autocracy.label,
   theme,
   questions,
 };

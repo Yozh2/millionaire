@@ -18,8 +18,8 @@ export interface UseMusicPlayerReturn {
   playMainMenu: () => void;
   playGameOver: () => void;
   playVictory: () => void;
-  playTakeMoney: () => void;
-  playEndMusic: (state: 'won' | 'lost' | 'took_money') => void;
+  playRetreat: () => void;
+  playEndMusic: (state: 'victory' | 'defeat' | 'retreat') => void;
   playCampaignMusic: (campaign: Campaign) => void;
   stopMusic: () => void;
 }
@@ -288,7 +288,7 @@ export function useMusicPlayer(
 
   const playGameOver = useCallback(() => {
     void tryPlayTrackWithFallback(
-      [config.audio.defeatTrack, 'defeat.ogg', 'lost.ogg', 'GameOver.ogg'],
+      [config.audio.defeatTrack, 'defeat.ogg', 'Defeat.ogg'],
       true
     );
   }, [config.audio.defeatTrack, tryPlayTrackWithFallback]);
@@ -298,53 +298,50 @@ export function useMusicPlayer(
       [
         config.audio.victoryTrack,
         'victory.ogg',
-        'won.ogg',
         config.audio.defeatTrack,
         'defeat.ogg',
-        'lost.ogg',
         'Victory.ogg',
+        'Defeat.ogg',
       ],
       true
     );
   }, [config.audio.defeatTrack, config.audio.victoryTrack, tryPlayTrackWithFallback]);
 
-  const playTakeMoney = useCallback(() => {
+  const playRetreat = useCallback(() => {
     void tryPlayTrackWithFallback(
       [
-        config.audio.moneyTrack,
-        'money.ogg',
-        'took.ogg',
+        config.audio.retreatTrack,
+        'retreat.ogg',
         config.audio.victoryTrack,
         'victory.ogg',
-        'won.ogg',
         config.audio.defeatTrack,
         'defeat.ogg',
-        'lost.ogg',
-        'Money.ogg',
-        'TookMoney.ogg',
+        'Retreat.ogg',
+        'Victory.ogg',
+        'Defeat.ogg',
       ],
       true
     );
   }, [
     config.audio.defeatTrack,
-    config.audio.moneyTrack,
+    config.audio.retreatTrack,
     config.audio.victoryTrack,
     tryPlayTrackWithFallback,
   ]);
 
   const playEndMusic = useCallback(
-    (state: 'won' | 'lost' | 'took_money') => {
-      if (state === 'won') {
+    (state: 'victory' | 'defeat' | 'retreat') => {
+      if (state === 'victory') {
         playVictory();
         return;
       }
-      if (state === 'took_money') {
-        playTakeMoney();
+      if (state === 'retreat') {
+        playRetreat();
         return;
       }
       playGameOver();
     },
-    [playGameOver, playTakeMoney, playVictory]
+    [playGameOver, playRetreat, playVictory]
   );
 
   const playCampaignMusic = useCallback(
@@ -375,7 +372,7 @@ export function useMusicPlayer(
     playMainMenu,
     playGameOver,
     playVictory,
-    playTakeMoney,
+    playRetreat,
     playEndMusic,
     playCampaignMusic,
     stopMusic,

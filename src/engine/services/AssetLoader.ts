@@ -264,20 +264,20 @@ class AssetLoader {
         const campaign2 = this.findCampaign(gameFor2, campaignId);
 
         // End game music
-        if (gameFor2.level2.gameOverMusic) {
-          assets.push(gameFor2.level2.gameOverMusic);
+        if (gameFor2.level2.defeatMusic) {
+          assets.push(gameFor2.level2.defeatMusic);
         }
         if (gameFor2.level2.victoryMusic) {
           assets.push(gameFor2.level2.victoryMusic);
         }
-        if (gameFor2.level2.tookMoneyMusic) {
-          assets.push(gameFor2.level2.tookMoneyMusic);
+        if (gameFor2.level2.retreatMusic) {
+          assets.push(gameFor2.level2.retreatMusic);
         }
 
         // Game-level end images (fallback)
-        assets.push(...gameFor2.level2.endImages.won);
-        assets.push(...gameFor2.level2.endImages.lost);
-        assets.push(...gameFor2.level2.endImages.took);
+        assets.push(...gameFor2.level2.endImages.victory);
+        assets.push(...gameFor2.level2.endImages.defeat);
+        assets.push(...gameFor2.level2.endImages.retreat);
 
         // Campaign-specific assets
         if (campaign2) {
@@ -286,9 +286,9 @@ class AssetLoader {
           assets.push(...campaign2.level2.playImages.hard);
 
           // Campaign end images
-          assets.push(...campaign2.level2.endImages.won);
-          assets.push(...campaign2.level2.endImages.lost);
-          assets.push(...campaign2.level2.endImages.took);
+          assets.push(...campaign2.level2.endImages.victory);
+          assets.push(...campaign2.level2.endImages.defeat);
+          assets.push(...campaign2.level2.endImages.retreat);
         }
         break;
     }

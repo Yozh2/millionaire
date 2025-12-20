@@ -11,9 +11,9 @@ interface PrizeLadderPanelProps {
   totalQuestions: number;
   theme: ThemeColors;
   StarIcon: ComponentType;
-  takeMoneyConfig: ActionConfig;
-  takeMoneyDisabled: boolean;
-  onTakeMoney: (e: MouseEvent<HTMLButtonElement>) => void;
+  retreatConfig: ActionConfig;
+  retreatDisabled: boolean;
+  onRetreat: (e: MouseEvent<HTMLButtonElement>) => void;
 }
 
 export function PrizeLadderPanel({
@@ -24,11 +24,11 @@ export function PrizeLadderPanel({
   totalQuestions,
   theme,
   StarIcon,
-  takeMoneyConfig,
-  takeMoneyDisabled,
-  onTakeMoney,
+  retreatConfig,
+  retreatDisabled,
+  onRetreat,
 }: PrizeLadderPanelProps) {
-  const takeMoneyBase =
+  const retreatBase =
     'px-3 py-2 text-sm border-3 h-12 w-full flex items-center justify-center gap-2';
 
   const prizeTextCurrent = theme.prizeTextCurrent ?? theme.textSecondary;
@@ -102,17 +102,17 @@ export function PrizeLadderPanel({
 
       <div className="p-2 pt-1">
         <LifelineButton
-          onClick={onTakeMoney}
-          disabled={takeMoneyDisabled}
-          className={`${takeMoneyBase} ${
-            !takeMoneyDisabled
+          onClick={onRetreat}
+          disabled={retreatDisabled}
+          className={`${retreatBase} ${
+            !retreatDisabled
               ? 'bg-gradient-to-b from-yellow-700 to-yellow-900 border-yellow-600 text-yellow-100'
               : 'bg-stone-950 border-stone-800 text-stone-600 cursor-not-allowed'
           }`}
           glow="rgba(234, 179, 8, 0.5)"
-          boxShadow={!takeMoneyDisabled ? '0 0 15px rgba(234, 179, 8, 0.4)' : 'none'}
-          icon={takeMoneyConfig.icon}
-          label={takeMoneyConfig.name}
+          boxShadow={!retreatDisabled ? '0 0 15px rgba(234, 179, 8, 0.4)' : 'none'}
+          icon={retreatConfig.icon}
+          label={retreatConfig.name}
         />
       </div>
     </Panel>

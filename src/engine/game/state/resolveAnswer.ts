@@ -9,7 +9,7 @@ export interface ResolveAnswerResult {
 
 export const resolveAnswer = (state: GameDomainState, displayIndex: number): ResolveAnswerResult => {
   const question = state.questions[state.currentQuestionIndex];
-  if (!question) return { outcome: 'wrong', wonPrize: '0' };
+  if (!question) return { outcome: 'defeat', wonPrize: '0' };
 
   const originalIndex = state.shuffledAnswers[displayIndex];
   const correctOriginalIndex = question.correct;
@@ -20,11 +20,11 @@ export const resolveAnswer = (state: GameDomainState, displayIndex: number): Res
     if (state.doubleDipArmed && !state.doubleDipStrikeUsed) {
       return { outcome: 'retry', wonPrize: state.wonPrize };
     }
-    return { outcome: 'wrong', wonPrize: selectGuaranteedPrizeOnLoss(state) };
+    return { outcome: 'defeat', wonPrize: selectGuaranteedPrizeOnLoss(state) };
   }
 
   if (state.currentQuestionIndex === totalQuestions - 1) {
-    return { outcome: 'won', wonPrize: selectCurrentPrize(state) };
+    return { outcome: 'victory', wonPrize: selectCurrentPrize(state) };
   }
 
   return { outcome: 'correct', wonPrize: state.wonPrize };

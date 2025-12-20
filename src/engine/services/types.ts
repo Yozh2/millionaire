@@ -12,9 +12,9 @@ export interface ImagesByDifficulty {
 
 /** End screen images by result type */
 export interface EndImages {
-  won: string[];
-  lost: string[];
-  took: string[];
+  victory: string[];
+  retreat: string[];
+  defeat: string[];
 }
 
 /** Campaign-specific assets */
@@ -59,9 +59,9 @@ export interface GameAssets {
   };
   /** Level 2: End game assets */
   level2: {
-    gameOverMusic: string | null;
+    defeatMusic: string | null;
     victoryMusic: string | null;
-    tookMoneyMusic: string | null;
+    retreatMusic: string | null;
     endImages: EndImages;
   };
   /** Voice lines for companions */

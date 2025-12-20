@@ -1,12 +1,12 @@
 import type { Campaign } from '@engine/types';
-import { transformersCampaignStrings } from '../../strings';
+import { campaignStrings } from '../../strings';
 import { questions } from './questions';
 import { theme } from './theme';
 
 export const megatronCampaign: Campaign = {
   id: 'megatron',
-  name: transformersCampaignStrings.megatron.name,
-  label: transformersCampaignStrings.megatron.label,
+  name: campaignStrings.megatron.name,
+  label: campaignStrings.megatron.label,
   theme,
   questions,
 };

@@ -1,37 +1,57 @@
-import type { Companion, GameStrings } from '@engine/types';
+import type { GameStringsNamespace } from '@engine/types';
 
-export const bg3Title = 'КТО ХОЧЕТ СТАТЬ МИЛЛИОНЕРОМ';
-export const bg3Subtitle = "Baldur's Gate III Edition";
+export const strings = {
+  // Common layout
+  headerTitle: 'КТО ХОЧЕТ СТАТЬ МИЛЛИОНЕРОМ',
+  headerSubtitle: "Baldur's Gate III Edition",
+  footer: "✦ By Mystra's Grace ✦",
 
-export const bg3CampaignStrings = {
-  hero: { name: 'ГЕРОЙ', label: 'Легко', iconAlt: 'Hero' },
-  mindflayer: { name: 'ИЛЛИТИД', label: 'Сложно', iconAlt: 'Mind Flayer' },
-  darkurge: { name: 'СОБЛАЗН', label: 'Доблесть', iconAlt: 'Dark Urge' },
-} as const;
+  // Audio controls
+  musicOn: 'Выключить музыку',
+  musicOff: 'Включить музыку',
 
-export const bg3Companions: Companion[] = [
-  { id: 'astarion', name: 'Астарион' },
-  { id: 'gale', name: 'Гейл' },
-  { id: 'shadowheart', name: 'Шэдоухарт' },
-  { id: 'karlach', name: 'Карлах' },
-];
-
-export const bg3Strings: GameStrings = {
+  // Campaign selection screen
   introText:
     '{Искатель приключений!}\nПеред тобой испытание {на знание} {Baldur’s Gate III}.\n' +
     '{15 вопросов}, {магические подсказки}, {миллион золотых на кону}',
   selectPath: '✦ ВЫБЕРИ ПУТЬ ✦',
   startButton: 'В ПРИКЛЮЧЕНИЕ',
 
-  questionHeader: '#{n}',
+  // Campaign cards
+  campaigns: {
+    hero: { name: 'ГЕРОЙ', label: 'Легко', iconAlt: 'Hero' },
+    mindflayer: { name: 'ИЛЛИТИД', label: 'Сложно', iconAlt: 'Mind Flayer' },
+    darkurge: { name: 'СОБЛАЗН', label: 'Доблесть', iconAlt: 'Dark Urge' },
+  },
 
+  // Game screen: main panels
+  questionHeader: '#{n}',
   prizesHeader: '✦ СОКРОВИЩЕ ✦',
 
+  // Game screen: lifelines and actions
+  lifelines: {
+    fifty: '50:50',
+    phone: 'Послание',
+    audience: 'Таверна',
+    double: 'Вдохновение',
+  },
+  retreat: 'Забрать',
+
+  // Game screen: lifeline panels
   lifelinePhoneHeader: '✦ МАГИЧЕСКОЕ ПОСЛАНИЕ ✦',
   lifelineAudienceHeader: '✦ РЕЗУЛЬТАТЫ ГАДАНИЯ ✦',
   lifelineSenderLabel: 'Отправитель:',
   lifelineAudienceLabel: 'Мнение таверны:',
 
+  // Game screen: companion names
+  companions: [
+    { id: 'astarion', name: 'Астарион' },
+    { id: 'gale', name: 'Гейл' },
+    { id: 'shadowheart', name: 'Шэдоухарт' },
+    { id: 'karlach', name: 'Карлах' },
+  ],
+
+  // Game screen: companion phrases
   companionPhrases: {
     confident: [
       'Я уверен, что это "{answer}"',
@@ -61,36 +81,25 @@ export const bg3Strings: GameStrings = {
     ],
   },
 
-  wonTitle: 'ЛЕГЕНДАРНЫЙ ГЕРОЙ',
-  wonText: 'Вы завоевали величайшее сокровище Фаэруна!',
-  wonHeader: 'КВЕСТ ЗАВЕРШЁН',
+  // End screen: Common
+  newGameButton: 'В ЛАГЕРЬ',
+  currency: 'золотых',
 
-  lostTitle: 'КРИТИЧЕСКИЙ ПРОВАЛ',
-  lostText: 'Кость брошена. Неверный ответ.',
-  lostHeader: 'КВЕСТ ПРОВАЛЕН',
+  // End screen: victory
+  victoryTitle: 'ЛЕГЕНДАРНЫЙ ГЕРОЙ',
+  victoryText: 'Вы завоевали величайшее сокровище Фаэруна!',
+  victoryHeader: 'КВЕСТ ЗАВЕРШЁН',
+
+  // End screen: defeat
+  defeatTitle: 'КРИТИЧЕСКИЙ ПРОВАЛ',
+  defeatText: 'Кость брошена. Неверный ответ.',
+  defeatHeader: 'КВЕСТ ПРОВАЛЕН',
   correctAnswerLabel: 'Правильный ответ:',
 
-  tookMoneyTitle: 'МУДРЫЙ ВЫБОР',
-  tookMoneyText: 'Разумное решение, искатель приключений',
-  tookMoneyHeader: 'НАГРАДА ПОЛУЧЕНА',
+  // End screen: retreat
+  retreatTitle: 'МУДРЫЙ ВЫБОР',
+  retreatText: 'Разумное решение, искатель приключений',
+  retreatHeader: 'НАГРАДА ПОЛУЧЕНА',
+} as const satisfies GameStringsNamespace;
 
-  newGameButton: 'В ЛАГЕРЬ',
-
-  footer: "✦ By Mystra's Grace ✦",
-
-  musicOn: 'Выключить музыку',
-  musicOff: 'Включить музыку',
-};
-
-export const bg3LifelineNames = {
-  fifty: '50:50',
-  phone: 'Послание',
-  audience: 'Таверна',
-  double: 'Вдохновение',
-} as const;
-
-export const bg3ActionNames = {
-  takeMoney: 'Забрать',
-} as const;
-
-export const bg3Currency = 'золотых';
+export const campaignStrings = strings.campaigns;

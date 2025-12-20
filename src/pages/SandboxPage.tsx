@@ -13,7 +13,7 @@ import { logger } from '@engine/services';
 import { gameImagesDir } from '@public';
 
 // Types
-type SlideshowScreen = 'start' | 'play' | 'won' | 'took' | 'lost';
+type SlideshowScreen = 'start' | 'play' | 'victory' | 'retreat' | 'defeat';
 
 interface ImageManifest {
   images?: string[];
@@ -24,12 +24,9 @@ interface ImageManifest {
     medium?: { images?: string[] };
     hard?: { images?: string[] };
   };
-  end?: {
-    images?: string[];
-    won?: { images?: string[] };
-    took?: { images?: string[] };
-    lost?: { images?: string[] };
-  };
+  victory?: { images?: string[] };
+  retreat?: { images?: string[] };
+  defeat?: { images?: string[] };
   campaigns?: Record<string, ImageManifest>;
 }
 
@@ -124,56 +121,56 @@ export default function SandboxPage() {
           }
           return { ...getStartFallback(), source: 'play → fallback to start' };
 
-        case 'won':
-          if (manifest.end?.won?.images?.length) {
+        case 'victory':
+          if (manifest.victory?.images?.length) {
             return {
-              images: manifest.end.won.images,
-              subfolder: 'end/won',
-              source: 'end/won folder',
+              images: manifest.victory.images,
+              subfolder: 'victory',
+              source: 'victory folder',
             };
           }
-          if (manifest.end?.images?.length) {
+          if (manifest.images?.length) {
             return {
-              images: manifest.end.images,
-              subfolder: 'end',
-              source: 'won → fallback to end',
+              images: manifest.images,
+              subfolder: '',
+              source: 'victory → fallback to root',
             };
           }
-          return { ...getStartFallback(), source: 'won → fallback to start' };
+          return { ...getStartFallback(), source: 'victory → fallback to start' };
 
-        case 'took':
-          if (manifest.end?.took?.images?.length) {
+        case 'retreat':
+          if (manifest.retreat?.images?.length) {
             return {
-              images: manifest.end.took.images,
-              subfolder: 'end/took',
-              source: 'end/took folder',
+              images: manifest.retreat.images,
+              subfolder: 'retreat',
+              source: 'retreat folder',
             };
           }
-          if (manifest.end?.images?.length) {
+          if (manifest.images?.length) {
             return {
-              images: manifest.end.images,
-              subfolder: 'end',
-              source: 'took → fallback to end',
+              images: manifest.images,
+              subfolder: '',
+              source: 'retreat → fallback to root',
             };
           }
-          return { ...getStartFallback(), source: 'took → fallback to start' };
+          return { ...getStartFallback(), source: 'retreat → fallback to start' };
 
-        case 'lost':
-          if (manifest.end?.lost?.images?.length) {
+        case 'defeat':
+          if (manifest.defeat?.images?.length) {
             return {
-              images: manifest.end.lost.images,
-              subfolder: 'end/lost',
-              source: 'end/lost folder',
+              images: manifest.defeat.images,
+              subfolder: 'defeat',
+              source: 'defeat folder',
             };
           }
-          if (manifest.end?.images?.length) {
+          if (manifest.images?.length) {
             return {
-              images: manifest.end.images,
-              subfolder: 'end',
-              source: 'lost → fallback to end',
+              images: manifest.images,
+              subfolder: '',
+              source: 'defeat → fallback to root',
             };
           }
-          return { ...getStartFallback(), source: 'lost → fallback to start' };
+          return { ...getStartFallback(), source: 'defeat → fallback to start' };
 
         default:
           return { images: [], subfolder: '', source: 'unknown' };
@@ -245,13 +242,31 @@ export default function SandboxPage() {
           ))}
 
           {/* End images */}
-          {manifest?.end?.images?.map((img) => (
+          {manifest?.victory?.images?.map((img) => (
             <ImageCard
-              key={`end-${img}`}
-              path={getFullPath('end', img)}
-              label={`end/${img}`}
-              usedFor="EndScreen (won/took/lost fallback)"
-              onClick={() => setPreviewImage(getFullPath('end', img))}
+              key={`victory-${img}`}
+              path={getFullPath('victory', img)}
+              label={`victory/${img}`}
+              usedFor="Victory"
+              onClick={() => setPreviewImage(getFullPath('victory', img))}
+            />
+          ))}
+          {manifest?.retreat?.images?.map((img) => (
+            <ImageCard
+              key={`retreat-${img}`}
+              path={getFullPath('retreat', img)}
+              label={`retreat/${img}`}
+              usedFor="Retreat"
+              onClick={() => setPreviewImage(getFullPath('retreat', img))}
+            />
+          ))}
+          {manifest?.defeat?.images?.map((img) => (
+            <ImageCard
+              key={`defeat-${img}`}
+              path={getFullPath('defeat', img)}
+              label={`defeat/${img}`}
+              usedFor="Defeat"
+              onClick={() => setPreviewImage(getFullPath('defeat', img))}
             />
           ))}
 
@@ -291,9 +306,9 @@ export default function SandboxPage() {
             >
               <option value="start">start</option>
               <option value="play">play</option>
-              <option value="won">won</option>
-              <option value="took">took</option>
-              <option value="lost">lost</option>
+              <option value="victory">victory</option>
+              <option value="retreat">retreat</option>
+              <option value="defeat">defeat</option>
             </select>
           </div>
 

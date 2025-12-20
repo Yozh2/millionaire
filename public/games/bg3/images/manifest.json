@@ -2,7 +2,7 @@
   "campaigns": {
     "darkurge": {
       "end": {
-        "lost": {
+        "defeat": {
           "images": [
             "01.webp"
           ]
@@ -16,7 +16,7 @@
     },
     "hero": {
       "end": {
-        "lost": {
+        "defeat": {
           "images": [
             "01.webp"
           ]
@@ -35,7 +35,7 @@
     },
     "mindflayer": {
       "end": {
-        "lost": {
+        "defeat": {
           "images": [
             "01.webp"
           ]
@@ -49,17 +49,17 @@
     }
   },
   "end": {
-    "lost": {
+    "defeat": {
       "images": [
         "01.webp"
       ]
     },
-    "took": {
+    "retreat": {
       "images": [
         "01.webp"
       ]
     },
-    "won": {
+    "victory": {
       "images": [
         "01.webp"
       ]

@@ -3,10 +3,10 @@ import type { GameAction } from './actions';
 
 const allowed: Record<GameState, ReadonlySet<GameAction['type']>> = {
   start: new Set(['SELECT_CAMPAIGN', 'START_GAME', 'NEW_GAME']),
-  playing: new Set([
+  play: new Set([
     'ANSWER_SELECTED',
     'ANSWER_RESOLVED',
-    'TAKE_MONEY',
+    'RETREAT',
     'CLEAR_LIFELINE_RESULT',
     'APPLY_LIFELINE_FIFTY',
     'APPLY_LIFELINE_PHONE',
@@ -17,9 +17,9 @@ const allowed: Record<GameState, ReadonlySet<GameAction['type']>> = {
     'FORCE_WIN',
     'NEW_GAME',
   ]),
-  won: new Set(['NEW_GAME']),
-  lost: new Set(['NEW_GAME']),
-  took_money: new Set(['NEW_GAME']),
+  victory: new Set(['NEW_GAME']),
+  defeat: new Set(['NEW_GAME']),
+  retreat: new Set(['NEW_GAME']),
 };
 
 export const canDispatchInPhase = (
