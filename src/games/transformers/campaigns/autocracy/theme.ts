@@ -1,8 +1,5 @@
 import type { ThemeColors } from '@engine/types';
 
-/**
- * Autobot theme - Red and blue heroic colors
- */
 export const theme: ThemeColors = {
   primary: 'blue',
   textPrimary: 'text-red-100',

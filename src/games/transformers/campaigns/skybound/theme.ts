@@ -1,8 +1,5 @@
 import type { ThemeColors } from '@engine/types';
 
-/**
- * Skybound theme - Orange and teal modern Earth-based colors
- */
 export const theme: ThemeColors = {
   primary: 'orange',
   textPrimary: 'text-orange-100',

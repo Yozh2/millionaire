@@ -1,9 +1,5 @@
 import type { ThemeColors } from '@engine/types';
 
-/**
- * Decepticon theme - Silver, dark red and black menacing colors
- * Inspired by Megatron's classic metallic appearance
- */
 export const theme: ThemeColors = {
   primary: 'slate',
   textPrimary: 'text-slate-100',
