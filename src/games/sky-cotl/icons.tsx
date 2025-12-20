@@ -93,9 +93,3 @@ export const SmallCandleCoinIcon = () => (
     🕯️
   </span>
 );
-
-export const StarIcon = () => (
-  <span className="inline-block text-yellow-400" aria-hidden="true">
-    ✦
-  </span>
-);

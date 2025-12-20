@@ -11,7 +11,6 @@ export {
   CoinIcon,
   ScrollIcon,
   TavernIcon,
-  StarIcon,
   drawGoldCoin,
 } from './icons';
 export {

@@ -1,4 +1,4 @@
-import type { MouseEvent } from 'react';
+import type { ComponentType, MouseEvent } from 'react';
 import type { ActionConfig, ThemeColors } from '@engine/types';
 import { LifelineButton } from '../components/buttons';
 import { Panel, PanelHeader } from '../components/panel';
@@ -10,6 +10,7 @@ interface PrizeLadderPanelProps {
   currentQuestion: number;
   totalQuestions: number;
   theme: ThemeColors;
+  StarIcon: ComponentType;
   takeMoneyConfig: ActionConfig;
   takeMoneyDisabled: boolean;
   onTakeMoney: (e: MouseEvent<HTMLButtonElement>) => void;
@@ -22,6 +23,7 @@ export function PrizeLadderPanel({
   currentQuestion,
   totalQuestions,
   theme,
+  StarIcon,
   takeMoneyConfig,
   takeMoneyDisabled,
   onTakeMoney,
@@ -35,6 +37,14 @@ export function PrizeLadderPanel({
   const prizeBgGuaranteed = theme.prizeBgGuaranteed ?? 'bg-yellow-950/40';
   const prizeTextGuaranteed = theme.prizeTextGuaranteed ?? 'text-yellow-600';
   const prizeBorderGuaranteed = theme.prizeBorderGuaranteed ?? 'border-yellow-700';
+
+  const renderStars = (count: number, className = '') => (
+    <span className={`inline-flex items-center gap-0.5 ${className}`} aria-hidden="true">
+      {Array.from({ length: count }).map((_, idx) => (
+        <StarIcon key={idx} />
+      ))}
+    </span>
+  );
 
   return (
     <Panel className="p-1 h-fit">
@@ -79,11 +89,11 @@ export function PrizeLadderPanel({
               <span className="prize-value font-mono">{prize}</span>
               <span className="prize-stars">
                 {isGuaranteed && (
-                  <span className="text-yellow-500" title={`${difficultyLevel}★`}>
-                    {'★'.repeat(difficultyLevel)}
+                  <span title={`${difficultyLevel}★`}>
+                    {renderStars(difficultyLevel)}
                   </span>
                 )}
-                {!isGuaranteed && <span className="opacity-0">★★★</span>}
+                {!isGuaranteed && renderStars(3, 'opacity-0')}
               </span>
             </div>
           );

@@ -32,6 +32,8 @@ import { PortalHeaderTitle, type PortalHeaderTitlePhase } from './layout/header/
 import { SoundConsentOverlay } from './components/overlays/SoundConsentOverlay';
 import { DEFAULT_PORTAL_HEADER_TUNER_VALUES } from '@engine/ui/components/sliders/portalHeaderTunerDefaults';
 import { STORAGE_KEY_SOUND_ENABLED } from '../constants';
+import { createCoinDrawFromConfig } from './effects/createCoinDrawFromConfig';
+import { preprocessGameConfig } from '../utils/preprocessGameConfig';
 
 interface MillionaireGameProps {
   /** Game configuration - defines modes, questions, themes, etc. */
@@ -42,10 +44,13 @@ interface MillionaireGameProps {
  * Main game component that renders the appropriate screen
  * based on current game state.
  */
-export function MillionaireGame({ config }: MillionaireGameProps) {
+export function MillionaireGame({ config: rawConfig }: MillionaireGameProps) {
+  const config = useMemo(() => preprocessGameConfig(rawConfig), [rawConfig]);
+
   const gameState = useGameState(config);
   const audio = useAudio(config);
   const effects = useEffects();
+  const coinDrawFn = useMemo(() => createCoinDrawFromConfig(config), [config]);
 
   // Set game-specific favicon with emoji fallback
   useFavicon(config.id, config.emoji);
@@ -388,7 +393,7 @@ export function MillionaireGame({ config }: MillionaireGameProps) {
           primaryColor={effects.effectState.primaryColor}
           secondaryColor={effects.effectState.secondaryColor}
           intensity={effects.effectState.intensity}
-          drawCoin={config.drawCoinParticle}
+          drawCoin={coinDrawFn}
           lostSparkColors={config.lostSparkColors}
         />
 

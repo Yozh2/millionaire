@@ -9,6 +9,7 @@ import { UseAudioReturn } from '../hooks/useAudio';
 import {
   DefaultCoinIcon,
   DefaultPhoneHintIcon,
+  DefaultStarIcon,
 } from '../icons/DefaultIcons';
 import { AnswersPanel } from '../panels/AnswersPanel';
 import { LifelinesPanel } from '../panels/LifelinesPanel';
@@ -22,6 +23,7 @@ interface GameScreenProps {
   audio: UseAudioReturn;
   theme: ThemeColors;
   effects?: EffectsAPI;
+  onNewGame: () => void;
 }
 
 export function GameScreen({
@@ -30,6 +32,7 @@ export function GameScreen({
   audio,
   theme,
   effects,
+  onNewGame,
 }: GameScreenProps) {
   const {
     currentQuestion,
@@ -64,6 +67,7 @@ export function GameScreen({
   const CoinIcon = config.icons?.coin || DefaultCoinIcon;
   const PhoneLifelineIcon =
     config.icons?.lifelinePhone || DefaultPhoneHintIcon;
+  const StarIcon = config.icons?.star || DefaultStarIcon;
 
   const lifelineConfigFifty = config.lifelines.fifty;
   const lifelineConfigPhone = config.lifelines.phone;
@@ -168,8 +172,12 @@ export function GameScreen({
 
   const handleTakeMoneyWithSound = (_e: React.MouseEvent<HTMLButtonElement>) => {
     audio.playSoundEffect('takeMoneyButton');
+    if (currentQuestion === 0) {
+      onNewGame();
+      return;
+    }
+
     audio.playTakeMoney();
-    // Coins are now triggered from EndScreen at trophy icon position
     takeMoneyAction();
   };
 
@@ -236,8 +244,9 @@ export function GameScreen({
         currentQuestion={currentQuestion}
         totalQuestions={totalQuestions}
         theme={theme}
+        StarIcon={StarIcon}
         takeMoneyConfig={takeMoneyConfig}
-        takeMoneyDisabled={currentQuestion === 0 || selectedAnswer !== null}
+        takeMoneyDisabled={selectedAnswer !== null}
         onTakeMoney={handleTakeMoneyWithSound}
       />
     </div>

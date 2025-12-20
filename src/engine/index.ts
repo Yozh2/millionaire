@@ -73,6 +73,7 @@ export {
   DefaultCoinIcon,
   DefaultPhoneHintIcon,
   DefaultAudienceHintIcon,
+  DefaultStarIcon,
   DefaultTrophyIcon,
   DefaultFailIcon,
   DefaultMoneyIcon,

@@ -18,7 +18,6 @@ export {
   FallenStarIcon,
   CandleIcon,
   SmallCandleCoinIcon,
-  StarIcon,
   drawCandleCoin,
 } from './icons';
 export { mothCampaign } from './campaigns/moth/campaign';

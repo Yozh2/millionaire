@@ -14,6 +14,12 @@ export const DefaultAudienceHintIcon = () => (
   <span className="inline-block">📊</span>
 );
 
+export const DefaultStarIcon = () => (
+  <span className="inline-block text-yellow-500" aria-hidden="true">
+    ★
+  </span>
+);
+
 // Sound Consent / Audio UI
 export const DefaultHeadphonesIcon = () => (
   <div className="w-16 h-16 mx-auto flex items-center justify-center text-5xl">

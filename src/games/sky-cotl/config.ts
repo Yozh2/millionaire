@@ -1,12 +1,3 @@
-/**
- * Sky: Children of the Light - Game Configuration
- *
- * Three-path edition:
- * - Moth (newcomer)
- * - Skykid (experienced)
- * - Ikeman (veteran)
- */
-
 import type { GameConfig } from '@engine/types';
 import { createDefaultAudioConfig } from '@engine/audio/defaultAudio';
 import { mothCampaign } from './campaigns/moth/campaign';
@@ -16,7 +7,6 @@ import {
   CandleIcon,
   FallenStarIcon,
   SmallCandleCoinIcon,
-  StarIcon,
   WingedLightTrophyIcon,
   drawCandleCoin,
 } from './icons';
@@ -81,7 +71,6 @@ export const skyCotlConfig: GameConfig = {
 
   icons: {
     coin: SmallCandleCoinIcon,
-    star: StarIcon,
   },
 
   drawCoinParticle: drawCandleCoin,

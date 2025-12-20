@@ -23,7 +23,6 @@ export const skyCotlStrings: GameStrings = applyNoBreakMarkupDeep({
 
   questionHeader: '#{n}',
 
-  lifelinesHeader: 'LIFELINES',
   prizesHeader: 'CANDLE RUN',
 
   lifelinePhoneHeader: 'ASK THE SPIRIT',

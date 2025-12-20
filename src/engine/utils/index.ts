@@ -34,3 +34,4 @@ export {
 } from './questionGenerator';
 
 export { applyNoBreakMarkup, applyNoBreakMarkupDeep } from './noBreakMarkup';
+export { preprocessGameConfig } from './preprocessGameConfig';

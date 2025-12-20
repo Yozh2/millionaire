@@ -366,9 +366,6 @@ export interface GameStrings {
   /** Template for question numbering (use {n} placeholder) */
   questionHeader: string;
 
-  // Game screen - Lifelines
-  lifelinesHeader: string;
-
   // Game screen - Prize ladder
   prizesHeader: string;
 

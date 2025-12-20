@@ -21,7 +21,6 @@ export const pocStrings: GameStrings = {
 
   questionHeader: '#{n}',
 
-  lifelinesHeader: 'ПОДСКАЗКИ',
   prizesHeader: 'ПРИЗЫ',
 
   lifelinePhoneHeader: 'СОВЕТ ДРУГА',

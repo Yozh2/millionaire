@@ -196,7 +196,6 @@ export const transformersStrings: GameStrings = {
 
   questionHeader: '#{n}',
 
-  lifelinesHeader: 'ПОДСКАЗКИ',
   prizesHeader: 'ЭНЕРГОН',
 
   lifelinePhoneHeader: 'СВЯЗЬ С БАЗОЙ',
