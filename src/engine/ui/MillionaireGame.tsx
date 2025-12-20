@@ -31,7 +31,6 @@ import { PortalHeader } from './layout/header/PortalHeader';
 import { PortalHeaderTitle, type PortalHeaderTitlePhase } from './layout/header/PortalHeaderTitle';
 import { SoundConsentOverlay } from './components/overlays/SoundConsentOverlay';
 import { DEFAULT_PORTAL_HEADER_TUNER_VALUES } from '@engine/ui/components/sliders/portalHeaderTunerDefaults';
-import { STORAGE_KEY_SOUND_ENABLED } from '../constants';
 import { createCoinDrawFromConfig } from './effects/createCoinDrawFromConfig';
 import { preprocessGameConfig } from '../utils/preprocessGameConfig';
 
@@ -93,17 +92,7 @@ export function MillionaireGame({ config: rawConfig }: MillionaireGameProps) {
   );
   const [level11Progress, setLevel11Progress] = useState(0);
   const [isWaitingForLevel11, setIsWaitingForLevel11] = useState(false);
-  const soundConsentKey = useMemo(
-    () => `engine:sound-consent-shown:${config.id}`,
-    [config.id]
-  );
-  const [isSoundConsentDone, setIsSoundConsentDone] = useState<boolean>(() => {
-    try {
-      return sessionStorage.getItem(soundConsentKey) === 'true';
-    } catch {
-      return false;
-    }
-  });
+  const [isSoundConsentDone, setIsSoundConsentDone] = useState(false);
   const [isSoundConsentClosing, setIsSoundConsentClosing] = useState(false);
 
   // Intro title lifecycle: show once when header portal first reveals (start),
@@ -111,15 +100,6 @@ export function MillionaireGame({ config: rawConfig }: MillionaireGameProps) {
   const [introTitlePhase, setIntroTitlePhase] = useState<PortalHeaderTitlePhase | null>(null);
   const [isIntroTitleDismissed, setIsIntroTitleDismissed] = useState(false);
   const introTitleTriggeredRef = useRef(false);
-
-  useEffect(() => {
-    try {
-      setIsSoundConsentDone(sessionStorage.getItem(soundConsentKey) === 'true');
-    } catch {
-      setIsSoundConsentDone(false);
-    }
-    setIsSoundConsentClosing(false);
-  }, [soundConsentKey]);
 
   // Preload campaign assets when campaign is selected (background)
   useEffect(() => {
@@ -248,12 +228,7 @@ export function MillionaireGame({ config: rawConfig }: MillionaireGameProps) {
 
   const markSoundConsentDone = useCallback(() => {
     setIsSoundConsentDone(true);
-    try {
-      sessionStorage.setItem(soundConsentKey, 'true');
-    } catch {
-      // ignore storage errors
-    }
-  }, [soundConsentKey]);
+  }, []);
 
   const handleEnableSound = useCallback(() => {
     if (!audio.isMusicPlaying) {
@@ -272,12 +247,6 @@ export function MillionaireGame({ config: rawConfig }: MillionaireGameProps) {
     if (audio.isMusicPlaying) {
       audio.playSoundEffect('answerButton');
       audio.toggleMusic();
-    } else {
-      try {
-        localStorage.setItem(STORAGE_KEY_SOUND_ENABLED, 'false');
-      } catch {
-        // ignore storage errors
-      }
     }
     setIsSoundConsentClosing(true);
     window.setTimeout(() => {

@@ -7,7 +7,6 @@ import {
   setSoundEnabled as setEngineSoundEnabled,
 } from '../utils/audioPlayer';
 import { getAssetPaths, checkFileExists } from '../utils/assetLoader';
-import { STORAGE_KEY_SOUND_ENABLED } from '../constants';
 import { getPreloadedAudioSrc } from '../utils/audioPlayer';
 
 export interface UseMusicPlayerReturn {
@@ -29,24 +28,6 @@ interface UseMusicPlayerOptions {
   onDisableAllSounds?: () => void;
 }
 
-const getSavedSoundPreference = (): boolean | null => {
-  try {
-    const saved = localStorage.getItem(STORAGE_KEY_SOUND_ENABLED);
-    if (saved === null) return null;
-    return saved === 'true';
-  } catch {
-    return null;
-  }
-};
-
-const saveSoundPreference = (enabled: boolean): void => {
-  try {
-    localStorage.setItem(STORAGE_KEY_SOUND_ENABLED, String(enabled));
-  } catch {
-    // Ignore storage errors
-  }
-};
-
 export function useMusicPlayer(
   config: GameConfig,
   { audioElementId = 'bg-music', onDisableAllSounds }: UseMusicPlayerOptions = {}
@@ -56,7 +37,6 @@ export function useMusicPlayer(
 
   const musicEverEnabled = useRef(false);
   const userDisabledMusic = useRef(false);
-  const hasTriedRestore = useRef(false);
 
   const getAudioElement = useCallback((): HTMLAudioElement | null => {
     return document.getElementById(audioElementId) as HTMLAudioElement | null;
@@ -73,16 +53,6 @@ export function useMusicPlayer(
       audio.load();
     } catch {
       // ignore
-    }
-  }, []);
-
-  useEffect(() => {
-    const savedPreference = getSavedSoundPreference();
-    if (savedPreference === true) {
-      musicEverEnabled.current = true;
-      userDisabledMusic.current = false;
-      setEngineSoundEnabled(true);
-      setIsMusicPlaying(true);
     }
   }, []);
 
@@ -115,40 +85,6 @@ export function useMusicPlayer(
 
     void loadInitialTrack();
   }, [config.id, config.audio.menuTrack]);
-
-  useEffect(() => {
-    const savedPreference = getSavedSoundPreference();
-    if (savedPreference !== true) return;
-    if (!currentTrack) return;
-
-    const tryPlayMusic = () => {
-      if (hasTriedRestore.current) return;
-      hasTriedRestore.current = true;
-
-      const audio = document.getElementById(audioElementId) as HTMLAudioElement;
-      if (audio) {
-        setAudioSource(audio, currentTrack);
-        audio.volume = config.audio.musicVolume;
-        audio.play().catch((err) => {
-          logger.audioPlayer.warn('Auto-play failed on interaction', { error: err });
-        });
-      }
-
-      document.removeEventListener('click', tryPlayMusic);
-      document.removeEventListener('keydown', tryPlayMusic);
-      document.removeEventListener('touchstart', tryPlayMusic);
-    };
-
-    document.addEventListener('click', tryPlayMusic);
-    document.addEventListener('keydown', tryPlayMusic);
-    document.addEventListener('touchstart', tryPlayMusic);
-
-    return () => {
-      document.removeEventListener('click', tryPlayMusic);
-      document.removeEventListener('keydown', tryPlayMusic);
-      document.removeEventListener('touchstart', tryPlayMusic);
-    };
-  }, [audioElementId, config.audio.musicVolume, currentTrack, setAudioSource]);
 
   const loadTrack = useCallback(
     async (trackFile: string | undefined): Promise<string | null> => {
@@ -201,7 +137,6 @@ export function useMusicPlayer(
       if (autoPlay) {
         musicEverEnabled.current = true;
         setEngineSoundEnabled(true);
-        saveSoundPreference(true);
       }
 
       const tryPlay = () => {
@@ -231,7 +166,6 @@ export function useMusicPlayer(
       setIsMusicPlaying(false);
       userDisabledMusic.current = true;
       setEngineSoundEnabled(false);
-      saveSoundPreference(false);
       onDisableAllSounds?.();
       return;
     }
@@ -239,7 +173,6 @@ export function useMusicPlayer(
     userDisabledMusic.current = false;
     musicEverEnabled.current = true;
     setEngineSoundEnabled(true);
-    saveSoundPreference(true);
 
     ensureAudioContext();
     warmUpAudioContext();
