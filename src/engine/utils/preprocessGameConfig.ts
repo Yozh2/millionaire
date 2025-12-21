@@ -84,7 +84,7 @@ export function preprocessGameConfig(rawConfig: GameConfig): GameConfig {
       ...rawConfig.endIcons,
       victory:
         rawConfig.endIcons?.victory ??
-        createDefaultEndIcon(gameId, 'treasure.webp', 'Victory', '🏆'),
+        createDefaultEndIcon(gameId, 'victory.webp', 'Victory', '🏆'),
       defeat:
         rawConfig.endIcons?.defeat ??
         createDefaultEndIcon(gameId, 'defeat.webp', 'Defeat', '❌'),

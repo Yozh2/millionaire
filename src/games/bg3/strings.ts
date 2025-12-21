@@ -100,6 +100,5 @@ export const strings = {
   retreatTitle: 'МУДРЫЙ ВЫБОР',
   retreatText: 'Разумное решение, искатель приключений',
   retreatHeader: 'НАГРАДА ПОЛУЧЕНА',
-} as const satisfies GameStringsNamespace;
 
-export const campaignStrings = strings.campaigns;
+} as const satisfies GameStringsNamespace;

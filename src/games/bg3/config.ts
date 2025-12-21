@@ -1,14 +1,25 @@
-/**
- * Baldur's Gate 3 - Game Configuration
- */
-
 import type { GameConfig } from '@engine/types';
 import { createDefaultAudioConfig } from '@engine/audio/defaultAudio';
-import { darkurgeCampaign } from './campaigns/darkUrge/campaign';
-import { heroCampaign } from './campaigns/hero/campaign';
-import { mindflayerCampaign } from './campaigns/mindFlayer/campaign';
-import { ScrollIcon, TavernIcon } from './icons';
+import { createCampaignsFromGlobs } from '@engine/utils';
+import { lifelinePhoneIcon, lifelineAudienceIcon } from './icons';
 import { strings } from './strings';
+
+type CampaignId = keyof typeof strings.campaigns;
+
+export const campaignIDs = [
+  'hero',
+  'mindflayer',
+  'darkurge',
+] as const satisfies
+  readonly CampaignId[];
+
+const campaigns = createCampaignsFromGlobs({
+  gameId: 'bg3',
+  campaignIDs,
+  campaignStrings: strings.campaigns,
+  themeModules: import.meta.glob('./campaigns/*/theme.ts', { eager: true }),
+  questionModules: import.meta.glob('./campaigns/*/questions.ts', { eager: true }),
+});
 
 export const bg3Config: GameConfig = {
   id: 'bg3',
@@ -26,7 +37,7 @@ export const bg3Config: GameConfig = {
     available: true,
   },
 
-  campaigns: [heroCampaign, mindflayerCampaign, darkurgeCampaign],
+  campaigns,
 
   companions: strings.companions,
   strings,
@@ -55,8 +66,8 @@ export const bg3Config: GameConfig = {
   }),
 
   icons: {
-    lifelinePhone: ScrollIcon,
-    lifelineAudience: TavernIcon,
+    lifelinePhone: lifelinePhoneIcon,
+    lifelineAudience: lifelineAudienceIcon,
   },
 
   headerSlideshow: {

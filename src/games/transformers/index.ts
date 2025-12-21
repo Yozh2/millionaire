@@ -6,8 +6,5 @@
  * - Autocracy
  */
 
-export { transformersConfig, transformersConfig as default } from './config';
-export { campaignStrings, strings } from './strings';
-export { megatronCampaign } from './campaigns/megatron/campaign';
-export { autocracyCampaign } from './campaigns/autocracy/campaign';
-export { skyboundCampaign } from './campaigns/skybound/campaign';
+export { campaignIDs, transformersConfig, transformersConfig as default } from './config';
+export { strings } from './strings';

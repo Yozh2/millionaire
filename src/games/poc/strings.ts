@@ -75,5 +75,3 @@ export const strings = {
   retreatText: 'Умный выбор!',
   retreatHeader: 'ПРИЗ ПОЛУЧЕН',
 } as const satisfies GameStringsNamespace;
-
-export const campaignStrings = strings.campaigns;

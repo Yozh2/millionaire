@@ -4,12 +4,12 @@
  * Minimal game for testing the engine.
  */
 
-export { pocConfig, pocConfig as default } from './config';
+export { campaignIDs, pocConfig, pocConfig as default } from './config';
 export {
   VictoryIcon as VictoryIcon,
   DefeatIcon,
+  EasyCampaignIcon,
+  HardCampaignIcon,
   RetreatIcon,
 } from './icons';
-export { campaignStrings, strings } from './strings';
-export { easyCampaign } from './campaigns/easy/campaign';
-export { hardCampaign } from './campaigns/hard/campaign';
+export { strings } from './strings';

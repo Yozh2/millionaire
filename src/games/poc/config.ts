@@ -7,10 +7,33 @@
 
 import type { GameConfig } from '@engine/types';
 import { createDefaultAudioConfig } from '@engine/audio/defaultAudio';
-import { easyCampaign } from './campaigns/easy/campaign';
-import { hardCampaign } from './campaigns/hard/campaign';
-import { DefeatIcon, RetreatIcon, VictoryIcon } from './icons';
+import { createCampaignsFromGlobs } from '@engine/utils';
+import {
+  DefeatIcon,
+  EasyCampaignIcon,
+  HardCampaignIcon,
+  RetreatIcon,
+  VictoryIcon,
+} from './icons';
 import { strings } from './strings';
+
+type CampaignId = keyof typeof strings.campaigns;
+
+export const campaignIDs = ['easy', 'hard'] as const satisfies readonly CampaignId[];
+
+const campaignIcons = {
+  easy: EasyCampaignIcon,
+  hard: HardCampaignIcon,
+} as const;
+
+const campaigns = createCampaignsFromGlobs({
+  gameId: 'poc',
+  campaignIDs,
+  campaignStrings: strings.campaigns,
+  iconsById: campaignIcons,
+  themeModules: import.meta.glob('./campaigns/*/theme.ts', { eager: true }),
+  questionModules: import.meta.glob('./campaigns/*/questions.ts', { eager: true }),
+});
 
 export const pocConfig: GameConfig = {
   id: 'poc',
@@ -27,7 +50,7 @@ export const pocConfig: GameConfig = {
     available: true,
   },
 
-  campaigns: [easyCampaign, hardCampaign],
+  campaigns,
 
   companions: strings.companions,
   strings,

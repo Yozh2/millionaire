@@ -477,7 +477,7 @@ export interface GameStringsNamespace extends GameStrings {
 export type GameState = 'start' | 'play' | 'victory' | 'retreat' | 'defeat';
 
 /** Reward kind for end-of-game result */
-export type RewardKind = 'treasure' | 'retreat' | 'defeat';
+export type RewardKind = 'victory' | 'retreat' | 'defeat';
 
 /** Lifeline result from "Phone-a-Friend" */
 export interface LifelinePhoneResult {
@@ -545,15 +545,13 @@ export type SlideshowScreen =
  * See README.md for full directory structure and fallback order.
  */
 export interface HeaderSlideshowConfig {
-  /**
-   * Enable slideshow. Default: true if config exists.
-   */
+  // Enable slideshow. Default: true if config exists.
   enabled?: boolean;
-  /** Transition duration in ms (default: 1500) */
+  // Transition duration in ms (default: 1500)
   transitionDuration?: number;
-  /** Time each image is shown in ms (default: 4000) */
+  // Time each image is shown in ms (default: 15000)
   displayDuration?: number;
-  /** Opacity of the slideshow overlay (default: 1) */
+  // Opacity of the slideshow overlay (default: 1)
   opacity?: number;
   /**
    * Campaign (in-game) slideshow ordering strategy.

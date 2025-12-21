@@ -5,6 +5,5 @@
  * `/public/games/bg3/icons/{treasure,money,lost,coin}.webp` conventions.
  */
 
-export const ScrollIcon = () => <span className="inline-block">📜</span>;
-export const TavernIcon = () => <span className="inline-block">🍺</span>;
-
+export const lifelinePhoneIcon = () => <span className="inline-block">📜</span>;
+export const lifelineAudienceIcon = () => <span className="inline-block">🍺</span>;

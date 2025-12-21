@@ -9,11 +9,22 @@
 
 import type { GameConfig } from '@engine/types';
 import { createDefaultAudioConfig } from '@engine/audio/defaultAudio';
-import { autocracyCampaign } from './campaigns/autocracy/campaign';
-import { megatronCampaign } from './campaigns/megatron/campaign';
-import { skyboundCampaign } from './campaigns/skybound/campaign';
+import { createCampaignsFromGlobs } from '@engine/utils';
 import { drawEnergonCrystal, EnergonCoinIcon } from './icons';
 import { strings } from './strings';
+
+type CampaignId = keyof typeof strings.campaigns;
+
+export const campaignIDs = ['megatron', 'autocracy', 'skybound'] as const satisfies
+  readonly CampaignId[];
+
+const campaigns = createCampaignsFromGlobs({
+  gameId: 'transformers',
+  campaignIDs,
+  campaignStrings: strings.campaigns,
+  themeModules: import.meta.glob('./campaigns/*/theme.ts', { eager: true }),
+  questionModules: import.meta.glob('./campaigns/*/questions.ts', { eager: true }),
+});
 
 export const transformersConfig: GameConfig = {
   id: 'transformers',
@@ -31,7 +42,7 @@ export const transformersConfig: GameConfig = {
     available: true,
   },
 
-  campaigns: [megatronCampaign, autocracyCampaign, skyboundCampaign],
+  campaigns,
 
   companions: strings.companions,
   strings,

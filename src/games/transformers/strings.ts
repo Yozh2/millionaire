@@ -281,5 +281,3 @@ export const strings = {
   retreatHeader: 'ОТСТУПЛЕНИЕ',
 
 } as const satisfies GameStringsNamespace;
-
-export const campaignStrings = strings.campaigns;

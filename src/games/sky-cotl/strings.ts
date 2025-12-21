@@ -88,5 +88,3 @@ export const strings = {
   retreatText: 'A wise choice — safe and bright.',
   retreatHeader: 'WALK AWAY',
 } as const satisfies GameStringsNamespace;
-
-export const campaignStrings = strings.campaigns;
