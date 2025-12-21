@@ -1,6 +1,6 @@
 import type { Campaign, CampaignIconProps } from '@engine/types';
 import { baseImgIconClass, getCampaignIconSizeClass } from '@engine/types';
-import { useRef } from 'react';
+import { useRef, type CSSProperties } from 'react';
 import { useCampaignCardFsm } from './useCampaignCardFsm';
 import { gameIconsFile } from '@public';
 
@@ -26,6 +26,7 @@ interface CampaignCardProps {
   selected: boolean;
   onSelect: () => void;
   isLightTheme?: boolean;
+  style?: CSSProperties;
 }
 
 export function CampaignCard({
@@ -34,6 +35,7 @@ export function CampaignCard({
   selected,
   onSelect,
   isLightTheme,
+  style,
 }: CampaignCardProps) {
   const CampaignIcon =
     campaign.icon ??
@@ -84,6 +86,7 @@ export function CampaignCard({
         boxShadow: selected
           ? `0 0 26px ${campaign.theme.glow}, 0 16px 60px rgba(0,0,0,0.55), inset 0 0 14px ${campaign.theme.glow}`
           : '0 14px 56px rgba(0,0,0,0.55)',
+        ...(style ?? {}),
       }}
       onMouseEnter={(e) => {
         if (!selected) {

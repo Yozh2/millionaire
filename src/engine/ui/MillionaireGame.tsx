@@ -271,14 +271,16 @@ export function MillionaireGame({ config: rawConfig }: MillionaireGameProps) {
     if (!showHeader) return 0;
 
     const overlapRatio = 0.45;
-    const minPanelsTopPx = 130;
+    // Keep panel position stable regardless of intro title visibility.
+    // Use conservative limits so the title is not covered on narrow/tall aspect ratios.
+    const minPanelsTopPx = 210;
     const maxOverlapByRatio = portalHeightPx
       ? Math.max(0, Math.round(portalHeightPx * overlapRatio))
       : 220;
     const maxOverlapByMinTop = portalHeightPx
       ? Math.max(0, portalHeightPx - minPanelsTopPx)
       : 220;
-    const maxOverlapPx = Math.min(220, maxOverlapByRatio, maxOverlapByMinTop);
+    const maxOverlapPx = Math.min(120, maxOverlapByRatio, maxOverlapByMinTop);
 
     return Math.max(panelsCeilingPx, -maxOverlapPx);
   }, [panelsCeilingPx, portalHeightPx, showHeader]);

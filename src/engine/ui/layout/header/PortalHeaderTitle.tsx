@@ -135,7 +135,7 @@ export function PortalHeaderTitle({
       className={`portal-title absolute inset-0 z-[80] flex items-center justify-center px-4 overflow-visible ${className}`}
     >
       <div
-        className={`relative overflow-visible w-[min(1120px,calc(100%+96px))] ${animationClass}`}
+        className={`relative overflow-visible w-[min(1120px,100%)] ${animationClass}`}
         onAnimationEnd={(e) => {
           if (reduceMotion) return;
           if (phase === 'enter' && e.animationName === 'portal-title-arrive') onEntered?.();
@@ -163,17 +163,20 @@ export function PortalHeaderTitle({
             aria-hidden="true"
           />
 
-          <div ref={textWrapRef} className="relative z-10 space-y-1">
+          <div
+            ref={textWrapRef}
+            className="relative z-10 space-y-1 w-full max-w-[920px] overflow-hidden"
+          >
             <h1
               ref={titleRef}
-              className={`w-full max-w-full mx-auto text-[clamp(12px,4.8vw,30px)] font-bold tracking-[0.06em] sm:tracking-[0.12em] md:tracking-[0.18em] whitespace-nowrap transition-colors duration-500 ${titleTextClass}`}
+              className={`w-full max-w-full mx-auto text-[clamp(12px,4.8vw,30px)] font-bold tracking-[0.06em] sm:tracking-[0.12em] md:tracking-[0.18em] whitespace-nowrap overflow-hidden text-ellipsis transition-colors duration-500 ${titleTextClass}`}
               style={{ textShadow: titleShadow }}
             >
               {config.title}
             </h1>
             <h2
               ref={subtitleRef}
-              className={`w-full max-w-full mx-auto text-[clamp(11px,3.6vw,18px)] tracking-wide whitespace-nowrap transition-colors duration-500 ${titleTextClass}`}
+              className={`w-full max-w-full mx-auto text-[clamp(11px,3.6vw,18px)] tracking-wide whitespace-nowrap overflow-hidden text-ellipsis transition-colors duration-500 ${titleTextClass}`}
               style={{ lineHeight: '1.5', fontStyle: 'italic', textShadow: titleShadow }}
             >
               {config.subtitle}

@@ -36,7 +36,7 @@ export const transformersConfig: GameConfig = {
   subtitle: strings.headerSubtitle,
 
   registry: {
-    registryVisible: false,
+    registryVisible: true,
     order: 30,
     gameTitle: 'TRANSFORMERS',
     available: true,
