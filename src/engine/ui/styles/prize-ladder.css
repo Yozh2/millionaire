@@ -4,7 +4,7 @@
   overflow: hidden;
   --ladder-number-width: 0rem;
   --ladder-value-width: 5.5rem;
-  --ladder-stars-width: 1.8rem;
+  --ladder-stars-width: 1.9rem;
   display: grid;
   grid-template-columns:
     var(--ladder-number-width)
@@ -28,7 +28,7 @@
   grid-column: 5;
   width: 100%;
   text-align: left;
-  display: flex;
+  display: inline-flex;
   justify-content: flex-start;
 }
 
