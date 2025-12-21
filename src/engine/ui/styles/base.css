@@ -17,3 +17,15 @@
   --glare-start: -150%;
   --glare-end: 150%;
 }
+
+@media (hover: none) and (pointer: coarse) {
+  .engine {
+    overscroll-behavior-x: none;
+    touch-action: pan-y;
+  }
+
+  /* Allow cards to track finger movement without scrolling the page. */
+  .engine .campaign-card {
+    touch-action: none;
+  }
+}

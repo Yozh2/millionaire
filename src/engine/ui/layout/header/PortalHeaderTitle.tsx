@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef } from 'react';
 
 import type { GameConfig, ThemeColors } from '@engine/types';
 
@@ -29,6 +29,9 @@ export function PortalHeaderTitle({
   onExited,
   className = '',
 }: PortalHeaderTitleProps) {
+  const textWrapRef = useRef<HTMLDivElement | null>(null);
+  const titleRef = useRef<HTMLHeadingElement | null>(null);
+  const subtitleRef = useRef<HTMLHeadingElement | null>(null);
   const reduceMotion = prefersReducedMotion();
   const enableBlur = config.headerSlideshow?.enableBlur ?? false;
   const isLightTheme = !!theme.isLight;
@@ -58,6 +61,67 @@ export function PortalHeaderTitle({
     if (phase === 'enter') onEntered?.();
     if (phase === 'exit') onExited?.();
   }, [onEntered, onExited, phase, reduceMotion]);
+
+  useLayoutEffect(() => {
+    const wrap = textWrapRef.current;
+    const h1 = titleRef.current;
+    const h2 = subtitleRef.current;
+    if (!wrap || !h1 || !h2) return;
+
+    let rafId: number | null = null;
+
+    const fit = () => {
+      if (rafId != null) window.cancelAnimationFrame(rafId);
+      rafId = window.requestAnimationFrame(() => {
+        rafId = null;
+
+        // Reset first so clamp()/breakpoints remain the baseline.
+        h1.style.fontSize = '';
+        h2.style.fontSize = '';
+
+        const available = wrap.clientWidth;
+        if (available <= 0) return;
+
+        const titleWidth = h1.scrollWidth;
+        const subtitleWidth = h2.scrollWidth;
+        const maxWidth = Math.max(titleWidth, subtitleWidth);
+        if (maxWidth <= 0) return;
+
+        if (maxWidth <= available) return;
+
+        // Slight padding to avoid off-by-one clipping.
+        const scale = Math.min(1, (available - 1) / maxWidth);
+        if (scale >= 1) return;
+
+        const h1Base = Number.parseFloat(window.getComputedStyle(h1).fontSize);
+        const h2Base = Number.parseFloat(window.getComputedStyle(h2).fontSize);
+        if (!Number.isFinite(h1Base) || !Number.isFinite(h2Base)) return;
+
+        h1.style.fontSize = `${Math.max(10, h1Base * scale).toFixed(2)}px`;
+        h2.style.fontSize = `${Math.max(9, h2Base * scale).toFixed(2)}px`;
+      });
+    };
+
+    fit();
+
+    const ro = new ResizeObserver(() => fit());
+    ro.observe(wrap);
+
+    let cancelled = false;
+    const fonts = (document as any)?.fonts as FontFaceSet | undefined;
+    if (fonts?.ready) {
+      fonts.ready.then(() => {
+        if (cancelled) return;
+        fit();
+      });
+    }
+
+    return () => {
+      cancelled = true;
+      ro.disconnect();
+      if (rafId != null) window.cancelAnimationFrame(rafId);
+    };
+  }, [config.subtitle, config.title]);
 
   const animationClass =
     phase === 'enter'
@@ -99,15 +163,17 @@ export function PortalHeaderTitle({
             aria-hidden="true"
           />
 
-          <div className="relative z-10 space-y-1">
+          <div ref={textWrapRef} className="relative z-10 space-y-1">
             <h1
-              className={`text-2xl md:text-3xl font-bold tracking-[0.18em] transition-colors duration-500 ${titleTextClass}`}
+              ref={titleRef}
+              className={`w-full max-w-full mx-auto text-[clamp(12px,4.8vw,30px)] font-bold tracking-[0.06em] sm:tracking-[0.12em] md:tracking-[0.18em] whitespace-nowrap transition-colors duration-500 ${titleTextClass}`}
               style={{ textShadow: titleShadow }}
             >
               {config.title}
             </h1>
             <h2
-              className={`text-lg tracking-wide transition-colors duration-500 ${titleTextClass}`}
+              ref={subtitleRef}
+              className={`w-full max-w-full mx-auto text-[clamp(11px,3.6vw,18px)] tracking-wide whitespace-nowrap transition-colors duration-500 ${titleTextClass}`}
               style={{ lineHeight: '1.5', fontStyle: 'italic', textShadow: titleShadow }}
             >
               {config.subtitle}

@@ -62,10 +62,10 @@ export function GameSelector() {
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
+          <h1 className="w-full max-w-full mx-auto text-[clamp(16px,5.5vw,56px)] font-bold text-white mb-4 whitespace-nowrap">
             🎯 Кто хочет стать миллионером?
           </h1>
-          <p className="text-gray-400 text-lg">
+          <p className="text-gray-400 text-[clamp(13px,3.7vw,18px)]">
             Выбери тематическую игру и проверь свои знания
           </p>
         </div>

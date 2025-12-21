@@ -71,7 +71,7 @@ export function CampaignCard({
       data-campaign-card="true"
       data-selected={selected ? 'true' : 'false'}
       data-card-state={fsm.state}
-      className={`campaign-card relative flex-none overflow-hidden border-4 w-[164px] h-[216px] ${
+      className={`campaign-card relative flex-none overflow-hidden border-4 w-[170px] h-[215px] ${
         isLightTheme
           ? 'bg-gradient-to-b from-white/45 via-white/25 to-white/10'
           : 'bg-gradient-to-b from-stone-950/70 via-stone-950/45 to-black/70'
