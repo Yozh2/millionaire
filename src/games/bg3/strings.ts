@@ -86,19 +86,16 @@ export const strings = {
   currency: 'золотых',
 
   // End screen: victory
-  victoryTitle: 'ЛЕГЕНДАРНЫЙ ГЕРОЙ',
   victoryText: 'Вы завоевали величайшее сокровище Фаэруна!',
-  victoryHeader: 'КВЕСТ ЗАВЕРШЁН',
+  victoryHeader: 'ЛЕГЕНДАРНЫЙ ГЕРОЙ',
 
   // End screen: defeat
-  defeatTitle: 'КРИТИЧЕСКИЙ ПРОВАЛ',
   defeatText: 'Кость брошена. Неверный ответ.',
-  defeatHeader: 'КВЕСТ ПРОВАЛЕН',
+  defeatHeader: 'КРИТИЧЕСКИЙ ПРОВАЛ',
   correctAnswerLabel: 'Правильный ответ:',
 
   // End screen: retreat
-  retreatTitle: 'МУДРЫЙ ВЫБОР',
   retreatText: 'Разумное решение, искатель приключений',
-  retreatHeader: 'НАГРАДА ПОЛУЧЕНА',
+  retreatHeader: 'МУДРЫЙ ВЫБОР',
 
 } as const satisfies GameStringsNamespace;

@@ -54,12 +54,6 @@ export function ResultPanel({
     return pick(config.endIcons?.retreat, <DefaultRetreatIcon />);
   }, [config.endIcons, variant]);
 
-  const title = useMemo(() => {
-    if (variant === 'victory') return config.strings.victoryTitle;
-    if (variant === 'defeat') return config.strings.defeatTitle;
-    return config.strings.retreatTitle;
-  }, [config.strings, variant]);
-
   const text = useMemo(() => {
     if (variant === 'victory') return config.strings.victoryText;
     if (variant === 'defeat') return config.strings.defeatText;
@@ -94,14 +88,12 @@ export function ResultPanel({
           {IconElement}
         </div>
 
-        <h2
-          className={`text-2xl font-bold mt-4 mb-4 tracking-wide animate-slide-in stagger-4 ${titleColorClass}`}
+        <p
+          className={`text-2xl font-bold mt-8 mb-4 tracking-wide animate-slide-in stagger-4 ${titleColorClass}`}
           style={{ textShadow: titleTextShadow }}
         >
-          {title}
-        </h2>
-
-        <p className={`${theme.textSecondary} text-lg mb-2`}>{text}</p>
+          {text}
+        </p>
 
         <div className="flex items-center justify-center gap-2 text-xl text-yellow-300 font-bold mb-6 animate-prize stagger-5">
           {CoinIcon && <CoinIcon />}

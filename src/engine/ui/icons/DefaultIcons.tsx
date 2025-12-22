@@ -29,19 +29,19 @@ export const DefaultHeadphonesIcon = () => (
 
 // End Screen Icons
 export const DefaultVictoryIcon = () => (
-  <div className="w-24 h-24 mx-auto flex items-center justify-center text-6xl">
+  <div className="w-64 h-64 mx-auto flex items-center justify-center text-[10rem] leading-none">
     🏆
   </div>
 );
 
 export const DefaultDefeatIcon = () => (
-  <div className="w-24 h-24 mx-auto flex items-center justify-center text-6xl">
+  <div className="w-64 h-64 mx-auto flex items-center justify-center text-[10rem] leading-none">
     ❌
   </div>
 );
 
 export const DefaultRetreatIcon = () => (
-  <div className="w-24 h-24 mx-auto flex items-center justify-center text-6xl">
+  <div className="w-64 h-64 mx-auto flex items-center justify-center text-[10rem] leading-none">
     💰
   </div>
 );

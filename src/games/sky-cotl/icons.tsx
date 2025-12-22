@@ -59,9 +59,9 @@ export const drawCandleCoin: DrawCoinFunction = (ctx, size, colorIndex) => {
 };
 
 export const WingedLightVictoryIcon = () => (
-  <div className="w-24 h-24 mx-auto flex items-center justify-center animate-bounce">
+  <div className="w-64 h-64 mx-auto flex items-center justify-center animate-bounce">
     <div
-      className="text-6xl"
+      className="text-[10rem] leading-none"
       style={{ textShadow: '0 0 20px rgba(56,189,248,0.6)' }}
       aria-label="Winged Light"
     >
@@ -71,9 +71,9 @@ export const WingedLightVictoryIcon = () => (
 );
 
 export const FallenStarIcon = () => (
-  <div className="w-24 h-24 mx-auto flex items-center justify-center">
+  <div className="w-64 h-64 mx-auto flex items-center justify-center">
     <div
-      className="text-6xl"
+      className="text-[10rem] leading-none"
       style={{ textShadow: '0 0 18px rgba(239,68,68,0.55)' }}
       aria-label="Fallen Star"
     >
@@ -83,9 +83,9 @@ export const FallenStarIcon = () => (
 );
 
 export const CandleIcon = () => (
-  <div className="w-24 h-24 mx-auto flex items-center justify-center">
+  <div className="w-64 h-64 mx-auto flex items-center justify-center">
     <div
-      className="text-6xl"
+      className="text-[10rem] leading-none"
       style={{ textShadow: '0 0 18px rgba(250,204,21,0.55)' }}
       aria-label="Candle"
     >

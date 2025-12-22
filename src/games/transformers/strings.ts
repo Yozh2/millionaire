@@ -13,7 +13,8 @@ export const strings = {
 
   // Header
   // Campaign selection screen
-  introText: '{Проверь свои знания} {о вселенной Трансформеров!} {Ответь на вопросы} {и заполучи} {весь энергон!}',
+
+  introText: 'Проверь свои знания\n{о вселенной} Трансформеров:\n{на кону} — {энергон Кибертрона}',
   selectPath: 'ВЫБЕРИ КОМИКС',
   startButton: 'ПОКАТИЛИ',
 
@@ -47,7 +48,7 @@ export const strings = {
     audience: 'Отряд',
     double: 'Разведка',
   },
-  retreat: 'Забрать',
+  retreat: 'Отступить',
 
   // Game screen: lifeline panels
   lifelinePhoneHeader: 'СВЯЗЬ С БАЗОЙ',
@@ -265,19 +266,16 @@ export const strings = {
   currency: 'энергона',
 
   // End screen: victory
-  victoryTitle: '⚡ ПОБЕДА! ⚡',
   victoryText: 'Ты достоин нести Матрицу Лидерства!',
-  victoryHeader: 'ТРИУМФ',
+  victoryHeader: '⚡ ПОБЕДА! ⚡',
 
   // End screen: defeat
-  defeatTitle: 'ПОРАЖЕНИЕ',
   defeatText: 'Твоя искра погасла...',
-  defeatHeader: 'УНИЧТОЖЕН',
+  defeatHeader: 'ПОРАЖЕНИЕ',
   correctAnswerLabel: 'Правильный ответ:',
 
   // End screen: retreat
-  retreatTitle: 'ЭНЕРГОН СОБРАН',
   retreatText: 'Мудрое решение — сохранить ресурсы!',
-  retreatHeader: 'ОТСТУПЛЕНИЕ',
+  retreatHeader: 'ЭНЕРГОН СОБРАН',
 
 } as const satisfies GameStringsNamespace;

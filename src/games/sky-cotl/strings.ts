@@ -73,18 +73,15 @@ export const strings = {
   currency: 'candles',
 
   // End screen: victory
-  victoryTitle: 'ASCENDED',
   victoryText: 'You ascended to the Orbit!',
   victoryHeader: 'ASCENDED',
 
   // End screen: defeat
-  defeatTitle: 'DIMMED LIGHT',
   defeatText: 'Your light has dimmed.',
-  defeatHeader: 'DEFEAT',
+  defeatHeader: 'DIMMED LIGHT',
   correctAnswerLabel: 'Correct answer:',
 
   // End screen: retreat
-  retreatTitle: 'YOU TOOK THE CANDLES',
   retreatText: 'A wise choice — safe and bright.',
-  retreatHeader: 'WALK AWAY',
+  retreatHeader: 'YOU TOOK THE CANDLES',
 } as const satisfies GameStringsNamespace;

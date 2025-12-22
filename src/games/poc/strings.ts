@@ -60,18 +60,15 @@ export const strings = {
   currency: '$',
 
   // End screen: victory
-  victoryTitle: '🎉 ПОБЕДА!',
   victoryText: 'Поздравляем! Вы выиграли главный приз!',
-  victoryHeader: 'ПОБЕДА',
+  victoryHeader: '🎉 ПОБЕДА!',
 
   // End screen: defeat
-  defeatTitle: '❌ ИГРА ОКОНЧЕНА',
   defeatText: 'Неправильный ответ!',
-  defeatHeader: 'ПОРАЖЕНИЕ',
+  defeatHeader: '❌ ИГРА ОКОНЧЕНА',
   correctAnswerLabel: 'Правильный ответ:',
 
   // End screen: retreat
-  retreatTitle: '💰 ДЕНЬГИ ЗАБРАНЫ',
   retreatText: 'Умный выбор!',
-  retreatHeader: 'ПРИЗ ПОЛУЧЕН',
+  retreatHeader: '💰 ДЕНЬГИ ЗАБРАНЫ',
 } as const satisfies GameStringsNamespace;

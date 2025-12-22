@@ -15,7 +15,7 @@ import { strings } from './strings';
  * Treasure icon for victory
  */
 export const VictoryIcon = () => (
-  <div className="w-24 h-24 mx-auto flex items-center justify-center text-6xl">
+  <div className="w-64 h-64 mx-auto flex items-center justify-center text-[10rem] leading-none">
     🏆
   </div>
 );
@@ -24,7 +24,7 @@ export const VictoryIcon = () => (
  * Defeat icon for defeat
  */
 export const DefeatIcon = () => (
-  <div className="w-24 h-24 mx-auto flex items-center justify-center text-6xl">
+  <div className="w-64 h-64 mx-auto flex items-center justify-center text-[10rem] leading-none">
     ❌
   </div>
 );
@@ -33,7 +33,7 @@ export const DefeatIcon = () => (
  * Retreat icon for retreating
  */
 export const RetreatIcon = () => (
-  <div className="w-24 h-24 mx-auto flex items-center justify-center text-6xl">
+  <div className="w-64 h-64 mx-auto flex items-center justify-center text-[10rem] leading-none">
     💰
   </div>
 );

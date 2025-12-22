@@ -112,13 +112,13 @@ export function CampaignSelectionPanel({
                         : 2.4;
 
                     // Tuned for common mobile viewports (360x800, 390x844):
-                    // keep pop subtle, just enough to read the card.
-                    const targetOverallScale = 1.18 + tightness * 0.22;
+                    // keep pop very subtle (just a quick "peek" without leaving the row).
+                    const targetOverallScale = 1.09 + tightness * 0.11;
                     const overallScale = Math.min(targetOverallScale, maxOverallScale);
 
-                    const popScale = clamp(overallScale / firstRowScale, 1.08, 2.0);
+                    const popScale = clamp(overallScale / firstRowScale, 1.04, 1.6);
                     // Keep below perspective(900px) to avoid projection flip.
-                    const popZ = clamp(70 + (overallScale - 1) * 130, 70, 280);
+                    const popZ = clamp(35 + (overallScale - 1) * 90, 35, 140);
 
                     vars = {
                       ['--campaign-shiftX' as any]: '0px',

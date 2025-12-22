@@ -409,16 +409,13 @@ export interface GameStrings {
   };
 
   // End screens
-  victoryTitle: string;
   victoryText: string;
   victoryHeader: string;
 
-  defeatTitle: string;
   defeatText: string;
   defeatHeader: string;
   correctAnswerLabel: string;
 
-  retreatTitle: string;
   retreatText: string;
   retreatHeader: string;
 

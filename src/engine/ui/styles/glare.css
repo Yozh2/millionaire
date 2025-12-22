@@ -107,6 +107,14 @@
 
 /* Touch / no hover: use our Button FSM states for reliable "press" and "release" glare. */
 @media (hover: none) {
+  /* On touch, avoid starting the reverse sweep via :active before the FSM press state is applied. */
+  .engine .glare:not(:disabled):active[data-glare-phase='a']::before {
+    animation: none;
+  }
+  .engine .glare:not(:disabled):active[data-glare-phase='b']::before {
+    animation: none;
+  }
+
   .engine .glare[data-btn-state='Activate'][data-glare-phase='a']:not(:disabled)::before {
     animation: glare-sweep var(--glare-duration, 0.5s) ease-out forwards;
   }
