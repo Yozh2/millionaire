@@ -4,3 +4,31 @@
 @tailwind utilities;
 /* stylelint-enable at-rule-no-unknown */
 
+@layer base {
+  :root {
+    /* One source of truth for Safari UI tint */
+    --ui-tint-light: #ffffff;
+    --ui-tint-dark: #0b1220;
+    --ui-tint: var(--ui-tint-light);
+  }
+
+  /* Respect user color scheme */
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ui-tint: var(--ui-tint-dark);
+    }
+  }
+
+  html {
+    /* Safari often samples UI tint from the page background */
+    background: var(--ui-tint);
+    min-height: 100%;
+  }
+
+  body {
+    /* Keep body transparent so html background is what Safari sees */
+    background: transparent;
+    min-height: 100%;
+    margin: 0;
+  }
+}
