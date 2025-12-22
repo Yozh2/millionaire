@@ -30,6 +30,7 @@ export function CampaignSelectionPanel({
 
   const firstRowWrapRef = useRef<HTMLDivElement | null>(null);
   const firstRowGroupRef = useRef<HTMLDivElement | null>(null);
+  const introTextRef = useRef<HTMLParagraphElement | null>(null);
   const [firstRowScale, setFirstRowScale] = useState(1);
   const [firstRowAvailablePx, setFirstRowAvailablePx] = useState(0);
 
@@ -65,6 +66,76 @@ export function CampaignSelectionPanel({
     };
   }, [firstRow.length]);
 
+  useLayoutEffect(() => {
+    const text = introTextRef.current;
+    if (!text) return;
+
+    let rafId: number | null = null;
+    let cancelled = false;
+
+    const fit = () => {
+      if (rafId != null) window.cancelAnimationFrame(rafId);
+      rafId = window.requestAnimationFrame(() => {
+        rafId = null;
+
+        text.style.fontSize = '';
+
+        const computed = window.getComputedStyle(text);
+        const baseSize = Number.parseFloat(computed.fontSize);
+        if (!Number.isFinite(baseSize) || baseSize <= 0) return;
+
+        const getLineCount = () => {
+          const lineHeight = Number.parseFloat(window.getComputedStyle(text).lineHeight);
+          if (!Number.isFinite(lineHeight) || lineHeight <= 0) return 0;
+          return Math.ceil(text.scrollHeight / lineHeight);
+        };
+
+        const maxLines = 3;
+        const baseLines = getLineCount();
+        if (baseLines <= maxLines) return;
+
+        const minSize = Math.max(10, baseSize * 0.7);
+
+        let low = minSize;
+        let high = baseSize;
+        let best = minSize;
+
+        for (let i = 0; i < 8; i += 1) {
+          const mid = (low + high) / 2;
+          text.style.fontSize = `${mid.toFixed(2)}px`;
+          const lines = getLineCount();
+          if (lines <= maxLines) {
+            best = mid;
+            low = mid;
+          } else {
+            high = mid;
+          }
+        }
+
+        text.style.fontSize = `${best.toFixed(2)}px`;
+      });
+    };
+
+    fit();
+
+    const ro = new ResizeObserver(() => fit());
+    ro.observe(text);
+
+    const fonts = (document as any)?.fonts as FontFaceSet | undefined;
+    if (fonts?.ready) {
+      fonts.ready.then(() => {
+        if (cancelled) return;
+        fit();
+      });
+    }
+
+    return () => {
+      cancelled = true;
+      ro.disconnect();
+      if (rafId != null) window.cancelAnimationFrame(rafId);
+    };
+  }, [config.strings.introText]);
+
   const selectedId = selectedCampaign?.id ?? null;
   const selectedFirstRowIndex = useMemo(
     () => (selectedId ? firstRow.findIndex((c) => c.id === selectedId) : -1),
@@ -78,20 +149,25 @@ export function CampaignSelectionPanel({
   return (
     <Panel className="p-1 animate-slide-in stagger-2">
       <PanelHeader>{config.strings.selectPath}</PanelHeader>
-      <div className="text-center py-8 px-4">
+      <div className="text-center py-6 sm:py-8 px-4">
         <p
-          className={`${theme.textSecondary} text-base mb-6 max-w-md mx-auto leading-relaxed whitespace-pre-line`}
+          ref={introTextRef}
+          className={`${theme.textSecondary} text-sm sm:text-base mb-4 sm:mb-6 max-w-md mx-auto leading-relaxed whitespace-pre-line`}
         >
           {config.strings.introText}
         </p>
 
         {/* Campaign Selection */}
-        <div className="mb-8">
-          <div className="flex flex-col items-center gap-6">
+        <div className={isTight ? 'mb-4 sm:mb-6' : 'mb-6 sm:mb-8'}>
+          <div
+            className={`flex flex-col items-center ${
+              isTight ? 'gap-3 sm:gap-5' : 'gap-4 sm:gap-6'
+            }`}
+          >
             <div ref={firstRowWrapRef} className="w-full flex justify-center overflow-visible">
               <div
                 ref={firstRowGroupRef}
-                className="inline-flex justify-center gap-4 md:gap-6"
+                className="inline-flex justify-center gap-3 sm:gap-4 md:gap-6"
                 data-campaign-row-scaled={isTight ? 'true' : 'false'}
                 style={{
                   transform: `scale(${firstRowScale.toFixed(4)})`,
@@ -144,7 +220,7 @@ export function CampaignSelectionPanel({
 
             {restRows.length > 0 && (
               <div className="w-full flex justify-center">
-                <div className="flex justify-center gap-4 md:gap-6 flex-wrap">
+                <div className="flex justify-center gap-3 sm:gap-4 md:gap-6 flex-wrap">
                   {restRows.map((campaign) => (
                     <CampaignCard
                       key={campaign.id}
