@@ -85,6 +85,10 @@ export const pocConfig: GameConfig = {
     defeat: DefeatIcon,
     retreat: RetreatIcon,
   },
+
+  headerSlideshow: {
+    campaignImageOrder: 'random',
+  },
 };
 
 export default pocConfig;

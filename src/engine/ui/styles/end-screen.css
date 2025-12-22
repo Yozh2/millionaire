@@ -1,0 +1,18 @@
+.end-screen-icon > * {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.end-screen-icon > img {
+  display: block;
+  object-fit: contain;
+}
+
+.end-screen-icon > svg {
+  display: block;
+}
+
+.end-screen-icon * {
+  font-size: inherit !important;
+  line-height: inherit !important;
+}

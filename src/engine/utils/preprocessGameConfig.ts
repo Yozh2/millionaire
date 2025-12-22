@@ -39,7 +39,7 @@ const createDefaultEndIcon =
       alt,
       draggable: false,
       loading: 'lazy',
-      className: 'w-24 h-24 mx-auto object-contain',
+      className: 'w-full h-full object-contain',
       onError: (e: unknown) => setImgEmojiFallback(e, emojiFallback),
     });
 

@@ -10,7 +10,6 @@
  * - /bg3      → Baldur's Gate 3 Edition
  * - /transformers → Transformers Edition
  * - /sky-cotl → Sky: Children of the Light Edition
- * - /sandbox  → Effects demo page
  *
  * @author Yozh2
  * @see https://github.com/Yozh2/millionaire
@@ -36,7 +35,6 @@ function LoadingScreen() {
     <div className="min-h-screen bg-gray-900 flex items-center justify-center">
       <div className="text-center">
         <div className="animate-spin text-6xl mb-4">🎯</div>
-        <p className="text-gray-400 text-xl">Загрузка...</p>
       </div>
     </div>
   );

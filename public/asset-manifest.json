@@ -186,6 +186,8 @@
           "/games/transformers/sounds/lifeline-phone.ogg",
           "/games/transformers/sounds/select-autocracy.ogg",
           "/games/transformers/sounds/select-megatron.ogg",
+          "/games/transformers/sounds/select-megatron2.ogg",
+          "/games/transformers/sounds/select-megatron3.ogg",
           "/games/transformers/sounds/select-skybound.ogg"
         ],
         "mainMenuMusic": "/games/transformers/music/menu.ogg",

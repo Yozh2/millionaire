@@ -16,9 +16,12 @@ interface ImageManifest {
     medium?: { images?: string[] };
     hard?: { images?: string[] };
   };
-  victory?: { images?: string[] };
-  retreat?: { images?: string[] };
-  defeat?: { images?: string[] };
+  end?: {
+    images?: string[];
+    victory?: { images?: string[] };
+    retreat?: { images?: string[] };
+    defeat?: { images?: string[] };
+  };
   campaigns?: Record<string, unknown>;
 }
 
@@ -86,7 +89,7 @@ function partsForScreen(
     parts.push([]);
     return parts;
   }
-  return [[screen], []];
+  return [['end', screen], [screen], []];
 }
 
 export interface UseHeaderImagesResult {
@@ -114,6 +117,8 @@ export function useHeaderImages(
     difficulty?: QuestionDifficulty;
   }
 ): UseHeaderImagesResult {
+  const requestKey = `${gameId}::${campaignId ?? ''}::${screen}::${difficulty ?? ''}`;
+
   const enabled = slideshowConfig?.enabled ?? true;
   const transitionDuration = slideshowConfig?.transitionDuration ?? 1500;
   const displayDuration = slideshowConfig?.displayDuration ?? 15000;
@@ -123,13 +128,18 @@ export function useHeaderImages(
   const [basePath, setBasePath] = useState<string>('');
   const [subfolder, setSubfolder] = useState<string>('');
   const [isLoading, setIsLoading] = useState(true);
+  const [resolvedKey, setResolvedKey] = useState(requestKey);
 
   const gameBasePath = useMemo(() => gameImagesDir(gameId), [gameId]);
   const engineBasePath = useMemo(() => publicDir('images'), []);
 
   useEffect(() => {
     if (!enabled) {
+      setImages([]);
+      setBasePath('');
+      setSubfolder('');
       setIsLoading(false);
+      setResolvedKey(requestKey);
       return;
     }
 
@@ -137,6 +147,7 @@ export function useHeaderImages(
 
     async function resolveImages() {
       if (cancelled) return;
+      const key = requestKey;
 
       const gameManifest = await loadManifest(gameBasePath);
       const engineManifest = await loadManifest(engineBasePath);
@@ -168,6 +179,7 @@ export function useHeaderImages(
           setBasePath(match.basePath);
           setSubfolder(match.subfolder);
           setIsLoading(false);
+          setResolvedKey(key);
         }
         return;
       }
@@ -183,6 +195,7 @@ export function useHeaderImages(
             setBasePath(startFallback.basePath);
             setSubfolder(startFallback.subfolder);
             setIsLoading(false);
+            setResolvedKey(key);
           }
           return;
         }
@@ -190,7 +203,10 @@ export function useHeaderImages(
 
       if (!cancelled) {
         setImages([]);
+        setBasePath('');
+        setSubfolder('');
         setIsLoading(false);
+        setResolvedKey(key);
       }
     }
 
@@ -200,17 +216,27 @@ export function useHeaderImages(
     return () => {
       cancelled = true;
     };
-  }, [campaignId, difficulty, enabled, engineBasePath, gameBasePath, screen]);
+  }, [
+    campaignId,
+    difficulty,
+    enabled,
+    engineBasePath,
+    gameBasePath,
+    requestKey,
+    screen,
+  ]);
+
+  const isStale = resolvedKey !== requestKey;
 
   return {
     enabled,
     transitionDuration,
     displayDuration,
     opacity,
-    isLoading,
-    images,
-    basePath,
-    subfolder,
+    isLoading: isStale ? true : isLoading,
+    images: isStale ? [] : images,
+    basePath: isStale ? '' : basePath,
+    subfolder: isStale ? '' : subfolder,
   };
 }
 

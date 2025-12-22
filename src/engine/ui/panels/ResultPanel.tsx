@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import type { PointerEvent, RefObject, ComponentType } from 'react';
 import type { GameConfig, ThemeColors } from '@engine/types';
+import { endScreenIconFrameClass } from '@engine/types';
 import { ActionButton } from '../components/buttons';
 import { Panel, PanelHeader } from '../components/panel';
 import {
@@ -83,26 +84,29 @@ export function ResultPanel({
   return (
     <Panel className="p-1 animate-slide-in stagger-2">
       <PanelHeader>{header}</PanelHeader>
-      <div className="text-center py-12 px-4">
-        <div ref={iconRef} className="animate-pop-in stagger-3">
+      <div className="text-center pt-10 pb-8 px-4 flex flex-col min-h-[36rem]">
+        <div
+          ref={iconRef}
+          className={`animate-pop-in stagger-3 end-screen-icon ${endScreenIconFrameClass}`}
+        >
           {IconElement}
         </div>
 
         <p
-          className={`text-2xl font-bold mt-8 mb-4 tracking-wide animate-slide-in stagger-4 ${titleColorClass}`}
+          className={`text-2xl font-bold mt-6 mb-4 tracking-wide animate-slide-in stagger-4 ${titleColorClass}`}
           style={{ textShadow: titleTextShadow }}
         >
           {text}
         </p>
 
-        <div className="flex items-center justify-center gap-2 text-xl text-yellow-300 font-bold mb-6 animate-prize stagger-5">
+        <div className="flex items-center justify-center gap-2 text-xl text-yellow-300 font-bold animate-prize stagger-5">
           {CoinIcon && <CoinIcon />}
           <span>
             {wonPrize} {config.prizes.currency}
           </span>
         </div>
 
-        <div className="animate-pop-in stagger-6">
+        <div className="mt-auto pt-8 animate-pop-in stagger-6">
           <ActionButton
             theme={theme}
             onClick={onNewGame}

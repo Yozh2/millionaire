@@ -46,13 +46,13 @@ interface MillionaireGameProps {
 export function MillionaireGame({ config: rawConfig }: MillionaireGameProps) {
   const config = useMemo(() => preprocessGameConfig(rawConfig), [rawConfig]);
 
+  // Set game-specific favicon with emoji fallback
+  useFavicon(config.id, config.emoji);
+
   const gameState = useGameState(config);
   const audio = useAudio(config);
   const effects = useEffects();
   const coinDrawFn = useMemo(() => createCoinDrawFromConfig(config), [config]);
-
-  // Set game-specific favicon with emoji fallback
-  useFavicon(config.id, config.emoji);
 
   // Dev-only cheat command to jump straight to victory screen from browser console
   const { forceWin, prizeLadder, wonPrize } = gameState;
@@ -374,11 +374,7 @@ export function MillionaireGame({ config: rawConfig }: MillionaireGameProps) {
         )}
 
         {/* Background Music */}
-        <audio
-          id="bg-music"
-          loop
-          preload="none"
-        />
+        <audio id="bg-music" loop preload="none"/>
 
           <div className="w-full flex-1 flex flex-col">
             {showHeader && (

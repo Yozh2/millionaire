@@ -75,6 +75,7 @@ export const bg3Config: GameConfig = {
     transitionDuration: 1500,
     displayDuration: 15000,
     opacity: 1,
+    campaignImageOrder: 'alphabetical',
   },
 };
 

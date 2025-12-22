@@ -48,6 +48,13 @@ export const baseImgIconClass = 'mx-auto object-contain';
 export const baseCenteredIconClass = 'mx-auto flex items-center justify-center';
 
 /**
+ * End-screen (victory/defeat/retreat) icon sizing.
+ * Centralized so all games render end icons consistently.
+ */
+export const END_SCREEN_ICON_SIZE_CLASS = 'w-[min(18rem,72vw)] h-[min(18rem,72vw)]';
+export const endScreenIconFrameClass = `${baseCenteredIconClass} ${END_SCREEN_ICON_SIZE_CLASS} overflow-visible text-[clamp(10rem,30vw,18rem)] leading-none`;
+
+/**
  * Custom coin drawing function for particle effects.
  * Called with canvas context, size, and color index.
  */

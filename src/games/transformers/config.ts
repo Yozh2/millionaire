@@ -75,6 +75,10 @@ export const transformersConfig: GameConfig = {
   },
   drawCoinParticle: drawEnergonCrystal,
 
+  headerSlideshow: {
+    campaignImageOrder: 'alphabetical',
+  },
+
   enableLostSparks: true,
   lostSparkColors: ['#00BFFF', '#87CEEB', '#00CED1', '#1E90FF'],
 };

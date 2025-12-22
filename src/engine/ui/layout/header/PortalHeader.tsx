@@ -1150,9 +1150,21 @@ export function PortalHeader({
       hide();
       return;
     }
-    if (!enabled || isLoading || !fullPath) return;
+    if (!enabled) {
+      hide();
+      return;
+    }
+    if (isLoading) {
+      // When returning to start screen (no campaign selected yet), never keep a stale end-screen image.
+      if (slideshowScreen === 'start' && !campaignId) hide();
+      return;
+    }
+    if (!fullPath) {
+      hide();
+      return;
+    }
     show(fullPath);
-  }, [activated, enabled, fullPath, hide, isLoading, show]);
+  }, [activated, campaignId, enabled, fullPath, hide, isLoading, show, slideshowScreen]);
 
   useEffect(() => {
     if (!activated) return;

@@ -88,6 +88,7 @@ export const skyCotlConfig: GameConfig = {
 
   headerSlideshow: {
     enabled: true,
+    campaignImageOrder: 'alphabetical',
   },
 
   systemStrings: {

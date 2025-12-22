@@ -66,7 +66,7 @@ export function GameSelector() {
             🎯 Кто хочет стать миллионером?
           </h1>
           <p className="text-gray-400 text-[clamp(13px,3.7vw,18px)]">
-            Выбери тематическую игру и проверь свои знания
+            Выбери тематическую игру
           </p>
         </div>
 
@@ -83,7 +83,7 @@ export function GameSelector() {
 
         {/* Footer */}
         <div className="text-center mt-8 text-gray-600 text-sm">
-          <p>Универсальный движок викторины • v2.0</p>
+          <p>Millionaire Quiz Engine</p>
           <p className="mt-1">
             <a
               href="https://github.com/Yozh2/millionaire"
