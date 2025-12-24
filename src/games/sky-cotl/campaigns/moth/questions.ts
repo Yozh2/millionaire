@@ -46,12 +46,7 @@ export const questions: QuestionPool = {
     },
     {
       question: 'What is “Home” in Sky?',
-      answers: [
-        'The social hub between realms',
-        'A private house building mode',
-        'A dungeon',
-        'A leaderboard screen',
-      ],
+      answers: ['The social hub between realms', 'A private house building mode', 'A dungeon', 'A leaderboard screen'],
       correct: 0,
     },
     {
@@ -78,12 +73,7 @@ export const questions: QuestionPool = {
     },
     {
       question: 'What is the main way to quickly recharge your cape’s light?',
-      answers: [
-        'Stand near a lit source (candles/fires) or other players',
-        'Open a treasure chest',
-        'Sleep at Home',
-        'Equip a different cape',
-      ],
+      answers: ['Stand near a lit source (candles/fires) or other players', 'Open a treasure chest', 'Sleep at Home', 'Equip a different cape'],
       correct: 0,
     },
     {

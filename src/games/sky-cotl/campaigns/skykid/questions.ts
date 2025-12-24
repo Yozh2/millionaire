@@ -19,12 +19,7 @@ export const questions: QuestionPool = {
     },
     {
       question: 'What is a “traveling spirit” in Sky?',
-      answers: [
-        'A past-season spirit that returns for a limited time',
-        'An NPC that gives daily quests',
-        'A single-player bot',
-        'A secret boss in Eden',
-      ],
+      answers: ['A past-season spirit that returns for a limited time', 'An NPC that gives daily quests', 'A single-player bot', 'A secret boss in Eden'],
       correct: 0,
     },
     {
@@ -41,12 +36,7 @@ export const questions: QuestionPool = {
     },
     {
       question: 'What are “shards” in Sky?',
-      answers: [
-        'Dark shard events you cleanse for rewards',
-        'A rare currency for buying capes',
-        'The name for Winged Light in Eden',
-        'Season quests only in Aviary',
-      ],
+      answers: ['Dark shard events you cleanse for rewards', 'A rare currency for buying capes', 'The name for Winged Light in Eden', 'Season quests only in Aviary'],
       correct: 0,
     },
     {
@@ -56,34 +46,19 @@ export const questions: QuestionPool = {
     },
     {
       question: 'Vault of Knowledge is most associated with…',
-      answers: [
-        'Elevators, floors, and co-op puzzles',
-        'Time trials and races',
-        'Endless rain',
-        'Deserts and ruins',
-      ],
+      answers: ['Elevators, floors, and co-op puzzles', 'Time trials and races', 'Endless rain', 'Deserts and ruins'],
       correct: 0,
     },
     {
       question: 'What helps recharge your cape faster in a group?',
-      answers: [
-        'Staying close and sharing light',
-        'Meditating for 5 minutes',
-        'Doing the “bow” emote',
-        'Turning off music',
-      ],
+      answers: ['Staying close and sharing light', 'Meditating for 5 minutes', 'Doing the “bow” emote', 'Turning off music'],
       correct: 0,
     },
   ],
   hard: [
     {
       question: 'Why is it important to avoid a Krill’s spotlight in the Wasteland?',
-      answers: [
-        'It can attack you and knock out Winged Light',
-        'You will lose all candles',
-        'It removes friends from your list',
-        'The game restarts',
-      ],
+      answers: ['It can attack you and knock out Winged Light', 'You will lose all candles', 'It removes friends from your list', 'The game restarts'],
       correct: 0,
     },
     {
@@ -93,12 +68,7 @@ export const questions: QuestionPool = {
     },
     {
       question: 'Why do players do “candle runs” (CR)?',
-      answers: [
-        'To collect wax and craft candles faster',
-        'To get Winged Light',
-        'To rank up in PvP',
-        'To unlock a new class',
-      ],
+      answers: ['To collect wax and craft candles faster', 'To get Winged Light', 'To rank up in PvP', 'To unlock a new class'],
       correct: 0,
     },
     {
@@ -108,12 +78,7 @@ export const questions: QuestionPool = {
     },
     {
       question: 'What does “AFK” at a campfire/wax event usually mean?',
-      answers: [
-        'The player left their character to farm passively',
-        'The player went to Eden',
-        'The player bought the Season Pass',
-        'The player started a race',
-      ],
+      answers: ['The player left their character to farm passively', 'The player went to Eden', 'The player bought the Season Pass', 'The player started a race'],
       correct: 0,
     },
   ],
