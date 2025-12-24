@@ -1,16 +1,49 @@
-@import './tailwind.css';
+/* stylelint-disable at-rule-no-unknown */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+/* stylelint-enable at-rule-no-unknown */
 
-/* Prevent dragging images (asset copying UX) */
-img {
-  -webkit-user-drag: none;
-  user-drag: none;
-  user-select: none;
-  -webkit-touch-callout: none;
-}
+@layer base {
+  :root {
+    /* One source of truth for Safari UI tint */
+    --ui-tint-light: #ffffff;
+    --ui-tint-dark: #0b1220;
+    --ui-tint: var(--ui-tint-light);
+  }
 
-html,
-body {
-  overscroll-behavior-x: none;
-  overflow-x: hidden;
-  touch-action: pan-y pinch-zoom;
+  /* Respect user color scheme */
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ui-tint: var(--ui-tint-dark);
+    }
+  }
+
+  html {
+    /* Safari often samples UI tint from the page background */
+    background: var(--ui-tint);
+    min-height: 100%;
+  }
+
+  body {
+    /* Keep body transparent so html background is what Safari sees */
+    background: transparent;
+    min-height: 100%;
+    margin: 0;
+  }
+
+  html,
+  body {
+    overscroll-behavior-x: auto;
+    overflow-x: hidden;
+    touch-action: pan-y pinch-zoom;
+  }
+
+  /* Prevent dragging images (asset copying UX) */
+  img {
+    -webkit-user-drag: none;
+    user-drag: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+  }
 }

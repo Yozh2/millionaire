@@ -275,7 +275,7 @@ export const strings = {
   correctAnswerLabel: 'Правильный ответ:',
 
   // End screen: retreat
-  retreatText: 'Мудрое решение — сохранить ресурсы!',
+  retreatText: '{Мудрое решение —} {сохранить ресурсы}!',
   retreatHeader: 'ЭНЕРГОН СОБРАН',
 
 } as const satisfies GameStringsNamespace;

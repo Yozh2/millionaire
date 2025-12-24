@@ -1,3 +1,12 @@
+/* Custom fonts (local TTF files). */
+@font-face {
+  font-family: 'Neuropol X Rg';
+  src: url('/fonts/neuropol_x_rg.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 .engine,
 .engine * {
   margin: 0;
@@ -20,7 +29,7 @@
 
 @media (hover: none) and (pointer: coarse) {
   .engine {
-    overscroll-behavior-x: none;
+    overscroll-behavior-x: auto;
     touch-action: pan-y;
   }
 

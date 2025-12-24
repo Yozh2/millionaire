@@ -133,10 +133,10 @@ export function CampaignCard({
             color: selected ? campaign.theme.glowColor : campaign.theme.glowSecondary,
           }}
         >
-          {campaign.name}
+          {campaign.name} 
         </span>
         <span
-          className={`relative mt-0 w-full max-w-full px-0.5 text-xs text-center truncate leading-tight ${
+          className={`relative mt-2 w-full max-w-full px-0.5 text-xs text-center truncate leading-tight ${
             isLightTheme ? 'text-stone-600' : 'text-stone-400'
           }`}
         >

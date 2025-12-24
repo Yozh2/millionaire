@@ -33,6 +33,8 @@ export function CampaignSelectionPanel({
   const introTextRef = useRef<HTMLParagraphElement | null>(null);
   const [firstRowScale, setFirstRowScale] = useState(1);
   const [firstRowAvailablePx, setFirstRowAvailablePx] = useState(0);
+  const [tightRowHeight, setTightRowHeight] = useState<number | null>(null);
+  const isTight = firstRowScale < 0.999;
 
   useLayoutEffect(() => {
     const wrap = firstRowWrapRef.current;
@@ -65,6 +67,39 @@ export function CampaignSelectionPanel({
       if (rafId != null) window.cancelAnimationFrame(rafId);
     };
   }, [firstRow.length]);
+
+  useLayoutEffect(() => {
+    if (!isTight) {
+      setTightRowHeight(null);
+      return;
+    }
+
+    const wrap = firstRowWrapRef.current;
+    if (!wrap) return;
+
+    let rafId: number | null = null;
+
+    const update = () => {
+      if (rafId != null) window.cancelAnimationFrame(rafId);
+      rafId = window.requestAnimationFrame(() => {
+        rafId = null;
+        const baseHeight = wrap.offsetHeight;
+        if (!baseHeight) return;
+        const next = Math.round(baseHeight * firstRowScale);
+        setTightRowHeight((prev) => (prev === next ? prev : next));
+      });
+    };
+
+    update();
+
+    const ro = new ResizeObserver(() => update());
+    ro.observe(wrap);
+
+    return () => {
+      ro.disconnect();
+      if (rafId != null) window.cancelAnimationFrame(rafId);
+    };
+  }, [firstRowScale, isTight]);
 
   useLayoutEffect(() => {
     const text = introTextRef.current;
@@ -142,14 +177,43 @@ export function CampaignSelectionPanel({
     [firstRow, selectedId],
   );
 
-  const isTight = firstRowScale < 0.999;
   const tightness = clamp((1 - firstRowScale) / 0.52, 0, 1);
   const focusMode = isTight && selectedFirstRowIndex >= 0;
+  const focusPop = useMemo(() => {
+    if (!isTight || firstRowScale <= 0) return { scale: 1, z: 0 };
+
+    const baseCardWidthPx = 170;
+    const maxOverallScale =
+      firstRowAvailablePx > 0
+        ? clamp((firstRowAvailablePx * 0.96) / baseCardWidthPx, 1.12, 2.4)
+        : 2.4;
+
+    const targetOverallScale = 1.09 + tightness * 0.11;
+    const overallScale = Math.min(targetOverallScale, maxOverallScale);
+
+    const popScale = clamp(overallScale / firstRowScale, 1.04, 1.6);
+    const popZ = clamp(35 + (overallScale - 1) * 90, 35, 140);
+
+    return { scale: popScale, z: popZ };
+  }, [firstRowAvailablePx, firstRowScale, isTight, tightness]);
+
+  const rowScaleForHeight = isTight ? focusPop.scale : 1;
+  const baseCardGapPx = 14;
+  const cardFloatGuardPx = isTight ? 14 : 10;
+  const cardGuardPx = baseCardGapPx + cardFloatGuardPx;
+  const cardBlockStyle: CSSProperties = {
+    paddingTop: `${cardGuardPx}px`,
+    paddingBottom: `${cardGuardPx}px`,
+  };
+
+  if (isTight && restRows.length === 0 && tightRowHeight) {
+    cardBlockStyle.height = `${Math.round(tightRowHeight * rowScaleForHeight)}px`;
+  }
 
   return (
     <Panel className="p-1 animate-slide-in stagger-2">
       <PanelHeader>{config.strings.selectPath}</PanelHeader>
-      <div className="text-center py-6 sm:py-8 px-4">
+      <div className="text-center py-5 sm:py-7 px-4">
         <p
           ref={introTextRef}
           className={`${theme.textSecondary} text-sm sm:text-base mb-4 sm:mb-6 max-w-md mx-auto leading-relaxed whitespace-pre-line`}
@@ -158,7 +222,7 @@ export function CampaignSelectionPanel({
         </p>
 
         {/* Campaign Selection */}
-        <div className={isTight ? 'mb-4 sm:mb-6' : 'mb-6 sm:mb-8'}>
+        <div className="mb-4 sm:mb-6" style={cardBlockStyle}>
           <div
             className={`flex flex-col items-center ${
               isTight ? 'gap-3 sm:gap-5' : 'gap-4 sm:gap-6'
@@ -179,27 +243,10 @@ export function CampaignSelectionPanel({
 
                   let vars: CSSProperties | undefined;
                   if (focusMode && selected) {
-                    // Make the selected card "fly towards the viewer" on tight screens.
-                    // Keep other cards in place (no shifting/no group rescale on select).
-                    const baseCardWidthPx = 170;
-                    const maxOverallScale =
-                      firstRowAvailablePx > 0
-                        ? clamp((firstRowAvailablePx * 0.96) / baseCardWidthPx, 1.12, 2.4)
-                        : 2.4;
-
-                    // Tuned for common mobile viewports (360x800, 390x844):
-                    // keep pop very subtle (just a quick "peek" without leaving the row).
-                    const targetOverallScale = 1.09 + tightness * 0.11;
-                    const overallScale = Math.min(targetOverallScale, maxOverallScale);
-
-                    const popScale = clamp(overallScale / firstRowScale, 1.04, 1.6);
-                    // Keep below perspective(900px) to avoid projection flip.
-                    const popZ = clamp(35 + (overallScale - 1) * 90, 35, 140);
-
                     vars = {
                       ['--campaign-shiftX' as any]: '0px',
-                      ['--campaign-z' as any]: `${popZ.toFixed(1)}px`,
-                      ['--campaign-focusScale' as any]: `${popScale.toFixed(3)}`,
+                      ['--campaign-z' as any]: `${focusPop.z.toFixed(1)}px`,
+                      ['--campaign-focusScale' as any]: `${focusPop.scale.toFixed(3)}`,
                     } satisfies CSSProperties;
                   }
 

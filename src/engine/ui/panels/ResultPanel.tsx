@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useLayoutEffect, useMemo, useRef } from 'react';
 import type { PointerEvent, RefObject, ComponentType } from 'react';
 import type { GameConfig, ThemeColors } from '@engine/types';
 import { endScreenIconFrameClass } from '@engine/types';
@@ -33,7 +33,6 @@ export function ResultPanel({
   onActionButtonPress,
 }: ResultPanelProps) {
   const resultTextRef = useRef<HTMLParagraphElement | null>(null);
-  const [isTightLayout, setIsTightLayout] = useState(false);
   const CoinIcon = config.icons?.coin || DefaultCoinIcon;
 
   const IconElement = useMemo(() => {
@@ -83,30 +82,9 @@ export function ResultPanel({
         ? '0 0 25px #ef4444, 0 2px 8px #000'
         : `0 0 25px ${theme.glowColor}, 0 2px 8px #000`;
 
-  useEffect(() => {
-    if (typeof window === 'undefined' || !window.matchMedia) return;
-
-    const media = window.matchMedia('(max-width: 640px)');
-    const update = () => setIsTightLayout(media.matches);
-    update();
-
-    if (typeof media.addEventListener === 'function') {
-      media.addEventListener('change', update);
-      return () => media.removeEventListener('change', update);
-    }
-
-    media.addListener?.(update);
-    return () => media.removeListener?.(update);
-  }, []);
-
   useLayoutEffect(() => {
     const textEl = resultTextRef.current;
     if (!textEl) return;
-
-    if (!isTightLayout) {
-      textEl.style.fontSize = '';
-      return;
-    }
 
     let rafId: number | null = null;
     let cancelled = false;
@@ -123,14 +101,32 @@ export function ResultPanel({
         if (!Number.isFinite(baseSize) || baseSize <= 0) return;
 
         const getLineCount = () => {
-          const lineHeight = Number.parseFloat(window.getComputedStyle(textEl).lineHeight);
-          if (!Number.isFinite(lineHeight) || lineHeight <= 0) return 0;
-          return Math.ceil(textEl.scrollHeight / lineHeight);
+          const range = document.createRange();
+          range.selectNodeContents(textEl);
+          const rects = Array.from(range.getClientRects());
+          range.detach?.();
+          if (rects.length === 0) return 0;
+          let lines = 1;
+          let lastTop = rects[0]?.top ?? 0;
+          for (const rect of rects) {
+            if (Math.abs(rect.top - lastTop) > 0.5) {
+              lines += 1;
+              lastTop = rect.top;
+            }
+          }
+          return lines;
         };
 
         const maxLines = 2;
-        const baseLines = getLineCount();
-        if (baseLines <= maxLines) return;
+        const fits = () => {
+          const lines = getLineCount();
+          if (lines > maxLines) return false;
+          if (textEl.clientWidth > 0 && textEl.scrollWidth > textEl.clientWidth + 0.5) {
+            return false;
+          }
+          return true;
+        };
+        if (fits()) return;
 
         const minSize = Math.max(11, baseSize * 0.6);
 
@@ -141,8 +137,7 @@ export function ResultPanel({
         for (let i = 0; i < 8; i += 1) {
           const mid = (low + high) / 2;
           textEl.style.fontSize = `${mid.toFixed(2)}px`;
-          const lines = getLineCount();
-          if (lines <= maxLines) {
+          if (fits()) {
             best = mid;
             low = mid;
           } else {
@@ -172,12 +167,12 @@ export function ResultPanel({
       ro.disconnect();
       if (rafId != null) window.cancelAnimationFrame(rafId);
     };
-  }, [text, isTightLayout]);
+  }, [text]);
 
   return (
     <Panel className="p-1 animate-slide-in stagger-2">
       <PanelHeader>{header}</PanelHeader>
-      <div className="text-center pt-6 pb-6 px-4 flex flex-col min-h-[28rem] sm:pt-10 sm:pb-8 sm:min-h-[36rem]">
+      <div className="text-center py-3 px-4 flex flex-col sm:py-4">
         <div
           ref={iconRef}
           className={`animate-pop-in stagger-3 end-screen-icon ${endScreenIconFrameClass}`}
@@ -187,7 +182,7 @@ export function ResultPanel({
 
         <p
           ref={resultTextRef}
-          className={`text-2xl font-bold mt-4 sm:mt-6 mb-3 sm:mb-4 tracking-wide animate-slide-in stagger-4 ${titleColorClass}`}
+          className={`text-2xl font-bold mt-2 mb-4 tracking-wide animate-slide-in stagger-4 ${titleColorClass}`}
           style={{ textShadow: titleTextShadow }}
         >
           {text}
@@ -200,7 +195,7 @@ export function ResultPanel({
           </span>
         </div>
 
-        <div className="mt-4 sm:mt-auto pt-2 sm:pt-8 animate-pop-in stagger-6">
+        <div className="mt-3 pt-2 sm:pt-4 animate-pop-in stagger-6">
           <ActionButton
             theme={theme}
             onClick={onNewGame}

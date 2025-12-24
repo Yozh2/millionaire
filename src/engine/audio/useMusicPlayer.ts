@@ -4,6 +4,7 @@ import { logger } from '../services';
 import {
   ensureAudioContext,
   warmUpAudioContext,
+  isSoundEnabled,
   setSoundEnabled as setEngineSoundEnabled,
 } from '../utils/audioPlayer';
 import { getAssetPaths, checkFileExists } from '../utils/assetLoader';
@@ -130,7 +131,9 @@ export function useMusicPlayer(
       primeAudio(audio);
 
       const shouldPlay =
-        !userDisabledMusic.current && (autoPlay || musicEverEnabled.current);
+        isSoundEnabled() &&
+        !userDisabledMusic.current &&
+        (autoPlay || musicEverEnabled.current);
 
       if (!shouldPlay) return;
 
