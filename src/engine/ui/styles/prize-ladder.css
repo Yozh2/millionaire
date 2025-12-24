@@ -4,7 +4,7 @@
   overflow: hidden;
   --ladder-number-width: 0rem;
   --ladder-value-width: 5.5rem;
-  --ladder-stars-width: 1.9rem;
+  --ladder-stars-width: 2.5rem;
   display: grid;
   grid-template-columns:
     var(--ladder-number-width)
@@ -13,7 +13,7 @@
     minmax(0, 1fr)
     var(--ladder-stars-width);
   align-items: center;
-  gap: 0rem;
+  gap: 0.2rem;
 }
 
 .engine .prize-number {
@@ -52,7 +52,7 @@
   height: 100%;
   --glare-width: 60%;
   --glare-from: -150%;
-  --glare-to: 420%;
+  --glare-to: 150%;
   background: linear-gradient(
     130deg,
     transparent 0%,
