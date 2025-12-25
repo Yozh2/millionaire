@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Navigate } from 'react-router-dom';
-import { MillionaireGame } from '@engine';
+import { LoadingScreen, MillionaireGame, useGameIcon } from '@engine';
 import type { GameConfig } from '@engine/types';
 import { getGameById } from '@app/registry';
 
@@ -8,19 +8,12 @@ interface RegisteredGamePageProps {
   gameId: string;
 }
 
-function RegistryLoadingScreen({ title }: { title: string }) {
-  return (
-    <div className="min-h-screen bg-gray-900 flex items-center justify-center">
-      <div className="text-center">
-        <div className="animate-spin text-6xl mb-4">🎯</div>
-        <p className="text-gray-400 text-xl">{title}</p>
-      </div>
-    </div>
-  );
-}
-
 export default function RegisteredGamePage({ gameId }: RegisteredGamePageProps) {
   const entry = useMemo(() => getGameById(gameId), [gameId]);
+  const { iconUrl: gameIconUrl, emoji: gameEmoji } = useGameIcon(
+    gameId,
+    entry?.emoji
+  );
 
   const [config, setConfig] = useState<GameConfig | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -65,7 +58,12 @@ export default function RegisteredGamePage({ gameId }: RegisteredGamePageProps) 
   }
 
   if (!config) {
-    return <RegistryLoadingScreen title={`Загрузка: ${entry.gameTitle}...`} />;
+    return (
+      <LoadingScreen
+        logoUrl={gameIconUrl ?? undefined}
+        logoEmoji={entry?.emoji ?? gameEmoji}
+      />
+    );
   }
 
   return <MillionaireGame config={config} />;

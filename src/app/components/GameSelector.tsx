@@ -44,8 +44,6 @@ export function GameSelector() {
     return (
       <LoadingScreen
         progress={progress}
-        title="Загрузка игр..."
-        subtitle="Подготавливаем викторину"
       />
     );
   }

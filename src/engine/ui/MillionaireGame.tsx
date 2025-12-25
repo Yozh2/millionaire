@@ -18,6 +18,7 @@ import {
   useAudio,
   useEffects,
   useFavicon,
+  useGameIcon,
   useAssetPreloader,
 } from './hooks';
 import { assetLoader, logger } from '../services';
@@ -48,6 +49,10 @@ export function MillionaireGame({ config: rawConfig }: MillionaireGameProps) {
 
   // Set game-specific favicon with emoji fallback
   useFavicon(config.id, config.emoji);
+  const { iconUrl: gameIconUrl, emoji: gameEmoji } = useGameIcon(
+    config.id,
+    config.emoji
+  );
 
   const gameState = useGameState(config);
   const audio = useAudio(config);
@@ -146,14 +151,6 @@ export function MillionaireGame({ config: rawConfig }: MillionaireGameProps) {
     }
     return theme.bgGradient;
   };
-
-  const loadingGameTitle =
-    config.systemStrings?.loadingGameTitle?.replace('{title}', config.title) ??
-    `Загрузка ${config.title}...`;
-  const loadingGameSubtitle =
-    config.systemStrings?.loadingGameSubtitle ?? 'Подготавливаем игру';
-  const loadingCampaignTitle =
-    config.systemStrings?.loadingCampaignTitle ?? 'Подготовка кампании...';
 
   // Wrapper for selectCampaign with sound (campaign select SFX only if user enabled sound)
   const handleSelectCampaign = useCallback((campaign: Campaign) => {
@@ -335,9 +332,9 @@ export function MillionaireGame({ config: rawConfig }: MillionaireGameProps) {
         {level1Preload.isLoading && (
           <LoadingScreen
             progress={level1Preload.progress}
-            title={loadingGameTitle}
-            subtitle={loadingGameSubtitle}
             theme={theme}
+            logoUrl={gameIconUrl ?? undefined}
+            logoEmoji={config.emoji ?? gameEmoji}
           />
         )}
 
@@ -345,9 +342,9 @@ export function MillionaireGame({ config: rawConfig }: MillionaireGameProps) {
         {isWaitingForLevel11 && !level1Preload.isLoading && (
           <LoadingScreen
             progress={level11Progress}
-            title={loadingCampaignTitle}
-            subtitle={gameState.selectedCampaign?.name}
             theme={theme}
+            logoUrl={gameIconUrl ?? undefined}
+            logoEmoji={config.emoji ?? gameEmoji}
           />
         )}
         {/* Particle Effects Layer */}

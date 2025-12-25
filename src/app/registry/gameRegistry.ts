@@ -25,26 +25,50 @@ export interface PageRegistryEntry {
 export type RegistryEntry = GameRegistryEntry | PageRegistryEntry;
 
 type GameConfigModule = { default: GameConfig };
+type GameRegistryModule = {
+  id: string;
+  emoji?: string;
+  registry: GameRegistryMeta;
+};
 
-const GAME_CONFIG_MODULES = import.meta.glob('../../games/*/config.ts', {
+const GAME_CONFIG_MODULES = import.meta.glob('../../games/*/config.ts') as Record<
+  string,
+  () => Promise<GameConfigModule>
+>;
+
+const GAME_REGISTRY_MODULES = import.meta.glob('../../games/*/registry.ts', {
   eager: true,
-}) as Record<string, GameConfigModule>;
+}) as Record<string, GameRegistryModule>;
 
 const extractGameIdFromPath = (path: string): string | null => {
-  const match = path.match(/\/games\/([^/]+)\/config\.ts$/);
+  const match = path.match(/\/games\/([^/]+)\/(config|registry)\.ts$/);
   return match?.[1] ?? null;
 };
 
 const buildGameEntries = (): GameRegistryEntry[] => {
   const entries: GameRegistryEntry[] = [];
+  const configLoaders = new Map<string, () => Promise<GameConfig>>();
 
-  for (const [path, mod] of Object.entries(GAME_CONFIG_MODULES)) {
+  for (const [path, loader] of Object.entries(GAME_CONFIG_MODULES)) {
     const id = extractGameIdFromPath(path);
     if (!id) continue;
+    configLoaders.set(id, async () => (await loader()).default);
+  }
 
-    const config = mod.default;
-    const meta: GameRegistryMeta | undefined = config.registry;
+  for (const [path, mod] of Object.entries(GAME_REGISTRY_MODULES)) {
+    const id = mod.id ?? extractGameIdFromPath(path);
+    if (!id) continue;
+
+    const meta = mod.registry;
     if (!meta) continue;
+
+    const configLoader = configLoaders.get(id);
+    if (!configLoader) {
+      if (import.meta.env.DEV) {
+        console.warn(`[registry] Missing config loader for game "${id}".`);
+      }
+      continue;
+    }
 
     entries.push({
       kind: 'game',
@@ -53,10 +77,10 @@ const buildGameEntries = (): GameRegistryEntry[] => {
       registryVisible: meta.registryVisible,
       order: meta.order,
       gameTitle: meta.gameTitle,
-      emoji: config.emoji ?? '🎯',
+      emoji: mod.emoji ?? '🎯',
       available: meta.available ?? true,
       devOnly: meta.devOnly,
-      getConfig: async () => config,
+      getConfig: configLoader,
     });
   }
 
@@ -82,6 +106,13 @@ const PAGE_REGISTRY: readonly PageRegistryEntry[] = [
     routePath: '/slideshow',
     devOnly: true,
     getComponent: () => import('../../pages/SandboxPage'),
+  },
+  {
+    kind: 'page',
+    id: 'loading-sandbox',
+    routePath: '/loading-sandbox',
+    devOnly: true,
+    getComponent: () => import('../../pages/LoadingSandboxPage'),
   },
 ] as const;
 

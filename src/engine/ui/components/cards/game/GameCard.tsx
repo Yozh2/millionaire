@@ -47,6 +47,11 @@ export function GameCard({
 
   const imageSrc = srcIndex < sources.length ? sources[srcIndex] : null;
   const isGameCardArt = srcIndex === 0 && !!imageSrc;
+  const [isImageReady, setIsImageReady] = useState(false);
+
+  useEffect(() => {
+    setIsImageReady(false);
+  }, [imageSrc]);
 
   return (
     <button
@@ -73,22 +78,26 @@ export function GameCard({
     >
       <div className="game-card-face relative overflow-hidden rounded-xl border-4 w-full aspect-[2/3]">
         <div aria-hidden="true" className="absolute inset-0">
-          {imageSrc ? (
+          <div className="w-full h-full flex items-center justify-center bg-gradient-to-b from-white/10 via-black/20 to-black/60">
+            <span className="text-6xl leading-none drop-shadow-sm">{emoji}</span>
+          </div>
+          {imageSrc && (
             <img
               src={imageSrc}
               alt=""
               className={[
-                'w-full h-full',
+                'absolute inset-0 w-full h-full transition-opacity duration-300',
                 isGameCardArt ? 'object-cover' : 'object-contain p-10',
+                isImageReady ? 'opacity-100' : 'opacity-0',
               ].join(' ')}
               loading="lazy"
               draggable={false}
-              onError={() => setSrcIndex((i) => i + 1)}
+              onLoad={() => setIsImageReady(true)}
+              onError={() => {
+                setIsImageReady(false);
+                setSrcIndex((i) => i + 1);
+              }}
             />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center bg-gradient-to-b from-white/10 via-black/20 to-black/60">
-              <span className="text-6xl leading-none drop-shadow-sm">{emoji}</span>
-            </div>
           )}
         </div>
 
