@@ -195,10 +195,8 @@
         ],
         "mainMenuMusic": "/games/transformers/music/menu.ogg",
         "startImages": [
-          "/games/transformers/images/start/01.webp",
           "/games/transformers/images/start/02.webp",
           "/games/transformers/images/start/03.webp",
-          "/games/transformers/images/start/04.webp",
           "/games/transformers/images/start/05.webp",
           "/games/transformers/images/start/06.webp",
           "/games/transformers/images/start/07.webp",
@@ -210,6 +208,9 @@
           ],
           "megatron": [
             "/games/transformers/images/campaigns/megatron/start/01.webp"
+          ],
+          "skybound": [
+            "/games/transformers/images/campaigns/skybound/start/01.webp"
           ]
         }
       },
@@ -266,7 +267,8 @@
                 "/games/transformers/images/campaigns/autocracy/play/medium/08.webp",
                 "/games/transformers/images/campaigns/autocracy/play/medium/09.webp",
                 "/games/transformers/images/campaigns/autocracy/play/medium/10.webp",
-                "/games/transformers/images/campaigns/autocracy/play/medium/11.webp"
+                "/games/transformers/images/campaigns/autocracy/play/medium/11.webp",
+                "/games/transformers/images/campaigns/autocracy/play/medium/12.webp"
               ],
               "hard": [
                 "/games/transformers/images/campaigns/autocracy/play/hard/01.webp",
@@ -278,7 +280,8 @@
                 "/games/transformers/images/campaigns/autocracy/play/hard/07.webp",
                 "/games/transformers/images/campaigns/autocracy/play/hard/08.webp",
                 "/games/transformers/images/campaigns/autocracy/play/hard/09.webp",
-                "/games/transformers/images/campaigns/autocracy/play/hard/10.webp"
+                "/games/transformers/images/campaigns/autocracy/play/hard/10.webp",
+                "/games/transformers/images/campaigns/autocracy/play/hard/11.webp"
               ]
             },
             "endImages": {
