@@ -34,6 +34,17 @@ const EMPTY_MANIFEST: AssetManifest = {
   games: {},
 };
 
+const isMetaAsset = (url: string): boolean => {
+  const lower = url.toLowerCase();
+  return (
+    lower.includes('/favicon/') ||
+    lower.includes('/icons/favicon') ||
+    lower.includes('apple-touch-icon') ||
+    lower.endsWith('site.webmanifest') ||
+    lower.includes('/meta/')
+  );
+};
+
 /** Cached assets by URL */
 interface AssetCache {
   images: Map<string, HTMLImageElement>;
@@ -359,25 +370,33 @@ class AssetLoader {
     let loaded = 0;
     const total = toLoad.length;
 
-    const loadPromises = toLoad.map(async (url) => {
-      try {
-        await this.loadAsset(url);
-        loaded++;
-        onProgress?.(loaded, total);
-      } catch (error) {
-        logger.assetLoader.warn(`Failed to load: ${url}`, { error });
-        this.state.failed.add(url);
+    const metaUrls = toLoad.filter((url) => isMetaAsset(url));
+    const otherUrls = toLoad.filter((url) => !isMetaAsset(url));
 
-        if (!continueOnError) {
-          throw error;
+    const loadBatch = async (batch: string[]) => {
+      const loadPromises = batch.map(async (url) => {
+        try {
+          await this.loadAsset(url);
+          loaded++;
+          onProgress?.(loaded, total);
+        } catch (error) {
+          logger.assetLoader.warn(`Failed to load: ${url}`, { error });
+          this.state.failed.add(url);
+
+          if (!continueOnError) {
+            throw error;
+          }
+
+          loaded++;
+          onProgress?.(loaded, total);
         }
+      });
 
-        loaded++;
-        onProgress?.(loaded, total);
-      }
-    });
+      await Promise.all(loadPromises);
+    };
 
-    await Promise.all(loadPromises);
+    await loadBatch(metaUrls);
+    await loadBatch(otherUrls);
   }
 
   /**

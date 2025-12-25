@@ -318,7 +318,7 @@ export function LoadingScreen({
                 style={{
                   width: `${logoSize}px`,
                   height: `${logoSize}px`,
-                  animation: 'spin 6s linear infinite',
+                  animation: 'spin 1.5s linear infinite',
                   filter: `drop-shadow(0 0 8px ${accentGlowStrong})`,
                 }}
                 loading="eager"
@@ -354,6 +354,10 @@ export function LoadingScreen({
       <style>{`
         @keyframes loading-ring-rotate {
           to { transform: rotate(360deg); }
+        }
+
+        @keyframes spin-reverse {
+          to { transform: rotate(-360deg); }
         }
 
         @keyframes loading-ring-glint {
