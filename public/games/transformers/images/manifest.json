@@ -67,10 +67,7 @@
             "07.webp",
             "08.webp",
             "09.webp",
-            "10.webp",
-            "11.webp",
-            "12.webp",
-            "13.webp"
+            "10.webp"
           ]
         },
         "medium": {
@@ -85,9 +82,7 @@
             "08.webp",
             "09.webp",
             "10.webp",
-            "11.webp",
-            "12.webp",
-            "13.webp"
+            "11.webp"
           ]
         }
       },
@@ -160,9 +155,14 @@
   },
   "start": {
     "images": [
-      "transformers-fall-of-cybertron.webp",
-      "transformers-the-game.webp",
-      "transformers-war-for-cybertron.webp"
+      "01.webp",
+      "02.webp",
+      "03.webp",
+      "04.webp",
+      "05.webp",
+      "06.webp",
+      "07.webp",
+      "08.webp"
     ]
   }
 }
