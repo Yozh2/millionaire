@@ -56,8 +56,8 @@ export const pocConfig: GameConfig = {
   strings,
 
   lifelines: {
-    fifty: { name: strings.lifelines.fifty, icon: '⚡', enabled: true },
-    phone: { name: strings.lifelines.phone, icon: '📞', enabled: true },
+    fifty: { name: strings.lifelines.fifty, icon: '⚡️', enabled: true },
+    phone: { name: strings.lifelines.phone, icon: '📱', enabled: true },
     audience: { name: strings.lifelines.audience, icon: '📊', enabled: true },
     host: { name: strings.lifelines.host, icon: '🎭', enabled: true },
     switch: { name: strings.lifelines.switch, icon: '🔁', enabled: true },
