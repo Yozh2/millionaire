@@ -38,14 +38,14 @@ export function PortalHeaderTitle({
   const titleTextClass = theme.textTitle ?? theme.textPrimary;
 
   const defaultTitleShadow = isLightTheme
-    ? `0 4px 18px rgba(15, 23, 42, 0.20), 0 0 26px ${theme.glowColor}55`
-    : `0 4px 18px rgba(0,0,0,0.8), 0 0 32px rgba(0,0,0,0.7), 0 0 30px ${theme.glowColor}`;
+    ? `0 2px 10px rgba(15, 23, 42, 0.75), 0 6px 18px rgba(15, 23, 42, 0.45), 0 0 18px ${theme.glowColor}99, 0 0 34px ${theme.glowColor}66`
+    : `0 2px 12px rgba(0,0,0,0.9), 0 8px 22px rgba(0,0,0,0.6), 0 0 20px ${theme.glowColor}b3, 0 0 38px ${theme.glowColor}80`;
 
   const titleShadow = theme.headerTextShadow ?? defaultTitleShadow;
 
   const defaultBackdrop = isLightTheme
-    ? 'radial-gradient(ellipse at center, rgba(255,255,255,0.82) 18%, rgba(255,255,255,0.34) 52%, rgba(255,255,255,0) 78%)'
-    : 'radial-gradient(ellipse at center, rgba(0,0,0,0.55) 20%, rgba(0,0,0,0.22) 50%, rgba(0,0,0,0) 78%)';
+    ? 'radial-gradient(ellipse at center, rgba(15,23,42,0.55) 0%, rgba(15,23,42,0.28) 48%, rgba(15,23,42,0) 78%)'
+    : 'radial-gradient(ellipse at center, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.35) 52%, rgba(0,0,0,0) 78%)';
 
   const backdrop = theme.headerTextBackdrop ?? defaultBackdrop;
 
@@ -154,11 +154,11 @@ export function PortalHeaderTitle({
           />
 
           <div
-            className="absolute inset-x-6 top-1/2 h-32 -translate-y-1/2"
+            className="portal-title__backplate absolute left-1/2 top-1/2 h-28 w-[min(920px,92vw)] -translate-x-1/2 -translate-y-1/2"
             style={{
-              background: backdrop,
-              filter: enableBlur ? 'blur(18px)' : 'none',
-              opacity: isLightTheme ? 0.9 : 0.95,
+              ['--portal-title-backdrop' as string]: backdrop,
+              filter: enableBlur ? 'blur(26px)' : 'blur(18px)',
+              opacity: isLightTheme ? 0.78 : 0.9,
             }}
             aria-hidden="true"
           />

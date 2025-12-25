@@ -76,6 +76,27 @@
   animation: portal-title-aura 2.6s ease-in-out infinite;
 }
 
+.engine .portal-title__backplate {
+  background: var(--portal-title-backdrop);
+  border-radius: 9999px;
+  mask-image: radial-gradient(
+    ellipse at center,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 0.92) 52%,
+    rgba(0, 0, 0, 0) 82%
+  );
+  mask-size: 100% 100%;
+  mask-repeat: no-repeat;
+  -webkit-mask-image: radial-gradient(
+    ellipse at center,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 0.92) 52%,
+    rgba(0, 0, 0, 0) 82%
+  );
+  -webkit-mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .engine .portal-title__motion--enter,
   .engine .portal-title__motion--exit,
