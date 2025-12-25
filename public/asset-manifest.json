@@ -195,12 +195,16 @@
         ],
         "mainMenuMusic": "/games/transformers/music/menu.ogg",
         "startImages": [
+          "/games/transformers/images/start/01.webp",
           "/games/transformers/images/start/02.webp",
           "/games/transformers/images/start/03.webp",
+          "/games/transformers/images/start/04.webp",
           "/games/transformers/images/start/05.webp",
           "/games/transformers/images/start/06.webp",
           "/games/transformers/images/start/07.webp",
-          "/games/transformers/images/start/08.webp"
+          "/games/transformers/images/start/08.webp",
+          "/games/transformers/images/start/09.webp",
+          "/games/transformers/images/start/10.webp"
         ],
         "campaignStartImages": {
           "autocracy": [
@@ -334,13 +338,46 @@
             "music": "/games/transformers/music/skybound.ogg",
             "musicAlt": null,
             "playImages": {
-              "easy": []
+              "easy": [
+                "/games/transformers/images/campaigns/skybound/play/easy/01.webp",
+                "/games/transformers/images/campaigns/skybound/play/easy/02.webp",
+                "/games/transformers/images/campaigns/skybound/play/easy/03.webp",
+                "/games/transformers/images/campaigns/skybound/play/easy/04.webp",
+                "/games/transformers/images/campaigns/skybound/play/easy/05.webp",
+                "/games/transformers/images/campaigns/skybound/play/easy/06.webp",
+                "/games/transformers/images/campaigns/skybound/play/easy/07.webp",
+                "/games/transformers/images/campaigns/skybound/play/easy/08.webp",
+                "/games/transformers/images/campaigns/skybound/play/easy/09.webp",
+                "/games/transformers/images/campaigns/skybound/play/easy/10.webp"
+              ]
             }
           },
           "level2": {
             "playImages": {
-              "medium": [],
-              "hard": []
+              "medium": [
+                "/games/transformers/images/campaigns/skybound/play/medium/01.webp",
+                "/games/transformers/images/campaigns/skybound/play/medium/02.webp",
+                "/games/transformers/images/campaigns/skybound/play/medium/03.webp",
+                "/games/transformers/images/campaigns/skybound/play/medium/04.webp",
+                "/games/transformers/images/campaigns/skybound/play/medium/05.webp",
+                "/games/transformers/images/campaigns/skybound/play/medium/06.webp",
+                "/games/transformers/images/campaigns/skybound/play/medium/07.webp",
+                "/games/transformers/images/campaigns/skybound/play/medium/08.webp",
+                "/games/transformers/images/campaigns/skybound/play/medium/09.webp",
+                "/games/transformers/images/campaigns/skybound/play/medium/10.webp",
+                "/games/transformers/images/campaigns/skybound/play/medium/11.webp",
+                "/games/transformers/images/campaigns/skybound/play/medium/12.webp"
+              ],
+              "hard": [
+                "/games/transformers/images/campaigns/skybound/play/hard/01.webp",
+                "/games/transformers/images/campaigns/skybound/play/hard/02.webp",
+                "/games/transformers/images/campaigns/skybound/play/hard/03.webp",
+                "/games/transformers/images/campaigns/skybound/play/hard/04.webp",
+                "/games/transformers/images/campaigns/skybound/play/hard/05.webp",
+                "/games/transformers/images/campaigns/skybound/play/hard/06.webp",
+                "/games/transformers/images/campaigns/skybound/play/hard/07.webp",
+                "/games/transformers/images/campaigns/skybound/play/hard/08.webp"
+              ]
             },
             "endImages": {
               "victory": [],
