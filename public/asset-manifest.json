@@ -182,13 +182,16 @@
           "/games/transformers/sounds/correct.ogg",
           "/games/transformers/sounds/defeat.ogg",
           "/games/transformers/sounds/lifeline-audience.ogg",
+          "/games/transformers/sounds/lifeline-double.ogg",
           "/games/transformers/sounds/lifeline-fifty.ogg",
           "/games/transformers/sounds/lifeline-phone.ogg",
+          "/games/transformers/sounds/retreat.ogg",
           "/games/transformers/sounds/select-autocracy.ogg",
           "/games/transformers/sounds/select-megatron.ogg",
           "/games/transformers/sounds/select-megatron2.ogg",
           "/games/transformers/sounds/select-megatron3.ogg",
-          "/games/transformers/sounds/select-skybound.ogg"
+          "/games/transformers/sounds/select-skybound.ogg",
+          "/games/transformers/sounds/victory.ogg"
         ],
         "mainMenuMusic": "/games/transformers/music/menu.ogg",
         "startImages": [
