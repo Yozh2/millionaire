@@ -55,6 +55,10 @@ export function CampaignCard({
     selected,
     onSelect,
   });
+  const isMegatronCard = gameId === 'transformers' && campaign.id === 'megatron';
+  const glowColor = isMegatronCard ? '#7c3aed' : campaign.theme.glowColor;
+  const glowSecondary = isMegatronCard ? '#a78bfa' : campaign.theme.glowSecondary;
+  const glow = isMegatronCard ? 'rgba(124, 58, 237, 0.5)' : campaign.theme.glow;
 
   return (
     <button
@@ -79,18 +83,18 @@ export function CampaignCard({
           : 'bg-gradient-to-b from-stone-950/70 via-stone-950/45 to-black/70'
       }`}
       style={{
-        ['--campaign-glow' as string]: campaign.theme.glowColor,
-        ['--campaign-glow-secondary' as string]: campaign.theme.glowSecondary,
+        ['--campaign-glow' as string]: glowColor,
+        ['--campaign-glow-secondary' as string]: glowSecondary,
         borderStyle: 'ridge',
-        borderColor: selected ? campaign.theme.glowColor : '#44403c',
+        borderColor: selected ? glowColor : '#44403c',
         boxShadow: selected
-          ? `0 0 26px ${campaign.theme.glow}, 0 16px 60px rgba(0,0,0,0.55), inset 0 0 14px ${campaign.theme.glow}`
+          ? `0 0 26px ${glow}, 0 16px 60px rgba(0,0,0,0.55), inset 0 0 14px ${glow}`
           : '0 14px 56px rgba(0,0,0,0.55)',
         ...(style ?? {}),
       }}
       onMouseEnter={(e) => {
         if (!selected) {
-          e.currentTarget.style.borderColor = campaign.theme.glowColor;
+          e.currentTarget.style.borderColor = glowColor;
         }
       }}
       onMouseLeave={(e) => {
@@ -130,7 +134,7 @@ export function CampaignCard({
         <span
           className="relative mt-5 w-full max-w-full px-0.5 text-sm font-bold text-center truncate leading-tight"
           style={{
-            color: selected ? campaign.theme.glowColor : campaign.theme.glowSecondary,
+            color: selected ? glowColor : glowSecondary,
           }}
         >
           {campaign.name} 
