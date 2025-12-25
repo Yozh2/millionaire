@@ -244,10 +244,7 @@ export function MillionaireGame({ config: rawConfig }: MillionaireGameProps) {
   }, [audio, markSoundConsentDone]);
 
   const handleDisableSound = useCallback(() => {
-    if (audio.isMusicPlaying) {
-      audio.playSoundEffect('answerButton');
-      audio.toggleMusic();
-    }
+    audio.disableAllSounds();
     setIsSoundConsentClosing(true);
     window.setTimeout(() => {
       markSoundConsentDone();

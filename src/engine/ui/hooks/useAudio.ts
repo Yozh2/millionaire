@@ -22,6 +22,9 @@ export interface UseAudioReturn {
   /** Toggle music + global sound on/off */
   toggleMusic: () => void;
 
+  /** Disable all sounds immediately */
+  disableAllSounds: () => void;
+
   /** Play a sound effect by config key */
   playSoundEffect: (key: keyof GameConfig['audio']['sounds']) => void;
 
@@ -113,6 +116,7 @@ export const useAudio = (
     isMusicPlaying: musicPlayer.isMusicPlaying,
     currentTrack: musicPlayer.currentTrack,
     toggleMusic: musicPlayer.toggleMusic,
+    disableAllSounds: musicPlayer.disableAllSounds,
 
     playSoundEffect,
     playSoundFile,

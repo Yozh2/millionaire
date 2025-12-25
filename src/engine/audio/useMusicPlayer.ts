@@ -14,6 +14,7 @@ export interface UseMusicPlayerReturn {
   isMusicPlaying: boolean;
   currentTrack: string;
   toggleMusic: () => void;
+  disableAllSounds: () => void;
   switchMusicTrack: (trackFile: string | undefined, autoPlay?: boolean) => void;
   playMainMenu: () => void;
   playGameOver: () => void;
@@ -160,16 +161,24 @@ export function useMusicPlayer(
     [config.audio.musicVolume, getAudioElement, loadTrack, primeAudio, setAudioSource]
   );
 
+  const disableAllSounds = useCallback(() => {
+    const audio = getAudioElement();
+    if (audio) {
+      audio.pause();
+      audio.currentTime = 0;
+    }
+    setIsMusicPlaying(false);
+    userDisabledMusic.current = true;
+    setEngineSoundEnabled(false);
+    onDisableAllSounds?.();
+  }, [getAudioElement, onDisableAllSounds]);
+
   const toggleMusic = useCallback(() => {
     const audio = getAudioElement();
     if (!audio) return;
 
     if (isMusicPlaying) {
-      audio.pause();
-      setIsMusicPlaying(false);
-      userDisabledMusic.current = true;
-      setEngineSoundEnabled(false);
-      onDisableAllSounds?.();
+      disableAllSounds();
       return;
     }
 
@@ -197,6 +206,7 @@ export function useMusicPlayer(
     isMusicPlaying,
     onDisableAllSounds,
     setAudioSource,
+    disableAllSounds,
   ]);
 
   const tryPlayTrackWithFallback = useCallback(
@@ -302,6 +312,7 @@ export function useMusicPlayer(
     isMusicPlaying,
     currentTrack,
     toggleMusic,
+    disableAllSounds,
     switchMusicTrack: (trackFile, autoPlay) => {
       void switchMusicTrack(trackFile, !!autoPlay);
     },
