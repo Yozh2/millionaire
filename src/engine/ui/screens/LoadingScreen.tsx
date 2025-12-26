@@ -14,38 +14,32 @@ import type { ThemeColors } from '@engine/types';
 export interface LoadingScreenProps {
   /** Current progress (0-100). Leave undefined for indeterminate loading. */
   progress?: number;
-  /** Loading title text */
-  title?: string;
-  /** Optional subtitle/hint text */
-  subtitle?: string;
-  /** Theme colors (optional, uses default dark theme if not provided) */
+  /** Theme colors (optional). */
   theme?: Partial<ThemeColors>;
   /** Logo image URL (optional) */
   logoUrl?: string;
   /** Logo emoji fallback (optional) */
   logoEmoji?: string;
-  /** Whether to show the progress percentage */
-  showPercentage?: boolean;
-  /** Callback when loading animation completes after reaching 100% */
-  onComplete?: () => void;
 }
-
-/** Default dark theme for loading screen */
-const defaultLoadingTheme: Partial<ThemeColors> = {
-  textPrimary: 'text-amber-100',
-  textSecondary: 'text-amber-200/70',
-  bgPanel: 'bg-slate-900/80',
-  border: 'border-amber-500/30',
-};
 
 const DEFAULT_LOGO_URL = publicFile('icons/favicon.svg');
 const DEFAULT_LOGO_EMOJI = '🎯';
-const NOISE_DATA_URL =
-  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='0.35'/%3E%3C/svg%3E";
+const NOISE_DATA_URL = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='0.35'/%3E%3C/svg%3E";
 
 const clampProgress = (value: number) => Math.min(100, Math.max(0, value));
-const clamp = (value: number, min: number, max: number) =>
-  Math.min(max, Math.max(min, value));
+const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
+const toRgba = (hex: string, alpha: number): string | null => {
+  const clean = hex.trim();
+  if (!/^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(clean)) return null;
+  const full =
+    clean.length === 4
+      ? `#${clean[1]}${clean[1]}${clean[2]}${clean[2]}${clean[3]}${clean[3]}`
+      : clean;
+  const r = Number.parseInt(full.slice(1, 3), 16);
+  const g = Number.parseInt(full.slice(3, 5), 16);
+  const b = Number.parseInt(full.slice(5, 7), 16);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+};
 
 const createEmojiLogo = (emoji: string): string => {
   const svg =
@@ -59,13 +53,9 @@ const createEmojiLogo = (emoji: string): string => {
  */
 export function LoadingScreen({
   progress,
-  title,
-  subtitle,
-  theme = defaultLoadingTheme,
+  theme = {},
   logoUrl,
   logoEmoji,
-  showPercentage = false,
-  onComplete,
 }: LoadingScreenProps) {
   const isIndeterminate =
     typeof progress !== 'number' ||
@@ -125,15 +115,6 @@ export function LoadingScreen({
     };
   }, [isIndeterminate, targetProgress]);
 
-  // Call onComplete when we reach 100% and animation settles
-  useEffect(() => {
-    if (!isIndeterminate && displayProgress >= 100 && onComplete) {
-      const timer = setTimeout(onComplete, 300);
-      return () => clearTimeout(timer);
-    }
-  }, [displayProgress, isIndeterminate, onComplete]);
-
-  const t = { ...defaultLoadingTheme, ...theme };
   const accentColor = theme?.glowColor ?? '#f59e0b';
   const accentGlow = accentColor.startsWith('#')
     ? `${accentColor}66`
@@ -217,9 +198,16 @@ export function LoadingScreen({
     <div
       className="engine fixed inset-0 z-50 flex items-center justify-center"
       style={{
-        background:
-          theme?.bgGradient ??
-          'radial-gradient(ellipse at center, #111827 0%, #0f172a 32%, #0c1524 58%, #09111b 78%, #070b14 100%)',
+        background: (() => {
+          const base =
+            theme?.loadingBgColor ??
+            theme?.bgPanelFrom ??
+            theme?.bgHeaderVia ??
+            '#0b0f14';
+          const center = toRgba(base, 0.28) ?? base;
+          const mid = toRgba(base, 0.14) ?? base;
+          return `radial-gradient(circle at center, ${center} 0%, ${mid} 38%, rgba(0,0,0,0.92) 74%, #000 100%)`;
+        })(),
       }}
     >
       {/* Background pattern */}
@@ -330,25 +318,6 @@ export function LoadingScreen({
           </div>
         </div>
 
-        {(title || subtitle || (showPercentage && !isIndeterminate)) && (
-          <div className="flex flex-col items-center gap-2">
-            {title && (
-              <h1 className={`text-2xl font-semibold tracking-wide text-center ${t.textPrimary}`}>
-                {title}
-              </h1>
-            )}
-            {subtitle && (
-              <p className={`text-sm ${t.textSecondary} text-center max-w-md`}>
-                {subtitle}
-              </p>
-            )}
-            {showPercentage && !isIndeterminate && (
-              <div className={`text-sm ${t.textSecondary}`}>
-                {Math.round(displayProgress)}%
-              </div>
-            )}
-          </div>
-        )}
       </div>
 
       <style>{`

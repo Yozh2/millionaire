@@ -63,6 +63,7 @@ export const theme: ThemeColors = {
   // Header bar: honey wax
   bgHeader: 'from-amber-600 via-amber-400 to-amber-600',
   bgHeaderVia: '#fbbf24',
+  loadingBgColor: '#00AAFF',
   headerBorderColor: 'rgba(251, 191, 36, 0.85)',
 
   // Buttons

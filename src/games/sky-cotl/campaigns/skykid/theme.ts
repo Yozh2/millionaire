@@ -36,6 +36,7 @@ export const theme: ThemeColors = {
 
   bgHeader: 'from-sky-400 via-sky-300 to-emerald-400',
   bgHeaderVia: '#7dd3fc',
+  loadingBgColor: '#00AAFF',
   headerBorderColor: '#38bdf8',
 
   bgButton: 'from-sky-500 via-sky-400 to-sky-500',

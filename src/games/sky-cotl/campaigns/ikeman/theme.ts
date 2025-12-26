@@ -39,6 +39,7 @@ export const theme: ThemeColors = {
   // Panel headers: white on top → darker silver → very dark bottom
   bgHeader: 'from-white via-slate-300 to-slate-950',
   bgHeaderVia: '#cbd5e1',
+  loadingBgColor: '#00AAFF',
   headerBorderColor: '#ef4444',
 
   bgButton: 'from-red-800 via-red-700 to-red-900',

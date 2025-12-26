@@ -16,6 +16,7 @@ export const theme: ThemeColors = {
   bgPanelTo: '#0c0a09',
   bgHeader: 'from-purple-900 via-purple-800 to-purple-900',
   bgHeaderVia: '#7c3aed',
+  loadingBgColor: '#3b2416',
   bgButton: 'from-purple-700 via-purple-800 to-purple-900',
   bgButtonHover: 'hover:from-purple-600 hover:via-purple-700 hover:to-purple-800',
   bgAnswer: 'from-purple-950 via-indigo-950 to-neutral-950',

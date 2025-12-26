@@ -15,6 +15,7 @@ export const theme: ThemeColors = {
   bgPanelTo: '#09090b',
   bgHeader: 'from-slate-600 via-slate-500 to-slate-600',
   bgHeaderVia: '#64748b',
+  loadingBgColor: '#24313b',
   bgButton: 'from-red-700 via-red-600 to-red-700',
   bgButtonHover: 'hover:from-red-600 hover:via-red-500 hover:to-red-600',
   bgAnswer: 'from-zinc-950 via-slate-900 to-zinc-950',

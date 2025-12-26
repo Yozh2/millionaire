@@ -107,6 +107,8 @@ export interface ThemeColors {
 
   // Background gradient for the entire screen
   bgGradient?: string;
+  /** Optional loading screen center tint (used for radial loading background). */
+  loadingBgColor?: string;
 
   // Text colors
   textPrimary: string;
