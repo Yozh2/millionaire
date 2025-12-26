@@ -1,7 +1,6 @@
 import type { ThemeColors } from '@engine/types';
 
 export const theme: ThemeColors = {
-  primary: 'orange',
   textPrimary: 'text-orange-100',
   textSecondary: 'text-teal-200',
   textMuted: 'text-orange-400',
@@ -9,15 +8,12 @@ export const theme: ThemeColors = {
   border: 'border-orange-500',
   borderLight: 'border-orange-400',
   borderHover: 'hover:border-teal-400',
-  bgPanel: 'from-slate-950/95 via-orange-950/90 to-slate-950/95',
   bgPanelFrom: '#0f172a',
   bgPanelVia: '#431407',
   bgPanelTo: '#0f172a',
   bgHeader: 'from-orange-700 via-orange-600 to-orange-700',
   bgHeaderVia: '#ea580c',
-  loadingBgColor: '#24313b',
   bgButton: 'from-orange-600 via-orange-500 to-orange-600',
-  bgButtonHover: 'hover:from-orange-500 hover:via-orange-400 hover:to-orange-500',
   bgAnswer: 'from-slate-950 via-orange-950 to-slate-950',
   bgAnswerHover: 'hover:from-orange-900 hover:to-teal-950',
   bgLifeline: 'from-orange-600 to-teal-700',

@@ -2,7 +2,6 @@ import type { ThemeColors } from '@engine/types';
 
 /** Hero mode theme - warm amber/gold colors */
 export const theme: ThemeColors = {
-  primary: 'amber',
   textPrimary: 'text-amber-400',
   textSecondary: 'text-amber-200',
   textMuted: 'text-amber-700',
@@ -10,15 +9,12 @@ export const theme: ThemeColors = {
   border: 'border-amber-800',
   borderLight: 'border-amber-600',
   borderHover: 'hover:border-amber-600',
-  bgPanel: 'from-amber-950/90 via-stone-900/95 to-stone-950/90',
   bgPanelFrom: '#451a03',
   bgPanelVia: '#1c1917',
   bgPanelTo: '#0c0a09',
   bgHeader: 'from-amber-900 via-amber-800 to-amber-900',
   bgHeaderVia: '#92400e',
-  loadingBgColor: '#3b2416',
   bgButton: 'from-amber-700 via-amber-800 to-amber-900',
-  bgButtonHover: 'hover:from-amber-600 hover:via-amber-700 hover:to-amber-800',
   bgAnswer: 'from-amber-950 via-stone-900 to-neutral-950',
   bgAnswerHover: 'hover:from-amber-900 hover:to-stone-900',
   bgLifeline: 'from-amber-700 to-amber-900',

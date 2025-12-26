@@ -5,7 +5,6 @@ import type { ThemeColors } from '@engine/types';
  * Deep blue with gold/amber accents for higher stakes feel
  */
 export const theme: ThemeColors = {
-  primary: 'amber',
   textPrimary: 'text-amber-100',
   textSecondary: 'text-amber-200',
   textMuted: 'text-amber-400',
@@ -13,14 +12,12 @@ export const theme: ThemeColors = {
   border: 'border-amber-500',
   borderLight: 'border-amber-400',
   borderHover: 'hover:border-amber-300',
-  bgPanel: 'from-slate-950/95 via-amber-950/90 to-slate-950/95',
   bgPanelFrom: '#0f0f0f',
   bgPanelVia: '#451a03',
   bgPanelTo: '#0f0f0f',
   bgHeader: 'from-amber-700 via-yellow-600 to-amber-700',
   bgHeaderVia: '#ca8a04',
   bgButton: 'from-amber-700 via-yellow-600 to-amber-700',
-  bgButtonHover: 'hover:from-amber-600 hover:via-yellow-500 hover:to-amber-600',
   bgAnswer: 'from-slate-950 via-amber-950 to-slate-950',
   bgAnswerHover: 'hover:from-amber-950 hover:to-yellow-950',
   bgLifeline: 'from-yellow-600 to-amber-700',

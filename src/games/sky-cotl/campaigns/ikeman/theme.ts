@@ -1,7 +1,6 @@
 import type { ThemeColors } from '@engine/types';
 
 export const theme: ThemeColors = {
-  primary: 'ikeman',
   isLight: false,
 
   bgGradient:
@@ -22,15 +21,12 @@ export const theme: ThemeColors = {
   textHeader: 'text-red-950',
   headerGradientClass: 'bg-gradient-to-b',
   headerTextShadow: '0 6px 18px rgba(0, 0, 0, 0.30)',
-  headerTextBackdrop:
-    'radial-gradient(ellipse at center, rgba(239,68,68,0.18) 12%, rgba(2,6,23,0.25) 55%, rgba(0,0,0,0) 78%)',
   panelHeaderTextShadow: '0 1px 1px rgba(255, 255, 255, 0.35)',
 
   border: 'border-slate-700',
   borderLight: 'border-slate-600',
   borderHover: 'hover:border-slate-500',
 
-  bgPanel: 'from-slate-950/75 via-slate-900/60 to-slate-950/75',
   bgPanelFrom: 'rgba(2, 6, 23, 0.86)',
   bgPanelVia: 'rgba(15, 23, 42, 0.64)',
   bgPanelTo: 'rgba(36, 9, 11, 0.70)',
@@ -39,11 +35,9 @@ export const theme: ThemeColors = {
   // Panel headers: white on top → darker silver → very dark bottom
   bgHeader: 'from-white via-slate-300 to-slate-950',
   bgHeaderVia: '#cbd5e1',
-  loadingBgColor: '#00AAFF',
   headerBorderColor: '#ef4444',
 
   bgButton: 'from-red-800 via-red-700 to-red-900',
-  bgButtonHover: 'hover:from-red-700 hover:via-red-600 hover:to-red-800',
 
   bgAnswer: 'from-slate-950/70 via-slate-900/55 to-slate-950/70',
   bgAnswerHover: 'hover:from-slate-950/80 hover:via-slate-900/60 hover:to-slate-950/80',

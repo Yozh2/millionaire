@@ -55,10 +55,9 @@ export function CampaignCard({
     selected,
     onSelect,
   });
-  const isMegatronCard = gameId === 'transformers' && campaign.id === 'megatron';
-  const glowColor = isMegatronCard ? '#7c3aed' : campaign.theme.glowColor;
-  const glowSecondary = isMegatronCard ? '#a78bfa' : campaign.theme.glowSecondary;
-  const glow = isMegatronCard ? 'rgba(124, 58, 237, 0.5)' : campaign.theme.glow;
+  const glowColor = campaign.theme.campaignCardGlowColor ?? campaign.theme.glowColor;
+  const glowSecondary = campaign.theme.campaignCardGlowSecondary ?? campaign.theme.glowSecondary;
+  const glow = campaign.theme.campaignCardGlow ?? campaign.theme.glow;
 
   return (
     <button

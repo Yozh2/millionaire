@@ -11,7 +11,6 @@ import type { ThemeColors } from '@engine/types';
  * Note: your selected state likely reuses bgAnswerHover. This is tuned for that.
  */
 export const theme: ThemeColors = {
-  primary: 'moth-sky-pearl-v6',
   isLight: true,
 
   bgGradient:
@@ -40,13 +39,6 @@ export const theme: ThemeColors = {
     '0 0 22px rgba(130, 175, 227, 0.14), ' +
     '0 0 16px rgba(245, 211, 227, 0.16), ' +
     '0 0 14px rgba(251, 191, 36, 0.14)',
-  headerTextBackdrop:
-    'radial-gradient(ellipse at center,' +
-    ' rgba(255,255,255,0.92) 12%,' +
-    ' rgba(255,247,241,0.55) 34%,' +
-    ' rgba(214,230,255,0.26) 58%,' +
-    ' rgba(27,37,87,0) 82%' +
-    ')',
   panelHeaderTextShadow: '0 1px 2px rgba(27, 37, 87, 0.12)',
 
   // Borders (soft wax)
@@ -55,7 +47,6 @@ export const theme: ThemeColors = {
   borderHover: 'hover:border-amber-200/95',
 
   // Panels (bright bottoms so no dark bleed)
-  bgPanel: 'from-white/96 via-white/92 to-sky-50/90',
   bgPanelFrom: 'rgba(255, 255, 255, 0.96)',
   bgPanelVia: 'rgba(255, 255, 255, 0.92)',
   bgPanelTo: 'rgba(239, 246, 255, 0.90)',
@@ -63,12 +54,10 @@ export const theme: ThemeColors = {
   // Header bar: honey wax
   bgHeader: 'from-amber-600 via-amber-400 to-amber-600',
   bgHeaderVia: '#fbbf24',
-  loadingBgColor: '#00AAFF',
   headerBorderColor: 'rgba(251, 191, 36, 0.85)',
 
   // Buttons
   bgButton: 'from-amber-600 via-amber-300 to-amber-600',
-  bgButtonHover: 'hover:from-amber-500 hover:via-amber-200 hover:to-amber-500',
 
   // Answers:
   // Idle: white-ish glass, semi-transparent (but not "see-through blue")

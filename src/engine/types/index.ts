@@ -22,6 +22,12 @@ export interface GameRegistryMeta {
   routePath?: string;
   /** Sorting (lower first) */
   order?: number;
+  /** Optional loading screen center tint (used before config loads). */
+  loadingBgColor?: string;
+  /** Optional theme hints for the initial LoadingScreen. */
+  loadingTheme?: Partial<ThemeColors>;
+  /** Optional direct favicon URL for fast first paint. */
+  faviconUrl?: string;
 }
 
 export interface CampaignIconProps {
@@ -99,16 +105,11 @@ export interface QuestionPool {
 
 /** Complete theme color configuration for a game mode */
 export interface ThemeColors {
-  // Primary color name (for reference)
-  primary: string;
-
   /** Whether this theme targets light surfaces (used for shadow/backdrop defaults). */
   isLight?: boolean;
 
   // Background gradient for the entire screen
   bgGradient?: string;
-  /** Optional loading screen center tint (used for radial loading background). */
-  loadingBgColor?: string;
 
   // Text colors
   textPrimary: string;
@@ -129,7 +130,6 @@ export interface ThemeColors {
   borderHover: string;
 
   // Panel backgrounds
-  bgPanel: string;
   bgPanelFrom: string;
   bgPanelVia: string;
   bgPanelTo: string;
@@ -141,14 +141,11 @@ export interface ThemeColors {
 
   /** Optional text shadow for the big header title/subtitle (falls back to defaults). */
   headerTextShadow?: string;
-  /** Optional backdrop gradient behind big header text (falls back to defaults). */
-  headerTextBackdrop?: string;
   /** Optional text shadow for PanelHeader (falls back to defaults). */
   panelHeaderTextShadow?: string;
 
   // Buttons
   bgButton: string;
-  bgButtonHover: string;
 
   // Answers
   bgAnswer: string;
@@ -184,6 +181,10 @@ export interface ThemeColors {
   glow: string;
   glowColor: string;
   glowSecondary: string;
+  /** Optional CampaignCard glow overrides (falls back to glow/glowColor/glowSecondary). */
+  campaignCardGlow?: string;
+  campaignCardGlowColor?: string;
+  campaignCardGlowSecondary?: string;
 
   // Border image
   borderImageColors: string;
@@ -604,6 +605,9 @@ export interface GameConfig {
    * @example '"Orbitron", "Roboto", sans-serif'
    */
   fontFamily?: string;
+
+  /** Optional loading screen center tint (used for radial loading background). */
+  loadingBgColor?: string;
 
   /** Available campaigns/difficulties (2-N) */
   campaigns: Campaign[];

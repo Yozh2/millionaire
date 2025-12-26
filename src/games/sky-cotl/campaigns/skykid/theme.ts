@@ -1,7 +1,6 @@
 import type { ThemeColors } from '@engine/types';
 
 export const theme: ThemeColors = {
-  primary: 'sky',
   isLight: true,
 
   bgGradient:
@@ -21,26 +20,21 @@ export const theme: ThemeColors = {
   textTitle: 'text-slate-700',
   textHeader: 'text-white/95',
   headerTextShadow: '0 4px 18px rgba(15, 23, 42, 0.18), 0 0 22px rgba(56, 189, 248, 0.45)',
-  headerTextBackdrop:
-    'radial-gradient(ellipse at center, rgba(255,255,255,0.82) 18%, rgba(255,255,255,0.35) 55%, rgba(255,255,255,0) 78%)',
   panelHeaderTextShadow: '0 1px 2px rgba(15, 23, 42, 0.22)',
 
   border: 'border-sky-300',
   borderLight: 'border-sky-200',
   borderHover: 'hover:border-sky-400',
 
-  bgPanel: 'from-white/85 via-sky-50/80 to-white/85',
   bgPanelFrom: 'rgba(255, 255, 255, 0.90)',
   bgPanelVia: 'rgba(224, 242, 254, 0.80)', // sky-100
   bgPanelTo: 'rgba(255, 255, 255, 0.88)',
 
   bgHeader: 'from-sky-400 via-sky-300 to-emerald-400',
   bgHeaderVia: '#7dd3fc',
-  loadingBgColor: '#00AAFF',
   headerBorderColor: '#38bdf8',
 
   bgButton: 'from-sky-500 via-sky-400 to-sky-500',
-  bgButtonHover: 'hover:from-sky-400 hover:via-sky-300 hover:to-sky-400',
 
   bgAnswer: 'from-white/70 via-sky-50/70 to-white/70',
   bgAnswerHover: 'hover:from-white/80 hover:via-sky-100/70 hover:to-white/80',

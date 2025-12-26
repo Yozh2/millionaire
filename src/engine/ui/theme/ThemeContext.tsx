@@ -11,7 +11,6 @@ import { ThemeColors } from '@engine/types';
 
 /** Default slate theme for fallback */
 const defaultTheme: ThemeColors = {
-  primary: 'slate',
   textPrimary: 'text-slate-300',
   textSecondary: 'text-slate-400',
   textMuted: 'text-slate-600',
@@ -19,14 +18,12 @@ const defaultTheme: ThemeColors = {
   border: 'border-slate-700',
   borderLight: 'border-slate-500',
   borderHover: 'hover:border-slate-500',
-  bgPanel: 'from-slate-900/90 via-slate-800/95 to-slate-950/90',
   bgPanelFrom: '#1e293b',
   bgPanelVia: '#334155',
   bgPanelTo: '#0f172a',
   bgHeader: 'from-slate-700 via-slate-600 to-slate-700',
   bgHeaderVia: '#475569',
   bgButton: 'from-slate-600 via-slate-700 to-slate-800',
-  bgButtonHover: 'hover:from-slate-500 hover:via-slate-600 hover:to-slate-700',
   bgAnswer: 'from-slate-800 via-slate-900 to-slate-950',
   bgAnswerHover: 'hover:from-slate-700 hover:to-slate-800',
   bgLifeline: 'from-slate-600 to-slate-800',

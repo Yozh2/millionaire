@@ -1,7 +1,6 @@
 import type { ThemeColors } from '@engine/types';
 
 export const theme: ThemeColors = {
-  primary: 'blue',
   textPrimary: 'text-red-100',
   textSecondary: 'text-blue-200',
   textMuted: 'text-blue-200/80',
@@ -9,15 +8,12 @@ export const theme: ThemeColors = {
   border: 'border-red-500',
   borderLight: 'border-red-400',
   borderHover: 'hover:border-blue-400',
-  bgPanel: 'from-slate-950/95 via-red-950/90 to-slate-950/95',
   bgPanelFrom: '#0f172a',
   bgPanelVia: '#450a0a',
   bgPanelTo: '#0f172a',
   bgHeader: 'from-red-700 via-red-600 to-red-700',
   bgHeaderVia: '#dc2626',
-  loadingBgColor: '#24313b',
   bgButton: 'from-blue-600 via-blue-500 to-blue-600',
-  bgButtonHover: 'hover:from-blue-500 hover:via-blue-400 hover:to-blue-500',
   bgAnswer: 'from-slate-950 via-red-950 to-slate-950',
   bgAnswerHover: 'hover:from-red-900 hover:to-blue-950',
   bgLifeline: 'from-red-600 to-blue-700',
