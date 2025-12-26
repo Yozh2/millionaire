@@ -199,6 +199,20 @@ function applyHeadTags(tags: HeadTagSpec[]): void {
   currentHeadSignature = signature;
 }
 
+function iconTypeFromUrl(url: string): { type?: string; sizes?: string } {
+  const lower = url.toLowerCase();
+  if (lower.endsWith('.svg')) {
+    return { type: 'image/svg+xml', sizes: 'any' };
+  }
+  if (lower.endsWith('.png')) {
+    return { type: 'image/png' };
+  }
+  if (lower.endsWith('.ico')) {
+    return { type: 'image/x-icon' };
+  }
+  return {};
+}
+
 async function resolveHeadFaviconTags(
   gameId: string | null,
   gameEmoji?: string
@@ -408,15 +422,39 @@ export function useFavicon(
 }
 
 /**
+ * Apply a known favicon URL immediately (skips async probing).
+ */
+export function useImmediateFavicon(
+  iconUrl?: string | null,
+  enabled = true
+): void {
+  useEffect(() => {
+    if (!enabled || !iconUrl) return;
+
+    const { type, sizes } = iconTypeFromUrl(iconUrl);
+    const attrs: Record<string, string> = {
+      rel: 'icon',
+      href: iconUrl,
+    };
+    if (type) attrs.type = type;
+    if (sizes) attrs.sizes = sizes;
+
+    applyHeadTags([{ tagName: 'link', attrs }]);
+  }, [iconUrl, enabled]);
+}
+
+/**
  * Hook to get resolved game icon URL for display in UI.
  *
  * @param gameId - Game identifier
  * @param gameEmoji - Optional fallback emoji from game config
+ * @param preferredIconUrl - Optional known icon URL to skip probing
  * @returns Object with iconUrl (null if emoji), isEmoji flag, and emoji string
  */
 export function useGameIcon(
   gameId: string,
-  gameEmoji?: string
+  gameEmoji?: string,
+  preferredIconUrl?: string | null
 ): { iconUrl: string | null; isEmoji: boolean; emoji: string } {
   const [iconUrl, setIconUrl] = useState<string | null>(null);
   const [isEmoji, setIsEmoji] = useState(true);
@@ -424,6 +462,13 @@ export function useGameIcon(
 
   useEffect(() => {
     const loadIcon = async () => {
+      if (preferredIconUrl) {
+        const isDataUri = preferredIconUrl.startsWith('data:');
+        setIsEmoji(isDataUri);
+        setIconUrl(isDataUri ? null : preferredIconUrl);
+        return;
+      }
+
       const url = await resolveGameIcon(gameId, gameEmoji);
       const isDataUri = url.startsWith('data:');
       setIsEmoji(isDataUri);
@@ -432,7 +477,7 @@ export function useGameIcon(
     };
 
     loadIcon();
-  }, [gameId, gameEmoji]);
+  }, [gameId, gameEmoji, preferredIconUrl]);
 
   return { iconUrl, isEmoji, emoji };
 }

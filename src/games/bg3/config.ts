@@ -29,6 +29,7 @@ export const bg3Config: GameConfig = {
 
   title: strings.headerTitle,
   subtitle: strings.headerSubtitle,
+  loadingBgColor: '#3b2416',
 
   registry: {
     registryVisible: true,

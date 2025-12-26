@@ -11,6 +11,9 @@ export interface GameRegistryEntry {
   emoji: string;
   available: boolean;
   devOnly?: boolean;
+  loadingTheme?: GameRegistryMeta['loadingTheme'];
+  loadingBgColor?: GameRegistryMeta['loadingBgColor'];
+  faviconUrl?: GameRegistryMeta['faviconUrl'];
   getConfig: () => Promise<GameConfig>;
 }
 
@@ -80,6 +83,9 @@ const buildGameEntries = (): GameRegistryEntry[] => {
       emoji: mod.emoji ?? '🎯',
       available: meta.available ?? true,
       devOnly: meta.devOnly,
+      loadingTheme: meta.loadingTheme,
+      loadingBgColor: meta.loadingBgColor,
+      faviconUrl: meta.faviconUrl,
       getConfig: configLoader,
     });
   }

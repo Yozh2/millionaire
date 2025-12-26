@@ -91,6 +91,7 @@ export { useGameState, type UseGameStateReturn } from './ui/hooks/useGameState';
 export { useAudio, type UseAudioReturn } from './ui/hooks/useAudio';
 export {
   useFavicon,
+  useImmediateFavicon,
   useGameIcon,
   resolveGameIcon,
   resolveSharedIcon,

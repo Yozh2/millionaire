@@ -7,6 +7,7 @@ export { useAudio, type UseAudioReturn } from './useAudio';
 export { useEffects } from './useEffects';
 export {
   useFavicon,
+  useImmediateFavicon,
   useGameIcon,
   resolveGameIcon,
   resolveSharedIcon,

@@ -332,6 +332,7 @@ export function MillionaireGame({ config: rawConfig }: MillionaireGameProps) {
         {level1Preload.isLoading && (
           <LoadingScreen
             progress={level1Preload.progress}
+            loadingBgColor={config.loadingBgColor}
             theme={theme}
             logoUrl={gameIconUrl ?? undefined}
             logoEmoji={config.emoji ?? gameEmoji}
@@ -342,6 +343,7 @@ export function MillionaireGame({ config: rawConfig }: MillionaireGameProps) {
         {isWaitingForLevel11 && !level1Preload.isLoading && (
           <LoadingScreen
             progress={level11Progress}
+            loadingBgColor={config.loadingBgColor}
             theme={theme}
             logoUrl={gameIconUrl ?? undefined}
             logoEmoji={config.emoji ?? gameEmoji}

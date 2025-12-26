@@ -38,6 +38,7 @@ export const skyCotlConfig: GameConfig = {
 
   title: strings.headerTitle,
   subtitle: strings.headerSubtitle,
+  loadingBgColor: '#00AAFF',
 
   registry: {
     registryVisible: true,

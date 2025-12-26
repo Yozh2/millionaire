@@ -34,6 +34,7 @@ export const transformersConfig: GameConfig = {
 
   title: strings.headerTitle,
   subtitle: strings.headerSubtitle,
+  loadingBgColor: '#24313b',
 
   registry: {
     registryVisible: true,

@@ -14,6 +14,8 @@ import type { ThemeColors } from '@engine/types';
 export interface LoadingScreenProps {
   /** Current progress (0-100). Leave undefined for indeterminate loading. */
   progress?: number;
+  /** Optional loading screen center tint (used for radial loading background). */
+  loadingBgColor?: string;
   /** Theme colors (optional). */
   theme?: Partial<ThemeColors>;
   /** Logo image URL (optional) */
@@ -53,6 +55,7 @@ const createEmojiLogo = (emoji: string): string => {
  */
 export function LoadingScreen({
   progress,
+  loadingBgColor,
   theme = {},
   logoUrl,
   logoEmoji,
@@ -126,6 +129,14 @@ export function LoadingScreen({
     ? `${accentColor}99`
     : 'rgba(245, 158, 11, 0.6)';
   const ringTrackColor = 'rgba(255, 255, 255, 0.12)';
+  const plateauBase =
+    loadingBgColor ??
+    theme?.bgPanelFrom ??
+    theme?.bgHeaderVia ??
+    '#0b0f14';
+  const plateauHighlight = toRgba(plateauBase, 0.9) ?? plateauBase;
+  const plateauMid = toRgba(plateauBase, 0.75) ?? plateauBase;
+  const plateauDeep = toRgba(plateauBase, 0.65) ?? plateauBase;
   const fallbackEmoji = logoEmoji ?? DEFAULT_LOGO_EMOJI;
   const resolvedLogoUrl =
     logoUrl ?? (logoEmoji ? createEmojiLogo(logoEmoji) : DEFAULT_LOGO_URL);
@@ -161,7 +172,9 @@ export function LoadingScreen({
   const ringStroke = clamp(Math.round(ringSize * 0.068), 8, 26);
   const ringRadius = (ringSize - ringStroke) / 2;
   const ringCircumference = 2 * Math.PI * ringRadius;
-  const normalizedProgress = isIndeterminate ? 24 : displayProgress;
+  const normalizedProgress = isIndeterminate
+    ? 24
+    : Math.min(100, displayProgress * 1.05);
   const progressLength = ringCircumference * (normalizedProgress / 100);
   const progressDasharray = `${progressLength} ${ringCircumference - progressLength}`;
   const glintDotLength = Math.max(2, ringStroke * 0.55);
@@ -200,7 +213,7 @@ export function LoadingScreen({
       style={{
         background: (() => {
           const base =
-            theme?.loadingBgColor ??
+            loadingBgColor ??
             theme?.bgPanelFrom ??
             theme?.bgHeaderVia ??
             '#0b0f14';
@@ -284,19 +297,21 @@ export function LoadingScreen({
             )}
           </svg>
           <div
-            className="absolute rounded-full bg-slate-950/80 border border-white/10 flex items-center justify-center"
+            className="absolute rounded-full flex items-center justify-center"
             style={{
               width: `${shellSize}px`,
               height: `${shellSize}px`,
-              boxShadow: 'inset 0 0 26px rgba(0,0,0,0.6)',
+              background: `radial-gradient(circle at 30% 30%, ${plateauHighlight} 0%, ${plateauMid} 55%, ${plateauDeep} 100%)`,
+              boxShadow: `0 0 24px ${accentGlowSoft}, inset 0 0 18px ${accentGlowSoft}`,
             }}
           >
             <div
-              className="rounded-full bg-slate-900/50 border border-white/10 flex items-center justify-center"
+              className="rounded-full flex items-center justify-center"
               style={{
                 width: `${coreSize}px`,
                 height: `${coreSize}px`,
-                boxShadow: '0 18px 32px rgba(0,0,0,0.45)',
+                background: `radial-gradient(circle at 35% 35%, ${plateauHighlight} 0%, ${plateauMid} 60%, ${plateauDeep} 100%)`,
+                boxShadow: `0 14px 26px ${accentGlowSoft}`,
               }}
             >
               <img
@@ -311,7 +326,7 @@ export function LoadingScreen({
                 }}
                 loading="eager"
                 decoding="async"
-                fetchPriority="high"
+                fetchpriority="high"
                 onError={() => setLogoFailed(true)}
               />
             </div>
