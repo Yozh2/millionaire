@@ -1,0 +1,1 @@
+import{r,j as m,L as u}from"./index-I7ut9fel.js";const s=12e3;function p(){const[n,a]=r.useState(0);return r.useEffect(()=>{let e=0;const o=performance.now(),t=c=>{const i=(c-o)%s;a(i/s*100),e=requestAnimationFrame(t)};return e=requestAnimationFrame(t),()=>cancelAnimationFrame(e)},[]),m.jsx(u,{progress:n})}export{p as default};

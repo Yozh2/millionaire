@@ -1,0 +1,392 @@
+{
+  "version": "1.0.0",
+  "engine": {
+    "icons": [
+      "/icons/favicon.svg"
+    ],
+    "images": [],
+    "sounds": []
+  },
+  "games": {
+    "bg3": {
+      "cardAssets": {
+        "gameCard": "/games/bg3/icons/game-card.webp",
+        "favicon": "/games/bg3/favicon/favicon.svg"
+      },
+      "level1": {
+        "icons": [
+          "/games/bg3/icons/coin.webp",
+          "/games/bg3/icons/darkurge.webp",
+          "/games/bg3/icons/defeat.webp",
+          "/games/bg3/icons/game-card.webp",
+          "/games/bg3/icons/hero.webp",
+          "/games/bg3/icons/logo.webp",
+          "/games/bg3/icons/mindflayer.webp",
+          "/games/bg3/icons/retreat.webp",
+          "/games/bg3/icons/victory.webp"
+        ],
+        "sounds": [
+          "/games/bg3/sounds/action-press.ogg",
+          "/games/bg3/sounds/answer-click.ogg",
+          "/games/bg3/sounds/defeat.ogg",
+          "/games/bg3/sounds/lifeline-audience.ogg",
+          "/games/bg3/sounds/lifeline-fifty.ogg",
+          "/games/bg3/sounds/retreat.ogg",
+          "/games/bg3/sounds/select-darkurge.ogg",
+          "/games/bg3/sounds/select-hero.ogg",
+          "/games/bg3/sounds/select-mindflayer.ogg"
+        ],
+        "mainMenuMusic": "/games/bg3/music/menu.ogg",
+        "startImages": [],
+        "campaignStartImages": {
+          "darkurge": [
+            "/games/bg3/images/campaigns/darkurge/start/01.webp"
+          ],
+          "hero": [
+            "/games/bg3/images/campaigns/hero/start/01.webp"
+          ],
+          "mindflayer": [
+            "/games/bg3/images/campaigns/mindflayer/start/01.webp"
+          ]
+        }
+      },
+      "level2": {
+        "defeatMusic": "/games/bg3/music/defeat.ogg",
+        "victoryMusic": "/games/bg3/music/victory.ogg",
+        "retreatMusic": "/games/bg3/music/retreat.ogg",
+        "endImages": {
+          "victory": [],
+          "defeat": [],
+          "retreat": []
+        }
+      },
+      "voices": [
+        "/games/bg3/voices/Astarion.ogg",
+        "/games/bg3/voices/Gale.ogg",
+        "/games/bg3/voices/Karlach.ogg",
+        "/games/bg3/voices/Shadowheart.ogg"
+      ],
+      "campaigns": {
+        "darkurge": {
+          "level1_1": {
+            "music": "/games/bg3/music/darkurge.ogg",
+            "musicAlt": null,
+            "playImages": {
+              "easy": []
+            }
+          },
+          "level2": {
+            "playImages": {
+              "medium": [],
+              "hard": []
+            },
+            "endImages": {
+              "victory": [],
+              "defeat": [],
+              "retreat": []
+            }
+          }
+        },
+        "hero": {
+          "level1_1": {
+            "music": "/games/bg3/music/hero.ogg",
+            "musicAlt": null,
+            "playImages": {
+              "easy": []
+            }
+          },
+          "level2": {
+            "playImages": {
+              "medium": [],
+              "hard": []
+            },
+            "endImages": {
+              "victory": [],
+              "defeat": [],
+              "retreat": []
+            }
+          }
+        },
+        "mindflayer": {
+          "level1_1": {
+            "music": "/games/bg3/music/mindflayer.ogg",
+            "musicAlt": null,
+            "playImages": {
+              "easy": []
+            }
+          },
+          "level2": {
+            "playImages": {
+              "medium": [],
+              "hard": []
+            },
+            "endImages": {
+              "victory": [],
+              "defeat": [],
+              "retreat": []
+            }
+          }
+        }
+      }
+    },
+    "sky-cotl": {
+      "cardAssets": {
+        "gameCard": "/games/sky-cotl/icons/game-card.webp",
+        "favicon": "/games/sky-cotl/favicon/favicon.svg"
+      },
+      "level1": {
+        "icons": [
+          "/games/sky-cotl/icons/coin.webp",
+          "/games/sky-cotl/icons/game-card.webp",
+          "/games/sky-cotl/icons/logo.webp",
+          "/games/sky-cotl/icons/skykid.webp"
+        ],
+        "sounds": [],
+        "mainMenuMusic": null,
+        "startImages": [],
+        "campaignStartImages": {}
+      },
+      "level2": {
+        "defeatMusic": null,
+        "victoryMusic": null,
+        "retreatMusic": null,
+        "endImages": {
+          "victory": [],
+          "defeat": [],
+          "retreat": []
+        }
+      },
+      "voices": [],
+      "campaigns": {}
+    },
+    "transformers": {
+      "cardAssets": {
+        "gameCard": "/games/transformers/icons/game-card.webp",
+        "favicon": "/games/transformers/favicon/favicon.svg"
+      },
+      "level1": {
+        "icons": [
+          "/games/transformers/icons/autocracy.webp",
+          "/games/transformers/icons/coin.webp",
+          "/games/transformers/icons/defeat.webp",
+          "/games/transformers/icons/game-card.webp",
+          "/games/transformers/icons/logo.webp",
+          "/games/transformers/icons/megatron.webp",
+          "/games/transformers/icons/retreat.webp",
+          "/games/transformers/icons/skybound.webp",
+          "/games/transformers/icons/victory.webp"
+        ],
+        "sounds": [
+          "/games/transformers/sounds/action-press.ogg",
+          "/games/transformers/sounds/answer-click.ogg",
+          "/games/transformers/sounds/correct.ogg",
+          "/games/transformers/sounds/defeat.ogg",
+          "/games/transformers/sounds/lifeline-audience.ogg",
+          "/games/transformers/sounds/lifeline-double.ogg",
+          "/games/transformers/sounds/lifeline-fifty.ogg",
+          "/games/transformers/sounds/lifeline-phone.ogg",
+          "/games/transformers/sounds/retreat.ogg",
+          "/games/transformers/sounds/select-autocracy.ogg",
+          "/games/transformers/sounds/select-megatron.ogg",
+          "/games/transformers/sounds/select-megatron2.ogg",
+          "/games/transformers/sounds/select-megatron3.ogg",
+          "/games/transformers/sounds/select-skybound.ogg",
+          "/games/transformers/sounds/victory.ogg"
+        ],
+        "mainMenuMusic": "/games/transformers/music/menu.ogg",
+        "startImages": [
+          "/games/transformers/images/start/01.webp",
+          "/games/transformers/images/start/02.webp",
+          "/games/transformers/images/start/03.webp",
+          "/games/transformers/images/start/04.webp",
+          "/games/transformers/images/start/05.webp",
+          "/games/transformers/images/start/06.webp",
+          "/games/transformers/images/start/07.webp",
+          "/games/transformers/images/start/08.webp",
+          "/games/transformers/images/start/09.webp",
+          "/games/transformers/images/start/10.webp"
+        ],
+        "campaignStartImages": {
+          "autocracy": [
+            "/games/transformers/images/campaigns/autocracy/start/01.webp"
+          ],
+          "megatron": [
+            "/games/transformers/images/campaigns/megatron/start/01.webp"
+          ],
+          "skybound": [
+            "/games/transformers/images/campaigns/skybound/start/01.webp"
+          ]
+        }
+      },
+      "level2": {
+        "defeatMusic": "/games/transformers/music/defeat.ogg",
+        "victoryMusic": "/games/transformers/music/victory.ogg",
+        "retreatMusic": "/games/transformers/music/retreat.ogg",
+        "endImages": {
+          "victory": [],
+          "defeat": [],
+          "retreat": []
+        }
+      },
+      "voices": [
+        "/games/transformers/voices/Bumblebee.ogg",
+        "/games/transformers/voices/Ironhide.ogg",
+        "/games/transformers/voices/Megatron.ogg",
+        "/games/transformers/voices/Optimus.ogg",
+        "/games/transformers/voices/Soundwave.ogg"
+      ],
+      "campaigns": {
+        "autocracy": {
+          "level1_1": {
+            "music": "/games/transformers/music/autocracy.ogg",
+            "musicAlt": null,
+            "playImages": {
+              "easy": [
+                "/games/transformers/images/campaigns/autocracy/play/easy/01.webp",
+                "/games/transformers/images/campaigns/autocracy/play/easy/02.webp",
+                "/games/transformers/images/campaigns/autocracy/play/easy/03.webp",
+                "/games/transformers/images/campaigns/autocracy/play/easy/04.webp",
+                "/games/transformers/images/campaigns/autocracy/play/easy/05.webp",
+                "/games/transformers/images/campaigns/autocracy/play/easy/06.webp",
+                "/games/transformers/images/campaigns/autocracy/play/easy/07.webp",
+                "/games/transformers/images/campaigns/autocracy/play/easy/08.webp",
+                "/games/transformers/images/campaigns/autocracy/play/easy/09.webp",
+                "/games/transformers/images/campaigns/autocracy/play/easy/10.webp",
+                "/games/transformers/images/campaigns/autocracy/play/easy/11.webp",
+                "/games/transformers/images/campaigns/autocracy/play/easy/12.webp",
+                "/games/transformers/images/campaigns/autocracy/play/easy/13.webp"
+              ]
+            }
+          },
+          "level2": {
+            "playImages": {
+              "medium": [
+                "/games/transformers/images/campaigns/autocracy/play/medium/01.webp",
+                "/games/transformers/images/campaigns/autocracy/play/medium/02.webp",
+                "/games/transformers/images/campaigns/autocracy/play/medium/03.webp",
+                "/games/transformers/images/campaigns/autocracy/play/medium/04.webp",
+                "/games/transformers/images/campaigns/autocracy/play/medium/05.webp",
+                "/games/transformers/images/campaigns/autocracy/play/medium/06.webp",
+                "/games/transformers/images/campaigns/autocracy/play/medium/07.webp",
+                "/games/transformers/images/campaigns/autocracy/play/medium/08.webp",
+                "/games/transformers/images/campaigns/autocracy/play/medium/09.webp",
+                "/games/transformers/images/campaigns/autocracy/play/medium/10.webp",
+                "/games/transformers/images/campaigns/autocracy/play/medium/11.webp",
+                "/games/transformers/images/campaigns/autocracy/play/medium/12.webp"
+              ],
+              "hard": [
+                "/games/transformers/images/campaigns/autocracy/play/hard/01.webp",
+                "/games/transformers/images/campaigns/autocracy/play/hard/02.webp",
+                "/games/transformers/images/campaigns/autocracy/play/hard/03.webp",
+                "/games/transformers/images/campaigns/autocracy/play/hard/04.webp",
+                "/games/transformers/images/campaigns/autocracy/play/hard/05.webp",
+                "/games/transformers/images/campaigns/autocracy/play/hard/06.webp",
+                "/games/transformers/images/campaigns/autocracy/play/hard/07.webp",
+                "/games/transformers/images/campaigns/autocracy/play/hard/08.webp",
+                "/games/transformers/images/campaigns/autocracy/play/hard/09.webp",
+                "/games/transformers/images/campaigns/autocracy/play/hard/10.webp",
+                "/games/transformers/images/campaigns/autocracy/play/hard/11.webp"
+              ]
+            },
+            "endImages": {
+              "victory": [],
+              "defeat": [],
+              "retreat": []
+            }
+          }
+        },
+        "megatron": {
+          "level1_1": {
+            "music": "/games/transformers/music/megatron.ogg",
+            "musicAlt": null,
+            "playImages": {
+              "easy": [
+                "/games/transformers/images/campaigns/megatron/play/easy/01.webp",
+                "/games/transformers/images/campaigns/megatron/play/easy/02.webp",
+                "/games/transformers/images/campaigns/megatron/play/easy/03.webp",
+                "/games/transformers/images/campaigns/megatron/play/easy/04.webp"
+              ]
+            }
+          },
+          "level2": {
+            "playImages": {
+              "medium": [
+                "/games/transformers/images/campaigns/megatron/play/medium/01.webp",
+                "/games/transformers/images/campaigns/megatron/play/medium/02.webp",
+                "/games/transformers/images/campaigns/megatron/play/medium/03.webp",
+                "/games/transformers/images/campaigns/megatron/play/medium/04.webp"
+              ],
+              "hard": [
+                "/games/transformers/images/campaigns/megatron/play/hard/01.webp",
+                "/games/transformers/images/campaigns/megatron/play/hard/02.webp",
+                "/games/transformers/images/campaigns/megatron/play/hard/03.webp",
+                "/games/transformers/images/campaigns/megatron/play/hard/04.webp",
+                "/games/transformers/images/campaigns/megatron/play/hard/05.webp",
+                "/games/transformers/images/campaigns/megatron/play/hard/06.webp",
+                "/games/transformers/images/campaigns/megatron/play/hard/07.webp"
+              ]
+            },
+            "endImages": {
+              "victory": [],
+              "defeat": [],
+              "retreat": []
+            }
+          }
+        },
+        "skybound": {
+          "level1_1": {
+            "music": "/games/transformers/music/skybound.ogg",
+            "musicAlt": null,
+            "playImages": {
+              "easy": [
+                "/games/transformers/images/campaigns/skybound/play/easy/01.webp",
+                "/games/transformers/images/campaigns/skybound/play/easy/02.webp",
+                "/games/transformers/images/campaigns/skybound/play/easy/03.webp",
+                "/games/transformers/images/campaigns/skybound/play/easy/04.webp",
+                "/games/transformers/images/campaigns/skybound/play/easy/05.webp",
+                "/games/transformers/images/campaigns/skybound/play/easy/06.webp",
+                "/games/transformers/images/campaigns/skybound/play/easy/07.webp",
+                "/games/transformers/images/campaigns/skybound/play/easy/08.webp",
+                "/games/transformers/images/campaigns/skybound/play/easy/09.webp",
+                "/games/transformers/images/campaigns/skybound/play/easy/10.webp"
+              ]
+            }
+          },
+          "level2": {
+            "playImages": {
+              "medium": [
+                "/games/transformers/images/campaigns/skybound/play/medium/01.webp",
+                "/games/transformers/images/campaigns/skybound/play/medium/02.webp",
+                "/games/transformers/images/campaigns/skybound/play/medium/03.webp",
+                "/games/transformers/images/campaigns/skybound/play/medium/04.webp",
+                "/games/transformers/images/campaigns/skybound/play/medium/05.webp",
+                "/games/transformers/images/campaigns/skybound/play/medium/06.webp",
+                "/games/transformers/images/campaigns/skybound/play/medium/07.webp",
+                "/games/transformers/images/campaigns/skybound/play/medium/08.webp",
+                "/games/transformers/images/campaigns/skybound/play/medium/09.webp",
+                "/games/transformers/images/campaigns/skybound/play/medium/10.webp",
+                "/games/transformers/images/campaigns/skybound/play/medium/11.webp",
+                "/games/transformers/images/campaigns/skybound/play/medium/12.webp"
+              ],
+              "hard": [
+                "/games/transformers/images/campaigns/skybound/play/hard/01.webp",
+                "/games/transformers/images/campaigns/skybound/play/hard/02.webp",
+                "/games/transformers/images/campaigns/skybound/play/hard/03.webp",
+                "/games/transformers/images/campaigns/skybound/play/hard/04.webp",
+                "/games/transformers/images/campaigns/skybound/play/hard/05.webp",
+                "/games/transformers/images/campaigns/skybound/play/hard/06.webp",
+                "/games/transformers/images/campaigns/skybound/play/hard/07.webp",
+                "/games/transformers/images/campaigns/skybound/play/hard/08.webp"
+              ]
+            },
+            "endImages": {
+              "victory": [],
+              "defeat": [],
+              "retreat": []
+            }
+          }
+        }
+      }
+    }
+  }
+}
