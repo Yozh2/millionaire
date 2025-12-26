@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
-import App from './App';
+import { LoadingScreen } from '@app/components/LoadingScreen';
 import { ErrorBoundary } from '@app/components/ErrorBoundary';
 import './engine/ui/styles/engine.css';
 import './index.css';
@@ -46,12 +46,23 @@ if (redirectPath) {
   }
 }
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
-    <ErrorBoundary>
-      <BrowserRouter basename="/millionaire">
-        <App />
-      </BrowserRouter>
-    </ErrorBoundary>
-  </React.StrictMode>
-);
+const root = ReactDOM.createRoot(document.getElementById('root')!);
+
+root.render(<LoadingScreen />);
+
+import('./App')
+  .then(({ default: App }) => {
+    root.render(
+      <React.StrictMode>
+        <ErrorBoundary>
+          <BrowserRouter basename="/millionaire">
+            <App />
+          </BrowserRouter>
+        </ErrorBoundary>
+      </React.StrictMode>
+    );
+  })
+  .catch((error) => {
+    // eslint-disable-next-line no-console
+    console.error('Failed to load application bundle', error);
+  });

@@ -58,7 +58,7 @@ export {
   LoadingScreen,
   LoadingIndicator,
   type LoadingScreenProps,
-} from './ui/screens/LoadingScreen';
+} from '@app/components/LoadingScreen';
 
 // =========================
 // UI primitives / effects

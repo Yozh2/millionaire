@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState, type ComponentType } from 'react';
 import { Navigate } from 'react-router-dom';
 import { LoadingScreen } from '@app/components/LoadingScreen';
 import { useGameIcon, useImmediateFavicon } from '@engine/ui/hooks/useFavicon';
@@ -9,11 +9,24 @@ interface RegisteredGamePageProps {
   gameId: string;
 }
 
-const MillionaireGame = lazy(() => import('@engine/ui/MillionaireGame'));
+interface EngineLoadingState {
+  isLoading: boolean;
+  progress?: number;
+}
+
+interface MillionaireGameProps {
+  config: GameConfig;
+  onLoadingStateChange?: (state: EngineLoadingState) => void;
+}
 
 export default function RegisteredGamePage({ gameId }: RegisteredGamePageProps) {
   const [config, setConfig] = useState<GameConfig | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [GameComponent, setGameComponent] =
+    useState<ComponentType<MillionaireGameProps> | null>(null);
+  const [engineLoading, setEngineLoading] = useState<EngineLoadingState | null>(
+    null
+  );
 
   const entry = useMemo(() => getGameById(gameId), [gameId]);
   const { iconUrl: gameIconUrl, emoji: gameEmoji } = useGameIcon(
@@ -28,6 +41,7 @@ export default function RegisteredGamePage({ gameId }: RegisteredGamePageProps) 
   useEffect(() => {
     setConfig(null);
     setError(null);
+    setEngineLoading(null);
 
     if (!entry) return;
 
@@ -45,6 +59,22 @@ export default function RegisteredGamePage({ gameId }: RegisteredGamePageProps) 
       cancelled = true;
     };
   }, [entry]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    import('@engine/ui/MillionaireGame')
+      .then((mod) => {
+        if (!cancelled) setGameComponent(() => mod.MillionaireGame);
+      })
+      .catch((err) => {
+        if (!cancelled) setError(err instanceof Error ? err.message : String(err));
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   if (!entry) {
     return <Navigate to="/" replace />;
@@ -64,29 +94,34 @@ export default function RegisteredGamePage({ gameId }: RegisteredGamePageProps) 
     );
   }
 
-  if (!config) {
-    return (
-      <LoadingScreen
-        loadingBgColor={entry?.loadingBgColor}
-        theme={entry?.loadingTheme}
-        logoUrl={loadingLogoUrl}
-        logoEmoji={loadingLogoEmoji}
-      />
-    );
-  }
+  const handleLoadingStateChange = useCallback((state: EngineLoadingState) => {
+    setEngineLoading(state);
+  }, []);
+
+  const isBooting = !config || !GameComponent;
+  const isEngineLoading = engineLoading?.isLoading ?? !isBooting;
+  const shouldShowLoading = isBooting || isEngineLoading;
+  const loadingProgress = isBooting ? undefined : engineLoading?.progress;
+  const loadingBgColor = config?.loadingBgColor ?? entry?.loadingBgColor;
+  const loadingTheme = config?.campaigns[0]?.theme ?? entry?.loadingTheme;
 
   return (
-    <Suspense
-      fallback={
+    <>
+      {GameComponent && config && (
+        <GameComponent
+          config={config}
+          onLoadingStateChange={handleLoadingStateChange}
+        />
+      )}
+      {shouldShowLoading && (
         <LoadingScreen
-          loadingBgColor={config.loadingBgColor}
-          theme={config.campaigns[0]?.theme}
+          progress={loadingProgress}
+          loadingBgColor={loadingBgColor}
+          theme={loadingTheme}
           logoUrl={loadingLogoUrl}
           logoEmoji={loadingLogoEmoji}
         />
-      }
-    >
-      <MillionaireGame config={config} />
-    </Suspense>
+      )}
+    </>
   );
 }

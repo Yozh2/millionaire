@@ -18,7 +18,7 @@
 import { lazy, Suspense, type ComponentType, type LazyExoticComponent } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { LoadingScreen } from '@app/components/LoadingScreen';
-import { GameSelector } from './app/components/GameSelector';
+import RegisteredGamePage from './pages/RegisteredGamePage';
 import { getGameEntries, getPageEntries } from './app/registry';
 
 const GAME_ENTRIES = getGameEntries();
@@ -26,7 +26,7 @@ const PAGE_ENTRIES = getPageEntries();
 
 const LAZY_PAGES: Record<string, LazyExoticComponent<ComponentType>> =
   Object.fromEntries(PAGE_ENTRIES.map((entry) => [entry.id, lazy(entry.getComponent)]));
-const RegisteredGamePage = lazy(() => import('./pages/RegisteredGamePage'));
+const GameSelector = lazy(() => import('./app/components/GameSelector'));
 
 /**
  * Main application component with routing.

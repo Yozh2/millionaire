@@ -25,7 +25,6 @@ import { assetLoader, logger } from '../services';
 import { Campaign, DEFAULT_FONT_FAMILY, GameConfig, ThemeColors } from '@engine/types';
 import { EndScreen } from './screens/EndScreen';
 import { GameScreen } from './screens/GameScreen';
-import { LoadingScreen } from './screens/LoadingScreen';
 import { ParticleCanvas } from './effects/ParticleCanvas';
 import { StartScreen } from './screens/StartScreen';
 import { PortalHeader } from './layout/header/PortalHeader';
@@ -38,13 +37,23 @@ import { preprocessGameConfig } from '../utils/preprocessGameConfig';
 interface MillionaireGameProps {
   /** Game configuration - defines modes, questions, themes, etc. */
   config: GameConfig;
+  /** Notify parent about asset loading progress. */
+  onLoadingStateChange?: (state: GameLoadingState) => void;
+}
+
+interface GameLoadingState {
+  isLoading: boolean;
+  progress?: number;
 }
 
 /**
  * Main game component that renders the appropriate screen
  * based on current game state.
  */
-export function MillionaireGame({ config: rawConfig }: MillionaireGameProps) {
+export function MillionaireGame({
+  config: rawConfig,
+  onLoadingStateChange,
+}: MillionaireGameProps) {
   const config = useMemo(() => preprocessGameConfig(rawConfig), [rawConfig]);
 
   // Set game-specific favicon with emoji fallback
@@ -99,6 +108,31 @@ export function MillionaireGame({ config: rawConfig }: MillionaireGameProps) {
   const [isWaitingForLevel11, setIsWaitingForLevel11] = useState(false);
   const [isSoundConsentDone, setIsSoundConsentDone] = useState(false);
   const [isSoundConsentClosing, setIsSoundConsentClosing] = useState(false);
+
+  const loadingState = useMemo<GameLoadingState>(() => {
+    const isLevel1Pending =
+      level1Preload.isLoading ||
+      (!level1Preload.isComplete && !level1Preload.error);
+
+    if (isLevel1Pending) {
+      return { isLoading: true, progress: level1Preload.progress };
+    }
+    if (isWaitingForLevel11) {
+      return { isLoading: true, progress: level11Progress };
+    }
+    return { isLoading: false, progress: 100 };
+  }, [
+    isWaitingForLevel11,
+    level1Preload.error,
+    level1Preload.isComplete,
+    level1Preload.isLoading,
+    level1Preload.progress,
+    level11Progress,
+  ]);
+
+  useEffect(() => {
+    onLoadingStateChange?.(loadingState);
+  }, [loadingState, onLoadingStateChange]);
 
   // Intro title lifecycle: show once when header portal first reveals (start),
   // then evaporate on first campaign selection; show again only after NEW_GAME.
@@ -328,27 +362,6 @@ export function MillionaireGame({ config: rawConfig }: MillionaireGameProps) {
           fontFamily: config.fontFamily || DEFAULT_FONT_FAMILY,
         }}
       >
-        {/* Loading Screen for Level 1 */}
-        {level1Preload.isLoading && (
-          <LoadingScreen
-            progress={level1Preload.progress}
-            loadingBgColor={config.loadingBgColor}
-            theme={theme}
-            logoUrl={gameIconUrl ?? undefined}
-            logoEmoji={config.emoji ?? gameEmoji}
-          />
-        )}
-
-        {/* Loading Screen for Level 1.1 (waiting for campaign assets) */}
-        {isWaitingForLevel11 && !level1Preload.isLoading && (
-          <LoadingScreen
-            progress={level11Progress}
-            loadingBgColor={config.loadingBgColor}
-            theme={theme}
-            logoUrl={gameIconUrl ?? undefined}
-            logoEmoji={config.emoji ?? gameEmoji}
-          />
-        )}
         {/* Particle Effects Layer */}
         <ParticleCanvas
           effect={effects.effectState.effect}
