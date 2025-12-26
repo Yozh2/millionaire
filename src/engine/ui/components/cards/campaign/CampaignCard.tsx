@@ -132,17 +132,25 @@ export function CampaignCard({
         </div>
 
         <span
-          className="relative mt-5 w-full max-w-full px-0.5 text-sm font-bold text-center truncate leading-tight"
+          data-campaign-name="true"
+          className="relative mt-5 w-full max-w-full px-0.5 text-sm font-bold text-center leading-tight whitespace-nowrap overflow-hidden"
           style={{
             color: selected ? glowColor : glowSecondary,
+            transform: 'scale(var(--campaign-name-scale, 1))',
+            transformOrigin: 'center top',
           }}
         >
-          {campaign.name} 
+          {campaign.name}
         </span>
         <span
-          className={`relative mt-2 w-full max-w-full px-0.5 text-xs text-center truncate leading-tight ${
+          data-campaign-label="true"
+          className={`relative mt-2 w-full max-w-full px-0.5 text-xs text-center leading-tight whitespace-nowrap overflow-hidden ${
             isLightTheme ? 'text-stone-600' : 'text-stone-400'
           }`}
+          style={{
+            transform: 'scale(var(--campaign-label-scale, 1))',
+            transformOrigin: 'center top',
+          }}
         >
           {campaign.label}
         </span>

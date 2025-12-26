@@ -30,10 +30,13 @@ export function CampaignSelectionPanel({
 
   const firstRowWrapRef = useRef<HTMLDivElement | null>(null);
   const firstRowGroupRef = useRef<HTMLDivElement | null>(null);
+  const cardBlockRef = useRef<HTMLDivElement | null>(null);
   const introTextRef = useRef<HTMLParagraphElement | null>(null);
   const [firstRowScale, setFirstRowScale] = useState(1);
   const [firstRowAvailablePx, setFirstRowAvailablePx] = useState(0);
   const [tightRowHeight, setTightRowHeight] = useState<number | null>(null);
+  const [nameScale, setNameScale] = useState(1);
+  const [labelScale, setLabelScale] = useState(1);
   const isTight = firstRowScale < 0.999;
 
   useLayoutEffect(() => {
@@ -171,6 +174,62 @@ export function CampaignSelectionPanel({
     };
   }, [config.strings.introText]);
 
+  useLayoutEffect(() => {
+    const block = cardBlockRef.current;
+    if (!block) return;
+
+    let rafId: number | null = null;
+    let cancelled = false;
+
+    const computeScale = (selector: string) => {
+      const elements = Array.from(block.querySelectorAll<HTMLElement>(selector));
+      if (elements.length === 0) return 1;
+
+      let nextScale = 1;
+      for (const el of elements) {
+        const available = el.clientWidth;
+        const needed = el.scrollWidth;
+        if (available <= 0 || needed <= 0) continue;
+        if (needed > available) {
+          nextScale = Math.min(nextScale, available / needed);
+        }
+      }
+
+      return clamp(nextScale, 0.68, 1);
+    };
+
+    const fit = () => {
+      if (rafId != null) window.cancelAnimationFrame(rafId);
+      rafId = window.requestAnimationFrame(() => {
+        rafId = null;
+        if (cancelled) return;
+        const nextNameScale = computeScale('[data-campaign-name]');
+        const nextLabelScale = computeScale('[data-campaign-label]');
+        setNameScale((prev) => (Math.abs(prev - nextNameScale) < 0.003 ? prev : nextNameScale));
+        setLabelScale((prev) => (Math.abs(prev - nextLabelScale) < 0.003 ? prev : nextLabelScale));
+      });
+    };
+
+    fit();
+
+    const ro = new ResizeObserver(() => fit());
+    ro.observe(block);
+
+    const fonts = (document as any)?.fonts as FontFaceSet | undefined;
+    if (fonts?.ready) {
+      fonts.ready.then(() => {
+        if (cancelled) return;
+        fit();
+      });
+    }
+
+    return () => {
+      cancelled = true;
+      ro.disconnect();
+      if (rafId != null) window.cancelAnimationFrame(rafId);
+    };
+  }, [campaigns]);
+
   const selectedId = selectedCampaign?.id ?? null;
   const selectedFirstRowIndex = useMemo(
     () => (selectedId ? firstRow.findIndex((c) => c.id === selectedId) : -1),
@@ -204,6 +263,8 @@ export function CampaignSelectionPanel({
   const cardBlockStyle: CSSProperties = {
     paddingTop: `${cardGuardPx}px`,
     paddingBottom: `${cardGuardPx}px`,
+    ['--campaign-name-scale' as string]: nameScale.toFixed(3),
+    ['--campaign-label-scale' as string]: labelScale.toFixed(3),
   };
 
   if (isTight && restRows.length === 0 && tightRowHeight) {
@@ -222,7 +283,7 @@ export function CampaignSelectionPanel({
         </p>
 
         {/* Campaign Selection */}
-        <div className="mb-4 sm:mb-6" style={cardBlockStyle}>
+        <div ref={cardBlockRef} className="mb-4 sm:mb-6" style={cardBlockStyle}>
           <div
             className={`flex flex-col items-center ${
               isTight ? 'gap-3 sm:gap-5' : 'gap-4 sm:gap-6'
