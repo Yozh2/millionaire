@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useMemo, useRef } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef, type CSSProperties } from 'react';
 
 import type { GameConfig, ThemeColors } from '@engine/types';
 
@@ -43,18 +43,52 @@ export function PortalHeaderTitle({
 
   const titleShadow = theme.headerTextShadow ?? defaultTitleShadow;
 
-  const defaultBackdrop = isLightTheme
-    ? 'radial-gradient(ellipse at center, rgba(15,23,42,0.55) 0%, rgba(15,23,42,0.28) 48%, rgba(15,23,42,0) 78%)'
-    : 'radial-gradient(ellipse at center, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.35) 52%, rgba(0,0,0,0) 78%)';
+  const toRgba = (color: string | undefined, alpha: number): string | null => {
+    if (!color) return null;
+    const hexMatch = color.match(/^#([0-9a-f]{3}|[0-9a-f]{6})$/i);
+    if (hexMatch) {
+      const hex =
+        color.length === 4
+          ? `#${color[1]}${color[1]}${color[2]}${color[2]}${color[3]}${color[3]}`
+          : color;
+      const r = Number.parseInt(hex.slice(1, 3), 16);
+      const g = Number.parseInt(hex.slice(3, 5), 16);
+      const b = Number.parseInt(hex.slice(5, 7), 16);
+      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    }
 
-  const backdrop = theme.headerTextBackdrop ?? defaultBackdrop;
+    const rgbMatch = color.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/i);
+    if (rgbMatch) {
+      return `rgba(${rgbMatch[1]}, ${rgbMatch[2]}, ${rgbMatch[3]}, ${alpha})`;
+    }
 
-  const aura = useMemo(() => {
-    const glow = theme.glowColor ?? '#60a5fa';
-    return isLightTheme
-      ? `radial-gradient(ellipse at center, ${glow}2a 0%, rgba(255,255,255,0.18) 45%, rgba(255,255,255,0) 72%)`
-      : `radial-gradient(ellipse at center, ${glow}33 0%, rgba(0,0,0,0.12) 40%, rgba(0,0,0,0) 72%)`;
-  }, [isLightTheme, theme.glowColor]);
+    return null;
+  };
+
+  const highlightBase = theme.glowColor ?? theme.glow ?? '#60a5fa';
+  const titleHighlight = useMemo(() => {
+    const glow = toRgba(highlightBase, isLightTheme ? 0.28 : 0.22) ??
+      'rgba(255,255,255,0.2)';
+    return `radial-gradient(ellipse at center, ${glow} 0%, rgba(0,0,0,0) 72%)`;
+  }, [highlightBase, isLightTheme]);
+
+  const subtitleHighlight = titleHighlight;
+
+  const titleHighlightStyle: CSSProperties = {
+    ['--portal-title-highlight' as string]: titleHighlight,
+    ['--portal-title-highlight-opacity' as string]: isLightTheme ? '0.95' : '0.88',
+    ['--portal-title-highlight-blur' as string]: enableBlur ? '3px' : '2px',
+    ['--portal-title-highlight-width' as string]: '120%',
+    ['--portal-title-highlight-height' as string]: '210%',
+  };
+
+  const subtitleHighlightStyle: CSSProperties = {
+    ['--portal-title-highlight' as string]: subtitleHighlight,
+    ['--portal-title-highlight-opacity' as string]: isLightTheme ? '0.95' : '0.88',
+    ['--portal-title-highlight-blur' as string]: enableBlur ? '3px' : '2px',
+    ['--portal-title-highlight-width' as string]: '80%',
+    ['--portal-title-highlight-height' as string]: '210%',
+  };
 
   useEffect(() => {
     if (!reduceMotion) return;
@@ -144,42 +178,30 @@ export function PortalHeaderTitle({
       >
         <div className="relative max-w-5xl mx-auto text-center flex items-center justify-center min-h-[165px] md:min-h-[175px]">
           <div
-            className="portal-title__aura absolute left-1/2 top-1/2 h-24 w-[min(920px,92vw)] -translate-x-1/2 -translate-y-1/2"
-            style={{
-              background: aura,
-              opacity: isLightTheme ? 0.9 : 0.75,
-              filter: enableBlur ? 'blur(18px)' : 'blur(14px)',
-            }}
-            aria-hidden="true"
-          />
-
-          <div
-            className="portal-title__backplate absolute left-1/2 top-1/2 h-28 w-[min(920px,92vw)] -translate-x-1/2 -translate-y-1/2"
-            style={{
-              ['--portal-title-backdrop' as string]: backdrop,
-              filter: enableBlur ? 'blur(26px)' : 'blur(18px)',
-              opacity: isLightTheme ? 0.78 : 0.9,
-            }}
-            aria-hidden="true"
-          />
-
-          <div
             ref={textWrapRef}
-            className="relative z-10 space-y-1 w-full max-w-[920px] overflow-hidden"
+            className="relative z-10 space-y-1 w-full max-w-[920px] overflow-visible"
           >
             <h1
               ref={titleRef}
-              className={`w-full max-w-full mx-auto text-[clamp(12px,4.8vw,30px)] font-bold tracking-[0.06em] sm:tracking-[0.12em] md:tracking-[0.18em] whitespace-nowrap overflow-hidden text-ellipsis transition-colors duration-500 ${titleTextClass}`}
-              style={{ textShadow: titleShadow }}
+              className={`portal-title__line w-full max-w-full mx-auto text-[clamp(12px,4.8vw,30px)] font-bold tracking-[0.06em] sm:tracking-[0.12em] md:tracking-[0.18em] whitespace-nowrap transition-colors duration-500 ${titleTextClass}`}
+              style={{
+                ...titleHighlightStyle,
+                textShadow: `${titleShadow}, 0 0 16px ${highlightBase}99, 0 0 36px ${highlightBase}66`,
+              }}
             >
-              {config.title}
+              <span className="portal-title__line-text">{config.title}</span>
             </h1>
             <h2
               ref={subtitleRef}
-              className={`w-full max-w-full mx-auto text-[clamp(11px,3.6vw,18px)] tracking-wide whitespace-nowrap overflow-hidden text-ellipsis transition-colors duration-500 ${titleTextClass}`}
-              style={{ lineHeight: '1.5', fontStyle: 'italic', textShadow: titleShadow }}
+              className={`portal-title__line w-full max-w-full mx-auto text-[clamp(11px,3.6vw,18px)] tracking-wide whitespace-nowrap transition-colors duration-500 ${titleTextClass}`}
+              style={{
+                ...subtitleHighlightStyle,
+                lineHeight: '1.5',
+                fontStyle: 'italic',
+                textShadow: `${titleShadow}, 0 0 16px ${highlightBase}99, 0 0 36px ${highlightBase}66`,
+              }}
             >
-              {config.subtitle}
+              <span className="portal-title__line-text">{config.subtitle}</span>
             </h2>
           </div>
         </div>
