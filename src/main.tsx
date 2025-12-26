@@ -2,7 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import App from './App';
-import { ErrorBoundary } from './engine';
+import { ErrorBoundary } from '@app/components/ErrorBoundary';
+import './engine/ui/styles/engine.css';
 import './index.css';
 
 const preventDefault = (e: Event) => e.preventDefault();

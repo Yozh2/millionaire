@@ -5,10 +5,10 @@
  * Shows available games as cards with descriptions.
  */
 
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { LoadingScreen, useAssetPreloader, useFavicon } from '@engine';
-import { GameCard } from '@engine/ui/components/cards/game/GameCard';
+import { GameCard } from './GameCard';
 import { getSelectorEntries, type GameRegistryEntry } from '../registry';
 
 function GameCardTile({
@@ -31,22 +31,28 @@ function GameCardTile({
 }
 
 export function GameSelector() {
-  // Set page favicon (shared icons → default emoji)
-  useFavicon(null);
+  useEffect(() => {
+    const base = import.meta.env.BASE_URL || '/';
+    const prefix = base.endsWith('/') ? base : `${base}/`;
+    const href = `${prefix}icons/favicon.svg`;
+
+    const selectors = [
+      'link[rel="icon"]',
+      'link[rel="shortcut icon"]',
+      'link[rel="apple-touch-icon"]',
+      'link[rel="manifest"]',
+    ];
+    document.querySelectorAll(selectors.join(', ')).forEach((el) => el.remove());
+
+    const link = document.createElement('link');
+    link.rel = 'icon';
+    link.type = 'image/svg+xml';
+    link.sizes = 'any';
+    link.href = href;
+    document.head.appendChild(link);
+  }, []);
 
   const navigate = useNavigate();
-
-  // Preload Level 0 assets (engine + game card icons)
-  const { isLoading, progress } = useAssetPreloader('level0');
-
-  // Show loading screen while preloading
-  if (isLoading) {
-    return (
-      <LoadingScreen
-        progress={progress}
-      />
-    );
-  }
 
   const games = getSelectorEntries();
 

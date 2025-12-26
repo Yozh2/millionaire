@@ -1,6 +1,7 @@
-import { useEffect, useMemo, useState } from 'react';
+import { lazy, Suspense, useEffect, useMemo, useState } from 'react';
 import { Navigate } from 'react-router-dom';
-import { LoadingScreen, MillionaireGame, useGameIcon } from '@engine';
+import { LoadingScreen } from '@app/components/LoadingScreen';
+import { useGameIcon, useImmediateFavicon } from '@engine/ui/hooks/useFavicon';
 import type { GameConfig } from '@engine/types';
 import { getGameById } from '@app/registry';
 
@@ -8,15 +9,21 @@ interface RegisteredGamePageProps {
   gameId: string;
 }
 
+const MillionaireGame = lazy(() => import('@engine/ui/MillionaireGame'));
+
 export default function RegisteredGamePage({ gameId }: RegisteredGamePageProps) {
+  const [config, setConfig] = useState<GameConfig | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
   const entry = useMemo(() => getGameById(gameId), [gameId]);
   const { iconUrl: gameIconUrl, emoji: gameEmoji } = useGameIcon(
     gameId,
-    entry?.emoji
+    entry?.emoji,
+    entry?.faviconUrl
   );
-
-  const [config, setConfig] = useState<GameConfig | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  useImmediateFavicon(entry?.faviconUrl, !config);
+  const loadingLogoUrl = entry?.faviconUrl ?? gameIconUrl ?? undefined;
+  const loadingLogoEmoji = entry?.emoji ?? gameEmoji;
 
   useEffect(() => {
     setConfig(null);
@@ -60,11 +67,26 @@ export default function RegisteredGamePage({ gameId }: RegisteredGamePageProps) 
   if (!config) {
     return (
       <LoadingScreen
-        logoUrl={gameIconUrl ?? undefined}
-        logoEmoji={entry?.emoji ?? gameEmoji}
+        loadingBgColor={entry?.loadingBgColor}
+        theme={entry?.loadingTheme}
+        logoUrl={loadingLogoUrl}
+        logoEmoji={loadingLogoEmoji}
       />
     );
   }
 
-  return <MillionaireGame config={config} />;
+  return (
+    <Suspense
+      fallback={
+        <LoadingScreen
+          loadingBgColor={config.loadingBgColor}
+          theme={config.campaigns[0]?.theme}
+          logoUrl={loadingLogoUrl}
+          logoEmoji={loadingLogoEmoji}
+        />
+      }
+    >
+      <MillionaireGame config={config} />
+    </Suspense>
+  );
 }

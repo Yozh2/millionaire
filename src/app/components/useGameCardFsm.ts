@@ -15,7 +15,6 @@ const HOVER_Y = -14; // px
 const TILT_MAX = 9; // deg
 const GLARE_SHIFT = 28; // px
 
-// Damped spring: a = -k(x-target) - c*v
 const SPRING_K = 190;
 const SPRING_C = 34;
 
@@ -122,17 +121,17 @@ export function useGameCardFsm({
     el.style.setProperty('--game-rx', `${m.tiltX.toFixed(3)}deg`);
     el.style.setProperty('--game-ry', `${m.tiltY.toFixed(3)}deg`);
 
-    const tx = clamp(m.tiltX / TILT_MAX, 0, 1); // up
-    const ty = clamp(-m.tiltY / TILT_MAX, 0, 1); // left
+    const tx = clamp(m.tiltX / TILT_MAX, 0, 1);
+    const ty = clamp(-m.tiltY / TILT_MAX, 0, 1);
     const glare = Math.pow(tx * ty, 0.85);
     el.style.setProperty('--game-glare', `${glare.toFixed(3)}`);
     el.style.setProperty(
       '--game-glareX',
-      `${((m.tiltY / TILT_MAX) * GLARE_SHIFT).toFixed(3)}px`,
+      `${((m.tiltY / TILT_MAX) * GLARE_SHIFT).toFixed(3)}px`
     );
     el.style.setProperty(
       '--game-glareY',
-      `${((-m.tiltX / TILT_MAX) * GLARE_SHIFT).toFixed(3)}px`,
+      `${((-m.tiltX / TILT_MAX) * GLARE_SHIFT).toFixed(3)}px`
     );
   }, []);
 
@@ -226,12 +225,15 @@ export function useGameCardFsm({
     return () => clearTimers();
   }, []);
 
-  useEffect(() => () => {
-    clearTimers();
-    const m = motionRef.current;
-    if (m.rafId != null) window.cancelAnimationFrame(m.rafId);
-    m.rafId = null;
-  }, []);
+  useEffect(
+    () => () => {
+      clearTimers();
+      const m = motionRef.current;
+      if (m.rafId != null) window.cancelAnimationFrame(m.rafId);
+      m.rafId = null;
+    },
+    []
+  );
 
   const eventHandlers = useMemo(() => {
     const onPointerEnter: PointerEventHandler<HTMLButtonElement> = (e) => {

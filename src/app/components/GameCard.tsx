@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { gameFaviconFile, gameIconsFile } from '@public';
 import { useGameCardFsm } from './useGameCardFsm';
 
 const FALLBACK_FAVICONS = ['favicon.png', 'favicon.svg', 'favicon.ico'] as const;
@@ -9,6 +8,19 @@ const FALLBACK_GAME_FAVICONS = [
   'favicon.svg',
   'favicon.ico',
 ] as const;
+
+const withBasePath = (relativePath: string): string => {
+  const base = import.meta.env.BASE_URL || '/';
+  const prefix = base.endsWith('/') ? base : `${base}/`;
+  const clean = relativePath.startsWith('/') ? relativePath.slice(1) : relativePath;
+  return `${prefix}${clean}`;
+};
+
+const gameIconsFile = (gameId: string, filename: string): string =>
+  withBasePath(`games/${gameId}/icons/${filename}`);
+
+const gameFaviconFile = (gameId: string, filename: string): string =>
+  withBasePath(`games/${gameId}/favicon/${filename}`);
 
 export interface GameCardProps {
   gameId: string;
@@ -109,10 +121,7 @@ export function GameCard({
           aria-hidden="true"
           className="game-card-glass absolute inset-0 bg-gradient-to-br from-white/12 via-transparent to-transparent"
         />
-        <div
-          aria-hidden="true"
-          className="game-card-glare absolute"
-        />
+        <div aria-hidden="true" className="game-card-glare absolute" />
         <div
           aria-hidden="true"
           className="game-card-frame absolute inset-2 border border-white/10"
