@@ -1,10 +1,10 @@
 /**
  * Transformers Game Configuration
  *
- * Quiz game based on The Transformers comics:
- * - Megatron: Origin (Мегатрон — Восхождение)
- * - Autocracy (Автократия)
- * - Skybound (Земля)
+ * Based on The Transformers comics:
+ * - Megatron: Origin
+ * - Autocracy
+ * - Skybound
  */
 
 import type { GameConfig } from '@engine/types';
@@ -37,7 +37,7 @@ export const transformersConfig: GameConfig = {
   loadingBgColor: '#24313b',
 
   registry: {
-    registryVisible: true,
+    registryVisible: false,
     order: 30,
     gameTitle: 'TRANSFORMERS',
     available: true,

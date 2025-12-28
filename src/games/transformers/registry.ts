@@ -9,7 +9,7 @@ export const registry: GameRegistryMeta = {
   registryVisible: true,
   order: 30,
   gameTitle: 'TRANSFORMERS',
-  available: true,
+  available: false,
   loadingBgColor: '#24313b',
   loadingTheme: {
     glowColor: megatronTheme.glowColor,
