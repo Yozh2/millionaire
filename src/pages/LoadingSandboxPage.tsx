@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { LoadingScreen } from '@app/components/LoadingScreen';
+import { LoadingScreen } from '@app/screens/loading/LoadingScreen';
 
 const LOOP_DURATION_MS = 12000;
 

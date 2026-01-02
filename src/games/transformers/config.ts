@@ -29,19 +29,10 @@ const campaigns = createCampaignsFromGlobs({
 export const transformersConfig: GameConfig = {
   id: 'transformers',
 
-  emoji: '🤖',
   fontFamily: '"Neuropol X Rg", "Roboto", "Helvetica Neue", sans-serif',
 
   title: strings.headerTitle,
   subtitle: strings.headerSubtitle,
-  loadingBgColor: '#24313b',
-
-  registry: {
-    registryVisible: false,
-    order: 30,
-    gameTitle: 'TRANSFORMERS',
-    available: true,
-  },
 
   campaigns,
 

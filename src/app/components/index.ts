@@ -1,4 +1,5 @@
 /**
  * App-level components barrel export.
  */
-export { GameSelector } from './GameSelector';
+export { ErrorBoundary } from './ErrorBoundary';
+export { GameCard } from './GameCard';

@@ -35,7 +35,9 @@
     "vitest": "^4.0.15"
   },
   "scripts": {
+    "predev": "npm run test",
     "dev": "npm run generate:manifests && vite",
+    "prebuild": "npm run test",
     "build": "npm run generate:manifests && vite build",
     "preview": "vite preview",
     "lint": "eslint .",

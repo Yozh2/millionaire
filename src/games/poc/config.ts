@@ -38,17 +38,8 @@ const campaigns = createCampaignsFromGlobs({
 export const pocConfig: GameConfig = {
   id: 'poc',
 
-  emoji: '⚙️',
-
   title: strings.headerTitle,
   subtitle: strings.headerSubtitle,
-
-  registry: {
-    registryVisible: true,
-    order: 10,
-    gameTitle: 'PROOF OF CONCEPT',
-    available: true,
-  },
 
   campaigns,
 

@@ -26,6 +26,8 @@ export function EndScreen({
   effects,
 }: EndScreenProps) {
   const { gameState: state, wonPrize } = gameState;
+  const wonPrizeValue = Number.parseInt(wonPrize.replace(/\s+/g, ''), 10) || 0;
+  const hasWonPrize = wonPrizeValue > 0;
 
   // Ref for the icon container to get its position for coin effects
   const iconRef = useRef<HTMLDivElement>(null);
@@ -51,7 +53,7 @@ export function EndScreen({
 
   // Trigger celebration effects - continuous coin bursts from trophy icon position
   useEffect(() => {
-    if (state === 'victory' || (state === 'retreat' && Number(wonPrize) > 0)) {
+    if (state === 'victory' || (state === 'retreat' && hasWonPrize)) {
       // Delay to ensure icon is rendered and positioned (0.5 sec for screen load)
       const startDelay = setTimeout(() => {
         // Initial burst from icon position
@@ -77,7 +79,7 @@ export function EndScreen({
       };
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state, wonPrize, getIconOrigin]); // effects intentionally omitted to prevent re-triggering
+  }, [state, hasWonPrize, getIconOrigin]); // effects intentionally omitted to prevent re-triggering
 
   // Trigger lost sparks effect - continuous tiny spark bursts from broken icon
   // Only enabled when config.enableLostSparks is true

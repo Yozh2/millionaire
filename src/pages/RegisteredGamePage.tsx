@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useMemo, useState, type ComponentType } from 'react';
 import { Navigate } from 'react-router-dom';
-import { LoadingScreen } from '@app/components/LoadingScreen';
-import { useGameIcon, useImmediateFavicon } from '@engine/ui/hooks/useFavicon';
+import { LoadingScreen } from '@app/screens/loading/LoadingScreen';
+import { useGameIcon, useImmediateFavicon } from '@app/hooks/useFavicon';
 import type { GameConfig } from '@engine/types';
-import { getGameById } from '@app/registry';
+import { getGameById } from '@app/screens/registry';
 
 interface RegisteredGamePageProps {
   gameId: string;
@@ -32,10 +32,10 @@ export default function RegisteredGamePage({ gameId }: RegisteredGamePageProps) 
   const { iconUrl: gameIconUrl, emoji: gameEmoji } = useGameIcon(
     gameId,
     entry?.emoji,
-    entry?.faviconUrl
+    entry?.favicon
   );
-  useImmediateFavicon(entry?.faviconUrl, !config);
-  const loadingLogoUrl = entry?.faviconUrl ?? gameIconUrl ?? undefined;
+  useImmediateFavicon(entry?.favicon, !config);
+  const loadingLogoUrl = entry?.favicon ?? gameIconUrl ?? undefined;
   const loadingLogoEmoji = entry?.emoji ?? gameEmoji;
 
   useEffect(() => {
@@ -102,8 +102,8 @@ export default function RegisteredGamePage({ gameId }: RegisteredGamePageProps) 
   const isEngineLoading = engineLoading?.isLoading ?? !isBooting;
   const shouldShowLoading = isBooting || isEngineLoading;
   const loadingProgress = isBooting ? undefined : engineLoading?.progress;
-  const loadingBgColor = config?.loadingBgColor ?? entry?.loadingBgColor;
-  const loadingTheme = config?.campaigns[0]?.theme ?? entry?.loadingTheme;
+  const loadingBgColor = entry?.theme?.bgColor;
+  const loadingTheme = entry?.theme;
 
   return (
     <>

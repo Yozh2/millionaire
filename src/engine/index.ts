@@ -15,7 +15,7 @@
  * ```
  */
 
-import './ui/styles/engine.css';
+import './ui/styles/Engine.css';
 
 // =========================
 // Types (public contract)
@@ -58,7 +58,7 @@ export {
   LoadingScreen,
   LoadingIndicator,
   type LoadingScreenProps,
-} from '@app/components/LoadingScreen';
+} from '@app/screens/loading/LoadingScreen';
 
 // =========================
 // UI primitives / effects
@@ -90,11 +90,6 @@ export { ThemeProvider, useTheme, defaultTheme } from './ui/theme';
 export { useGameState, type UseGameStateReturn } from './ui/hooks/useGameState';
 export { useAudio, type UseAudioReturn } from './ui/hooks/useAudio';
 export {
-  useFavicon,
-  useImmediateFavicon,
-  useGameIcon,
-  resolveGameIcon,
-  resolveSharedIcon,
   useEffects,
   useAssetPreloader,
   useBackgroundPreload,

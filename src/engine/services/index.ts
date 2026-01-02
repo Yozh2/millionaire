@@ -2,8 +2,8 @@
  * Engine services for asset management and utilities.
  */
 
-export { assetLoader } from './AssetLoader';
-export type { LoadOptions } from './AssetLoader';
+export { assetLoader } from './assetLoader';
+export type { LoadOptions } from './assetLoader';
 export type {
   AssetManifest,
   CampaignAssets,

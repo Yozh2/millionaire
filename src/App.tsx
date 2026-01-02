@@ -15,18 +15,14 @@
  * @see https://github.com/Yozh2/millionaire
  */
 
-import { lazy, Suspense, type ComponentType, type LazyExoticComponent } from 'react';
+import { lazy, Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { LoadingScreen } from '@app/components/LoadingScreen';
+import { LoadingScreen } from '@app/screens/loading/LoadingScreen';
 import RegisteredGamePage from './pages/RegisteredGamePage';
-import { getGameEntries, getPageEntries } from './app/registry';
+import { getGameEntries } from '@app/screens/registry';
 
 const GAME_ENTRIES = getGameEntries();
-const PAGE_ENTRIES = getPageEntries();
-
-const LAZY_PAGES: Record<string, LazyExoticComponent<ComponentType>> =
-  Object.fromEntries(PAGE_ENTRIES.map((entry) => [entry.id, lazy(entry.getComponent)]));
-const GameSelector = lazy(() => import('./app/components/GameSelector'));
+const GameSelector = lazy(() => import('./app/screens/registry/GameSelectorScreen'));
 
 /**
  * Main application component with routing.
@@ -43,16 +39,6 @@ export default function App() {
             element={<RegisteredGamePage gameId={entry.id} />}
           />
         ))}
-        {PAGE_ENTRIES.map((entry) => {
-          const Component = LAZY_PAGES[entry.id];
-          return (
-            <Route
-              key={entry.id}
-              path={entry.routePath}
-              element={<Component />}
-            />
-          );
-        })}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Suspense>

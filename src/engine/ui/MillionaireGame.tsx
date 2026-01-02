@@ -17,8 +17,6 @@ import {
   useGameState,
   useAudio,
   useEffects,
-  useFavicon,
-  useGameIcon,
   useAssetPreloader,
 } from './hooks';
 import { assetLoader, logger } from '../services';
@@ -55,13 +53,6 @@ export function MillionaireGame({
   onLoadingStateChange,
 }: MillionaireGameProps) {
   const config = useMemo(() => preprocessGameConfig(rawConfig), [rawConfig]);
-
-  // Set game-specific favicon with emoji fallback
-  useFavicon(config.id, config.emoji);
-  const { iconUrl: gameIconUrl, emoji: gameEmoji } = useGameIcon(
-    config.id,
-    config.emoji
-  );
 
   const gameState = useGameState(config);
   const audio = useAudio(config);

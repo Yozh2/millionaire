@@ -16,7 +16,7 @@
 
 ## 2) Ключевые компоненты
 
-- `src/engine/services/AssetLoader.ts`
+- `src/engine/services/assetLoader.ts`
   - Загрузчик на основе манифеста с уровнями прелоада.
   - Кэширует изображения и аудио-буферы, отслеживает загрузенные/упавшие ассеты.
   - Экспортирует `loadLevel`, `preloadInBackground`, `isLevelLoaded` и т.д.

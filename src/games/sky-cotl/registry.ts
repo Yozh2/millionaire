@@ -1,20 +1,29 @@
-import type { GameRegistryMeta } from '@engine/types';
-import { gameFaviconFile } from '@public';
-import { theme as mothTheme } from './campaigns/moth/theme';
-
-export const id = 'sky-cotl';
-export const emoji = '☁️';
-
-export const registry: GameRegistryMeta = {
-  registryVisible: true,
-  order: 40,
-  gameTitle: 'SKY',
-  available: true,
-  loadingBgColor: '#00AAFF',
-  loadingTheme: {
-    glowColor: mothTheme.glowColor,
-    bgPanelFrom: mothTheme.bgPanelFrom,
-    bgHeaderVia: mothTheme.bgHeaderVia,
-  },
-  faviconUrl: gameFaviconFile(id, 'favicon.svg'),
+const getBasePath = (): string => {
+  const base = import.meta.env.BASE_URL || '/';
+  return base.endsWith('/') ? base : `${base}/`;
 };
+
+const withBasePath = (relativePath: string): string => {
+  const clean = relativePath.startsWith('/') ? relativePath.slice(1) : relativePath;
+  return `${getBasePath()}${clean}`;
+};
+
+const gameFaviconFile = (gameId: string, filename: string): string =>
+  withBasePath(`games/${gameId}/favicon/${filename}`);
+
+const theme = {
+  bgColor: '#00AAFF',
+  glowColor: '#fbbf24',
+  bgPanelFrom: 'rgba(255, 255, 255, 0.96)',
+  bgHeaderVia: '#fbbf24',
+};
+
+export const registry = {
+  id: 'sky-cotl',
+  visible: true,
+  available: true,
+  title: 'SKY',
+  emoji: '☁️',
+  favicon: gameFaviconFile('sky-cotl', 'favicon.svg'),
+  theme,
+} as const;

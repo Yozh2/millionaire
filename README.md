@@ -31,7 +31,7 @@ The engine is intentionally split into layers:
 - `src/engine/game/**` — pure domain logic (state machine, reducer, selectors, lifelines, prizes, session). No React/DOM.
 - `src/engine/ui/**` — React UI (screens, panels, components, layout, theme, styles).
 - `src/engine/audio/**` — music + SFX/voice players (with fallbacks and “stop handles”).
-- `src/engine/assets/**` + `src/engine/services/AssetLoader.ts` — manifest‑based asset loading; must be resilient when manifests/assets are missing.
+- `src/engine/assets/**` + `src/engine/services/assetLoader.ts` — manifest‑based asset loading; must be resilient when manifests/assets are missing.
 
 Terminology used across code/docs:
 
@@ -84,7 +84,7 @@ Design goal: if manifests/assets are missing, the engine should still start (wit
 
 ## Styling
 
-Engine styles are bundled by the engine itself (`src/engine/index.ts` imports `src/engine/ui/styles/engine.css`) and scoped under the `.engine` root class to avoid leaking styles into the host app.
+Engine styles are bundled by the engine itself (`src/engine/index.ts` imports `src/engine/ui/styles/Engine.css`) and scoped under the `.engine` root class to avoid leaking styles into the host app.
 
 ## License
 

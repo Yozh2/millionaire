@@ -1,10 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
-import { LoadingScreen } from '@app/components/LoadingScreen';
+import { LoadingScreen } from '@app/screens/loading/LoadingScreen';
 import { ErrorBoundary } from '@app/components/ErrorBoundary';
-import './engine/ui/styles/engine.css';
-import './index.css';
+import '@engine/ui/styles/Engine.css';
+import '@app/styles/index.css';
 
 const preventDefault = (e: Event) => e.preventDefault();
 

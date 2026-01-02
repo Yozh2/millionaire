@@ -1,31 +1,13 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useRef } from 'react';
 import { useGameCardFsm } from './useGameCardFsm';
+import { useGameCardImage } from './useGameCardImage';
 
-const FALLBACK_FAVICONS = ['favicon.png', 'favicon.svg', 'favicon.ico'] as const;
-const FALLBACK_GAME_FAVICONS = [
-  'favicon-96x96.png',
-  'favicon.png',
-  'favicon.svg',
-  'favicon.ico',
-] as const;
-
-const withBasePath = (relativePath: string): string => {
-  const base = import.meta.env.BASE_URL || '/';
-  const prefix = base.endsWith('/') ? base : `${base}/`;
-  const clean = relativePath.startsWith('/') ? relativePath.slice(1) : relativePath;
-  return `${prefix}${clean}`;
-};
-
-const gameIconsFile = (gameId: string, filename: string): string =>
-  withBasePath(`games/${gameId}/icons/${filename}`);
-
-const gameFaviconFile = (gameId: string, filename: string): string =>
-  withBasePath(`games/${gameId}/favicon/${filename}`);
+import '@app/styles/GameCard.css';
 
 export interface GameCardProps {
   gameId: string;
-  gameTitle: string;
-  fallbackEmoji: string;
+  title: string;
+  emoji: string;
   available: boolean;
   onSelect?: () => void;
   ariaLabel?: string;
@@ -34,36 +16,23 @@ export interface GameCardProps {
 
 export function GameCard({
   gameId,
-  gameTitle,
-  fallbackEmoji,
+  title,
+  emoji,
   available,
   onSelect,
   ariaLabel,
   className = '',
 }: GameCardProps) {
-  const emoji = fallbackEmoji || '🎯';
+  const fallbackEmoji = emoji || '🎯';
   const buttonRef = useRef<HTMLButtonElement | null>(null);
   const fsm = useGameCardFsm({ ref: buttonRef, interactive: available });
-
-  const sources = useMemo(
-    () => [
-      gameIconsFile(gameId, 'game-card.webp'),
-      ...FALLBACK_GAME_FAVICONS.map((name) => gameFaviconFile(gameId, name)),
-      ...FALLBACK_FAVICONS.map((name) => gameIconsFile(gameId, name)),
-    ],
-    [gameId]
-  );
-
-  const [srcIndex, setSrcIndex] = useState(0);
-  useEffect(() => setSrcIndex(0), [gameId]);
-
-  const imageSrc = srcIndex < sources.length ? sources[srcIndex] : null;
-  const isGameCardArt = srcIndex === 0 && !!imageSrc;
-  const [isImageReady, setIsImageReady] = useState(false);
-
-  useEffect(() => {
-    setIsImageReady(false);
-  }, [imageSrc]);
+  const {
+    imageSrc,
+    isGameCardArt,
+    isImageReady,
+    onImageLoad,
+    onImageError,
+  } = useGameCardImage(gameId);
 
   return (
     <button
@@ -73,14 +42,7 @@ export function GameCard({
       data-available={available ? 'true' : 'false'}
       data-card-state={fsm.state}
       {...fsm.eventHandlers}
-      className={[
-        'game-card relative bg-transparent',
-        'w-[176px] sm:w-[196px] md:w-[216px]',
-        'flex flex-col items-stretch gap-3',
-        'focus:outline-none focus-visible:ring-2 focus-visible:ring-white/60',
-        available ? 'cursor-pointer' : 'opacity-55 cursor-not-allowed',
-        className,
-      ].join(' ')}
+      className={['game-card', className].filter(Boolean).join(' ')}
       aria-label={ariaLabel}
       disabled={!available}
       onClick={() => {
@@ -88,56 +50,44 @@ export function GameCard({
         onSelect?.();
       }}
     >
-      <div className="game-card-face relative overflow-hidden rounded-xl border-4 w-full aspect-[2/3]">
-        <div aria-hidden="true" className="absolute inset-0">
-          <div className="w-full h-full flex items-center justify-center bg-gradient-to-b from-white/10 via-black/20 to-black/60">
-            <span className="text-6xl leading-none drop-shadow-sm">{emoji}</span>
+      <div className="game-card-face">
+        <div aria-hidden="true" className="game-card__overlay">
+          <div className="game-card__placeholder">
+            <span className="game-card__emoji">{fallbackEmoji}</span>
           </div>
           {imageSrc && (
             <img
               src={imageSrc}
               alt=""
-              className={[
-                'absolute inset-0 w-full h-full transition-opacity duration-300',
-                isGameCardArt ? 'object-cover' : 'object-contain p-10',
-                isImageReady ? 'opacity-100' : 'opacity-0',
-              ].join(' ')}
+              className="game-card__image"
+              data-image-kind={isGameCardArt ? 'art' : 'icon'}
+              data-ready={isImageReady ? 'true' : 'false'}
               loading="lazy"
               draggable={false}
-              onLoad={() => setIsImageReady(true)}
-              onError={() => {
-                setIsImageReady(false);
-                setSrcIndex((i) => i + 1);
-              }}
+              onLoad={onImageLoad}
+              onError={onImageError}
             />
           )}
         </div>
 
         <div
           aria-hidden="true"
-          className="game-card-glass absolute inset-0 bg-gradient-to-b from-white/8 via-transparent to-black/60"
+          className="game-card-glass game-card__glass--edge"
         />
         <div
           aria-hidden="true"
-          className="game-card-glass absolute inset-0 bg-gradient-to-br from-white/12 via-transparent to-transparent"
+          className="game-card-glass game-card__glass--shine"
         />
-        <div aria-hidden="true" className="game-card-glare absolute" />
-        <div
-          aria-hidden="true"
-          className="game-card-frame absolute inset-2 border border-white/10"
-        />
+        <div aria-hidden="true" className="game-card-glare" />
+        <div aria-hidden="true" className="game-card-frame" />
 
         {!available && (
-          <div className="absolute top-4 right-4 bg-black/55 text-white/80 px-3 py-1 rounded-full text-xs">
-            Скоро
-          </div>
+          <div className="game-card__badge">Скоро</div>
         )}
       </div>
 
-      <div className="relative w-full px-1">
-        <span className="game-card-title block text-sm font-extrabold tracking-wide text-white drop-shadow-sm text-center truncate">
-          {gameTitle}
-        </span>
+      <div className="game-card__title-wrap">
+        <span className="game-card-title">{title}</span>
       </div>
     </button>
   );

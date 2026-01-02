@@ -1,0 +1,154 @@
+.game-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.75rem;
+  width: 176px;
+  background: transparent;
+  border: none;
+  padding: 0;
+  color: inherit;
+}
+
+@media (min-width: 640px) {
+  .game-card {
+    width: 196px;
+  }
+}
+
+@media (min-width: 768px) {
+  .game-card {
+    width: 216px;
+  }
+}
+
+.game-card:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.6);
+  border-radius: 0.9rem;
+}
+
+.game-card[data-available='true'] {
+  cursor: pointer;
+}
+
+.game-card[data-available='false'] {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.game-card-face {
+  position: relative;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  border-width: 4px;
+  width: 100%;
+  aspect-ratio: 2 / 3;
+}
+
+.game-card__overlay {
+  position: absolute;
+  inset: 0;
+}
+
+.game-card__placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.1),
+    rgba(0, 0, 0, 0.2),
+    rgba(0, 0, 0, 0.6)
+  );
+}
+
+.game-card__emoji {
+  font-size: 3.75rem;
+  line-height: 1;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+}
+
+.game-card__image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transition: opacity 300ms ease;
+  opacity: 0;
+}
+
+.game-card__image[data-image-kind='art'] {
+  object-fit: cover;
+}
+
+.game-card__image[data-image-kind='icon'] {
+  object-fit: contain;
+  padding: 2.5rem;
+}
+
+.game-card__image[data-ready='true'] {
+  opacity: 1;
+}
+
+.game-card__glass--edge {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.08),
+    transparent,
+    rgba(0, 0, 0, 0.6)
+  );
+}
+
+.game-card__glass--shine {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.12),
+    transparent,
+    transparent
+  );
+}
+
+.game-card-frame {
+  position: absolute;
+  inset: 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.5rem;
+}
+
+.game-card__badge {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: rgba(0, 0, 0, 0.55);
+  color: rgba(255, 255, 255, 0.8);
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+}
+
+.game-card__title-wrap {
+  position: relative;
+  width: 100%;
+  padding: 0 0.25rem;
+}
+
+.game-card-title {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 800;
+  letter-spacing: 0.025em;
+  color: #ffffff;
+  text-align: center;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

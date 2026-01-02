@@ -44,6 +44,98 @@ function hitTest(el: HTMLElement, clientX: number, clientY: number): boolean {
 const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 
+type MotionState = {
+  y: number;
+  v: number;
+  targetY: number;
+  wantedY: number;
+  tiltX: number;
+  tiltY: number;
+  tiltXTarget: number;
+  tiltYTarget: number;
+  lastPointer: { x: number; y: number } | null;
+  lastT: number;
+  rafId: number | null;
+};
+
+const createMotionState = (): MotionState => ({
+  y: 0,
+  v: 0,
+  targetY: 0,
+  wantedY: 0,
+  tiltX: 0,
+  tiltY: 0,
+  tiltXTarget: 0,
+  tiltYTarget: 0,
+  lastPointer: null,
+  lastT: 0,
+  rafId: null,
+});
+
+const updateSpring = (motion: MotionState, dt: number) => {
+  const tauTarget = 0.09;
+  const alphaTarget = 1 - Math.exp(-dt / tauTarget);
+  motion.targetY = lerp(motion.targetY, motion.wantedY, alphaTarget);
+
+  const a = -SPRING_K * (motion.y - motion.targetY) - SPRING_C * motion.v;
+  motion.v += a * dt;
+  motion.y += motion.v * dt;
+};
+
+const updateTiltTargets = (
+  motion: MotionState,
+  el: HTMLButtonElement,
+  enableTilt: boolean
+) => {
+  if (enableTilt && motion.lastPointer) {
+    const rect = el.getBoundingClientRect();
+    const px = motion.lastPointer.x - rect.left;
+    const py = motion.lastPointer.y - rect.top;
+    const nx = (px / rect.width) * 2 - 1;
+    const ny = (py / rect.height) * 2 - 1;
+
+    const sx = Math.sign(nx) * Math.pow(Math.abs(nx), 0.85);
+    const sy = Math.sign(ny) * Math.pow(Math.abs(ny), 0.85);
+
+    motion.tiltXTarget = clamp(-sy * TILT_MAX, -TILT_MAX, TILT_MAX);
+    motion.tiltYTarget = clamp(sx * TILT_MAX, -TILT_MAX, TILT_MAX);
+  } else {
+    motion.tiltXTarget = 0;
+    motion.tiltYTarget = 0;
+  }
+};
+
+const updateTilt = (motion: MotionState, dt: number) => {
+  const tauTilt = 0.08;
+  const alphaTilt = 1 - Math.exp(-dt / tauTilt);
+  motion.tiltX = lerp(motion.tiltX, motion.tiltXTarget, alphaTilt);
+  motion.tiltY = lerp(motion.tiltY, motion.tiltYTarget, alphaTilt);
+};
+
+const isMotionSettled = (motion: MotionState) => {
+  const still = Math.abs(motion.y) < 0.05 && Math.abs(motion.v) < 0.25;
+  const tiltStill =
+    Math.abs(motion.tiltX) < 0.05 && Math.abs(motion.tiltY) < 0.05;
+  return still && tiltStill;
+};
+
+const resetMotion = (motion: MotionState) => {
+  motion.y = 0;
+  motion.v = 0;
+  motion.targetY = 0;
+  motion.wantedY = 0;
+  motion.tiltX = 0;
+  motion.tiltY = 0;
+  motion.tiltXTarget = 0;
+  motion.tiltYTarget = 0;
+};
+
+const shouldStopMotion = (
+  motion: MotionState,
+  isOver: boolean,
+  state: GameCardFsmState
+) => !isOver && state !== 'Press' && isMotionSettled(motion);
+
 export interface UseGameCardFsmParams {
   ref: RefObject<HTMLButtonElement | null>;
   interactive: boolean;
@@ -74,31 +166,7 @@ export function useGameCardFsm({
   const easeTimerRef = useRef<number | null>(null);
   const appearTimerRef = useRef<number | null>(null);
 
-  const motionRef = useRef<{
-    y: number;
-    v: number;
-    targetY: number;
-    wantedY: number;
-    tiltX: number;
-    tiltY: number;
-    tiltXTarget: number;
-    tiltYTarget: number;
-    lastPointer: { x: number; y: number } | null;
-    lastT: number;
-    rafId: number | null;
-  }>({
-    y: 0,
-    v: 0,
-    targetY: 0,
-    wantedY: 0,
-    tiltX: 0,
-    tiltY: 0,
-    tiltXTarget: 0,
-    tiltYTarget: 0,
-    lastPointer: null,
-    lastT: 0,
-    rafId: null,
-  });
+  const motionRef = useRef<MotionState>(createMotionState());
 
   const clearTimers = () => {
     if (easeTimerRef.current) window.clearTimeout(easeTimerRef.current);
@@ -107,13 +175,15 @@ export function useGameCardFsm({
     appearTimerRef.current = null;
   };
 
-  useEffect(() => {
-    stateRef.current = state;
-  }, [state]);
+  const setFsmState = useCallback((next: GameCardFsmState) => {
+    stateRef.current = next;
+    setState(next);
+  }, []);
 
-  useEffect(() => {
-    isOverRef.current = isOver;
-  }, [isOver]);
+  const setIsOverState = useCallback((next: boolean) => {
+    isOverRef.current = next;
+    setIsOver(next);
+  }, []);
 
   const applyVars = useCallback((el: HTMLButtonElement) => {
     const m = motionRef.current;
@@ -148,55 +218,17 @@ export function useGameCardFsm({
       const dt = clamp((t - m.lastT) / 1000, 0, 0.02);
       m.lastT = t;
 
-      const tauTarget = 0.09;
-      const alphaTarget = 1 - Math.exp(-dt / tauTarget);
-      m.targetY = lerp(m.targetY, m.wantedY, alphaTarget);
-
-      const a = -SPRING_K * (m.y - m.targetY) - SPRING_C * m.v;
-      m.v += a * dt;
-      m.y += m.v * dt;
-
-      const enableTilt = isOverRef.current && m.lastPointer != null;
-      if (enableTilt && m.lastPointer) {
-        const rect = el.getBoundingClientRect();
-        const px = m.lastPointer.x - rect.left;
-        const py = m.lastPointer.y - rect.top;
-        const nx = (px / rect.width) * 2 - 1;
-        const ny = (py / rect.height) * 2 - 1;
-
-        const sx = Math.sign(nx) * Math.pow(Math.abs(nx), 0.85);
-        const sy = Math.sign(ny) * Math.pow(Math.abs(ny), 0.85);
-
-        m.tiltXTarget = clamp(-sy * TILT_MAX, -TILT_MAX, TILT_MAX);
-        m.tiltYTarget = clamp(sx * TILT_MAX, -TILT_MAX, TILT_MAX);
-      } else {
-        m.tiltXTarget = 0;
-        m.tiltYTarget = 0;
-      }
-
-      const tauTilt = 0.08;
-      const alphaTilt = 1 - Math.exp(-dt / tauTilt);
-      m.tiltX = lerp(m.tiltX, m.tiltXTarget, alphaTilt);
-      m.tiltY = lerp(m.tiltY, m.tiltYTarget, alphaTilt);
+      updateSpring(m, dt);
+      updateTiltTargets(m, el, isOverRef.current);
+      updateTilt(m, dt);
 
       applyVars(el);
 
-      if (!isOverRef.current && stateRef.current !== 'Press') {
-        const still = Math.abs(m.y) < 0.05 && Math.abs(m.v) < 0.25;
-        const tiltStill = Math.abs(m.tiltX) < 0.05 && Math.abs(m.tiltY) < 0.05;
-        if (still && tiltStill) {
-          m.y = 0;
-          m.v = 0;
-          m.targetY = 0;
-          m.wantedY = 0;
-          m.tiltX = 0;
-          m.tiltY = 0;
-          m.tiltXTarget = 0;
-          m.tiltYTarget = 0;
-          applyVars(el);
-          m.rafId = null;
-          return;
-        }
+      if (shouldStopMotion(m, isOverRef.current, stateRef.current)) {
+        resetMotion(m);
+        applyVars(el);
+        m.rafId = null;
+        return;
       }
 
       m.rafId = window.requestAnimationFrame(tick);
@@ -209,21 +241,19 @@ export function useGameCardFsm({
     if (easeTimerRef.current) window.clearTimeout(easeTimerRef.current);
     easeTimerRef.current = window.setTimeout(() => {
       easeTimerRef.current = null;
-      stateRef.current = next;
-      setState(next);
+      setFsmState(next);
     }, EASE_MS);
-  }, []);
+  }, [setFsmState]);
 
   useEffect(() => {
     clearTimers();
     appearTimerRef.current = window.setTimeout(() => {
       appearTimerRef.current = null;
-      stateRef.current = 'Idle';
-      setState('Idle');
+      setFsmState('Idle');
     }, APPEAR_MS);
 
     return () => clearTimers();
-  }, []);
+  }, [setFsmState]);
 
   useEffect(
     () => () => {
@@ -238,35 +268,29 @@ export function useGameCardFsm({
   const eventHandlers = useMemo(() => {
     const onPointerEnter: PointerEventHandler<HTMLButtonElement> = (e) => {
       if (!interactive) return;
-      isOverRef.current = true;
-      setIsOver(true);
+      setIsOverState(true);
       motionRef.current.lastPointer = { x: e.clientX, y: e.clientY };
       motionRef.current.wantedY = HOVER_Y;
-      stateRef.current = 'Hover';
-      setState('Hover');
+      setFsmState('Hover');
       startLoop();
     };
 
     const onPointerLeave: PointerEventHandler<HTMLButtonElement> = () => {
       if (!interactive) return;
       if (stateRef.current === 'Press') return;
-      isOverRef.current = false;
-      setIsOver(false);
+      setIsOverState(false);
       motionRef.current.wantedY = 0;
-      stateRef.current = 'Idle';
-      setState('Idle');
+      setFsmState('Idle');
       startLoop();
     };
 
     const onPointerDown: PointerEventHandler<HTMLButtonElement> = (e) => {
       if (!interactive) return;
       pointerIdRef.current = e.pointerId;
-      isOverRef.current = true;
-      setIsOver(true);
+      setIsOverState(true);
       motionRef.current.lastPointer = { x: e.clientX, y: e.clientY };
       motionRef.current.wantedY = HOVER_Y;
-      stateRef.current = 'Press';
-      setState('Press');
+      setFsmState('Press');
       startLoop();
       try {
         e.currentTarget.setPointerCapture(e.pointerId);
@@ -281,8 +305,7 @@ export function useGameCardFsm({
       startLoop();
       if (stateRef.current === 'Press') {
         const over = hitTest(e.currentTarget, e.clientX, e.clientY);
-        isOverRef.current = over;
-        setIsOver(over);
+        setIsOverState(over);
       }
     };
 
@@ -298,11 +321,9 @@ export function useGameCardFsm({
       }
 
       const over = hitTest(e.currentTarget, e.clientX, e.clientY);
-      isOverRef.current = over;
-      setIsOver(over);
+      setIsOverState(over);
       motionRef.current.wantedY = over ? HOVER_Y : 0;
-      stateRef.current = 'Ease';
-      setState('Ease');
+      setFsmState('Ease');
       scheduleEaseDone(over ? 'Hover' : 'Idle');
       startLoop();
     };
@@ -311,11 +332,9 @@ export function useGameCardFsm({
       if (!interactive) return;
       if (pointerIdRef.current !== e.pointerId) return;
       pointerIdRef.current = null;
-      isOverRef.current = false;
-      setIsOver(false);
+      setIsOverState(false);
       motionRef.current.wantedY = 0;
-      stateRef.current = 'Ease';
-      setState('Ease');
+      setFsmState('Ease');
       scheduleEaseDone('Idle');
       startLoop();
     };
@@ -324,11 +343,9 @@ export function useGameCardFsm({
       if (!interactive) return;
       if (pointerIdRef.current == null) return;
       pointerIdRef.current = null;
-      isOverRef.current = false;
-      setIsOver(false);
+      setIsOverState(false);
       motionRef.current.wantedY = 0;
-      stateRef.current = 'Ease';
-      setState('Ease');
+      setFsmState('Ease');
       scheduleEaseDone('Idle');
       startLoop();
     };
@@ -342,7 +359,13 @@ export function useGameCardFsm({
       onPointerCancel,
       onLostPointerCapture,
     };
-  }, [interactive, scheduleEaseDone, startLoop]);
+  }, [
+    interactive,
+    scheduleEaseDone,
+    setFsmState,
+    setIsOverState,
+    startLoop,
+  ]);
 
   return { state, eventHandlers };
 }

@@ -24,19 +24,10 @@ const campaigns = createCampaignsFromGlobs({
 export const bg3Config: GameConfig = {
   id: 'bg3',
 
-  emoji: '⚔️',
   fontFamily: 'Georgia, "Times New Roman", serif',
 
   title: strings.headerTitle,
   subtitle: strings.headerSubtitle,
-  loadingBgColor: '#3b2416',
-
-  registry: {
-    registryVisible: true,
-    order: 20,
-    gameTitle: "BALDUR'S GATE III",
-    available: true,
-  },
 
   campaigns,
 

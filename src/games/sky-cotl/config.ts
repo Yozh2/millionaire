@@ -34,18 +34,8 @@ const campaigns = createCampaignsFromGlobs({
 export const skyCotlConfig: GameConfig = {
   id: 'sky-cotl',
 
-  emoji: '☁️',
-
   title: strings.headerTitle,
   subtitle: strings.headerSubtitle,
-  loadingBgColor: '#00AAFF',
-
-  registry: {
-    registryVisible: true,
-    order: 40,
-    gameTitle: 'SKY',
-    available: true,
-  },
 
   campaigns,
 
