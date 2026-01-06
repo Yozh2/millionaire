@@ -10,6 +10,7 @@ export const registry = {
   title: 'SKY',
   emoji: '☁️',
   theme: {
+    isLight: true,
     bgFrom: '#ffffff',
     bgVia: '#00aaff',
     bgTo: '#ffffff',

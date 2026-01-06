@@ -153,10 +153,6 @@ export const GAME_CONFIG_MODULES = import.meta.glob('/src/games/*/config.ts') as
   () => Promise<{ default: unknown }>
 >;
 
-export const GAME_REGISTRY_MODULES = import.meta.glob('/src/games/*/registry.ts', {
-  eager: true,
-}) as Record<string, { registry: unknown }>;
-
 export const extractGameIdFromPath = (path: string): string | null => {
   const match = path.match(/\/games\/([^/]+)\/(config|registry)\.ts$/);
   return match?.[1] ?? null;

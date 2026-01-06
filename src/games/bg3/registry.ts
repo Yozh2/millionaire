@@ -10,6 +10,7 @@ export const registry = {
   title: "BALDUR'S GATE III",
   emoji: '⚔️',
   theme: {
+    isLight: false,
     bgFrom: '#000000',
     bgVia: '#3b2416',
     bgTo: '#000000',

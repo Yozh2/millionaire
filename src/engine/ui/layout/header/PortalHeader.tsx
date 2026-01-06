@@ -684,22 +684,37 @@ function usePortalCanvas({
     [maxRasterPixels]
   );
 
-  const ensureImage = useCallback((src: string) => {
-    if (!src) return;
-    if (imageCacheRef.current.has(src)) return;
-    if (pendingLoadsRef.current.has(src)) return;
+  const preloadImage = useCallback(
+    async (src: string) => {
+      if (!src) return;
+      if (imageCacheRef.current.has(src)) return;
+      const pending = pendingLoadsRef.current.get(src);
+      if (pending) {
+        await pending;
+        return;
+      }
 
-    const p = rasterizeImage(src)
-      .then((entry) => {
-        imageCacheRef.current.set(src, entry);
-      })
-      .catch(() => {})
-      .finally(() => {
-        pendingLoadsRef.current.delete(src);
-      });
+      const p = rasterizeImage(src)
+        .then((entry) => {
+          imageCacheRef.current.set(src, entry);
+        })
+        .catch(() => {})
+        .finally(() => {
+          pendingLoadsRef.current.delete(src);
+        });
 
-    pendingLoadsRef.current.set(src, p);
-  }, [rasterizeImage]);
+      pendingLoadsRef.current.set(src, p);
+      await p;
+    },
+    [rasterizeImage]
+  );
+
+  const ensureImage = useCallback(
+    (src: string) => {
+      void preloadImage(src);
+    },
+    [preloadImage]
+  );
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -885,71 +900,83 @@ function usePortalCanvas({
     (imageSrc: string) => {
       if (!imageSrc) return;
       const token = ++tokenRef.current;
-      const st = stateRef.current;
 
-      ensureImage(imageSrc);
-      ensureLoop();
+      const openWithImage = () => {
+        if (tokenRef.current !== token) return;
 
-      const isEmpty = !st.currentSrc || st.reveal <= 0.001 || st.alpha <= 0.001;
-      const easeOpen = (t: number) => easeOutPow(t, 3.0);
-      const easeClose = (t: number) => easeInPow(t, 3.0);
+        const st = stateRef.current;
+        const isEmpty = !st.currentSrc || st.reveal <= 0.001 || st.alpha <= 0.001;
+        const easeOpen = (t: number) => easeOutPow(t, 3.0);
+        const easeClose = (t: number) => easeInPow(t, 3.0);
 
-      const tween = (
-        key: 'reveal' | 'alpha',
-        from: number,
-        to: number,
-        ms: number,
-        easing: (t: number) => number,
-        onDone?: () => void
-      ) => {
-        const start = nowMs();
-        const dur = Math.max(1, ms);
-        const step = () => {
-          if (tokenRef.current !== token) return;
-          const t = clamp01((nowMs() - start) / dur);
-          const e = easing(t);
-          stateRef.current[key] = from + (to - from) * e;
-          if (t < 1) requestAnimationFrame(step);
-          else onDone?.();
+        const tween = (
+          key: 'reveal' | 'alpha',
+          from: number,
+          to: number,
+          ms: number,
+          easing: (t: number) => number,
+          onDone?: () => void
+        ) => {
+          const start = nowMs();
+          const dur = Math.max(1, ms);
+          const step = () => {
+            if (tokenRef.current !== token) return;
+            const t = clamp01((nowMs() - start) / dur);
+            const e = easing(t);
+            stateRef.current[key] = from + (to - from) * e;
+            if (t < 1) requestAnimationFrame(step);
+            else onDone?.();
+          };
+          requestAnimationFrame(step);
         };
-        requestAnimationFrame(step);
+
+        ensureLoop();
+
+        if (isEmpty) {
+          st.phaseShift = Math.random() * 1000;
+          startedAtRef.current = nowMs();
+          frozenTimeRef.current = 0;
+          st.currentSrc = imageSrc;
+          st.nextSrc = '';
+          st.motion = 'open';
+          st.reveal = 0;
+          st.alpha = 0;
+          pruneImageCache([st.currentSrc]);
+          tween('reveal', 0, 1, openMs, easeOpen);
+          tween('alpha', 0, 1, Math.round(openMs * 0.7), easeOpen);
+          return;
+        }
+
+        st.nextSrc = imageSrc;
+        pruneImageCache([st.currentSrc, st.nextSrc]);
+        st.motion = 'close';
+        st.alpha = 1;
+
+        tween('reveal', st.reveal, 0, closeMs, easeClose, () => {
+          if (tokenRef.current !== token) return;
+          if (st.nextSrc) {
+            st.currentSrc = st.nextSrc;
+            st.nextSrc = '';
+          }
+          st.phaseShift = Math.random() * 1000;
+          startedAtRef.current = nowMs();
+          frozenTimeRef.current = 0;
+          st.motion = 'open';
+          tween('reveal', 0, 1, openMs, easeOpen);
+        });
       };
 
-      if (isEmpty) {
-        st.phaseShift = Math.random() * 1000;
-        startedAtRef.current = nowMs();
-        frozenTimeRef.current = 0;
-        st.currentSrc = imageSrc;
-        st.nextSrc = '';
-        st.motion = 'open';
-        st.reveal = 0;
-        st.alpha = 0;
-        pruneImageCache([st.currentSrc]);
-        tween('reveal', 0, 1, openMs, easeOpen);
-        tween('alpha', 0, 1, Math.round(openMs * 0.7), easeOpen);
+      if (!imageCacheRef.current.has(imageSrc)) {
+        void preloadImage(imageSrc).then(() => {
+          if (!imageCacheRef.current.has(imageSrc)) return;
+          openWithImage();
+        });
         return;
       }
 
-      st.nextSrc = imageSrc;
-      ensureImage(st.nextSrc);
-      pruneImageCache([st.currentSrc, st.nextSrc]);
-      st.motion = 'close';
-      st.alpha = 1;
-
-      tween('reveal', st.reveal, 0, closeMs, easeClose, () => {
-        if (tokenRef.current !== token) return;
-        if (st.nextSrc) {
-          st.currentSrc = st.nextSrc;
-          st.nextSrc = '';
-        }
-        st.phaseShift = Math.random() * 1000;
-        startedAtRef.current = nowMs();
-        frozenTimeRef.current = 0;
-        st.motion = 'open';
-        tween('reveal', 0, 1, openMs, easeOpen);
-      });
+      openWithImage();
     },
-    [closeMs, ensureImage, ensureLoop, openMs, pruneImageCache]
+    [closeMs, ensureLoop, openMs, preloadImage, pruneImageCache]
   );
 
   const hide = useCallback(() => {
@@ -1136,6 +1163,35 @@ export function PortalHeader({
     return `${basePath}/${subfolder}/${filename}`;
   }, [basePath, currentIndex, orderedImages, subfolder]);
 
+  const [readyPath, setReadyPath] = useState('');
+
+  useEffect(() => {
+    if (!enabled || isLoading || !fullPath) {
+      setReadyPath('');
+      return;
+    }
+
+    let cancelled = false;
+    const img = new Image();
+    img.src = fullPath;
+
+    const markReady = () => {
+      if (cancelled) return;
+      setReadyPath(fullPath);
+    };
+
+    if ('decode' in img) {
+      img.decode().then(markReady).catch(markReady);
+    } else {
+      img.onload = markReady;
+      img.onerror = markReady;
+    }
+
+    return () => {
+      cancelled = true;
+    };
+  }, [enabled, fullPath, isLoading]);
+
   useEffect(() => {
     if (!enabled || isLoading || orderedImages.length === 0) return;
     setCurrentIndex(
@@ -1159,12 +1215,12 @@ export function PortalHeader({
       if (slideshowScreen === 'start' && !campaignId) hide();
       return;
     }
-    if (!fullPath) {
+    if (!readyPath) {
       hide();
       return;
     }
-    show(fullPath);
-  }, [activated, campaignId, enabled, fullPath, hide, isLoading, show, slideshowScreen]);
+    show(readyPath);
+  }, [activated, campaignId, enabled, hide, isLoading, readyPath, show, slideshowScreen]);
 
   useEffect(() => {
     if (!activated) return;

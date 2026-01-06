@@ -279,6 +279,9 @@ class AssetLoader {
           assets.push(gameFor2.level2.retreatMusic);
         }
 
+        // Gameplay/end icons
+        assets.push(...(gameFor2.level2.icons ?? []));
+
         // Game-level end images (fallback)
         assets.push(...gameFor2.level2.endImages.victory);
         assets.push(...gameFor2.level2.endImages.defeat);

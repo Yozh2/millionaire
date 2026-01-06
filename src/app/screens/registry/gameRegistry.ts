@@ -5,10 +5,10 @@
 import type { GameRegistry } from '@app/types';
 import {
   GAME_CONFIG_MODULES,
-  GAME_REGISTRY_MODULES,
   extractGameIdFromPath,
   resolveGameFavicon,
 } from '@app/utils/paths';
+import { GAME_REGISTRY_INDEX } from './registryIndex';
 
 export interface GameRegistryEntry {
   kind: 'game';
@@ -34,11 +34,8 @@ const buildGameEntries = (): GameRegistryEntry[] => {
     configLoaders.set(id, async () => (await loader()).default);
   }
 
-  for (const [path, mod] of Object.entries(GAME_REGISTRY_MODULES)) {
-    const meta = mod.registry;
-    if (!meta) continue;
-
-    const id = meta.id ?? extractGameIdFromPath(path);
+  for (const meta of GAME_REGISTRY_INDEX) {
+    const id = meta.id;
     if (!id) continue;
 
     const configLoader = configLoaders.get(id);
@@ -49,18 +46,15 @@ const buildGameEntries = (): GameRegistryEntry[] => {
       continue;
     }
 
-    const legacyRoutePath = (meta as { routePath?: string }).routePath;
-    const legacyDevOnly = (meta as { devOnly?: boolean }).devOnly;
-
     entries.push({
       kind: 'game',
       id,
-      routePath: meta.route ?? legacyRoutePath ?? `/${id}`,
+      routePath: meta.route ?? `/${id}`,
       visible: meta.visible,
       title: meta.title,
       emoji: meta.emoji ?? '🎯',
       available: meta.available ?? true,
-      devOnly: meta.devonly ?? legacyDevOnly,
+      devOnly: meta.devonly,
       theme: meta.theme,
       favicon: resolveGameFavicon(id, meta.favicon),
       getConfig: configLoader,

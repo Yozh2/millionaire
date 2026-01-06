@@ -62,6 +62,21 @@ type HeadTagSpec =
   | { tagName: 'meta'; attrs: Record<string, string> };
 
 let currentHeadSignature: string | null = null;
+const gameIconCache = new Map<string, string>();
+
+const buildGameIconCacheKey = (gameId: string, gameEmoji?: string) =>
+  `${gameId}|${gameEmoji ?? ''}`;
+
+const getCachedGameIcon = (gameId: string, gameEmoji?: string) =>
+  gameIconCache.get(buildGameIconCacheKey(gameId, gameEmoji));
+
+const setCachedGameIcon = (
+  gameId: string,
+  gameEmoji: string | undefined,
+  url: string
+) => {
+  gameIconCache.set(buildGameIconCacheKey(gameId, gameEmoji), url);
+};
 
 /**
  * Remove existing favicon-related head tags (both static and previously injected).
@@ -275,24 +290,35 @@ export async function resolveGameIcon(
   gameId: string,
   gameEmoji?: string
 ): Promise<string> {
+  const cached = getCachedGameIcon(gameId, gameEmoji);
+  if (cached) {
+    logDebug('game icon cache hit', cached);
+    return cached;
+  }
+
   const gameFaviconBase = gameDir(gameId, 'favicon');
 
   // 1) Try game-specific icons (favicon folder)
   const gameIcon = await findFavicon([gameFaviconBase]);
   if (gameIcon) {
     logDebug('game icon found', gameIcon);
+    setCachedGameIcon(gameId, gameEmoji, gameIcon);
     return gameIcon;
   }
 
   // 2) Try game emoji from registry
   if (gameEmoji) {
     logDebug('fallback to game emoji', gameEmoji);
-    return createEmojiFavicon(gameEmoji);
+    const emojiUrl = createEmojiFavicon(gameEmoji);
+    setCachedGameIcon(gameId, gameEmoji, emojiUrl);
+    return emojiUrl;
   }
 
   // 3) Final fallback to default emoji
   logDebug('fallback to default emoji', DEFAULT_ENGINE_EMOJI);
-  return createEmojiFavicon(DEFAULT_ENGINE_EMOJI);
+  const defaultEmojiUrl = createEmojiFavicon(DEFAULT_ENGINE_EMOJI);
+  setCachedGameIcon(gameId, gameEmoji, defaultEmojiUrl);
+  return defaultEmojiUrl;
 }
 
 /**
@@ -370,9 +396,22 @@ export function useGameIcon(
   gameEmoji?: string,
   preferredIconUrl?: string | null
 ): { iconUrl: string | null; isEmoji: boolean; emoji: string } {
-  const [iconUrl, setIconUrl] = useState<string | null>(null);
-  const [isEmoji, setIsEmoji] = useState(true);
   const emoji = gameEmoji || DEFAULT_ENGINE_EMOJI;
+  const cachedIcon = getCachedGameIcon(gameId, gameEmoji) ?? null;
+  const initialIcon = preferredIconUrl ?? cachedIcon;
+  const initialIsEmoji = !initialIcon || initialIcon.startsWith('data:');
+
+  const [iconUrl, setIconUrl] = useState<string | null>(
+    initialIsEmoji ? null : initialIcon
+  );
+  const [isEmoji, setIsEmoji] = useState(initialIsEmoji);
+
+  useEffect(() => {
+    const nextIcon = preferredIconUrl ?? getCachedGameIcon(gameId, gameEmoji) ?? null;
+    const nextIsEmoji = !nextIcon || nextIcon.startsWith('data:');
+    setIsEmoji(nextIsEmoji);
+    setIconUrl(nextIsEmoji ? null : nextIcon);
+  }, [gameId, gameEmoji, preferredIconUrl]);
 
   useEffect(() => {
     const loadIcon = async () => {

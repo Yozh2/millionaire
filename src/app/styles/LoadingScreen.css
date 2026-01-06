@@ -7,6 +7,48 @@
   justify-content: center;
 }
 
+.loading-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+}
+
+.loading-overlay[data-state='blackout'],
+.loading-overlay[data-state='reveal'] {
+  pointer-events: none;
+}
+
+.loading-overlay__fade {
+  position: absolute;
+  inset: 0;
+  background: var(--loading-exit-bg, #0b0f14);
+  z-index: 2;
+  opacity: 0;
+  transition: opacity 140ms ease;
+  pointer-events: none;
+}
+
+.loading-overlay[data-state='blackout'] .loading-overlay__fade {
+  opacity: 1;
+}
+
+.loading-overlay .loading-screen {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  transition: opacity 140ms ease;
+}
+
+.loading-overlay[data-state='blackout'] .loading-screen,
+.loading-overlay[data-state='reveal'] .loading-screen {
+  opacity: 0;
+}
+
+.loading-overlay[data-state='reveal'] .loading-overlay__fade {
+  opacity: 0;
+  transition-duration: 180ms;
+}
+
 .loading-screen__content {
   position: relative;
   display: flex;
@@ -40,6 +82,10 @@
 
 .loading-screen__glint {
   animation: loading-ring-glint 3.4s linear infinite;
+}
+
+.loading-screen__glint--manual {
+  animation: none;
 }
 
 .loading-screen__glow {
@@ -133,19 +179,19 @@
     stroke-dashoffset: var(--glint-from);
     opacity: 0;
   }
-  8% {
+  12% {
     opacity: 0.9;
   }
-  30% {
+  25% {
     stroke-dasharray: var(--glint-dash);
     stroke-dashoffset: var(--glint-early);
   }
-  72% {
+  75% {
     stroke-dasharray: var(--glint-dash);
     stroke-dashoffset: var(--glint-to);
     opacity: 0.9;
   }
-  84% {
+  88% {
     stroke-dasharray: var(--glint-dot-dash);
     stroke-dashoffset: var(--glint-dot-to);
   }

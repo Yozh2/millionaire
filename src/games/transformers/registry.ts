@@ -10,6 +10,7 @@ export const registry = {
   title: 'TRANSFORMERS',
   emoji: '🤖',
   theme: {
+    isLight: false,
     bgFrom: '#09090b',
     bgVia: '#09090b',
     bgTo: '#000000',

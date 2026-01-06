@@ -162,10 +162,11 @@ function scanGameAssets(gameDir, gameId) {
     'Retreat.ogg',
   ]);
 
-  const level1Icons = [
-    ...getFilesFromDir(iconsDir),
-    ...getFilesFromDir(campaignIconsDir),
-  ].sort();
+  const campaignIcons = getFilesFromDir(campaignIconsDir, isImageFile);
+  const gameplayIcons = getFilesFromDir(iconsDir, isImageFile).filter((iconPath) => {
+    const filename = iconPath.split('/').pop() || '';
+    return !GAME_CARD_NAMES.includes(filename) && !FAVICON_NAMES.includes(filename);
+  });
 
   const game = {
     // Level 0: For GameSelector cards
@@ -182,7 +183,7 @@ function scanGameAssets(gameDir, gameId) {
 
     // Level 1: StartScreen assets
     level1: {
-      icons: level1Icons,
+      icons: campaignIcons,
       sounds: getFilesFromDir(join(gameDir, 'sounds'), isAudioFile),
       mainMenuMusic: mainMenuMusicFilename
         ? `/games/${gameId}/music/${mainMenuMusicFilename}`
@@ -199,6 +200,7 @@ function scanGameAssets(gameDir, gameId) {
         : null,
       retreatMusic: retreatMusicFilename ? `/games/${gameId}/music/${retreatMusicFilename}`
         : null,
+      icons: gameplayIcons,
       endImages: {
         victory: getFilesRecursive(join(gameDir, 'images', 'victory')),
         defeat: getFilesRecursive(join(gameDir, 'images', 'defeat')),
@@ -334,6 +336,7 @@ function scanGameAssets(gameDir, gameId) {
     (game.level2.defeatMusic ? 1 : 0) +
     (game.level2.victoryMusic ? 1 : 0) +
     (game.level2.retreatMusic ? 1 : 0) +
+    game.level2.icons.length +
     game.level2.endImages.victory.length +
     game.level2.endImages.defeat.length +
     game.level2.endImages.retreat.length;
@@ -385,7 +388,8 @@ function generateManifest() {
     totalAssets +=
       (game.level2.defeatMusic ? 1 : 0) +
       (game.level2.victoryMusic ? 1 : 0) +
-      (game.level2.retreatMusic ? 1 : 0);
+      (game.level2.retreatMusic ? 1 : 0) +
+      game.level2.icons.length;
     totalAssets += game.voices.length;
 
     for (const campaign of Object.values(game.campaigns)) {

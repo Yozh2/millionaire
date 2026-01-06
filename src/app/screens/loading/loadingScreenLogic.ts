@@ -14,9 +14,13 @@ export interface RingMetrics {
   ringSize: number;
   ringStroke: number;
   ringRadius: number;
+  ringCircumference: number;
+  progressLength: number;
   progressDasharray: string;
   glintVisible: boolean;
   glintStyle: CSSProperties;
+  glintDotLength: number;
+  glintLength: number;
   glowSize: number;
   shellSize: number;
   coreSize: number;
@@ -74,6 +78,11 @@ export const useSmoothedProgress = (progress?: number) => {
     }
 
     if (targetProgress < 5 && displayProgressRef.current > 95) {
+      displayProgressRef.current = targetProgress;
+      setDisplayProgress(targetProgress);
+    }
+
+    if (targetProgress + 12 < displayProgressRef.current) {
       displayProgressRef.current = targetProgress;
       setDisplayProgress(targetProgress);
     }
@@ -164,9 +173,13 @@ const getRingSizing = (
   const ringStroke = clamp(Math.round(ringSize * 0.068), 8, 26);
   const ringRadius = (ringSize - ringStroke) / 2;
   const ringCircumference = 2 * Math.PI * ringRadius;
+  const minProgress = Math.min(
+    100,
+    (Math.max(ringStroke * 0.7, 2) / ringCircumference) * 100
+  );
   const normalizedProgress = isIndeterminate
-    ? 24
-    : Math.min(100, displayProgress * 1.05);
+    ? minProgress
+    : Math.min(100, Math.max(minProgress, displayProgress * 1.05));
   const progressLength = ringCircumference * (normalizedProgress / 100);
 
   return {
@@ -200,7 +213,7 @@ const getGlintMetrics = (
     glintStyle: {
       '--glint-from': '0',
       '--glint-to': `${-glintTravel}`,
-      '--glint-early': `${-Math.max(glintTravel * 0.3, 0)}`,
+      '--glint-early': '0',
       '--glint-dot-to': `${-glintDotTravel}`,
       '--glint-dot-dash': `${glintDotLengthClamped} ${
         ringCircumference - glintDotLengthClamped
@@ -209,6 +222,8 @@ const getGlintMetrics = (
         ringCircumference - glintLengthFinal
       }`,
     } as CSSProperties,
+    glintDotLength: glintDotLengthClamped,
+    glintLength: glintLengthFinal,
   };
 };
 
@@ -238,9 +253,13 @@ export const getRingMetrics = (
     ringSize: sizing.ringSize,
     ringStroke: sizing.ringStroke,
     ringRadius: sizing.ringRadius,
+    ringCircumference: sizing.ringCircumference,
+    progressLength: sizing.progressLength,
     progressDasharray,
     glintVisible: glint.glintVisible,
     glintStyle: glint.glintStyle,
+    glintDotLength: glint.glintDotLength,
+    glintLength: glint.glintLength,
     glowSize,
     shellSize,
     coreSize,

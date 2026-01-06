@@ -1,9 +1,16 @@
-import { useCallback, useEffect, useMemo, useState, type ComponentType } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ComponentType,
+} from 'react';
 import { Navigate } from 'react-router-dom';
-import { LoadingScreen } from '@app/screens/loading/LoadingScreen';
 import { useFavicon, useGameIcon } from '@app/hooks/useFavicon';
 import type { GameConfig } from '@engine/types';
 import { getGameById } from '@app/screens/registry';
+import { useLoading, useLoadingPhase } from '@app/screens/loading/LoadingOrchestrator';
 
 interface RegisteredGamePageProps {
   gameId: string;
@@ -27,6 +34,10 @@ export default function RegisteredGamePage({ gameId }: RegisteredGamePageProps) 
   const [engineLoading, setEngineLoading] = useState<EngineLoadingState | null>(
     null
   );
+  const { setAppearance } = useLoading();
+  const enginePhase = useLoadingPhase('engine');
+  const assetsPhase = useLoadingPhase('assets');
+  const wasEngineLoadingRef = useRef(false);
 
   const entry = useMemo(() => getGameById(gameId), [gameId]);
   const { iconUrl: gameIconUrl, emoji: gameEmoji } = useGameIcon(
@@ -38,11 +49,39 @@ export default function RegisteredGamePage({ gameId }: RegisteredGamePageProps) 
   const loadingLogoEmoji = entry?.emoji ?? gameEmoji;
 
   useEffect(() => {
+    enginePhase.setEnabled(true);
+    assetsPhase.setEnabled(true);
+    enginePhase.reset();
+    assetsPhase.reset();
+
+    return () => {
+      enginePhase.setEnabled(false);
+      assetsPhase.setEnabled(false);
+    };
+  }, [assetsPhase, enginePhase, gameId]);
+
+  useEffect(() => {
+    setAppearance({
+      theme: entry?.theme,
+      logoUrl: loadingLogoUrl,
+      logoEmoji: loadingLogoEmoji,
+    });
+  }, [entry?.theme, loadingLogoEmoji, loadingLogoUrl, setAppearance]);
+
+  useEffect(() => {
+    if (!error) return;
+    enginePhase.complete();
+    assetsPhase.complete();
+  }, [assetsPhase, enginePhase, error]);
+
+  useEffect(() => {
     setConfig(null);
     setError(null);
     setEngineLoading(null);
 
     if (!entry) return;
+
+    enginePhase.start();
 
     let cancelled = false;
     entry
@@ -57,7 +96,7 @@ export default function RegisteredGamePage({ gameId }: RegisteredGamePageProps) 
     return () => {
       cancelled = true;
     };
-  }, [entry]);
+  }, [enginePhase, entry]);
 
   useEffect(() => {
     let cancelled = false;
@@ -73,7 +112,7 @@ export default function RegisteredGamePage({ gameId }: RegisteredGamePageProps) 
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [enginePhase]);
 
   if (!entry) {
     return <Navigate to="/" replace />;
@@ -97,12 +136,41 @@ export default function RegisteredGamePage({ gameId }: RegisteredGamePageProps) 
     setEngineLoading(state);
   }, []);
 
-  const isBooting = !config || !GameComponent;
-  const isEngineLoading = engineLoading?.isLoading ?? !isBooting;
-  const shouldShowLoading = isBooting || isEngineLoading;
-  const loadingProgress = isBooting ? undefined : engineLoading?.progress;
-  const loadingBgColor = entry?.theme?.bgFrom;
-  const loadingTheme = entry?.theme;
+  useEffect(() => {
+    const configReady = Boolean(config);
+    const componentReady = Boolean(GameComponent);
+    const progress =
+      (configReady ? 0.4 : 0) + (componentReady ? 0.6 : 0);
+
+    if (configReady && componentReady) {
+      enginePhase.complete();
+      return;
+    }
+
+    enginePhase.setProgress(progress);
+  }, [GameComponent, config, enginePhase]);
+
+  useEffect(() => {
+    if (!engineLoading) return;
+
+    const wasLoading = wasEngineLoadingRef.current;
+    wasEngineLoadingRef.current = engineLoading.isLoading;
+
+    if (engineLoading.isLoading && !wasLoading) {
+      assetsPhase.reset();
+    }
+
+    if (engineLoading.isLoading) {
+      if (Number.isFinite(engineLoading.progress)) {
+        assetsPhase.setProgress((engineLoading.progress ?? 0) / 100);
+      } else {
+        assetsPhase.start();
+      }
+      return;
+    }
+
+    assetsPhase.complete();
+  }, [assetsPhase, engineLoading]);
 
   return (
     <>
@@ -110,15 +178,6 @@ export default function RegisteredGamePage({ gameId }: RegisteredGamePageProps) 
         <GameComponent
           config={config}
           onLoadingStateChange={handleLoadingStateChange}
-        />
-      )}
-      {shouldShowLoading && (
-        <LoadingScreen
-          progress={loadingProgress}
-          loadingBgColor={loadingBgColor}
-          theme={loadingTheme}
-          logoUrl={loadingLogoUrl}
-          logoEmoji={loadingLogoEmoji}
         />
       )}
     </>

@@ -10,6 +10,7 @@ export const registry = {
   title: 'PROOF OF CONCEPT',
   emoji: '⚙️',
   theme: {
+    isLight: false,
     bgFrom: '#000000',
     bgVia: '#4338ca',
     bgTo: '#000000',

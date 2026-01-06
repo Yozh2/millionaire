@@ -49,7 +49,8 @@
     "test:coverage": "vitest run --coverage",
     "deploy": "npm run build && printf '# Override global gitignore\\n!*\\n!**/*\\n' > dist/.gitignore && gh-pages -d dist --no-history --dotfiles",
     "convert:images": "node scripts/convert-images.js",
-    "generate:manifests": "node scripts/generate-image-manifest.js && node scripts/generate-asset-manifest.js",
+    "generate:registry": "node scripts/generate-game-registry.js",
+    "generate:manifests": "node scripts/generate-game-registry.js && node scripts/generate-image-manifest.js && node scripts/generate-asset-manifest.js",
     "generate:assets": "node scripts/generate-asset-manifest.js"
   }
 }

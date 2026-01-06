@@ -15,12 +15,7 @@
         "icons": [
           "/games/bg3/icons/campaigns/darkurge.webp",
           "/games/bg3/icons/campaigns/hero.webp",
-          "/games/bg3/icons/campaigns/mindflayer.webp",
-          "/games/bg3/icons/coin.webp",
-          "/games/bg3/icons/defeat.webp",
-          "/games/bg3/icons/game-card.webp",
-          "/games/bg3/icons/retreat.webp",
-          "/games/bg3/icons/victory.webp"
+          "/games/bg3/icons/campaigns/mindflayer.webp"
         ],
         "sounds": [
           "/games/bg3/sounds/action-press.ogg",
@@ -51,6 +46,12 @@
         "defeatMusic": "/games/bg3/music/defeat.ogg",
         "victoryMusic": "/games/bg3/music/victory.ogg",
         "retreatMusic": "/games/bg3/music/retreat.ogg",
+        "icons": [
+          "/games/bg3/icons/coin.webp",
+          "/games/bg3/icons/defeat.webp",
+          "/games/bg3/icons/retreat.webp",
+          "/games/bg3/icons/victory.webp"
+        ],
         "endImages": {
           "victory": [],
           "defeat": [],
@@ -133,9 +134,7 @@
       },
       "level1": {
         "icons": [
-          "/games/sky-cotl/icons/campaigns/skykid.webp",
-          "/games/sky-cotl/icons/coin.webp",
-          "/games/sky-cotl/icons/game-card.webp"
+          "/games/sky-cotl/icons/campaigns/skykid.webp"
         ],
         "sounds": [],
         "mainMenuMusic": null,
@@ -146,6 +145,9 @@
         "defeatMusic": null,
         "victoryMusic": null,
         "retreatMusic": null,
+        "icons": [
+          "/games/sky-cotl/icons/coin.webp"
+        ],
         "endImages": {
           "victory": [],
           "defeat": [],
@@ -164,11 +166,7 @@
         "icons": [
           "/games/transformers/icons/campaigns/autocracy.webp",
           "/games/transformers/icons/campaigns/megatron.webp",
-          "/games/transformers/icons/campaigns/skybound.webp",
-          "/games/transformers/icons/defeat.webp",
-          "/games/transformers/icons/game-card.webp",
-          "/games/transformers/icons/retreat.webp",
-          "/games/transformers/icons/victory.webp"
+          "/games/transformers/icons/campaigns/skybound.webp"
         ],
         "sounds": [
           "/games/transformers/sounds/action-press.ogg",
@@ -216,6 +214,11 @@
         "defeatMusic": "/games/transformers/music/defeat.ogg",
         "victoryMusic": "/games/transformers/music/victory.ogg",
         "retreatMusic": "/games/transformers/music/retreat.ogg",
+        "icons": [
+          "/games/transformers/icons/defeat.webp",
+          "/games/transformers/icons/retreat.webp",
+          "/games/transformers/icons/victory.webp"
+        ],
         "endImages": {
           "victory": [],
           "defeat": [],

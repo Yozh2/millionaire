@@ -113,7 +113,10 @@ export function PortalHeaderTitle({
         h1.style.fontSize = '';
         h2.style.fontSize = '';
 
-        const available = wrap.clientWidth;
+        const rawWidth = wrap.clientWidth;
+        if (rawWidth <= 0) return;
+        const gutter = Math.max(12, Math.round(rawWidth * 0.07));
+        const available = Math.max(0, rawWidth - gutter * 2);
         if (available <= 0) return;
 
         const titleWidth = h1.scrollWidth;

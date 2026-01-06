@@ -1,6 +1,7 @@
 // App-level types and interfaces
 
 export interface BaseTheme {
+  isLight?: boolean;
   bgFrom: string;
   bgVia: string;
   bgTo: string;

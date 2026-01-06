@@ -1,8 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { BrowserRouter } from 'react-router-dom';
-import { LoadingScreen } from '@app/screens/loading/LoadingScreen';
-import { ErrorBoundary } from '@app/components/ErrorBoundary';
+import { AppShell } from '@app/AppShell';
 import '@app/styles/index.css';
 import '@engine/ui/styles/Engine.css';
 
@@ -48,21 +46,16 @@ if (redirectPath) {
 
 const root = ReactDOM.createRoot(document.getElementById('root')!);
 
-root.render(<LoadingScreen />);
+root.render(
+  <React.StrictMode>
+    <AppShell />
+  </React.StrictMode>
+);
 
-import('./app/App')
-  .then(({ default: App }) => {
-    root.render(
-      <React.StrictMode>
-        <ErrorBoundary>
-          <BrowserRouter basename="/millionaire">
-            <App />
-          </BrowserRouter>
-        </ErrorBoundary>
-      </React.StrictMode>
-    );
-  })
-  .catch((error) => {
-    // eslint-disable-next-line no-console
-    console.error('Failed to load application bundle', error);
+const bootLoader = document.getElementById('boot-loader');
+if (bootLoader) {
+  window.requestAnimationFrame(() => {
+    bootLoader.setAttribute('data-state', 'hidden');
+    window.setTimeout(() => bootLoader.remove(), 260);
   });
+}

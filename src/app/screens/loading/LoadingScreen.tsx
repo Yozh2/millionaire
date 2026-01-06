@@ -3,7 +3,13 @@
  * Keeps dependencies minimal and avoids engine imports.
  */
 
-import { useEffect, useState, type CSSProperties } from 'react';
+import {
+  useEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+  type RefObject,
+} from 'react';
 import type { BaseTheme } from '@app/types';
 import {
   buildBackgroundGradient,
@@ -20,6 +26,8 @@ import '@app/styles/LoadingScreen.css';
 export interface LoadingScreenProps {
   /** Current progress (0-100). Leave undefined for indeterminate loading. */
   progress?: number;
+  /** Optional extra class names for the root container. */
+  className?: string;
   /** Legacy loading background override (prefer BaseTheme). */
   loadingBgColor?: string;
   /** Base theme hints (optional). */
@@ -40,6 +48,7 @@ interface LoadingRingProps {
   accentColor: string;
   logoSrc: string;
   onLogoError: () => void;
+  glintRef: RefObject<SVGCircleElement>;
 }
 
 /**
@@ -50,6 +59,7 @@ const LoadingRing = ({
   accentColor,
   logoSrc,
   onLogoError,
+  glintRef,
 }: LoadingRingProps) => (
   <div
     className="loading-screen__ring-wrap"
@@ -102,7 +112,8 @@ const LoadingRing = ({
           fill="none"
           transform={`rotate(-90 ${ring.ringSize / 2} ${ring.ringSize / 2})`}
           style={ring.glintStyle}
-          className="loading-screen__glint"
+          className="loading-screen__glint loading-screen__glint--manual"
+          ref={glintRef}
         />
       )}
     </svg>
@@ -143,6 +154,7 @@ const LoadingRing = ({
  */
 export function LoadingScreen({
   progress,
+  className,
   loadingBgColor,
   theme,
   logoUrl,
@@ -150,6 +162,7 @@ export function LoadingScreen({
 }: LoadingScreenProps) {
   const { isIndeterminate, displayProgress } = useSmoothedProgress(progress);
   const viewport = useViewportSize();
+  const glintRef = useRef<SVGCircleElement | null>(null);
 
   const accentColor = theme?.glow ?? '#f59e0b';
   const accentGlow =
@@ -175,14 +188,111 @@ export function LoadingScreen({
   const [logoFailed, setLogoFailed] = useState(false);
   const logoSrc = logoFailed ? createEmojiLogo(fallbackEmoji) : resolvedLogoUrl;
   const ring = getRingMetrics(displayProgress, isIndeterminate, viewport);
+  const glintMetricsRef = useRef({
+    ringCircumference: ring.ringCircumference,
+    progressLength: ring.progressLength,
+    glintDotLength: ring.glintDotLength,
+    glintLength: ring.glintLength,
+    visible: ring.glintVisible,
+  });
 
   useEffect(() => {
     setLogoFailed(false);
   }, [resolvedLogoUrl]);
 
+  useEffect(() => {
+    glintMetricsRef.current = {
+      ringCircumference: ring.ringCircumference,
+      progressLength: ring.progressLength,
+      glintDotLength: ring.glintDotLength,
+      glintLength: ring.glintLength,
+      visible: ring.glintVisible,
+    };
+  }, [
+    ring.glintDotLength,
+    ring.glintLength,
+    ring.glintVisible,
+    ring.progressLength,
+    ring.ringCircumference,
+  ]);
+
+  useEffect(() => {
+    const glintEl = glintRef.current;
+    if (!glintEl || !ring.glintVisible) return;
+
+    let rafId = 0;
+    const start = performance.now();
+    const cycleMs = 3400;
+
+    const tick = (now: number) => {
+      const { ringCircumference, progressLength, glintDotLength, glintLength } =
+        glintMetricsRef.current;
+      const dotLen = Math.min(
+        progressLength,
+        Math.max(glintDotLength * 0.45, 1.2)
+      );
+      const dashLen = Math.min(glintLength, progressLength);
+      const dotHoldLen = Math.max(dotLen * 3, dashLen * 0.2, 0.001) * 1.5;
+      const growthLen = Math.max(dashLen - dotLen, 0);
+      const travelLen = Math.max(progressLength - dashLen, 0);
+      const totalLen = travelLen + growthLen * 2 + dotHoldLen * 2;
+
+      if (!Number.isFinite(totalLen) || totalLen <= 0) {
+        const gap = Math.max(ringCircumference - dotLen, 0);
+        glintEl.style.strokeDasharray = `${dotLen} ${gap}`;
+        glintEl.style.strokeDashoffset = '0';
+        glintEl.style.opacity = '0';
+        rafId = requestAnimationFrame(tick);
+        return;
+      }
+
+      const elapsed = (now - start) % cycleMs;
+      const distance = (elapsed / cycleMs) * totalLen;
+
+      let length = dotLen;
+      let offset = 0;
+      let opacity = 1;
+
+      if (distance < dotHoldLen) {
+        length = dotLen;
+        offset = 0;
+        opacity = distance / dotHoldLen;
+      } else if (distance < dotHoldLen + growthLen) {
+        const grow = distance - dotHoldLen;
+        length = dotLen + grow;
+        offset = 0;
+      } else if (distance < dotHoldLen + growthLen + travelLen) {
+        const travel = distance - (dotHoldLen + growthLen);
+        length = dashLen;
+        offset = -travel;
+      } else if (distance < dotHoldLen + growthLen + travelLen + growthLen) {
+        const shrink = distance - (dotHoldLen + growthLen + travelLen);
+        length = dashLen - shrink;
+        offset = -(progressLength - length);
+      } else {
+        const fade = distance - (dotHoldLen + growthLen + travelLen + growthLen);
+        length = dotLen;
+        offset = -(progressLength - dotLen);
+        opacity = Math.max(1 - fade / dotHoldLen, 0);
+      }
+
+      const gap = Math.max(ringCircumference - length, 0);
+      const alpha = Math.min(Math.max(opacity, 0), 1) * 0.95;
+
+      glintEl.style.strokeDasharray = `${length} ${gap}`;
+      glintEl.style.strokeDashoffset = `${offset}`;
+      glintEl.style.opacity = alpha.toFixed(3);
+
+      rafId = requestAnimationFrame(tick);
+    };
+
+    rafId = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(rafId);
+  }, [ring.glintVisible]);
+
   return (
     <div
-      className="engine loading-screen"
+      className={['engine loading-screen', className].filter(Boolean).join(' ')}
       style={
         {
           background: backgroundGradient,
@@ -203,6 +313,7 @@ export function LoadingScreen({
           accentColor={accentColor}
           logoSrc={logoSrc}
           onLogoError={() => setLogoFailed(true)}
+          glintRef={glintRef}
         />
       </div>
     </div>

@@ -62,6 +62,8 @@ export interface GameAssets {
     defeatMusic: string | null;
     victoryMusic: string | null;
     retreatMusic: string | null;
+    /** Gameplay/end icons (coin, victory, defeat, retreat, etc.) */
+    icons: string[];
     endImages: EndImages;
   };
   /** Voice lines for companions */

@@ -15,32 +15,34 @@
  * @see https://github.com/Yozh2/millionaire
  */
 
-import { lazy, Suspense } from 'react';
+import { LoadingSandboxPage } from '@pages';
+import { GameSelectorScreen } from './screens/registry/GameSelectorScreen';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { LoadingScreen } from './screens/loading/LoadingScreen';
 import RegisteredGamePage from '@pages/RegisteredGamePage';
 import { getGameEntries } from './screens/registry';
 
 const GAME_ENTRIES = getGameEntries();
-const GameSelector = lazy(() => import('./screens/registry/GameSelectorScreen'));
 
 /**
  * Main application component with routing.
  */
 export default function App() {
+  const showDevRoutes = import.meta.env.DEV;
+
   return (
-    <Suspense fallback={<LoadingScreen />}>
-      <Routes>
-        <Route path="/" element={<GameSelector />} />
-        {GAME_ENTRIES.map((entry) => (
-          <Route
-            key={entry.id}
-            path={entry.routePath}
-            element={<RegisteredGamePage gameId={entry.id} />}
-          />
-        ))}
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </Suspense>
+    <Routes>
+      <Route path="/" element={<GameSelectorScreen />} />
+      {GAME_ENTRIES.map((entry) => (
+        <Route
+          key={entry.id}
+          path={entry.routePath}
+          element={<RegisteredGamePage gameId={entry.id} />}
+        />
+      ))}
+      {showDevRoutes && (
+        <Route path="/sandbox/loading" element={<LoadingSandboxPage />} />
+      )}
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
   );
 }
