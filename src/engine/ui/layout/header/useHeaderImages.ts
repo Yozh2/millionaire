@@ -4,7 +4,7 @@ import type {
   QuestionDifficulty,
   SlideshowScreen,
 } from '@engine/types';
-import { gameImagesDir, publicDir } from '@public';
+import { gameImagesDir } from '@app/utils/paths';
 
 /** Manifest structure matching generate-image-manifest.js output */
 interface ImageManifest {
@@ -131,7 +131,6 @@ export function useHeaderImages(
   const [resolvedKey, setResolvedKey] = useState(requestKey);
 
   const gameBasePath = useMemo(() => gameImagesDir(gameId), [gameId]);
-  const engineBasePath = useMemo(() => publicDir('images'), []);
 
   useEffect(() => {
     if (!enabled) {
@@ -150,7 +149,6 @@ export function useHeaderImages(
       const key = requestKey;
 
       const gameManifest = await loadManifest(gameBasePath);
-      const engineManifest = await loadManifest(engineBasePath);
 
       const nodes: Array<{ node: unknown; basePath: string }> = [];
 
@@ -170,7 +168,6 @@ export function useHeaderImages(
       }
 
       if (gameManifest) nodes.push({ node: gameManifest, basePath: gameBasePath });
-      if (engineManifest) nodes.push({ node: engineManifest, basePath: engineBasePath });
 
       const match = findFirstMatch(nodes, partsForScreen(screen, difficulty));
       if (match) {
@@ -186,7 +183,7 @@ export function useHeaderImages(
 
       if (screen !== 'start') {
         const startFallback = findFirstMatch(
-          nodes.filter((n) => n.basePath === gameBasePath || n.basePath === engineBasePath),
+          nodes.filter((n) => n.basePath === gameBasePath),
           partsForScreen('start')
         );
         if (startFallback) {
@@ -220,7 +217,6 @@ export function useHeaderImages(
     campaignId,
     difficulty,
     enabled,
-    engineBasePath,
     gameBasePath,
     requestKey,
     screen,

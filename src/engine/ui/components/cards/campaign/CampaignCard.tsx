@@ -2,7 +2,7 @@ import type { Campaign, CampaignIconProps } from '@engine/types';
 import { baseImgIconClass, getCampaignIconSizeClass } from '@engine/types';
 import { useRef, type CSSProperties } from 'react';
 import { useCampaignCardFsm } from './useCampaignCardFsm';
-import { gameIconsFile } from '@public';
+import { gameIconsFile } from '@app/utils/paths';
 
 const createEmojiSvgDataUrl = (emoji: string): string => {
   const svg =

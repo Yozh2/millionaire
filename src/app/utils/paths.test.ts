@@ -8,7 +8,11 @@ describe('paths utils', () => {
 
   it('builds full paths from relative paths', () => {
     const base = getBasePath();
-    expect(withBasePath('icons/favicon.svg')).toBe(`${base}icons/favicon.svg`);
-    expect(withBasePath('/icons/favicon.svg')).toBe(`${base}icons/favicon.svg`);
+    expect(withBasePath('games/test/favicon/favicon.svg')).toBe(
+      `${base}games/test/favicon/favicon.svg`
+    );
+    expect(withBasePath('/games/test/favicon/favicon.svg')).toBe(
+      `${base}games/test/favicon/favicon.svg`
+    );
   });
 });

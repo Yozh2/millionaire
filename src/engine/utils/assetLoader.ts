@@ -8,71 +8,18 @@
  * 4. Silent (music/voices)
  */
 
-import { logger } from '../services/logger';
-import { getBasePath } from '../assets/paths';
+import { logger } from '@engine/services/logger';
+import { checkFileExists, getAssetPaths } from '@app/utils/paths';
+import type { AssetType } from '@app/utils/paths';
 
-export { getBasePath };
-
-/** Asset types */
-export type AssetType = 'sounds' | 'music' | 'voices';
+export { getBasePath, getAssetPaths, checkFileExists } from '@app/utils/paths';
+export type { AssetType } from '@app/utils/paths';
 
 /** Result of asset resolution */
 export interface AssetResolution {
   path: string | null;
   source: 'specific' | 'fallback' | 'none';
 }
-
-/**
- * Build paths for an asset with fallback
- */
-export const getAssetPaths = (
-  type: AssetType,
-  filename: string,
-  gameId: string
-): { specific: string; fallback: string } => {
-  const basePath = getBasePath();
-  return {
-    specific: `${basePath}games/${gameId}/${type}/${filename}`,
-    fallback: `${basePath}games/shared/${type}/${filename}`,
-  };
-};
-
-/**
- * Check if a file exists (via HEAD request)
- * Returns true if file exists, false otherwise
- */
-export const checkFileExists = async (url: string): Promise<boolean> => {
-  try {
-    const response = await fetch(url, { method: 'HEAD' });
-    if (!response.ok) return false;
-
-    // Reject SPA fallbacks (Vite/dev servers may return HTML for missing files).
-    const contentType = (response.headers.get('Content-Type') || '').toLowerCase();
-    if (contentType.startsWith('text/html')) return false;
-
-    return true;
-  } catch {
-    // ignore
-  }
-
-  // Some hosts (and occasionally Safari setups) don't reliably support HEAD for static files.
-  // Use a tiny ranged GET as a fallback.
-  try {
-    const response = await fetch(url, {
-      method: 'GET',
-      headers: { Range: 'bytes=0-0' },
-    });
-
-    if (!(response.ok || response.status === 206)) return false;
-
-    const contentType = (response.headers.get('Content-Type') || '').toLowerCase();
-    if (contentType.startsWith('text/html')) return false;
-
-    return true;
-  } catch {
-    return false;
-  }
-};
 
 /**
  * Resolve asset path with fallback

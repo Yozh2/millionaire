@@ -25,8 +25,8 @@ import { logger } from './logger';
 import {
   preDecodeAudio,
   registerPreloadedAudioBuffer,
-} from '../utils/audioPlayer';
-import { getBasePath } from '../assets/paths';
+} from '@engine/utils/audioPlayer';
+import { getBasePath } from '@app/utils/paths';
 
 const EMPTY_MANIFEST: AssetManifest = {
   version: '0.0.0',
@@ -38,7 +38,6 @@ const isMetaAsset = (url: string): boolean => {
   const lower = url.toLowerCase();
   return (
     lower.includes('/favicon/') ||
-    lower.includes('/icons/favicon') ||
     lower.includes('apple-touch-icon') ||
     lower.endsWith('site.webmanifest') ||
     lower.includes('/meta/')
@@ -192,11 +191,6 @@ class AssetLoader {
 
     switch (level) {
       case 'level0':
-        // Engine assets
-        assets.push(...manifest.engine.icons);
-        assets.push(...manifest.engine.images);
-        assets.push(...manifest.engine.sounds);
-
         // GameSelector card assets:
         // - prefer game-card (portrait) when present
         // - otherwise fallback to favicon

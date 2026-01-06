@@ -70,7 +70,7 @@ export interface GameAssets {
   campaigns: Record<string, CampaignAssets>;
 }
 
-/** Engine-level assets */
+/** Engine-level assets (legacy; kept for manifest compatibility) */
 export interface EngineAssets {
   icons: string[];
   images: string[];
@@ -86,7 +86,7 @@ export interface AssetManifest {
 
 /** Loading levels for the preloading system */
 export type LoadLevel =
-  | 'level0'     // GameSelector: engine + game cards
+  | 'level0'     // GameSelector: game cards
   | 'level1'     // Game selected: StartScreen assets
   | 'level1_1'   // Campaign selected: campaign assets (background)
   | 'level2';    // In-game: remaining assets (background)

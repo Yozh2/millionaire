@@ -1,7 +1,7 @@
 import type { GameConfig, CampaignIconProps } from '@engine/types';
 import { baseImgIconClass, getCampaignIconSizeClass } from '@engine/types';
 import { applyNoBreakMarkupDeep } from './noBreakMarkup';
-import { gameIconsFile } from '../assets/public';
+import { gameIconsFile } from '@app/utils/paths';
 import { jsx } from 'react/jsx-runtime';
 
 const createEmojiSvgDataUrl = (emoji: string): string => {

@@ -1,5 +1,9 @@
+/**
+ * Подбирает картинку для карточки игры с каскадом фолбеков.
+ * Сначала пытается game-card.webp, затем фавиконки игры и общие иконки.
+ */
 import { useEffect, useMemo, useState } from 'react';
-import { withBasePath } from '../utils/paths';
+import { gameFaviconFile, gameIconsFile } from '@app/utils/paths';
 
 const FALLBACK_FAVICONS = ['favicon.png', 'favicon.svg', 'favicon.ico'] as const;
 const FALLBACK_GAME_FAVICONS = [
@@ -8,12 +12,6 @@ const FALLBACK_GAME_FAVICONS = [
   'favicon.svg',
   'favicon.ico',
 ] as const;
-
-const gameIconsFile = (gameId: string, filename: string): string =>
-  withBasePath(`games/${gameId}/icons/${filename}`);
-
-const gameFaviconFile = (gameId: string, filename: string): string =>
-  withBasePath(`games/${gameId}/favicon/${filename}`);
 
 const buildGameCardSources = (gameId: string): string[] => [
   gameIconsFile(gameId, 'game-card.webp'),

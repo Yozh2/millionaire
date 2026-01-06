@@ -1,5 +1,6 @@
-export { getBasePath, withBasePath } from '@engine/assets/paths';
 export {
+  getBasePath,
+  withBasePath,
   publicFile,
   publicDir,
   gameDir,
@@ -11,4 +12,4 @@ export {
   gameImagesDir,
   gameImagesFile,
   type GamePublicDir,
-} from '@engine/assets/public';
+} from '@app/utils/paths';

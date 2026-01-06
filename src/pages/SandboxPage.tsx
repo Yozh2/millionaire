@@ -10,7 +10,7 @@
 import { useState, useEffect } from 'react';
 import { Panel, PanelHeader } from '@engine/ui/components/panel';
 import { logger } from '@engine/services';
-import { gameImagesDir } from '@public';
+import { gameImagesDir } from '@app/utils/paths';
 
 // Types
 type SlideshowScreen = 'start' | 'play' | 'victory' | 'retreat' | 'defeat';
