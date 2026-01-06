@@ -9,13 +9,16 @@
 
 .engine,
 .engine * {
-  margin: 0;
-  padding: 0;
   box-sizing: border-box;
   user-select: none;
   -webkit-user-select: none;
   -ms-user-select: none;
   -webkit-touch-callout: none;
+}
+
+:where(.engine *) {
+  margin: 0;
+  padding: 0;
 }
 
 .engine {
