@@ -453,10 +453,21 @@ function drawCoverImage(
   ctx.drawImage(img, dx, dy, dw, dh);
 }
 
+function buildHeaderImagePaths(
+  images: string[],
+  basePath: string,
+  subfolder: string
+): string[] {
+  if (!images.length || !basePath) return [];
+  const prefix = subfolder ? `${basePath}/${subfolder}` : basePath;
+  return images.map((filename) => `${prefix}/${filename}`);
+}
+
 type PortalCanvasHandle = {
   show: (imageSrc: string) => void;
   hide: () => void;
   isShowing: () => boolean;
+  preload: (imageSrc: string) => Promise<void>;
 };
 
 type PortalAnimState = {
@@ -494,7 +505,7 @@ function usePortalCanvas({
   const idleMotionEnabled = !reduceMotion;
   const maxDpr = 2;
   const targetFps = 60;
-  const maxCachedImages = 12;
+  const maxCachedImages = 32;
   const maxRasterPixels = 1_600_000;
 
   const tokenRef = useRef(0);
@@ -979,6 +990,14 @@ function usePortalCanvas({
     [closeMs, ensureLoop, openMs, preloadImage, pruneImageCache]
   );
 
+  const preload = useCallback(
+    async (imageSrc: string) => {
+      if (!imageSrc) return;
+      await preloadImage(imageSrc);
+    },
+    [preloadImage]
+  );
+
   const hide = useCallback(() => {
     const token = ++tokenRef.current;
     const st = stateRef.current;
@@ -1080,8 +1099,8 @@ function usePortalCanvas({
   }, []);
 
   return useMemo(
-    () => ({ show, hide, isShowing }),
-    [hide, isShowing, show]
+    () => ({ show, hide, isShowing, preload }),
+    [hide, isShowing, preload, show]
   );
 }
 
@@ -1123,6 +1142,39 @@ export function PortalHeader({
       screen: slideshowScreen,
       difficulty,
     });
+  const prefetchEasy = useHeaderImages(config.headerSlideshow, {
+    gameId: config.id,
+    campaignId,
+    screen: 'play',
+    difficulty: 'easy',
+  });
+  const prefetchMedium = useHeaderImages(config.headerSlideshow, {
+    gameId: config.id,
+    campaignId,
+    screen: 'play',
+    difficulty: 'medium',
+  });
+  const prefetchHard = useHeaderImages(config.headerSlideshow, {
+    gameId: config.id,
+    campaignId,
+    screen: 'play',
+    difficulty: 'hard',
+  });
+  const prefetchVictory = useHeaderImages(config.headerSlideshow, {
+    gameId: config.id,
+    campaignId,
+    screen: 'victory',
+  });
+  const prefetchDefeat = useHeaderImages(config.headerSlideshow, {
+    gameId: config.id,
+    campaignId,
+    screen: 'defeat',
+  });
+  const prefetchRetreat = useHeaderImages(config.headerSlideshow, {
+    gameId: config.id,
+    campaignId,
+    screen: 'retreat',
+  });
 
   const orderMode: 'alphabetical' | 'random' =
     slideshowScreen === 'play'
@@ -1152,7 +1204,65 @@ export function PortalHeader({
     opacity,
     onLayoutSize: useCallback(({ h }) => setPortalBaseHeight(h), []),
   });
-  const { show, hide } = portal;
+  const { show, hide, preload } = portal;
+
+  const easyPrefetchPaths = useMemo(
+    () =>
+      buildHeaderImagePaths(
+        prefetchEasy.images,
+        prefetchEasy.basePath,
+        prefetchEasy.subfolder
+      ),
+    [prefetchEasy.basePath, prefetchEasy.images, prefetchEasy.subfolder]
+  );
+
+  const fullPrefetchPaths = useMemo(() => {
+    const paths = [
+      ...buildHeaderImagePaths(
+        prefetchMedium.images,
+        prefetchMedium.basePath,
+        prefetchMedium.subfolder
+      ),
+      ...buildHeaderImagePaths(
+        prefetchHard.images,
+        prefetchHard.basePath,
+        prefetchHard.subfolder
+      ),
+      ...buildHeaderImagePaths(
+        prefetchVictory.images,
+        prefetchVictory.basePath,
+        prefetchVictory.subfolder
+      ),
+      ...buildHeaderImagePaths(
+        prefetchDefeat.images,
+        prefetchDefeat.basePath,
+        prefetchDefeat.subfolder
+      ),
+      ...buildHeaderImagePaths(
+        prefetchRetreat.images,
+        prefetchRetreat.basePath,
+        prefetchRetreat.subfolder
+      ),
+    ];
+
+    return Array.from(new Set(paths));
+  }, [
+    prefetchDefeat.basePath,
+    prefetchDefeat.images,
+    prefetchDefeat.subfolder,
+    prefetchHard.basePath,
+    prefetchHard.images,
+    prefetchHard.subfolder,
+    prefetchMedium.basePath,
+    prefetchMedium.images,
+    prefetchMedium.subfolder,
+    prefetchRetreat.basePath,
+    prefetchRetreat.images,
+    prefetchRetreat.subfolder,
+    prefetchVictory.basePath,
+    prefetchVictory.images,
+    prefetchVictory.subfolder,
+  ]);
 
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -1172,25 +1282,36 @@ export function PortalHeader({
     }
 
     let cancelled = false;
-    const img = new Image();
-    img.src = fullPath;
-
-    const markReady = () => {
-      if (cancelled) return;
-      setReadyPath(fullPath);
-    };
-
-    if ('decode' in img) {
-      img.decode().then(markReady).catch(markReady);
-    } else {
-      img.onload = markReady;
-      img.onerror = markReady;
-    }
+    void preload(fullPath)
+      .catch(() => {})
+      .finally(() => {
+        if (cancelled) return;
+        setReadyPath(fullPath);
+      });
 
     return () => {
       cancelled = true;
     };
-  }, [enabled, fullPath, isLoading]);
+  }, [enabled, fullPath, isLoading, preload]);
+
+  useEffect(() => {
+    if (!campaignId) return;
+    if (easyPrefetchPaths.length === 0) return;
+
+    easyPrefetchPaths.forEach((src) => {
+      void preload(src);
+    });
+  }, [campaignId, easyPrefetchPaths, preload]);
+
+  useEffect(() => {
+    if (!campaignId) return;
+    if (slideshowScreen !== 'play') return;
+    if (fullPrefetchPaths.length === 0) return;
+
+    fullPrefetchPaths.forEach((src) => {
+      void preload(src);
+    });
+  }, [campaignId, fullPrefetchPaths, preload, slideshowScreen]);
 
   useEffect(() => {
     if (!enabled || isLoading || orderedImages.length === 0) return;

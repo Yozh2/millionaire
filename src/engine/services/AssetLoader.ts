@@ -367,8 +367,49 @@ class AssetLoader {
     let loaded = 0;
     const total = toLoad.length;
 
-    const metaUrls = toLoad.filter((url) => isMetaAsset(url));
-    const otherUrls = toLoad.filter((url) => !isMetaAsset(url));
+    const audioUrls: string[] = [];
+    const otherUrls: string[] = [];
+    const imageUrls: string[] = [];
+
+    const isAudioUrl = (url: string): boolean => {
+      const base = url.split('?')[0];
+      return /\.(ogg|mp3|wav|m4a)$/i.test(base);
+    };
+
+    const isImageUrl = (url: string): boolean => {
+      const base = url.split('?')[0];
+      return /\.(jpg|jpeg|png|webp|gif|svg)$/i.test(base);
+    };
+
+    for (const url of toLoad) {
+      if (isAudioUrl(url)) {
+        audioUrls.push(url);
+        continue;
+      }
+      if (isMetaAsset(url)) {
+        otherUrls.push(url);
+        continue;
+      }
+      if (isImageUrl(url)) {
+        imageUrls.push(url);
+        continue;
+      }
+      otherUrls.push(url);
+    }
+
+    const iconImageUrls: string[] = [];
+    const portalImageUrls: string[] = [];
+    const otherImageUrls: string[] = [];
+    for (const url of imageUrls) {
+      const lower = url.toLowerCase();
+      if (lower.includes('/icons/')) {
+        iconImageUrls.push(url);
+      } else if (lower.includes('/images/')) {
+        portalImageUrls.push(url);
+      } else {
+        otherImageUrls.push(url);
+      }
+    }
 
     const loadBatch = async (batch: string[]) => {
       const loadPromises = batch.map(async (url) => {
@@ -392,8 +433,11 @@ class AssetLoader {
       await Promise.all(loadPromises);
     };
 
-    await loadBatch(metaUrls);
+    await loadBatch(audioUrls);
     await loadBatch(otherUrls);
+    await loadBatch(iconImageUrls);
+    await loadBatch(otherImageUrls);
+    await loadBatch(portalImageUrls);
   }
 
   /**
