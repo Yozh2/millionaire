@@ -6,5 +6,4 @@ export {
   LoadingScreen,
   LoadingIndicator,
   type LoadingScreenProps,
-  type LoadingTheme,
 } from './loading/LoadingScreen';

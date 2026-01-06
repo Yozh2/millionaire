@@ -24,7 +24,7 @@ describe('useFavicon hooks', () => {
     vi.unstubAllGlobals();
   });
 
-  it('falls back to emoji for shared icon when not found', async () => {
+  it('returns default emoji for shared icon', async () => {
     const fetchMock = vi.fn().mockResolvedValue(buildResponse(false));
     vi.stubGlobal('fetch', fetchMock);
 

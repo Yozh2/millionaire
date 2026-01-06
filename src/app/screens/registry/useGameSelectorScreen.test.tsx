@@ -65,14 +65,16 @@ describe('useGameSelectorScreen', () => {
     expect(navigateMock).not.toHaveBeenCalled();
   });
 
-  it('applies a shared favicon on mount', async () => {
+  it('applies a default emoji favicon on mount', async () => {
     const useGameSelectorScreen = await loadHook();
     renderHook(() => useGameSelectorScreen());
 
     await waitFor(() => {
       const link = document.querySelector('link[rel="icon"]');
       expect(link).not.toBeNull();
-      expect(link?.getAttribute('href')).toContain('icons/favicon.svg');
+      expect(link?.getAttribute('href')?.startsWith('data:image/svg+xml')).toBe(
+        true
+      );
     });
   });
 });

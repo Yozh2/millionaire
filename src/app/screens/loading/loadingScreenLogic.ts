@@ -1,12 +1,10 @@
+/**
+ * LoadingScreen calculations without JSX.
+ * Holds progress math, ring sizing, and gradient helpers.
+ */
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
 
-export interface LoadingTheme {
-  bgColor?: string;
-  glowColor?: string;
-  bgPanelFrom?: string;
-  bgHeaderVia?: string;
-}
-
+// Viewport size representation
 interface ViewportSize {
   width: number;
   height: number;
@@ -28,6 +26,9 @@ export interface RingMetrics {
 const clamp = (value: number, min: number, max: number) =>
   Math.min(max, Math.max(min, value));
 
+/**
+ * Convert a hex color string to rgba() with the given alpha.
+ */
 export const toRgba = (hex: string, alpha: number): string | null => {
   const clean = hex.trim();
   if (!/^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(clean)) return null;
@@ -41,6 +42,9 @@ export const toRgba = (hex: string, alpha: number): string | null => {
   return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 };
 
+/**
+ * Build a data-URI SVG logo for an emoji.
+ */
 export const createEmojiLogo = (emoji: string): string => {
   const svg =
     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">` +
@@ -133,10 +137,15 @@ export const useViewportSize = (): ViewportSize => {
   return viewport;
 };
 
-export const buildBackgroundGradient = (base: string) => {
-  const center = toRgba(base, 0.28) ?? base;
-  const mid = toRgba(base, 0.14) ?? base;
-  return `radial-gradient(circle at center, ${center} 0%, ${mid} 38%, rgba(0,0,0,0.92) 74%, #000 100%)`;
+/**
+ * Build the radial background gradient from three stops.
+ */
+export const buildBackgroundGradient = (stops: {
+  from: string;
+  via: string;
+  to: string;
+}) => {
+  return `radial-gradient(circle at center, ${stops.from} 0%, ${stops.via} 38%, ${stops.to} 100%)`;
 };
 
 const getRingSizing = (

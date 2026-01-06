@@ -21,7 +21,11 @@ describe('loadingScreenLogic', () => {
   });
 
   it('builds a background gradient', () => {
-    const gradient = buildBackgroundGradient('#111111');
+    const gradient = buildBackgroundGradient({
+      from: '#111111',
+      via: '#222222',
+      to: '#000000',
+    });
     expect(gradient).toContain('radial-gradient');
   });
 

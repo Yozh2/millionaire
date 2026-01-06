@@ -5,21 +5,16 @@
  *
  * Priority for game pages (highest to lowest):
  * 1. Game-specific favicons: /games/{gameId}/favicon/
- * 2. Game-specific icons: /games/{gameId}/icons/
- * 3. Game's emoji from config
- * 4. Shared fallback icons: /icons/
- * 5. Default engine emoji: 🎯
+ * 2. Game's emoji from registry
+ * 3. Default engine emoji: 🎯
  *
  * Priority for GameSelector page:
- * 1. Shared icons: /icons/
- * 2. Default engine emoji: 🎯
+ * 1. Default engine emoji: 🎯
  */
 
 import { useEffect, useState, useRef } from 'react';
-import { gameDir, publicDir } from '@public';
-
-/** Default engine emoji favicon */
-const DEFAULT_ENGINE_EMOJI = '🎯';
+import { fileExistsNotHtml, findFile, gameDir, imageExists } from '@app/utils/paths';
+import { createEmojiFavicon, DEFAULT_ENGINE_EMOJI } from '@app/utils/emojiFavicon';
 
 /**
  * Supported favicon filenames in order of preference.
@@ -33,48 +28,6 @@ const APPLE_TOUCH_ICON_NAME = 'apple-touch-icon.png';
 const WEB_MANIFEST_NAME = 'site.webmanifest';
 
 /**
- * Create emoji favicon as data URI.
- */
-function createEmojiFavicon(emoji: string): string {
-  return (
-    "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' " +
-    `viewBox='0 0 100 100'><text y='.9em' font-size='90'>${emoji}</text></svg>`
-  );
-}
-
-/**
- * Check if an image exists at the given URL.
- */
-async function imageExists(url: string): Promise<boolean> {
-  try {
-    const response = await fetch(url, { method: 'HEAD' });
-    if (!response.ok) return false;
-
-    // Check Content-Type to avoid SPA fallback (Vite returns HTML for missing files)
-    const contentType = response.headers.get('Content-Type') || '';
-    return contentType.startsWith('image/');
-  } catch {
-    return false;
-  }
-}
-
-/**
- * Check if a non-image file exists at the given URL.
- * Rejects HTML to avoid SPA fallback.
- */
-async function fileExistsNotHtml(url: string): Promise<boolean> {
-  try {
-    const response = await fetch(url, { method: 'HEAD' });
-    if (!response.ok) return false;
-
-    const contentType = (response.headers.get('Content-Type') || '').toLowerCase();
-    return !contentType.startsWith('text/html');
-  } catch {
-    return false;
-  }
-}
-
-/**
  * Find the first existing favicon from a list of base paths.
  */
 async function findFavicon(basePaths: string[]): Promise<string | null> {
@@ -85,21 +38,6 @@ async function findFavicon(basePaths: string[]): Promise<string | null> {
         return url;
       }
     }
-  }
-  return null;
-}
-
-/**
- * Find a specific file in a list of base paths.
- */
-async function findFile(
-  basePaths: string[],
-  filename: string,
-  exists: (url: string) => Promise<boolean>
-): Promise<string | null> {
-  for (const basePath of basePaths) {
-    const url = `${basePath}/${filename}`;
-    if (await exists(url)) return url;
   }
   return null;
 }
@@ -217,18 +155,11 @@ async function resolveHeadFaviconTags(
   gameId: string | null,
   gameEmoji?: string
 ): Promise<HeadTagSpec[]> {
-  // Shared base (always available)
-  const sharedIconsBase = publicDir('icons');
-
   const searchBases: string[] = [];
   if (gameId) {
     // Optional, per-game favicon folder (highest priority)
     searchBases.push(gameDir(gameId, 'favicon'));
-    // Back-compat: older game icons folder
-    searchBases.push(gameDir(gameId, 'icons'));
   }
-  searchBases.push(sharedIconsBase);
-
   const [iconSvg, iconPng96, iconPngLegacy, iconIco] = await Promise.all([
     findFile(searchBases, 'favicon.svg', imageExists),
     findFile(searchBases, 'favicon-96x96.png', imageExists),
@@ -345,30 +276,21 @@ export async function resolveGameIcon(
   gameEmoji?: string
 ): Promise<string> {
   const gameFaviconBase = gameDir(gameId, 'favicon');
-  const gameIconsBase = gameDir(gameId, 'icons');
-  const sharedBase = publicDir('icons');
 
-  // 1) Try game-specific icons (favicon folder, then legacy icons folder)
-  const gameIcon = await findFavicon([gameFaviconBase, gameIconsBase]);
+  // 1) Try game-specific icons (favicon folder)
+  const gameIcon = await findFavicon([gameFaviconBase]);
   if (gameIcon) {
     logDebug('game icon found', gameIcon);
     return gameIcon;
   }
 
-  // 2) Try game emoji from config
+  // 2) Try game emoji from registry
   if (gameEmoji) {
     logDebug('fallback to game emoji', gameEmoji);
     return createEmojiFavicon(gameEmoji);
   }
 
-  // 3) Try shared icons
-  const sharedIcon = await findFavicon([sharedBase]);
-  if (sharedIcon) {
-    logDebug('shared icon found', sharedIcon);
-    return sharedIcon;
-  }
-
-  // 4) Final fallback to default emoji
+  // 3) Final fallback to default emoji
   logDebug('fallback to default emoji', DEFAULT_ENGINE_EMOJI);
   return createEmojiFavicon(DEFAULT_ENGINE_EMOJI);
 }
@@ -379,14 +301,6 @@ export async function resolveGameIcon(
  * @returns URL to favicon (file or data URI)
  */
 export async function resolveSharedIcon(): Promise<string> {
-  const sharedBase = publicDir('icons');
-
-  const sharedIcon = await findFavicon([sharedBase]);
-  if (sharedIcon) {
-    logDebug('shared icon found', sharedIcon);
-    return sharedIcon;
-  }
-
   logDebug('fallback to default emoji');
   return createEmojiFavicon(DEFAULT_ENGINE_EMOJI);
 }

@@ -1,22 +1,7 @@
-const getBasePath = (): string => {
-  const base = import.meta.env.BASE_URL || '/';
-  return base.endsWith('/') ? base : `${base}/`;
-};
-
-const withBasePath = (relativePath: string): string => {
-  const clean = relativePath.startsWith('/') ? relativePath.slice(1) : relativePath;
-  return `${getBasePath()}${clean}`;
-};
-
-const gameFaviconFile = (gameId: string, filename: string): string =>
-  withBasePath(`games/${gameId}/favicon/${filename}`);
-
-const theme = {
-  bgColor: '#00AAFF',
-  glowColor: '#fbbf24',
-  bgPanelFrom: 'rgba(255, 255, 255, 0.96)',
-  bgHeaderVia: '#fbbf24',
-};
+/**
+ * @file Game metadata for Game Registry.
+ */
+import type { BaseTheme, GameRegistry } from '@app/types';
 
 export const registry = {
   id: 'sky-cotl',
@@ -24,6 +9,10 @@ export const registry = {
   available: true,
   title: 'SKY',
   emoji: '☁️',
-  favicon: gameFaviconFile('sky-cotl', 'favicon.svg'),
-  theme,
-} as const;
+  theme: {
+    bgFrom: '#ffffff',
+    bgVia: '#00aaff',
+    bgTo: '#ffffff',
+    glow: '#fbbf24',
+  } satisfies BaseTheme,
+} satisfies GameRegistry;

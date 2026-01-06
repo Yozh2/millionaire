@@ -1,13 +1,14 @@
-import { useCallback, useMemo } from 'react';
+/**
+ * Game selector hook for card list state and navigation.
+ */
+import { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getSelectorEntries, type GameRegistryEntry } from './gameRegistry';
-import { withBasePath } from '../../utils/paths';
-import { useImmediateFavicon } from '../../hooks/useFavicon';
+import { useFavicon } from '@app/hooks/useFavicon';
 
 export const useGameSelectorScreen = () => {
   const navigate = useNavigate();
-  const sharedIcon = useMemo(() => withBasePath('icons/favicon.svg'), []);
-  useImmediateFavicon(sharedIcon);
+  useFavicon(null);
 
   const games = getSelectorEntries();
 

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState, type ComponentType } from 'react';
 import { Navigate } from 'react-router-dom';
 import { LoadingScreen } from '@app/screens/loading/LoadingScreen';
-import { useGameIcon, useImmediateFavicon } from '@app/hooks/useFavicon';
+import { useFavicon, useGameIcon } from '@app/hooks/useFavicon';
 import type { GameConfig } from '@engine/types';
 import { getGameById } from '@app/screens/registry';
 
@@ -31,11 +31,10 @@ export default function RegisteredGamePage({ gameId }: RegisteredGamePageProps) 
   const entry = useMemo(() => getGameById(gameId), [gameId]);
   const { iconUrl: gameIconUrl, emoji: gameEmoji } = useGameIcon(
     gameId,
-    entry?.emoji,
-    entry?.favicon
+    entry?.emoji
   );
-  useImmediateFavicon(entry?.favicon, !config);
-  const loadingLogoUrl = entry?.favicon ?? gameIconUrl ?? undefined;
+  useFavicon(entry?.id ?? null, entry?.emoji);
+  const loadingLogoUrl = gameIconUrl ?? undefined;
   const loadingLogoEmoji = entry?.emoji ?? gameEmoji;
 
   useEffect(() => {
@@ -49,7 +48,7 @@ export default function RegisteredGamePage({ gameId }: RegisteredGamePageProps) 
     entry
       .getConfig()
       .then((loaded) => {
-        if (!cancelled) setConfig(loaded);
+        if (!cancelled) setConfig(loaded as GameConfig);
       })
       .catch((err) => {
         if (!cancelled) setError(err instanceof Error ? err.message : String(err));
@@ -102,7 +101,7 @@ export default function RegisteredGamePage({ gameId }: RegisteredGamePageProps) 
   const isEngineLoading = engineLoading?.isLoading ?? !isBooting;
   const shouldShowLoading = isBooting || isEngineLoading;
   const loadingProgress = isBooting ? undefined : engineLoading?.progress;
-  const loadingBgColor = entry?.theme?.bgColor;
+  const loadingBgColor = entry?.theme?.bgFrom;
   const loadingTheme = entry?.theme;
 
   return (

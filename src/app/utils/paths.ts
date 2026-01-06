@@ -38,12 +38,14 @@ export const gameDir = (gameId: string, dir: GamePublicDir): string =>
 export const gameFile = (gameId: string, dir: GamePublicDir, filename: string): string =>
   `${gameDir(gameId, dir)}/${stripLeadingSlash(filename)}`;
 
-export const gameIconsDir = (gameId: string): string => gameDir(gameId, 'icons');
+export const gameIconsDir = (gameId: string): string =>
+  gameDir(gameId, 'icons');
 
 export const gameIconsFile = (gameId: string, filename: string): string =>
   gameFile(gameId, 'icons', filename);
 
-export const gameFaviconDir = (gameId: string): string => gameDir(gameId, 'favicon');
+export const gameFaviconDir = (gameId: string): string =>
+  gameDir(gameId, 'favicon');
 
 export const gameFaviconFile = (gameId: string, filename: string): string =>
   gameFile(gameId, 'favicon', filename);
@@ -69,7 +71,8 @@ export const resolveGameFavicon = (
   return gameFaviconFile(gameId, favicon);
 };
 
-export const gameImagesDir = (gameId: string): string => gameDir(gameId, 'images');
+export const gameImagesDir = (gameId: string): string =>
+  gameDir(gameId, 'images');
 
 export const gameImagesFile = (gameId: string, filename: string): string =>
   gameFile(gameId, 'images', filename);

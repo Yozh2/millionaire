@@ -1,4 +1,14 @@
-import type { GameConfig, GameRegistryMeta } from '@engine/types';
+/**
+ * Build the game registry from eager registry.ts and lazy config.ts modules.
+ * Used by the selector UI and registered routes.
+ */
+import type { GameRegistry } from '@app/types';
+import {
+  GAME_CONFIG_MODULES,
+  GAME_REGISTRY_MODULES,
+  extractGameIdFromPath,
+  resolveGameFavicon,
+} from '@app/utils/paths';
 
 export interface GameRegistryEntry {
   kind: 'game';
@@ -9,33 +19,14 @@ export interface GameRegistryEntry {
   emoji: string;
   available: boolean;
   devOnly?: boolean;
-  theme?: GameRegistryMeta['theme'];
-  favicon?: GameRegistryMeta['favicon'];
-  getConfig: () => Promise<GameConfig>;
+  theme?: GameRegistry['theme'];
+  favicon?: GameRegistry['favicon'];
+  getConfig: () => Promise<unknown>;
 }
-
-type GameConfigModule = { default: GameConfig };
-type GameRegistryModule = {
-  registry: GameRegistryMeta;
-};
-
-const GAME_CONFIG_MODULES = import.meta.glob('../../../games/*/config.ts') as Record<
-  string,
-  () => Promise<GameConfigModule>
->;
-
-const GAME_REGISTRY_MODULES = import.meta.glob('../../../games/*/registry.ts', {
-  eager: true,
-}) as Record<string, GameRegistryModule>;
-
-const extractGameIdFromPath = (path: string): string | null => {
-  const match = path.match(/\/games\/([^/]+)\/(config|registry)\.ts$/);
-  return match?.[1] ?? null;
-};
 
 const buildGameEntries = (): GameRegistryEntry[] => {
   const entries: GameRegistryEntry[] = [];
-  const configLoaders = new Map<string, () => Promise<GameConfig>>();
+  const configLoaders = new Map<string, () => Promise<unknown>>();
 
   for (const [path, loader] of Object.entries(GAME_CONFIG_MODULES)) {
     const id = extractGameIdFromPath(path);
@@ -58,17 +49,20 @@ const buildGameEntries = (): GameRegistryEntry[] => {
       continue;
     }
 
+    const legacyRoutePath = (meta as { routePath?: string }).routePath;
+    const legacyDevOnly = (meta as { devOnly?: boolean }).devOnly;
+
     entries.push({
       kind: 'game',
       id,
-      routePath: meta.routePath ?? `/${id}`,
+      routePath: meta.route ?? legacyRoutePath ?? `/${id}`,
       visible: meta.visible,
       title: meta.title,
       emoji: meta.emoji ?? '🎯',
       available: meta.available ?? true,
-      devOnly: meta.devOnly,
+      devOnly: meta.devonly ?? legacyDevOnly,
       theme: meta.theme,
-      favicon: meta.favicon,
+      favicon: resolveGameFavicon(id, meta.favicon),
       getConfig: configLoader,
     });
   }

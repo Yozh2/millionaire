@@ -5,40 +5,6 @@
 
 import { ComponentType } from 'react';
 
-// =============================
-// App Registry Types (optional)
-// =============================
-
-export interface GameRegistryTheme {
-  /** Optional loading screen center tint (used before config loads). */
-  bgColor?: string;
-  /** Theme hints for the initial LoadingScreen. */
-  glowColor?: string;
-  bgPanelFrom?: string;
-  bgHeaderVia?: string;
-}
-
-export interface GameRegistryMeta {
-  /** Unique game identifier (used for routes/assets) */
-  id: string;
-  /** Show this game in the main selector UI */
-  visible: boolean;
-  /** Whether game is playable (otherwise "coming soon") */
-  available?: boolean;
-  /** Title shown in GameSelector */
-  title: string;
-  /** Fallback emoji icon for cards/loading */
-  emoji?: string;
-  /** Optional direct favicon URL for fast first paint. */
-  favicon?: string;
-  /** Theme hints for the initial LoadingScreen. */
-  theme?: GameRegistryTheme;
-  /** Hide from selector in production, keep routes in dev */
-  devOnly?: boolean;
-  /** Optional route override (default: `/${id}`) */
-  routePath?: string;
-}
-
 export interface CampaignIconProps {
   className?: string;
   size?: CampaignIconSize;
@@ -640,12 +606,6 @@ export interface GameConfig {
 
   /** Audio configuration */
   audio: AudioConfig;
-
-  /**
-   * Selector/registry metadata (optional).
-   * Used by the app landing page to generate game cards automatically.
-   */
-  registry?: GameRegistryMeta;
 
   /**
    * End screen icons (optional, uses defaults if not provided)

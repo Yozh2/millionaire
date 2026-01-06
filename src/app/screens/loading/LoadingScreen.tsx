@@ -4,7 +4,7 @@
  */
 
 import { useEffect, useState, type CSSProperties } from 'react';
-import { getBasePath } from '../../utils/paths';
+import type { BaseTheme } from '@app/types';
 import {
   buildBackgroundGradient,
   createEmojiLogo,
@@ -12,21 +12,18 @@ import {
   toRgba,
   useSmoothedProgress,
   useViewportSize,
-  type LoadingTheme,
   type RingMetrics,
 } from './loadingScreenLogic';
 
 import '@app/styles/LoadingScreen.css';
 
-export type { LoadingTheme } from './loadingScreenLogic';
-
 export interface LoadingScreenProps {
   /** Current progress (0-100). Leave undefined for indeterminate loading. */
   progress?: number;
-  /** Optional loading screen center tint (used for radial loading background). */
+  /** Legacy loading background override (prefer BaseTheme). */
   loadingBgColor?: string;
-  /** Theme hints (optional). */
-  theme?: LoadingTheme;
+  /** Base theme hints (optional). */
+  theme?: BaseTheme;
   /** Logo image URL (optional) */
   logoUrl?: string;
   /** Logo emoji fallback (optional) */
@@ -36,7 +33,7 @@ export interface LoadingScreenProps {
 const DEFAULT_LOGO_EMOJI = '🎯';
 const RING_TRACK_COLOR = 'rgba(255, 255, 255, 0.12)';
 
-const DEFAULT_LOGO_URL = `${getBasePath()}icons/favicon.svg`;
+const DEFAULT_LOGO_URL = createEmojiLogo(DEFAULT_LOGO_EMOJI);
 
 interface LoadingRingProps {
   ring: RingMetrics;
@@ -154,23 +151,24 @@ export function LoadingScreen({
   const { isIndeterminate, displayProgress } = useSmoothedProgress(progress);
   const viewport = useViewportSize();
 
-  const accentColor = theme?.glowColor ?? '#f59e0b';
+  const accentColor = theme?.glow ?? '#f59e0b';
   const accentGlow =
     toRgba(accentColor, 0.4) ?? 'rgba(245, 158, 11, 0.4)';
   const accentGlowSoft =
     toRgba(accentColor, 0.35) ?? 'rgba(245, 158, 11, 0.35)';
   const accentGlowStrong =
     toRgba(accentColor, 0.6) ?? 'rgba(245, 158, 11, 0.6)';
-  const plateauBase =
-    loadingBgColor ??
-    theme?.bgColor ??
-    theme?.bgPanelFrom ??
-    theme?.bgHeaderVia ??
-    '#0b0f14';
-  const plateauHighlight = toRgba(plateauBase, 0.9) ?? plateauBase;
-  const plateauMid = toRgba(plateauBase, 0.75) ?? plateauBase;
-  const plateauDeep = toRgba(plateauBase, 0.65) ?? plateauBase;
-  const backgroundGradient = buildBackgroundGradient(plateauBase);
+  const bgFrom = theme?.bgFrom ?? loadingBgColor ?? '#0b0f14';
+  const bgVia = theme?.bgVia ?? toRgba(bgFrom, 0.35) ?? bgFrom;
+  const bgTo = theme?.bgTo ?? '#000';
+  const plateauHighlight = toRgba(bgFrom, 0.9) ?? bgFrom;
+  const plateauMid = toRgba(bgFrom, 0.75) ?? bgFrom;
+  const plateauDeep = toRgba(bgFrom, 0.65) ?? bgFrom;
+  const backgroundGradient = buildBackgroundGradient({
+    from: bgFrom,
+    via: bgVia,
+    to: bgTo,
+  });
   const fallbackEmoji = logoEmoji ?? DEFAULT_LOGO_EMOJI;
   const resolvedLogoUrl =
     logoUrl ?? (logoEmoji ? createEmojiLogo(logoEmoji) : DEFAULT_LOGO_URL);
