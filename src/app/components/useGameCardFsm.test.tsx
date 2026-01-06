@@ -32,8 +32,6 @@ describe('useGameCardFsm', () => {
     expect(typeof result.current.eventHandlers.onPointerMove).toBe('function');
     expect(typeof result.current.eventHandlers.onPointerUp).toBe('function');
     expect(typeof result.current.eventHandlers.onPointerCancel).toBe('function');
-    expect(typeof result.current.eventHandlers.onLostPointerCapture).toBe(
-      'function'
-    );
+    expect(typeof result.current.eventHandlers.onLostPointerCapture).toBe('function');
   });
 });

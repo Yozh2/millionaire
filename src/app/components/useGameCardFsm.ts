@@ -1,3 +1,7 @@
+/**
+ * FSM + физика для карточки игры: hover/press/tilt с CSS-переменными.
+ * Возвращает состояние и набор pointer-обработчиков.
+ */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { PointerEventHandler, RefObject } from 'react';
 
@@ -185,6 +189,7 @@ export function useGameCardFsm({
     setIsOver(next);
   }, []);
 
+  // Записываем вычисленные значения в CSS-переменные кнопки.
   const applyVars = useCallback((el: HTMLButtonElement) => {
     const m = motionRef.current;
     el.style.setProperty('--game-mainY', `${m.y.toFixed(3)}px`);

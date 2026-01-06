@@ -1,3 +1,7 @@
+/**
+ * Карточка игры для экрана выбора.
+ * Показывает арт/иконку, состояние доступности и интерактивные эффекты.
+ */
 import { useRef } from 'react';
 import { useGameCardFsm } from './useGameCardFsm';
 import { useGameCardImage } from './useGameCardImage';

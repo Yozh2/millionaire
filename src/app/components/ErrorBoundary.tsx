@@ -1,4 +1,8 @@
-import { Component, type ErrorInfo, type ReactNode } from 'react';
+/**
+ * Error boundary для всего приложения.
+ * Перехватывает ошибки рендера и показывает запасной UI.
+ */
+import { Component, type ReactNode, type ErrorInfo } from 'react';
 
 import '@app/styles/ErrorBoundary.css';
 
@@ -18,14 +22,14 @@ function DefaultFallback({ error }: { error: Error | null }) {
     <div className="error-boundary">
       <div className="error-boundary__panel">
         <div className="error-boundary__icon">⚠️</div>
-        <h1 className="error-boundary__title">Что-то пошло не так</h1>
+        <h1 className="error-boundary__title">Something went wrong</h1>
         <p className="error-boundary__message">
-          Произошла непредвиденная ошибка. Попробуйте перезагрузить страницу.
+          An unexpected error has occurred. Please try refreshing the page.
         </p>
         {error && (
           <details className="error-boundary__details">
             <summary className="error-boundary__summary">
-              Техническая информация
+              Technical details
             </summary>
             <pre className="error-boundary__stack">{error.message}</pre>
           </details>
@@ -34,17 +38,15 @@ function DefaultFallback({ error }: { error: Error | null }) {
           onClick={() => window.location.reload()}
           className="error-boundary__button"
         >
-          Перезагрузить
+          Reload
         </button>
       </div>
     </div>
   );
 }
 
-export class ErrorBoundary extends Component<
-  ErrorBoundaryProps,
-  ErrorBoundaryState
-> {
+export class ErrorBoundary extends
+  Component<ErrorBoundaryProps, ErrorBoundaryState> {
   constructor(props: ErrorBoundaryProps) {
     super(props);
     this.state = { hasError: false, error: null };
@@ -66,7 +68,6 @@ export class ErrorBoundary extends Component<
       }
       return <DefaultFallback error={this.state.error} />;
     }
-
     return this.props.children;
   }
 }
