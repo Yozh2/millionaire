@@ -41,7 +41,7 @@ export function CampaignCard({
     campaign.icon ??
     (({ className, size }: CampaignIconProps) => (
       <img
-        src={gameIconsFile(gameId, `${campaign.id}.webp`)}
+        src={gameIconsFile(gameId, `campaigns/${campaign.id}.webp`)}
         alt={campaign.name}
         loading="lazy"
         draggable={false}

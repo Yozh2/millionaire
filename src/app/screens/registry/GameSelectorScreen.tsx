@@ -59,7 +59,6 @@ export function GameSelectorScreen() {
 
         {/* Footer */}
         <div className="game-selector__footer">
-          <p>Millionaire Quiz Engine</p>
           <p>
             <a
               href="https://github.com/Yozh2/millionaire"

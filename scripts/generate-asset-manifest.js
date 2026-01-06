@@ -138,6 +138,7 @@ function scanGames() {
  */
 function scanGameAssets(gameDir, gameId) {
   const iconsDir = join(gameDir, 'icons');
+  const campaignIconsDir = join(iconsDir, 'campaigns');
   const faviconDir = join(gameDir, 'favicon');
 
   const gameCardFilename = findFirstExistingFile(iconsDir, GAME_CARD_NAMES);
@@ -161,6 +162,11 @@ function scanGameAssets(gameDir, gameId) {
     'Retreat.ogg',
   ]);
 
+  const level1Icons = [
+    ...getFilesFromDir(iconsDir),
+    ...getFilesFromDir(campaignIconsDir),
+  ].sort();
+
   const game = {
     // Level 0: For GameSelector cards
     cardAssets: {
@@ -176,7 +182,7 @@ function scanGameAssets(gameDir, gameId) {
 
     // Level 1: StartScreen assets
     level1: {
-      icons: getFilesFromDir(iconsDir),
+      icons: level1Icons,
       sounds: getFilesFromDir(join(gameDir, 'sounds'), isAudioFile),
       mainMenuMusic: mainMenuMusicFilename
         ? `/games/${gameId}/music/${mainMenuMusicFilename}`

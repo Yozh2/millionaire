@@ -24,7 +24,7 @@ const createDefaultCampaignIcon =
   (gameId: string, campaignId: string, alt: string) =>
   ({ className, size }: CampaignIconProps) =>
     jsx('img', {
-      src: gameIconsFile(gameId, `${campaignId}.webp`),
+      src: gameIconsFile(gameId, `campaigns/${campaignId}.webp`),
       alt,
       draggable: false,
       loading: 'lazy',

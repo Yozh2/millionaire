@@ -1,5 +1,5 @@
 /**
- * Millionaire Quiz Engine - Main App
+ * Millionaire - Main App
  *
  * A "Who Wants to Be a Millionaire" style quiz game engine
  * supporting multiple themed games.

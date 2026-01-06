@@ -13,13 +13,12 @@
       },
       "level1": {
         "icons": [
+          "/games/bg3/icons/campaigns/darkurge.webp",
+          "/games/bg3/icons/campaigns/hero.webp",
+          "/games/bg3/icons/campaigns/mindflayer.webp",
           "/games/bg3/icons/coin.webp",
-          "/games/bg3/icons/darkurge.webp",
           "/games/bg3/icons/defeat.webp",
           "/games/bg3/icons/game-card.webp",
-          "/games/bg3/icons/hero.webp",
-          "/games/bg3/icons/logo.webp",
-          "/games/bg3/icons/mindflayer.webp",
           "/games/bg3/icons/retreat.webp",
           "/games/bg3/icons/victory.webp"
         ],
@@ -134,10 +133,9 @@
       },
       "level1": {
         "icons": [
+          "/games/sky-cotl/icons/campaigns/skykid.webp",
           "/games/sky-cotl/icons/coin.webp",
-          "/games/sky-cotl/icons/game-card.webp",
-          "/games/sky-cotl/icons/logo.webp",
-          "/games/sky-cotl/icons/skykid.webp"
+          "/games/sky-cotl/icons/game-card.webp"
         ],
         "sounds": [],
         "mainMenuMusic": null,
@@ -164,14 +162,12 @@
       },
       "level1": {
         "icons": [
-          "/games/transformers/icons/autocracy.webp",
-          "/games/transformers/icons/coin.webp",
+          "/games/transformers/icons/campaigns/autocracy.webp",
+          "/games/transformers/icons/campaigns/megatron.webp",
+          "/games/transformers/icons/campaigns/skybound.webp",
           "/games/transformers/icons/defeat.webp",
           "/games/transformers/icons/game-card.webp",
-          "/games/transformers/icons/logo.webp",
-          "/games/transformers/icons/megatron.webp",
           "/games/transformers/icons/retreat.webp",
-          "/games/transformers/icons/skybound.webp",
           "/games/transformers/icons/victory.webp"
         ],
         "sounds": [
