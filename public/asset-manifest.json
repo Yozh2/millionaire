@@ -1,9 +1,7 @@
 {
   "version": "1.0.0",
   "engine": {
-    "icons": [
-      "/icons/favicon.svg"
-    ],
+    "icons": [],
     "images": [],
     "sounds": []
   },

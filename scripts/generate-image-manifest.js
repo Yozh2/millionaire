@@ -3,10 +3,9 @@
  * Generate image manifests for header slideshows.
  *
  * Scans the image directory structure and creates manifest.json files
- * for both engine fallback images and game-specific images.
+ * for game-specific images.
  *
  * Directory structure:
- *   public/images/                    - Engine fallback images
  *   public/games/{gameId}/images/     - Game-specific images
  *
  * See README.md for full directory structure documentation.
@@ -24,7 +23,6 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const PUBLIC_DIR = join(__dirname, '..', 'public');
-const ENGINE_IMAGES_DIR = join(PUBLIC_DIR, 'images');
 const GAMES_DIR = join(PUBLIC_DIR, 'games');
 const IMAGE_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.webp', '.gif'];
 
@@ -108,27 +106,6 @@ function flattenManifest(obj) {
 }
 
 /**
- * Generate manifest for engine fallback images.
- */
-function generateEngineManifest() {
-  console.log('📁 Scanning engine fallback images...');
-
-  const manifest = scanDirectory(ENGINE_IMAGES_DIR);
-
-  if (!manifest) {
-    console.log('   No engine images found');
-    return null;
-  }
-
-  const flattened = flattenManifest(manifest);
-  const manifestPath = join(ENGINE_IMAGES_DIR, 'manifest.json');
-  writeFileSync(manifestPath, JSON.stringify(flattened, null, 2));
-
-  console.log(`   ✅ Created ${manifestPath}`);
-  return flattened;
-}
-
-/**
  * Generate manifest for a specific game.
  */
 function generateGameManifest(gameId) {
@@ -177,13 +154,6 @@ function main() {
   let totalManifests = 0;
   let totalImages = 0;
 
-  // Generate engine manifest
-  const engineManifest = generateEngineManifest();
-  if (engineManifest) {
-    totalManifests++;
-    totalImages += countImages(engineManifest);
-  }
-
   // Generate game manifests
   if (existsSync(GAMES_DIR)) {
     console.log('\n📁 Scanning game images...');
@@ -210,9 +180,6 @@ function main() {
   if (totalManifests === 0) {
     console.log('📭 No images found.\n');
     console.log('To add slideshow images, create directories:');
-    console.log('  • public/images/start/');
-    console.log('  • public/images/play/{easy,medium,hard}/');
-    console.log('  • public/images/end/{victory,retreat,defeat}/');
     console.log('  • public/games/{gameId}/images/...\n');
     console.log('See README.md for full structure documentation.\n');
   } else {

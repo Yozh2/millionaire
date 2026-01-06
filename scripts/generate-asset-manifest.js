@@ -5,7 +5,7 @@
  * Scans /public/ directory and creates a JSON manifest with all assets
  * organized by loading levels:
  *
- * Level 0: Engine assets + game icons for GameSelector
+ * Level 0: Game cards for GameSelector
  * Level 1: Game-specific assets for StartScreen
  * Level 1.1: Campaign-specific assets (background loading)
  * Level 2: In-game assets (background loading during gameplay)
@@ -107,25 +107,6 @@ function getSubdirectories(dirPath) {
     if (entry.startsWith('.')) return false;
     return statSync(join(dirPath, entry)).isDirectory();
   });
-}
-
-/**
- * Scan engine assets (Level 0 base).
- */
-function scanEngineAssets() {
-  console.log('📁 Scanning engine assets...');
-
-  const engine = {
-    icons: getFilesRecursive(join(PUBLIC_DIR, 'icons')),
-    images: getFilesRecursive(join(PUBLIC_DIR, 'images')),
-    sounds: getFilesFromDir(join(PUBLIC_DIR, 'sounds'), isAudioFile),
-  };
-
-  const total =
-    engine.icons.length + engine.images.length + engine.sounds.length;
-  console.log(`   ✅ Found ${total} engine assets`);
-
-  return engine;
 }
 
 /**
@@ -375,7 +356,7 @@ function generateManifest() {
 
   const manifest = {
     version: '1.0.0',
-    engine: scanEngineAssets(),
+    engine: { icons: [], images: [], sounds: [] },
     games: scanGames(),
   };
 

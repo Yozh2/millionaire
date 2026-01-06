@@ -16,12 +16,18 @@ npm-debug.log*
 .DS_Store
 Thumbs.db
 
+# Tooling caches
+.mypy_cache/
+
 # Environment
 .env
 .env.local
 
 # Design sources
 *.pxd
+
+# Local scratch
+temp/
 
 # Force include images in public/ (override global gitignore)
 !public/**/*.png

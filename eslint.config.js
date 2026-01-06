@@ -1,11 +1,12 @@
 import js from '@eslint/js';
+import { defineConfig } from 'eslint/config';
 import globals from 'globals';
 import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
 import tseslint from 'typescript-eslint';
 import eslintConfigPrettier from 'eslint-config-prettier';
 
-export default tseslint.config(
+export default defineConfig([
   { ignores: ['dist', 'public', 'scripts'] },
   {
     extends: [js.configs.recommended, ...tseslint.configs.recommended, eslintConfigPrettier],
@@ -77,5 +78,5 @@ export default tseslint.config(
       'react-hooks/immutability': 'off', // False positive on recursive useCallback
       'no-case-declarations': 'off', // Switch case declarations in AssetLoader
     },
-  }
-);
+  },
+]);
