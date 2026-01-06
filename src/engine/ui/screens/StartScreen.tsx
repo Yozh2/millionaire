@@ -4,7 +4,7 @@
 
 import type { PointerEvent } from 'react';
 import { Campaign, GameConfig, ThemeColors } from '@engine/types';
-import { CampaignSelectionPanel } from '../panels/CampaignSelectionPanel';
+import { CampaignSelectionPanel } from '@engine/ui/panels/CampaignSelectionPanel';
 
 interface StartScreenProps {
   config: GameConfig;

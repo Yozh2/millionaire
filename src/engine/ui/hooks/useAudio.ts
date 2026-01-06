@@ -8,9 +8,9 @@
 
 import { useCallback, useEffect } from 'react';
 import type { Campaign, Companion, GameConfig } from '@engine/types';
-import { setGameId } from '../../utils/audioPlayer';
-import { useMusicPlayer } from '../../audio/useMusicPlayer';
-import { useSoundPlayer } from '../../audio/useSoundPlayer';
+import { setGameId } from '@engine/utils/audioPlayer';
+import { useMusicPlayer } from '@engine/audio/useMusicPlayer';
+import { useSoundPlayer } from '@engine/audio/useSoundPlayer';
 
 export interface UseAudioReturn {
   /** Is music currently playing (or enabled for SFX) */

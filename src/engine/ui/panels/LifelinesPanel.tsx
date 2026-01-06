@@ -1,8 +1,8 @@
 import type { MouseEvent } from 'react';
 import type { LifelineConfig } from '@engine/types';
-import { LifelineButton } from '../components/buttons';
-import { Panel } from '../components/panel';
-import { useTheme } from '../theme';
+import { LifelineButton } from '@engine/ui/components/buttons';
+import { Panel } from '@engine/ui/components/panel';
+import { useTheme } from '@engine/ui/theme';
 
 interface LifelinesPanelProps {
   selectedAnswer: number | null;

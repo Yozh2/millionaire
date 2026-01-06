@@ -1,4 +1,4 @@
-import { shuffleArray } from '../utils/shuffleArray';
+import { shuffleArray } from '@engine/game/utils/shuffleArray';
 
 export interface FiftyFiftyInput {
   correctOriginalIndex: number;

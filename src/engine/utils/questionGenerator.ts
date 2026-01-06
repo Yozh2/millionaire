@@ -3,4 +3,4 @@ export {
   getQuestionDifficulty,
   calculatePrizeLadder,
   getGuaranteedPrize,
-} from '../game';
+} from '@engine/game';

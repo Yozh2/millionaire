@@ -5,7 +5,7 @@
  * Shows available games as cards with descriptions.
  */
 
-import { GameCard } from '../../components/GameCard';
+import { GameCard } from '@app/components/GameCard';
 import { useGameSelectorScreen } from './useGameSelectorScreen';
 import type { GameRegistryEntry } from './gameRegistry';
 

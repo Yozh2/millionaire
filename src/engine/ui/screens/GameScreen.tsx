@@ -4,18 +4,18 @@
 
 import { useRef } from 'react';
 import { EffectsAPI, GameConfig, ThemeColors } from '@engine/types';
-import { UseGameStateReturn } from '../hooks/useGameState';
-import { UseAudioReturn } from '../hooks/useAudio';
+import { UseGameStateReturn } from '@engine/ui/hooks/useGameState';
+import { UseAudioReturn } from '@engine/ui/hooks/useAudio';
 import {
   DefaultCoinIcon,
   DefaultPhoneHintIcon,
   DefaultStarIcon,
-} from '../icons/DefaultIcons';
-import { AnswersPanel } from '../panels/AnswersPanel';
-import { LifelinesPanel } from '../panels/LifelinesPanel';
-import { LifelineResultPanel } from '../panels/LifelineResultPanel';
-import { PrizeLadderPanel } from '../panels/PrizeLadderPanel';
-import { QuestionPanel } from '../panels/QuestionPanel';
+} from '@engine/ui/icons/DefaultIcons';
+import { AnswersPanel } from '@engine/ui/panels/AnswersPanel';
+import { LifelinesPanel } from '@engine/ui/panels/LifelinesPanel';
+import { LifelineResultPanel } from '@engine/ui/panels/LifelineResultPanel';
+import { PrizeLadderPanel } from '@engine/ui/panels/PrizeLadderPanel';
+import { QuestionPanel } from '@engine/ui/panels/QuestionPanel';
 
 interface GameScreenProps {
   config: GameConfig;

@@ -1,4 +1,4 @@
-import { nbsp } from '../constants';
+import { nbsp } from '@engine/constants';
 
 const SIMPLE_PLACEHOLDER_RE = /^[A-Za-z0-9_]+$/;
 

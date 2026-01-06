@@ -11,7 +11,8 @@ export default defineConfig({
       '@engine': fileURLToPath(new URL('./src/engine', import.meta.url)),
       '@games': fileURLToPath(new URL('./src/games', import.meta.url)),
       '@app': fileURLToPath(new URL('./src/app', import.meta.url)),
-      '@public': fileURLToPath(new URL('./src/public/index.ts', import.meta.url)),
+      '@pages': fileURLToPath(new URL('./src/pages', import.meta.url)),
+      '@public': fileURLToPath(new URL('./public', import.meta.url)),
     },
   },
   test: {
@@ -19,7 +20,7 @@ export default defineConfig({
     setupFiles: './vitest.setup.ts',
     globals: true,
     coverage: {
-      provider: 'c8',
+      provider: 'v8',
     },
   },
 });

@@ -4,7 +4,7 @@
  */
 
 import { useState, useCallback, useRef } from 'react';
-import type { EffectType } from '../effects/ParticleCanvas';
+import type { EffectType } from '@engine/ui/effects/ParticleCanvas';
 
 interface EffectState {
   effect: EffectType | null;

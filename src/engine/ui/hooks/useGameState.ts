@@ -8,7 +8,7 @@ import type {
   PrizeLadder,
   Question,
 } from '@engine/types';
-import { logger } from '../../services';
+import { logger } from '@engine/services';
 import {
   createGameSession,
   createInitialGameDomainState,
@@ -23,9 +23,9 @@ import {
   selectCurrentPrize,
   selectCurrentQuestionData,
   selectTotalQuestions,
-} from '../../game';
-import { shuffleArray } from '../../game/utils/shuffleArray';
-import { ANSWER_REVEAL_DURATION_MS } from '../../constants';
+} from '@engine/game';
+import { shuffleArray } from '@engine/game/utils/shuffleArray';
+import { ANSWER_REVEAL_DURATION_MS } from '@engine/constants';
 
 export interface GameStateData {
   /** Current game state */

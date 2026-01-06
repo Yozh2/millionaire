@@ -2,7 +2,7 @@ import type { ComponentType } from 'react';
 import { isValidElement } from 'react';
 import type { DrawCoinFunction, GameConfig } from '@engine/types';
 import { drawDefaultCoin } from './ParticleCanvas';
-import { DefaultCoinIcon } from '../icons/DefaultIcons';
+import { DefaultCoinIcon } from '@engine/ui/icons/DefaultIcons';
 
 type ReactChildLike =
   | string

@@ -1,14 +1,14 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { Campaign, GameConfig } from '@engine/types';
-import { logger } from '../services';
+import { logger } from '@engine/services';
 import {
   ensureAudioContext,
   warmUpAudioContext,
   isSoundEnabled,
   setSoundEnabled as setEngineSoundEnabled,
-} from '../utils/audioPlayer';
-import { getAssetPaths, checkFileExists } from '../utils/assetLoader';
-import { getPreloadedAudioSrc } from '../utils/audioPlayer';
+} from '@engine/utils/audioPlayer';
+import { getAssetPaths, checkFileExists } from '@engine/utils/assetLoader';
+import { getPreloadedAudioSrc } from '@engine/utils/audioPlayer';
 
 export interface UseMusicPlayerReturn {
   isMusicPlaying: boolean;

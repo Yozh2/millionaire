@@ -1,6 +1,6 @@
 import type { ComponentType } from 'react';
 import type { ThemeColors } from '@engine/types';
-import { Panel, PanelHeader } from '../components/panel';
+import { Panel, PanelHeader } from '@engine/ui/components/panel';
 
 interface QuestionPanelProps {
   headerText: string;

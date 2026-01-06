@@ -2,10 +2,10 @@ import { useMemo } from 'react';
 import type { MouseEvent } from 'react';
 
 import type { GameConfig } from '@engine/types';
-import { Panel, PanelHeader } from '../panel';
-import { LifelineButton } from '../buttons';
-import { useTheme } from '../../theme';
-import { DefaultHeadphonesIcon } from '../../icons/DefaultIcons';
+import { Panel, PanelHeader } from '@engine/ui/components/panel';
+import { LifelineButton } from '@engine/ui/components/buttons';
+import { useTheme } from '@engine/ui/theme';
+import { DefaultHeadphonesIcon } from '@engine/ui/icons/DefaultIcons';
 
 function VolumeOnIcon() {
   return <span aria-hidden="true">🔊</span>;

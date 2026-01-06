@@ -17,12 +17,12 @@
 
 import { lazy, Suspense } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { LoadingScreen } from '@app/screens/loading/LoadingScreen';
-import RegisteredGamePage from './pages/RegisteredGamePage';
-import { getGameEntries } from '@app/screens/registry';
+import { LoadingScreen } from './screens/loading/LoadingScreen';
+import RegisteredGamePage from '@pages/RegisteredGamePage';
+import { getGameEntries } from './screens/registry';
 
 const GAME_ENTRIES = getGameEntries();
-const GameSelector = lazy(() => import('./app/screens/registry/GameSelectorScreen'));
+const GameSelector = lazy(() => import('./screens/registry/GameSelectorScreen'));
 
 /**
  * Main application component with routing.

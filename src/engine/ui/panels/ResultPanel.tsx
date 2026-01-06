@@ -2,14 +2,14 @@ import { useLayoutEffect, useMemo, useRef } from 'react';
 import type { PointerEvent, RefObject, ComponentType } from 'react';
 import type { GameConfig, ThemeColors } from '@engine/types';
 import { endScreenIconFrameClass } from '@engine/types';
-import { ActionButton } from '../components/buttons';
-import { Panel, PanelHeader } from '../components/panel';
+import { ActionButton } from '@engine/ui/components/buttons';
+import { Panel, PanelHeader } from '@engine/ui/components/panel';
 import {
   DefaultCoinIcon,
   DefaultDefeatIcon,
   DefaultRetreatIcon,
   DefaultVictoryIcon,
-} from '../icons/DefaultIcons';
+} from '@engine/ui/icons/DefaultIcons';
 
 export type ResultVariant = 'victory' | 'defeat' | 'retreat';
 

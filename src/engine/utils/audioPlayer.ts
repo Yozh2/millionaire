@@ -13,7 +13,7 @@
  */
 
 import { getAssetPaths, checkFileExists } from './assetLoader';
-import { logger } from '../services/logger';
+import { logger } from '@engine/services/logger';
 
 // ============================================
 // Types

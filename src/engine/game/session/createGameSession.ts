@@ -1,7 +1,7 @@
 import type { GameConfig, PrizeLadder, Question } from '@engine/types';
-import { selectQuestionsFromPool } from '../questions';
-import { calculatePrizeLadder } from '../prizes';
-import { shuffleArray } from '../utils/shuffleArray';
+import { selectQuestionsFromPool } from '@engine/game/questions';
+import { calculatePrizeLadder } from '@engine/game/prizes';
+import { shuffleArray } from '@engine/game/utils/shuffleArray';
 
 export interface GameSession {
   questions: Question[];

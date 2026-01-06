@@ -8,9 +8,9 @@ import {
   playSoundByType,
   playVoice,
   getPreloadedAudioSrc,
-} from '../utils/audioPlayer';
-import { getAssetPaths } from '../utils/assetLoader';
-import type { OscillatorSoundKey } from '../utils/audioPlayer';
+} from '@engine/utils/audioPlayer';
+import { getAssetPaths } from '@engine/utils/assetLoader';
+import type { OscillatorSoundKey } from '@engine/utils/audioPlayer';
 import { resolveCompanionVoiceFilename } from './resolveCompanionVoice';
 
 export type TaggedSoundId = 'campaignSelect';

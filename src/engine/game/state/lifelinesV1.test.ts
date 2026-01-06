@@ -2,8 +2,8 @@ import type { GameDomainState } from './types';
 import type { Question } from '@engine/types';
 import { gameReducer } from './reducer';
 import { resolveAnswer } from './resolveAnswer';
-import { getHostSuggestion } from '../lifelines/host';
-import { pickSwitchQuestionIndex } from '../lifelines/switch';
+import { getHostSuggestion } from '@engine/game/lifelines/host';
+import { pickSwitchQuestionIndex } from '@engine/game/lifelines/switch';
 
 function makeQuestion(correct: number): Question {
   return {

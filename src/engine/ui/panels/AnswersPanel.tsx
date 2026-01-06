@@ -1,6 +1,6 @@
 import type { MouseEvent, MutableRefObject } from 'react';
 import type { ThemeColors } from '@engine/types';
-import { AnswerButton } from '../components/buttons';
+import { AnswerButton } from '@engine/ui/components/buttons';
 
 interface AnswersPanelProps {
   answers: string[];

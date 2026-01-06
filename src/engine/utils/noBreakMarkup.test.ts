@@ -1,4 +1,4 @@
-import { nbsp } from '../constants';
+import { nbsp } from '@engine/constants';
 import { applyNoBreakMarkup, applyNoBreakMarkupDeep } from './noBreakMarkup';
 
 describe('applyNoBreakMarkup', () => {

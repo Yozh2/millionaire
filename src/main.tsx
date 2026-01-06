@@ -3,8 +3,8 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import { LoadingScreen } from '@app/screens/loading/LoadingScreen';
 import { ErrorBoundary } from '@app/components/ErrorBoundary';
-import '@engine/ui/styles/Engine.css';
 import '@app/styles/index.css';
+import '@engine/ui/styles/Engine.css';
 
 const preventDefault = (e: Event) => e.preventDefault();
 
@@ -50,7 +50,7 @@ const root = ReactDOM.createRoot(document.getElementById('root')!);
 
 root.render(<LoadingScreen />);
 
-import('./App')
+import('./app/App')
   .then(({ default: App }) => {
     root.render(
       <React.StrictMode>

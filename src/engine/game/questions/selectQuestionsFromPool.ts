@@ -1,6 +1,6 @@
 import type { Question, QuestionPool } from '@engine/types';
-import { MAX_QUESTIONS_PER_TIER, DIFFICULTY_TIERS } from '../../constants';
-import { shuffleArray } from '../utils/shuffleArray';
+import { MAX_QUESTIONS_PER_TIER, DIFFICULTY_TIERS } from '@engine/constants';
+import { shuffleArray } from '@engine/game/utils/shuffleArray';
 
 export const selectQuestionsFromPool = (
   pool: QuestionPool,

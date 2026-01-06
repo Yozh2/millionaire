@@ -1,8 +1,8 @@
 import { useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type PointerEvent } from 'react';
 import type { Campaign, GameConfig, ThemeColors } from '@engine/types';
-import { ActionButton } from '../components/buttons';
-import { Panel, PanelHeader } from '../components/panel';
-import { CampaignCard } from '../components/cards/campaign/CampaignCard';
+import { ActionButton } from '@engine/ui/components/buttons';
+import { Panel, PanelHeader } from '@engine/ui/components/panel';
+import { CampaignCard } from '@engine/ui/components/cards/campaign/CampaignCard';
 
 const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
 

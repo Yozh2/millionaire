@@ -5,8 +5,8 @@
 import { useEffect, useRef, useCallback } from 'react';
 import type { PointerEvent } from 'react';
 import { EffectsAPI, GameConfig, ThemeColors } from '@engine/types';
-import { UseGameStateReturn } from '../hooks/useGameState';
-import { ResultPanel, type ResultVariant } from '../panels/ResultPanel';
+import { UseGameStateReturn } from '@engine/ui/hooks/useGameState';
+import { ResultPanel, type ResultVariant } from '@engine/ui/panels/ResultPanel';
 
 interface EndScreenProps {
   config: GameConfig;

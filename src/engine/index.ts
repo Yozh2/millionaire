@@ -6,8 +6,8 @@
  *
  * @example
  * ```tsx
- * import { MillionaireGame } from './engine';
- * import { myGameConfig } from './games/myGame';
+ * import { MillionaireGame } from './';
+ * import { myGameConfig } from '@games/myGame';
  *
  * function App() {
  *   return <MillionaireGame config={myGameConfig} />;
@@ -34,7 +34,6 @@ export type {
   LifelinesConfig,
   PrizesConfig,
   SoundEffects,
-  GameRegistryMeta,
   AudioConfig,
   GameStrings,
   GameState,
@@ -54,12 +53,6 @@ export type {
 // UI entry (primary exports)
 // =========================
 export { MillionaireGame } from './ui/MillionaireGame';
-export {
-  LoadingScreen,
-  LoadingIndicator,
-  type LoadingScreenProps,
-} from '@app/screens/loading/LoadingScreen';
-
 // =========================
 // UI primitives / effects
 // =========================

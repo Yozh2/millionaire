@@ -5,7 +5,7 @@ import type {
   LifelinePhoneResult,
   LifelineSwitchResult,
 } from '@engine/types';
-import type { GameSession } from '../session';
+import type { GameSession } from '@engine/game/session';
 import type { LifelineAvailabilityState } from './types';
 
 export type AnswerOutcome = 'correct' | 'defeat' | 'victory' | 'retry';

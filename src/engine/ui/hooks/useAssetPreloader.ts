@@ -9,7 +9,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 
-import { assetLoader, LoadLevel } from '../../services';
+import { assetLoader, LoadLevel } from '@engine/services';
 
 /** State returned by the useAssetPreloader hook */
 export interface PreloadState {

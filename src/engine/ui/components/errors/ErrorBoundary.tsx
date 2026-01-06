@@ -6,7 +6,7 @@
  */
 
 import { Component, ErrorInfo, ReactNode } from 'react';
-import { logger } from '../../../services';
+import { logger } from '@engine/services';
 
 interface ErrorBoundaryProps {
   /** Child components to wrap */

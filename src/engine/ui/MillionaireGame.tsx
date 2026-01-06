@@ -19,7 +19,7 @@ import {
   useEffects,
   useAssetPreloader,
 } from './hooks';
-import { assetLoader, logger } from '../services';
+import { assetLoader, logger } from '@engine/services';
 import { Campaign, DEFAULT_FONT_FAMILY, GameConfig, ThemeColors } from '@engine/types';
 import { EndScreen } from './screens/EndScreen';
 import { GameScreen } from './screens/GameScreen';
@@ -28,9 +28,9 @@ import { StartScreen } from './screens/StartScreen';
 import { PortalHeader } from './layout/header/PortalHeader';
 import { PortalHeaderTitle, type PortalHeaderTitlePhase } from './layout/header/PortalHeaderTitle';
 import { SoundConsentOverlay } from './components/overlays/SoundConsentOverlay';
-import { DEFAULT_PORTAL_HEADER_TUNER_VALUES } from '@engine/ui/components/sliders/portalHeaderTunerDefaults';
+import { DEFAULT_PORTAL_HEADER_TUNER_VALUES } from './components/sliders/portalHeaderTunerDefaults';
 import { createCoinDrawFromConfig } from './effects/createCoinDrawFromConfig';
-import { preprocessGameConfig } from '../utils/preprocessGameConfig';
+import { preprocessGameConfig } from '@engine/utils/preprocessGameConfig';
 
 interface MillionaireGameProps {
   /** Game configuration - defines modes, questions, themes, etc. */
