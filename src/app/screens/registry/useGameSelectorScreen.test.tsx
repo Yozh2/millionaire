@@ -34,7 +34,9 @@ vi.mock('./gameRegistry', () => ({
 
 const loadHook = async () => {
   vi.resetModules();
-  return (await import('./useGameSelectorScreen')).useGameSelectorScreen;
+  const { useGameSelectorScreen } = await import('./useGameSelectorScreen');
+  const { LoadingProvider } = await import('@app/screens/loading/LoadingOrchestrator');
+  return { useGameSelectorScreen, LoadingProvider };
 };
 
 describe('useGameSelectorScreen', () => {
@@ -46,8 +48,10 @@ describe('useGameSelectorScreen', () => {
   });
 
   it('returns selector entries and navigates on available entry', async () => {
-    const useGameSelectorScreen = await loadHook();
-    const { result } = renderHook(() => useGameSelectorScreen());
+    const { useGameSelectorScreen, LoadingProvider } = await loadHook();
+    const { result } = renderHook(() => useGameSelectorScreen(), {
+      wrapper: ({ children }) => <LoadingProvider>{children}</LoadingProvider>,
+    });
 
     expect(result.current.games).toBe(selectorEntries);
 
@@ -66,8 +70,10 @@ describe('useGameSelectorScreen', () => {
   });
 
   it('applies a default emoji favicon on mount', async () => {
-    const useGameSelectorScreen = await loadHook();
-    renderHook(() => useGameSelectorScreen());
+    const { useGameSelectorScreen, LoadingProvider } = await loadHook();
+    renderHook(() => useGameSelectorScreen(), {
+      wrapper: ({ children }) => <LoadingProvider>{children}</LoadingProvider>,
+    });
 
     await waitFor(() => {
       const link = document.querySelector('link[rel="icon"]');
