@@ -18,17 +18,17 @@
           "/games/bg3/icons/campaigns/mindflayer.webp"
         ],
         "sounds": [
-          "/games/bg3/sounds/action-press.ogg",
-          "/games/bg3/sounds/answer-click.ogg",
-          "/games/bg3/sounds/defeat.ogg",
-          "/games/bg3/sounds/lifeline-audience.ogg",
-          "/games/bg3/sounds/lifeline-fifty.ogg",
-          "/games/bg3/sounds/retreat.ogg",
-          "/games/bg3/sounds/select-darkurge.ogg",
-          "/games/bg3/sounds/select-hero.ogg",
-          "/games/bg3/sounds/select-mindflayer.ogg"
+          "/games/bg3/sounds/action-press.m4a",
+          "/games/bg3/sounds/answer-click.m4a",
+          "/games/bg3/sounds/defeat.m4a",
+          "/games/bg3/sounds/lifeline-audience.m4a",
+          "/games/bg3/sounds/lifeline-fifty.m4a",
+          "/games/bg3/sounds/retreat.m4a",
+          "/games/bg3/sounds/select-darkurge.m4a",
+          "/games/bg3/sounds/select-hero.m4a",
+          "/games/bg3/sounds/select-mindflayer.m4a"
         ],
-        "mainMenuMusic": "/games/bg3/music/menu.ogg",
+        "mainMenuMusic": "/games/bg3/music/menu.m4a",
         "startImages": [],
         "campaignStartImages": {
           "darkurge": [
@@ -43,9 +43,9 @@
         }
       },
       "level2": {
-        "defeatMusic": "/games/bg3/music/defeat.ogg",
-        "victoryMusic": "/games/bg3/music/victory.ogg",
-        "retreatMusic": "/games/bg3/music/retreat.ogg",
+        "defeatMusic": "/games/bg3/music/defeat.m4a",
+        "victoryMusic": "/games/bg3/music/Victory.m4a",
+        "retreatMusic": "/games/bg3/music/retreat.m4a",
         "icons": [
           "/games/bg3/icons/coin.webp",
           "/games/bg3/icons/defeat.webp",
@@ -59,15 +59,15 @@
         }
       },
       "voices": [
-        "/games/bg3/voices/Astarion.ogg",
-        "/games/bg3/voices/Gale.ogg",
-        "/games/bg3/voices/Karlach.ogg",
-        "/games/bg3/voices/Shadowheart.ogg"
+        "/games/bg3/voices/Astarion.m4a",
+        "/games/bg3/voices/Gale.m4a",
+        "/games/bg3/voices/Karlach.m4a",
+        "/games/bg3/voices/Shadowheart.m4a"
       ],
       "campaigns": {
         "darkurge": {
           "level1_1": {
-            "music": "/games/bg3/music/darkurge.ogg",
+            "music": "/games/bg3/music/DarkUrge.m4a",
             "musicAlt": null,
             "playImages": {
               "easy": []
@@ -87,7 +87,7 @@
         },
         "hero": {
           "level1_1": {
-            "music": "/games/bg3/music/hero.ogg",
+            "music": "/games/bg3/music/Hero.m4a",
             "musicAlt": null,
             "playImages": {
               "easy": []
@@ -107,7 +107,7 @@
         },
         "mindflayer": {
           "level1_1": {
-            "music": "/games/bg3/music/mindflayer.ogg",
+            "music": "/games/bg3/music/MindFlayer.m4a",
             "musicAlt": null,
             "playImages": {
               "easy": []
@@ -169,23 +169,23 @@
           "/games/transformers/icons/campaigns/skybound.webp"
         ],
         "sounds": [
-          "/games/transformers/sounds/action-press.ogg",
-          "/games/transformers/sounds/answer-click.ogg",
-          "/games/transformers/sounds/correct.ogg",
-          "/games/transformers/sounds/defeat.ogg",
-          "/games/transformers/sounds/lifeline-audience.ogg",
-          "/games/transformers/sounds/lifeline-double.ogg",
-          "/games/transformers/sounds/lifeline-fifty.ogg",
-          "/games/transformers/sounds/lifeline-phone.ogg",
-          "/games/transformers/sounds/retreat.ogg",
-          "/games/transformers/sounds/select-autocracy.ogg",
-          "/games/transformers/sounds/select-megatron.ogg",
-          "/games/transformers/sounds/select-megatron2.ogg",
-          "/games/transformers/sounds/select-megatron3.ogg",
-          "/games/transformers/sounds/select-skybound.ogg",
-          "/games/transformers/sounds/victory.ogg"
+          "/games/transformers/sounds/action-press.m4a",
+          "/games/transformers/sounds/answer-click.m4a",
+          "/games/transformers/sounds/correct.m4a",
+          "/games/transformers/sounds/defeat.m4a",
+          "/games/transformers/sounds/lifeline-audience.m4a",
+          "/games/transformers/sounds/lifeline-double.m4a",
+          "/games/transformers/sounds/lifeline-fifty.m4a",
+          "/games/transformers/sounds/lifeline-phone.m4a",
+          "/games/transformers/sounds/retreat.m4a",
+          "/games/transformers/sounds/select-autocracy.m4a",
+          "/games/transformers/sounds/select-megatron.m4a",
+          "/games/transformers/sounds/select-megatron2.m4a",
+          "/games/transformers/sounds/select-megatron3.m4a",
+          "/games/transformers/sounds/select-skybound.m4a",
+          "/games/transformers/sounds/victory.m4a"
         ],
-        "mainMenuMusic": "/games/transformers/music/menu.ogg",
+        "mainMenuMusic": "/games/transformers/music/menu.m4a",
         "startImages": [
           "/games/transformers/images/start/01.webp",
           "/games/transformers/images/start/02.webp",
@@ -211,9 +211,9 @@
         }
       },
       "level2": {
-        "defeatMusic": "/games/transformers/music/defeat.ogg",
-        "victoryMusic": "/games/transformers/music/victory.ogg",
-        "retreatMusic": "/games/transformers/music/retreat.ogg",
+        "defeatMusic": "/games/transformers/music/defeat.m4a",
+        "victoryMusic": "/games/transformers/music/Victory.m4a",
+        "retreatMusic": "/games/transformers/music/retreat.m4a",
         "icons": [
           "/games/transformers/icons/defeat.webp",
           "/games/transformers/icons/retreat.webp",
@@ -226,16 +226,16 @@
         }
       },
       "voices": [
-        "/games/transformers/voices/Bumblebee.ogg",
-        "/games/transformers/voices/Ironhide.ogg",
-        "/games/transformers/voices/Megatron.ogg",
-        "/games/transformers/voices/Optimus.ogg",
-        "/games/transformers/voices/Soundwave.ogg"
+        "/games/transformers/voices/Bumblebee.m4a",
+        "/games/transformers/voices/Ironhide.m4a",
+        "/games/transformers/voices/Megatron.m4a",
+        "/games/transformers/voices/Optimus.m4a",
+        "/games/transformers/voices/Soundwave.m4a"
       ],
       "campaigns": {
         "autocracy": {
           "level1_1": {
-            "music": "/games/transformers/music/autocracy.ogg",
+            "music": "/games/transformers/music/Autocracy.m4a",
             "musicAlt": null,
             "playImages": {
               "easy": [
@@ -294,7 +294,7 @@
         },
         "megatron": {
           "level1_1": {
-            "music": "/games/transformers/music/megatron.ogg",
+            "music": "/games/transformers/music/Megatron.m4a",
             "musicAlt": null,
             "playImages": {
               "easy": [
@@ -332,7 +332,7 @@
         },
         "skybound": {
           "level1_1": {
-            "music": "/games/transformers/music/skybound.ogg",
+            "music": "/games/transformers/music/SkyBound.m4a",
             "musicAlt": null,
             "playImages": {
               "easy": [

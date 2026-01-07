@@ -58,7 +58,7 @@ export const resolveCompanionVoiceFilename = async (
   }
 
   // Fallback without manifest (e.g., PoC): try a few common extensions by companion id.
-  const extensions = ['ogg', 'mp3', 'wav', 'm4a'] as const;
+  const extensions = ['m4a', 'ogg', 'mp3', 'wav'] as const;
   for (const ext of extensions) {
     const filename = `${companion.id}.${ext}`;
     const paths = getAssetPaths('voices', filename, gameId);
@@ -67,4 +67,3 @@ export const resolveCompanionVoiceFilename = async (
 
   return null;
 };
-

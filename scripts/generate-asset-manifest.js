@@ -26,7 +26,7 @@ const PUBLIC_DIR = join(__dirname, '..', 'public');
 const OUTPUT_FILE = join(PUBLIC_DIR, 'asset-manifest.json');
 
 const IMAGE_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.webp', '.gif', '.svg'];
-const AUDIO_EXTENSIONS = ['.ogg', '.mp3', '.wav', '.m4a'];
+const AUDIO_EXTENSIONS = ['.m4a', '.ogg', '.mp3', '.wav'];
 const FAVICON_NAMES = ['favicon.png', 'favicon.svg', 'favicon.ico'];
 const GAME_CARD_NAMES = ['game-card.webp', 'game-card.png'];
 
@@ -46,9 +46,22 @@ function isAssetFile(filename) {
 }
 
 function findFirstExistingFile(dirPath, names) {
-  for (const name of names) {
-    if (existsSync(join(dirPath, name))) return name;
+  if (!existsSync(dirPath) || !statSync(dirPath).isDirectory()) {
+    return null;
   }
+
+  const entries = readdirSync(dirPath).filter((entry) => !entry.startsWith('.'));
+  const entriesSet = new Set(entries);
+  const entriesByLower = new Map(
+    entries.map((entry) => [entry.toLowerCase(), entry])
+  );
+
+  for (const name of names) {
+    if (entriesSet.has(name)) return name;
+    const match = entriesByLower.get(name.toLowerCase());
+    if (match) return match;
+  }
+
   return null;
 }
 
@@ -146,19 +159,27 @@ function scanGameAssets(gameDir, gameId) {
   const faviconInIconsDir = findFirstExistingFile(iconsDir, FAVICON_NAMES);
   const faviconFilename = faviconInFaviconDir ?? faviconInIconsDir;
   const mainMenuMusicFilename = findFirstExistingFile(join(gameDir, 'music'), [
+    'menu.m4a',
     'menu.ogg',
+    'MainMenu.m4a',
     'MainMenu.ogg',
   ]);
   const defeatMusicFilename = findFirstExistingFile(join(gameDir, 'music'), [
+    'defeat.m4a',
     'defeat.ogg',
+    'Defeat.m4a',
     'Defeat.ogg',
   ]);
   const victoryMusicFilename = findFirstExistingFile(join(gameDir, 'music'), [
+    'victory.m4a',
     'victory.ogg',
+    'Victory.m4a',
     'Victory.ogg',
   ]);
   const retreatMusicFilename = findFirstExistingFile(join(gameDir, 'music'), [
+    'retreat.m4a',
     'retreat.ogg',
+    'Retreat.m4a',
     'Retreat.ogg',
   ]);
 
@@ -230,13 +251,18 @@ function scanGameAssets(gameDir, gameId) {
       }
 
       // Campaign-specific assets (Level 1.1 and Level 2)
+      const campaignMusicFilename = findFirstExistingFile(join(gameDir, 'music'), [
+        `${campaignId}.m4a`,
+        `${campaignId}.ogg`,
+      ]);
+
       game.campaigns[campaignId] = {
         // Level 1.1: Loaded when campaign button is pressed
         level1_1: {
-          music: existsSync(join(gameDir, 'music', `${campaignId}.ogg`))
-            ? `/games/${gameId}/music/${campaignId}.ogg`
+          music: campaignMusicFilename
+            ? `/games/${gameId}/music/${campaignMusicFilename}`
             : null,
-          // Also check for capitalized version (Hero.ogg, DarkUrge.ogg, etc.)
+          // Also check for capitalized version (Hero.m4a, DarkUrge.m4a, etc.)
           musicAlt: null,
           playImages: {
             easy: getFilesRecursive(join(campaignDir, 'play', 'easy')),
@@ -280,8 +306,10 @@ function scanGameAssets(gameDir, gameId) {
 
     // Create campaign entries for music files that don't have campaign folders
     for (const musicPath of musicFiles) {
-      const filename = musicPath.split('/').pop()?.replace('.ogg', '') || '';
-      const filenameLower = filename.toLowerCase();
+      const filename = musicPath.split('/').pop() || '';
+      const filenameLower = filename
+        .replace(/\.[^/.]+$/, '')
+        .toLowerCase();
 
       // Skip system music files
       if (systemMusicFiles.includes(filenameLower)) {

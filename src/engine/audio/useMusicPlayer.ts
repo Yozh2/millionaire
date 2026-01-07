@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { Campaign, GameConfig } from '@engine/types';
-import { logger } from '@engine/services';
+import { assetLoader, logger } from '@engine/services';
+import type { CampaignAssets, GameAssets } from '@engine/services';
 import {
   ensureAudioContext,
   warmUpAudioContext,
@@ -8,6 +9,7 @@ import {
   setSoundEnabled as setEngineSoundEnabled,
 } from '@engine/utils/audioPlayer';
 import { getAssetPaths, checkFileExists } from '@engine/utils/assetLoader';
+import { withBasePath } from '@app/utils/paths';
 import { getPreloadedAudioSrc } from '@engine/utils/audioPlayer';
 
 export interface UseMusicPlayerReturn {
@@ -29,6 +31,55 @@ interface UseMusicPlayerOptions {
   audioElementId?: string;
   onDisableAllSounds?: () => void;
 }
+
+const MUSIC_EXTENSIONS = ['.m4a', '.ogg'];
+
+const resolvePublicPath = (path: string): string => {
+  if (path.startsWith('http://') || path.startsWith('https://')) {
+    return path;
+  }
+  if (path.startsWith('/')) {
+    return withBasePath(path);
+  }
+  return path;
+};
+
+const findManifestCampaign = (
+  game: GameAssets,
+  campaignId: string
+): CampaignAssets | null => {
+  if (game.campaigns[campaignId]) {
+    return game.campaigns[campaignId];
+  }
+
+  const lowerId = campaignId.toLowerCase();
+  for (const [id, campaign] of Object.entries(game.campaigns)) {
+    if (id.toLowerCase() === lowerId) return campaign;
+  }
+
+  return null;
+};
+
+const resolveManifestCampaignTrack = async (
+  gameId: string,
+  campaignId: string
+): Promise<string | null> => {
+  const assets = await assetLoader.getGameAssets(gameId);
+  if (!assets) return null;
+  const campaign = findManifestCampaign(assets, campaignId);
+  return campaign?.level1_1.music ?? null;
+};
+
+const buildTrackCandidates = (
+  trackFiles: (string | undefined)[],
+  baseNames: string[]
+): string[] => {
+  const candidates = [
+    ...trackFiles.filter((track): track is string => !!track),
+    ...baseNames.flatMap((name) => MUSIC_EXTENSIONS.map((ext) => `${name}${ext}`)),
+  ];
+  return Array.from(new Set(candidates));
+};
 
 export function useMusicPlayer(
   config: GameConfig,
@@ -60,8 +111,10 @@ export function useMusicPlayer(
 
   useEffect(() => {
     const loadInitialTrack = async () => {
-      const trackFile = config.audio.menuTrack ?? 'menu.ogg';
-      const candidates = [trackFile, 'menu.ogg', 'MainMenu.ogg'];
+      const candidates = buildTrackCandidates(
+        [config.audio.menuTrack],
+        ['menu', 'MainMenu']
+      );
 
       for (const candidate of candidates) {
         if (!candidate) continue;
@@ -91,6 +144,17 @@ export function useMusicPlayer(
   const loadTrack = useCallback(
     async (trackFile: string | undefined): Promise<string | null> => {
       if (!trackFile) return null;
+
+      if (trackFile.includes('/')) {
+        const resolved = resolvePublicPath(trackFile);
+        if (
+          getPreloadedAudioSrc(resolved) ||
+          (await checkFileExists(resolved))
+        ) {
+          return resolved;
+        }
+        return null;
+      }
 
       const paths = getAssetPaths('music', trackFile, config.id);
 
@@ -227,45 +291,38 @@ export function useMusicPlayer(
   const playMainMenu = useCallback(() => {
     const shouldAutoPlay = musicEverEnabled.current && !userDisabledMusic.current;
     void tryPlayTrackWithFallback(
-      [config.audio.menuTrack, 'menu.ogg', 'MainMenu.ogg'],
+      buildTrackCandidates([config.audio.menuTrack], ['menu', 'MainMenu']),
       shouldAutoPlay
     );
   }, [config.audio.menuTrack, tryPlayTrackWithFallback]);
 
   const playGameOver = useCallback(() => {
     void tryPlayTrackWithFallback(
-      [config.audio.defeatTrack, 'defeat.ogg', 'Defeat.ogg'],
+      buildTrackCandidates([config.audio.defeatTrack], ['defeat', 'Defeat']),
       true
     );
   }, [config.audio.defeatTrack, tryPlayTrackWithFallback]);
 
   const playVictory = useCallback(() => {
     void tryPlayTrackWithFallback(
-      [
-        config.audio.victoryTrack,
-        'victory.ogg',
-        config.audio.defeatTrack,
-        'defeat.ogg',
-        'Victory.ogg',
-        'Defeat.ogg',
-      ],
+      buildTrackCandidates(
+        [config.audio.victoryTrack, config.audio.defeatTrack],
+        ['victory', 'defeat', 'Victory', 'Defeat']
+      ),
       true
     );
   }, [config.audio.defeatTrack, config.audio.victoryTrack, tryPlayTrackWithFallback]);
 
   const playRetreat = useCallback(() => {
     void tryPlayTrackWithFallback(
-      [
-        config.audio.retreatTrack,
-        'retreat.ogg',
-        config.audio.victoryTrack,
-        'victory.ogg',
-        config.audio.defeatTrack,
-        'defeat.ogg',
-        'Retreat.ogg',
-        'Victory.ogg',
-        'Defeat.ogg',
-      ],
+      buildTrackCandidates(
+        [
+          config.audio.retreatTrack,
+          config.audio.victoryTrack,
+          config.audio.defeatTrack,
+        ],
+        ['retreat', 'victory', 'defeat', 'Retreat', 'Victory', 'Defeat']
+      ),
       true
     );
   }, [
@@ -292,12 +349,24 @@ export function useMusicPlayer(
 
   const playCampaignMusic = useCallback(
     (campaign: Campaign) => {
-      void tryPlayTrackWithFallback(
-        [campaign.musicTrack, config.audio.menuTrack, 'menu.ogg'],
-        true
-      );
+      const playCampaignTrack = async () => {
+        const manifestTrack = await resolveManifestCampaignTrack(
+          config.id,
+          campaign.id
+        );
+
+        await tryPlayTrackWithFallback(
+          buildTrackCandidates(
+            [manifestTrack ?? undefined, campaign.musicTrack, config.audio.menuTrack],
+            ['menu', 'MainMenu']
+          ),
+          true
+        );
+      };
+
+      void playCampaignTrack();
     },
-    [config.audio.menuTrack, tryPlayTrackWithFallback]
+    [config.audio.menuTrack, config.id, tryPlayTrackWithFallback]
   );
 
   const stopMusic = useCallback(() => {

@@ -73,8 +73,8 @@ export function preprocessGameConfig(rawConfig: GameConfig): GameConfig {
       icon:
         campaign.icon ??
         createDefaultCampaignIcon(gameId, campaign.id, campaign.name),
-      musicTrack: campaign.musicTrack ?? `${campaign.id}.ogg`,
-      selectSound: campaign.selectSound ?? `select-${campaign.id}.ogg`,
+      musicTrack: campaign.musicTrack ?? `${campaign.id}.m4a`,
+      selectSound: campaign.selectSound ?? `select-${campaign.id}.m4a`,
     })),
     icons: {
       ...rawConfig.icons,

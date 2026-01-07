@@ -6,26 +6,26 @@ import {
 } from '@engine/constants';
 
 export const STANDARD_MUSIC_TRACKS = {
-  menuTrack: 'menu.ogg',
-  defeatTrack: 'defeat.ogg',
-  victoryTrack: 'victory.ogg',
-  retreatTrack: 'retreat.ogg',
+  menuTrack: 'menu.m4a',
+  defeatTrack: 'defeat.m4a',
+  victoryTrack: 'victory.m4a',
+  retreatTrack: 'retreat.m4a',
 } as const;
 
 export const STANDARD_SOUND_EFFECTS: SoundEffects = {
-  answerButton: 'answer-click.ogg',
-  actionButton: 'action-press.ogg',
+  answerButton: 'answer-click.m4a',
+  actionButton: 'action-press.m4a',
 
-  lifelineFifty: 'lifeline-fifty.ogg',
-  lifelinePhone: 'lifeline-phone.ogg',
-  lifelineAudience: 'lifeline-audience.ogg',
-  lifelineDouble: 'lifeline-double.ogg',
+  lifelineFifty: 'lifeline-fifty.m4a',
+  lifelinePhone: 'lifeline-phone.m4a',
+  lifelineAudience: 'lifeline-audience.m4a',
+  lifelineDouble: 'lifeline-double.m4a',
 
-  retreatButton: 'retreat.ogg',
+  retreatButton: 'retreat.m4a',
 
-  victory: 'victory.ogg',
-  correct: 'correct.ogg',
-  defeat: 'defeat.ogg',
+  victory: 'victory.m4a',
+  correct: 'correct.m4a',
+  defeat: 'defeat.m4a',
 };
 
 export const createDefaultAudioConfig = (

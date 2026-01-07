@@ -2,8 +2,8 @@
  * Asset loader with fallback support.
  *
  * Loading priority:
- * 1. Game-specific: /games/{gameId}/sounds/Click.ogg
- * 2. Shared fallback: /games/shared/sounds/Click.ogg
+ * 1. Game-specific: /games/{gameId}/sounds/Click.m4a
+ * 2. Shared fallback: /games/shared/sounds/Click.m4a
  * 3. Oscillator (sounds only)
  * 4. Silent (music/voices)
  */

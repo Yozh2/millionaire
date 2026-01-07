@@ -11,7 +11,7 @@
  *   await assetLoader.loadLevel('level0', { onProgress: (l, t) => ... });
  *
  *   // Check if asset is cached
- *   if (assetLoader.isLoaded('/games/bg3/sounds/Click.ogg')) { ... }
+ *   if (assetLoader.isLoaded('/games/bg3/sounds/Click.m4a')) { ... }
  */
 
 import type {
@@ -373,7 +373,7 @@ class AssetLoader {
 
     const isAudioUrl = (url: string): boolean => {
       const base = url.split('?')[0];
-      return /\.(ogg|mp3|wav|m4a)$/i.test(base);
+      return /\.(m4a|ogg|mp3|wav)$/i.test(base);
     };
 
     const isImageUrl = (url: string): boolean => {
@@ -458,7 +458,7 @@ class AssetLoader {
     // Determine asset type and load
     const fullUrl = this.resolveUrl(url);
     const isImage = /\.(jpg|jpeg|png|webp|gif|svg)$/i.test(url);
-    const isAudio = /\.(ogg|mp3|wav|m4a)$/i.test(url);
+    const isAudio = /\.(m4a|ogg|mp3|wav)$/i.test(url);
 
     let loadPromise: Promise<void>;
 
@@ -511,33 +511,23 @@ class AssetLoader {
     const isSoundEffect = cacheKey.includes('/sounds/');
     const isMusic = cacheKey.includes('/music/');
 
-    // Music and voice lines can be very large. Keeping them as ArrayBuffer in JS memory
-    // (and possibly decoding to AudioBuffer) can easily push Safari/Media processes into
-    // hundreds of MB. For those, rely on HTMLAudioElement streaming on demand instead.
+    // Voice lines can be very large. Keep them streamed to avoid ballooning memory.
+    // Music is fetched fully so loading screens can guarantee instant playback.
     if (!isSoundEffect) {
-      // Preload music via HTMLAudioElement to reduce start latency, without storing ArrayBuffer in JS.
+      // Preload music fully so playback can start instantly after loading screens.
       if (isMusic) {
-        return new Promise((resolve, reject) => {
-          const audio = new Audio();
-          audio.preload = 'auto';
-
-          const onCanPlay = () => {
+        return fetch(fullUrl)
+          .then((res) => {
+            if (!res.ok) {
+              throw new Error(`Failed to preload audio: ${fullUrl}`);
+            }
+            return res.arrayBuffer();
+          })
+          .then((buffer) => {
+            this.cache.audio.set(cacheKey, buffer);
             this.state.loaded.add(cacheKey);
-            resolve();
-          };
-          const onError = () => {
-            reject(new Error(`Failed to preload audio: ${fullUrl}`));
-          };
-
-          audio.addEventListener('canplay', onCanPlay, { once: true });
-          audio.addEventListener('error', onError, { once: true });
-          audio.src = fullUrl;
-          try {
-            audio.load();
-          } catch {
-            // ignore
-          }
-        });
+            registerPreloadedAudioBuffer(fullUrl, buffer);
+          });
       }
 
       // Voices: don't preload in JS or via media element (can be many files).

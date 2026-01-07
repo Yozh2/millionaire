@@ -37,6 +37,7 @@ interface OscillatorSoundConfig {
 }
 
 export type PlayResult = 'file' | 'oscillator' | 'none';
+export type AudioPlaybackHandle = { stop: () => void };
 
 // ============================================
 // State
@@ -440,12 +441,12 @@ const decodeAndCacheAudio = async (
 /**
  * Play an AudioBuffer with Web Audio API (low latency)
  */
-const playAudioBuffer = (
+const playAudioBufferWithHandle = (
   buffer: AudioBuffer,
   volume: number = 1.0
-): void => {
+): AudioPlaybackHandle | null => {
   const ctx = getAudioContext();
-  if (!ctx) return;
+  if (!ctx) return null;
 
   const source = ctx.createBufferSource();
   const gainNode = ctx.createGain();
@@ -456,6 +457,20 @@ const playAudioBuffer = (
   gainNode.gain.value = volume;
 
   source.start(0);
+
+  return {
+    stop: () => {
+      try {
+        source.stop();
+      } catch {
+        // ignore
+      }
+    },
+  };
+};
+
+const playAudioBuffer = (buffer: AudioBuffer, volume: number = 1.0): void => {
+  playAudioBufferWithHandle(buffer, volume);
 };
 
 /**
@@ -576,9 +591,7 @@ const tryPlayFile = async (
       playAudioBuffer(audioBuffer, volume);
       return true;
     }
-
-    const blobUrl = getOrCreateBlobUrl(key, preloadedBuffer);
-    return playHtmlAudio(key, blobUrl, volume);
+    return false;
   }
 
   // Check if file exists
@@ -597,9 +610,7 @@ const tryPlayFile = async (
       playAudioBuffer(audioBuffer, volume);
       return true;
     }
-
-    const blobUrl = getOrCreateBlobUrl(key, arrayBuffer);
-    return playHtmlAudio(key, blobUrl, volume);
+    return false;
   } catch (err) {
     logger.audioPlayer.warn(`Failed to load audio: ${key}`, { error: err });
   }
@@ -613,7 +624,7 @@ const tryPlayFile = async (
 
 const normalizeSoundStem = (filename: string): string =>
   filename
-    .replace(/\.(mp3|ogg|wav)$/i, '')
+    .replace(/\.(m4a|mp3|ogg|wav)$/i, '')
     .toLowerCase()
     .trim();
 
@@ -674,6 +685,69 @@ export const playSound = async (
 
   logger.audioPlayer.warn(`No sound available for: ${filename}`);
   return 'none';
+};
+
+const playFileWithHandle = async (
+  path: string,
+  volume: number
+): Promise<AudioPlaybackHandle | null> => {
+  const key = normalizeAudioPath(path);
+
+  const cachedBuffer = audioBufferCache.get(key);
+  if (cachedBuffer) {
+    return playAudioBufferWithHandle(cachedBuffer, volume);
+  }
+
+  const preloadedBuffer = preloadedAudioData.get(key);
+  if (preloadedBuffer) {
+    const audioBuffer = await decodeAndCacheAudio(key, preloadedBuffer);
+    if (audioBuffer) {
+      return playAudioBufferWithHandle(audioBuffer, volume);
+    }
+    return null;
+  }
+
+  const exists = await checkFileExists(key);
+  if (!exists) return null;
+
+  try {
+    const response = await fetch(key);
+    if (!response.ok) return null;
+
+    const arrayBuffer = await response.arrayBuffer();
+    const audioBuffer = await decodeAndCacheAudio(key, arrayBuffer);
+    if (audioBuffer) {
+      return playAudioBufferWithHandle(audioBuffer, volume);
+    }
+  } catch (err) {
+    logger.audioPlayer.warn(`Failed to load audio: ${key}`, { error: err });
+  }
+
+  return null;
+};
+
+export const playSoundWithHandle = async (
+  filename: string,
+  volume: number = 1.0
+): Promise<AudioPlaybackHandle | null> => {
+  if (!soundEnabled) return null;
+
+  const paths = getAssetPaths('sounds', filename, currentGameId);
+
+  const handle =
+    (await playFileWithHandle(paths.specific, volume)) ||
+    (await playFileWithHandle(paths.fallback, volume));
+
+  if (handle) return handle;
+
+  const oscillatorKey = getOscillatorKeyFromFilename(filename);
+  if (oscillatorKey) {
+    playOscillatorSound(OSCILLATOR_SOUNDS[oscillatorKey]);
+    return { stop: () => {} };
+  }
+
+  logger.audioPlayer.warn(`No sound available for: ${filename}`);
+  return null;
 };
 
 /**

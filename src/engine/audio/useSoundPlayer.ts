@@ -5,12 +5,11 @@ import {
   warmUpAudioContext,
   isSoundEnabled,
   playSound,
+  playSoundWithHandle,
   playSoundByType,
   playVoice,
-  getPreloadedAudioSrc,
 } from '@engine/utils/audioPlayer';
-import { getAssetPaths } from '@engine/utils/assetLoader';
-import type { OscillatorSoundKey } from '@engine/utils/audioPlayer';
+import type { AudioPlaybackHandle, OscillatorSoundKey } from '@engine/utils/audioPlayer';
 import { resolveCompanionVoiceFilename } from './resolveCompanionVoice';
 
 export type TaggedSoundId = 'campaignSelect';
@@ -27,7 +26,7 @@ export interface UseSoundPlayerReturn {
 export function useSoundPlayer(config: GameConfig): UseSoundPlayerReturn {
   const hasWarmedContext = useRef(false);
 
-  const taggedAudioRef = useRef<Record<TaggedSoundId, HTMLAudioElement | null>>({
+  const taggedPlaybackRef = useRef<Record<TaggedSoundId, AudioPlaybackHandle | null>>({
     campaignSelect: null,
   });
 
@@ -37,12 +36,10 @@ export function useSoundPlayer(config: GameConfig): UseSoundPlayerReturn {
 
   const stopTaggedSound = useCallback((id: TaggedSoundId) => {
     requestIdRef.current[id] += 1;
-    const audio = taggedAudioRef.current[id];
-    if (!audio) return;
-    audio.pause();
-    audio.currentTime = 0;
-    audio.onended = null;
-    audio.onerror = null;
+    const handle = taggedPlaybackRef.current[id];
+    if (!handle) return;
+    handle.stop();
+    taggedPlaybackRef.current[id] = null;
   }, []);
 
   const warmUpIfNeeded = useCallback(() => {
@@ -99,74 +96,30 @@ export function useSoundPlayer(config: GameConfig): UseSoundPlayerReturn {
       warmUpIfNeeded();
 
       const loadAndPlay = async () => {
-        const paths = getAssetPaths('sounds', filename, config.id);
-        const primarySrc = getPreloadedAudioSrc(paths.specific) || paths.specific;
-        const fallbackSrc = getPreloadedAudioSrc(paths.fallback) || paths.fallback;
+        const handle = await playSoundWithHandle(
+          filename,
+          config.audio.soundVolume
+        );
 
-        const audioEl = taggedAudioRef.current[id] ?? new Audio();
-        audioEl.preload = 'auto';
-        audioEl.volume = config.audio.soundVolume;
-        taggedAudioRef.current[id] = audioEl;
+        if (requestIdRef.current[id] !== requestId) {
+          handle?.stop();
+          return;
+        }
 
-        let triedFallback = false;
+        if (handle) {
+          taggedPlaybackRef.current[id] = handle;
+          return;
+        }
 
-        const cleanup = () => {
-          audioEl.onended = null;
-          audioEl.onerror = null;
-        };
-
-        audioEl.onended = cleanup;
-        audioEl.onerror = () => {
-          if (requestIdRef.current[id] !== requestId) return;
-
-          if (!triedFallback && fallbackSrc && fallbackSrc !== audioEl.src) {
-            triedFallback = true;
-            audioEl.src = fallbackSrc;
-            audioEl.currentTime = 0;
-            void audioEl.play().catch(cleanup);
-            return;
-          }
-
-          cleanup();
-          playSoundEffect(taggedFallbackKey[id]);
-        };
-
-        const tryPlaySrc = async (src: string | null) => {
-          if (!src) {
-            cleanup();
-            playSoundEffect(taggedFallbackKey[id]);
-            return;
-          }
-
-          if (requestIdRef.current[id] !== requestId) return;
-
-          if (audioEl.src !== src) {
-            audioEl.src = src;
-          }
-          audioEl.currentTime = 0;
-
-          try {
-            await audioEl.play();
-          } catch {
-            if (!triedFallback && fallbackSrc && fallbackSrc !== src) {
-              triedFallback = true;
-              void tryPlaySrc(fallbackSrc);
-              return;
-            }
-            cleanup();
-            playSoundEffect(taggedFallbackKey[id]);
-          }
-        };
-
-        await tryPlaySrc(primarySrc);
+        playSoundEffect(taggedFallbackKey[id]);
       };
 
       void loadAndPlay();
     },
     [
       config.audio.soundVolume,
-      config.id,
       playSoundEffect,
+      playSoundWithHandle,
       stopTaggedSound,
       taggedFallbackKey,
       warmUpIfNeeded,
