@@ -188,6 +188,11 @@ class AssetLoader {
   ): Promise<string[]> {
     const manifest = await this.loadManifest();
     const assets: string[] = [];
+    const pushFirst = (list: string[] | undefined) => {
+      if (list && list.length > 0) {
+        assets.push(list[0]);
+      }
+    };
 
     switch (level) {
       case 'level0':
@@ -220,10 +225,10 @@ class AssetLoader {
           assets.push(game.level1.mainMenuMusic);
         }
 
-        // Start images (general + all campaigns)
-        assets.push(...game.level1.startImages);
+        // Prefetch only the first portal image per directory (fast initial render).
+        pushFirst(game.level1.startImages);
         for (const imgs of Object.values(game.level1.campaignStartImages)) {
-          assets.push(...imgs);
+          pushFirst(imgs);
         }
         break;
 
@@ -248,10 +253,8 @@ class AssetLoader {
           assets.push(campaign.level1_1.music);
         }
 
-        // Easy play images (campaign-specific or fallback)
-        if (campaign.level1_1.playImages.easy.length > 0) {
-          assets.push(...campaign.level1_1.playImages.easy);
-        }
+        // Prefetch only the first play image (easy) for this campaign.
+        pushFirst(campaign.level1_1.playImages.easy);
 
         // Voice lines for the game
         assets.push(...gameFor11.voices);
@@ -265,8 +268,6 @@ class AssetLoader {
 
         const gameFor2 = manifest.games[gameId];
         if (!gameFor2) break;
-
-        const campaign2 = this.findCampaign(gameFor2, campaignId);
 
         // End game music
         if (gameFor2.level2.defeatMusic) {
@@ -282,21 +283,20 @@ class AssetLoader {
         // Gameplay/end icons
         assets.push(...(gameFor2.level2.icons ?? []));
 
-        // Game-level end images (fallback)
-        assets.push(...gameFor2.level2.endImages.victory);
-        assets.push(...gameFor2.level2.endImages.defeat);
-        assets.push(...gameFor2.level2.endImages.retreat);
+        // Prefetch only the first end-screen image per result type (fast transitions).
+        pushFirst(gameFor2.level2.endImages.victory);
+        pushFirst(gameFor2.level2.endImages.defeat);
+        pushFirst(gameFor2.level2.endImages.retreat);
 
-        // Campaign-specific assets
+        const campaign2 = this.findCampaign(gameFor2, campaignId);
         if (campaign2) {
-          // Medium/hard play images
-          assets.push(...campaign2.level2.playImages.medium);
-          assets.push(...campaign2.level2.playImages.hard);
-
-          // Campaign end images
-          assets.push(...campaign2.level2.endImages.victory);
-          assets.push(...campaign2.level2.endImages.defeat);
-          assets.push(...campaign2.level2.endImages.retreat);
+          // Prefetch first play image per difficulty.
+          pushFirst(campaign2.level2.playImages.medium);
+          pushFirst(campaign2.level2.playImages.hard);
+          // Prefetch first end-screen image per result type.
+          pushFirst(campaign2.level2.endImages.victory);
+          pushFirst(campaign2.level2.endImages.defeat);
+          pushFirst(campaign2.level2.endImages.retreat);
         }
         break;
     }

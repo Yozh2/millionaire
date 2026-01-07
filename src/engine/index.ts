@@ -15,8 +15,6 @@
  * ```
  */
 
-import './ui/styles/Engine.css';
-
 // =========================
 // Types (public contract)
 // =========================

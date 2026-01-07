@@ -2,7 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { AppShell } from '@app/AppShell';
 import '@app/styles/index.css';
-import '@engine/ui/styles/Engine.css';
 
 const preventDefault = (e: Event) => e.preventDefault();
 

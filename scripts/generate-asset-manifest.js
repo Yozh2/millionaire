@@ -154,10 +154,10 @@ function scanGameAssets(gameDir, gameId) {
   const campaignIconsDir = join(iconsDir, 'campaigns');
   const faviconDir = join(gameDir, 'favicon');
 
-  const gameCardFilename = findFirstExistingFile(iconsDir, GAME_CARD_NAMES);
-  const faviconInFaviconDir = findFirstExistingFile(faviconDir, FAVICON_NAMES);
-  const faviconInIconsDir = findFirstExistingFile(iconsDir, FAVICON_NAMES);
-  const faviconFilename = faviconInFaviconDir ?? faviconInIconsDir;
+const gameCardFilename = findFirstExistingFile(iconsDir, GAME_CARD_NAMES);
+const faviconInFaviconDir = findFirstExistingFile(faviconDir, FAVICON_NAMES);
+const faviconInIconsDir = findFirstExistingFile(iconsDir, FAVICON_NAMES);
+const faviconFilename = faviconInFaviconDir ?? faviconInIconsDir;
   const mainMenuMusicFilename = findFirstExistingFile(join(gameDir, 'music'), [
     'menu.m4a',
     'menu.ogg',
@@ -188,6 +188,14 @@ function scanGameAssets(gameDir, gameId) {
     const filename = iconPath.split('/').pop() || '';
     return !GAME_CARD_NAMES.includes(filename) && !FAVICON_NAMES.includes(filename);
   });
+  const primaryGameplayIcons = gameplayIcons.filter((iconPath) => {
+    const filename = iconPath.split('/').pop() || '';
+    const base = filename.toLowerCase().replace(/\.[^/.]+$/, '');
+    return base.includes('coin') || base.includes('money');
+  });
+  const secondaryGameplayIcons = gameplayIcons.filter(
+    (iconPath) => !primaryGameplayIcons.includes(iconPath)
+  );
 
   const game = {
     // Level 0: For GameSelector cards
@@ -204,7 +212,7 @@ function scanGameAssets(gameDir, gameId) {
 
     // Level 1: StartScreen assets
     level1: {
-      icons: campaignIcons,
+      icons: [...campaignIcons, ...primaryGameplayIcons],
       sounds: getFilesFromDir(join(gameDir, 'sounds'), isAudioFile),
       mainMenuMusic: mainMenuMusicFilename
         ? `/games/${gameId}/music/${mainMenuMusicFilename}`
@@ -221,7 +229,7 @@ function scanGameAssets(gameDir, gameId) {
         : null,
       retreatMusic: retreatMusicFilename ? `/games/${gameId}/music/${retreatMusicFilename}`
         : null,
-      icons: gameplayIcons,
+      icons: secondaryGameplayIcons,
       endImages: {
         victory: getFilesRecursive(join(gameDir, 'images', 'victory')),
         defeat: getFilesRecursive(join(gameDir, 'images', 'defeat')),

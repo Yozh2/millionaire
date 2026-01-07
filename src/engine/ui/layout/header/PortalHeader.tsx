@@ -12,6 +12,7 @@ import type {
   QuestionDifficulty,
   SlideshowScreen,
 } from '@engine/types';
+import { assetLoader } from '@engine/services';
 import { VolumeButton } from '@engine/ui/components/buttons';
 import {
   PortalHeaderTuner,
@@ -22,6 +23,7 @@ import { useHeaderImages } from './useHeaderImages';
 import { usePortalTunerUi } from './portal/usePortalTunerUi';
 import { PortalHeaderCanvasLayer } from './portal/PortalHeaderCanvasLayer';
 import { useViewportAnchorTop } from './portal/useViewportAnchorTop';
+import { getBasePath, stripLeadingSlash } from '@app/utils/paths';
 
 type Motion = 'open' | 'close';
 
@@ -389,16 +391,38 @@ function ensureOffscreen(w: number, h: number) {
   return canvas;
 }
 
-async function loadImage(src: string): Promise<HTMLImageElement> {
+function getAssetCacheKey(src: string): string {
+  if (src.startsWith('http://') || src.startsWith('https://')) {
+    return src;
+  }
+
+  const basePath = getBasePath();
+  if (src.startsWith(basePath)) {
+    const stripped = stripLeadingSlash(src.slice(basePath.length));
+    return `/${stripped}`;
+  }
+
+  return src;
+}
+
+async function loadImage(
+  src: string
+): Promise<{ img: HTMLImageElement; fromAssetCache: boolean }> {
+  const cacheKey = getAssetCacheKey(src);
+  const cached = assetLoader.getImage(cacheKey);
+  if (cached) {
+    return { img: cached, fromAssetCache: true };
+  }
+
   const img = new Image();
   img.decoding = 'async';
   img.src = src;
-  if (img.complete) return img;
+  if (img.complete) return { img, fromAssetCache: false };
   await new Promise<void>((resolve, reject) => {
     img.onload = () => resolve();
     img.onerror = () => reject(new Error(`Failed to load image: ${src}`));
   });
-  return img;
+  return { img, fromAssetCache: false };
 }
 
 function getSourceDims(source: CanvasImageSource): { w: number; h: number } | null {
@@ -652,7 +676,7 @@ function usePortalCanvas({
 
   const rasterizeImage = useCallback(
     async (src: string): Promise<CachedImage> => {
-      const img = await loadImage(src);
+      const { img, fromAssetCache } = await loadImage(src);
       const { w, h, dpr } = sizeRef.current;
 
       const desiredW = Math.max(1, Math.floor(w * dpr));
@@ -677,11 +701,13 @@ function usePortalCanvas({
         drawCoverImage(ctx, img, rasterW, rasterH);
       }
 
-      try {
-        // Help WebKit drop decoded backing store sooner.
-        img.src = '';
-      } catch {
-        // ignore
+      if (!fromAssetCache) {
+        try {
+          // Help WebKit drop decoded backing store sooner.
+          img.src = '';
+        } catch {
+          // ignore
+        }
       }
 
       return {
@@ -1142,39 +1168,6 @@ export function PortalHeader({
       screen: slideshowScreen,
       difficulty,
     });
-  const prefetchEasy = useHeaderImages(config.headerSlideshow, {
-    gameId: config.id,
-    campaignId,
-    screen: 'play',
-    difficulty: 'easy',
-  });
-  const prefetchMedium = useHeaderImages(config.headerSlideshow, {
-    gameId: config.id,
-    campaignId,
-    screen: 'play',
-    difficulty: 'medium',
-  });
-  const prefetchHard = useHeaderImages(config.headerSlideshow, {
-    gameId: config.id,
-    campaignId,
-    screen: 'play',
-    difficulty: 'hard',
-  });
-  const prefetchVictory = useHeaderImages(config.headerSlideshow, {
-    gameId: config.id,
-    campaignId,
-    screen: 'victory',
-  });
-  const prefetchDefeat = useHeaderImages(config.headerSlideshow, {
-    gameId: config.id,
-    campaignId,
-    screen: 'defeat',
-  });
-  const prefetchRetreat = useHeaderImages(config.headerSlideshow, {
-    gameId: config.id,
-    campaignId,
-    screen: 'retreat',
-  });
 
   const orderMode: 'alphabetical' | 'random' =
     slideshowScreen === 'play'
@@ -1204,65 +1197,7 @@ export function PortalHeader({
     opacity,
     onLayoutSize: useCallback(({ h }) => setPortalBaseHeight(h), []),
   });
-  const { show, hide, preload } = portal;
-
-  const easyPrefetchPaths = useMemo(
-    () =>
-      buildHeaderImagePaths(
-        prefetchEasy.images,
-        prefetchEasy.basePath,
-        prefetchEasy.subfolder
-      ),
-    [prefetchEasy.basePath, prefetchEasy.images, prefetchEasy.subfolder]
-  );
-
-  const fullPrefetchPaths = useMemo(() => {
-    const paths = [
-      ...buildHeaderImagePaths(
-        prefetchMedium.images,
-        prefetchMedium.basePath,
-        prefetchMedium.subfolder
-      ),
-      ...buildHeaderImagePaths(
-        prefetchHard.images,
-        prefetchHard.basePath,
-        prefetchHard.subfolder
-      ),
-      ...buildHeaderImagePaths(
-        prefetchVictory.images,
-        prefetchVictory.basePath,
-        prefetchVictory.subfolder
-      ),
-      ...buildHeaderImagePaths(
-        prefetchDefeat.images,
-        prefetchDefeat.basePath,
-        prefetchDefeat.subfolder
-      ),
-      ...buildHeaderImagePaths(
-        prefetchRetreat.images,
-        prefetchRetreat.basePath,
-        prefetchRetreat.subfolder
-      ),
-    ];
-
-    return Array.from(new Set(paths));
-  }, [
-    prefetchDefeat.basePath,
-    prefetchDefeat.images,
-    prefetchDefeat.subfolder,
-    prefetchHard.basePath,
-    prefetchHard.images,
-    prefetchHard.subfolder,
-    prefetchMedium.basePath,
-    prefetchMedium.images,
-    prefetchMedium.subfolder,
-    prefetchRetreat.basePath,
-    prefetchRetreat.images,
-    prefetchRetreat.subfolder,
-    prefetchVictory.basePath,
-    prefetchVictory.images,
-    prefetchVictory.subfolder,
-  ]);
+  const { show, hide } = portal;
 
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -1273,53 +1208,9 @@ export function PortalHeader({
     return `${basePath}/${subfolder}/${filename}`;
   }, [basePath, currentIndex, orderedImages, subfolder]);
 
-  const [readyPath, setReadyPath] = useState('');
-
-  useEffect(() => {
-    if (!enabled || isLoading || !fullPath) {
-      setReadyPath('');
-      return;
-    }
-
-    let cancelled = false;
-    void preload(fullPath)
-      .catch(() => {})
-      .finally(() => {
-        if (cancelled) return;
-        setReadyPath(fullPath);
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [enabled, fullPath, isLoading, preload]);
-
-  useEffect(() => {
-    if (!campaignId) return;
-    if (easyPrefetchPaths.length === 0) return;
-
-    easyPrefetchPaths.forEach((src) => {
-      void preload(src);
-    });
-  }, [campaignId, easyPrefetchPaths, preload]);
-
-  useEffect(() => {
-    if (!campaignId) return;
-    if (slideshowScreen !== 'play') return;
-    if (fullPrefetchPaths.length === 0) return;
-
-    fullPrefetchPaths.forEach((src) => {
-      void preload(src);
-    });
-  }, [campaignId, fullPrefetchPaths, preload, slideshowScreen]);
-
   useEffect(() => {
     if (!enabled || isLoading || orderedImages.length === 0) return;
-    setCurrentIndex(
-      orderMode === 'random'
-        ? Math.floor(Math.random() * orderedImages.length)
-        : 0
-    );
+    setCurrentIndex(0);
   }, [enabled, isLoading, orderMode, orderedImages]);
 
   useEffect(() => {
@@ -1336,12 +1227,12 @@ export function PortalHeader({
       if (slideshowScreen === 'start' && !campaignId) hide();
       return;
     }
-    if (!readyPath) {
+    if (!fullPath) {
       hide();
       return;
     }
-    show(readyPath);
-  }, [activated, campaignId, enabled, hide, isLoading, readyPath, show, slideshowScreen]);
+    show(fullPath);
+  }, [activated, campaignId, enabled, fullPath, hide, isLoading, show, slideshowScreen]);
 
   useEffect(() => {
     if (!activated) return;

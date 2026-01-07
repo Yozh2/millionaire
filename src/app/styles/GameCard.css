@@ -1,4 +1,27 @@
 .game-card {
+  --game-mainY: 0px;
+  --game-pressY: 0px;
+  --game-rx: 0deg;
+  --game-ry: 0deg;
+  --game-scale: 1;
+  --game-glare: 0;
+  --game-glareX: 0px;
+  --game-glareY: 0px;
+  --game-glow: rgba(255, 255, 255, 0.22);
+}
+
+@keyframes game-card-appear {
+  0% {
+    opacity: 0;
+    filter: blur(2px);
+  }
+  100% {
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+.game-card {
   position: relative;
   display: flex;
   flex-direction: column;
@@ -9,6 +32,15 @@
   border: none;
   padding: 0;
   color: inherit;
+  transform: perspective(900px)
+    translateY(calc(var(--game-mainY) + var(--game-pressY)))
+    rotateX(var(--game-rx))
+    rotateY(var(--game-ry))
+    scale(var(--game-scale));
+  transform-style: preserve-3d;
+  transform-origin: center center;
+  will-change: transform;
+  touch-action: manipulation;
 }
 
 @media (min-width: 640px) {
@@ -20,6 +52,12 @@
 @media (min-width: 768px) {
   .game-card {
     width: 216px;
+  }
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .game-card {
+    touch-action: none;
   }
 }
 
@@ -38,13 +76,62 @@
   opacity: 0.55;
 }
 
+.game-card[data-card-state='Appear'] {
+  animation: game-card-appear 240ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.game-card[data-card-state='Hover'] {
+  --game-scale: 1.015;
+}
+
+.game-card[data-card-state='Press'] {
+  --game-pressY: 4px;
+  --game-scale: 0.99;
+}
+
+.game-card[data-card-state='Ease'] {
+  --game-pressY: 0px;
+  --game-scale: 1;
+}
+
 .game-card-face {
+  --game-card-bevel:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.55);
+
   position: relative;
   overflow: hidden;
   border-radius: 0.75rem;
   border-width: 4px;
+  border-style: solid;
+  border-color: #44403c;
   width: 100%;
   aspect-ratio: 2 / 3;
+  box-shadow: 0 14px 56px rgba(0, 0, 0, 0.55), var(--game-card-bevel);
+  transition:
+    box-shadow 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 180ms ease-out,
+    filter 220ms ease-out;
+}
+
+.game-card[data-available='true'][data-card-state='Press'] .game-card-face {
+  border-color: rgba(255, 255, 255, 0.26);
+  filter: brightness(1.03);
+  box-shadow:
+    0 12px 46px rgba(0, 0, 0, 0.55),
+    0 0 26px var(--game-glow),
+    var(--game-card-bevel);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .game-card[data-available='true'][data-card-state='Hover'] .game-card-face {
+    border-color: rgba(255, 255, 255, 0.35);
+    filter: brightness(1.07);
+    box-shadow:
+      0 16px 70px rgba(0, 0, 0, 0.55),
+      0 0 38px var(--game-glow),
+      var(--game-card-bevel);
+  }
 }
 
 .game-card__overlay {
@@ -116,11 +203,35 @@
   );
 }
 
+.game-card-glass {
+  pointer-events: none;
+}
+
+.game-card-glare {
+  pointer-events: none;
+  inset: -40%;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0) 26%,
+    rgba(255, 255, 255, 0.55) 38%,
+    rgba(255, 255, 255, 0.2) 48%,
+    rgba(255, 255, 255, 0) 60%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  transform: translate(var(--game-glareX), var(--game-glareY)) translateZ(36px);
+  opacity: calc(var(--game-glare) * 0.85);
+  mix-blend-mode: screen;
+  filter: blur(0.2px);
+  z-index: 50;
+}
+
 .game-card-frame {
   position: absolute;
   inset: 0.5rem;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 0.5rem;
+  pointer-events: none;
 }
 
 .game-card__badge {
@@ -151,4 +262,14 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .game-card {
+    animation: none !important;
+  }
+
+  .game-card-face {
+    transition: none !important;
+  }
 }

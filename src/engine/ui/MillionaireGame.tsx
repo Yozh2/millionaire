@@ -12,6 +12,8 @@
 import { useEffect, useCallback, useMemo, useRef, useState } from 'react';
 import type { PointerEvent } from 'react';
 
+import '@engine/ui/styles/Engine.css';
+
 import { ThemeProvider } from './theme';
 import {
   useGameState,

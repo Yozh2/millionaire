@@ -15,7 +15,7 @@
  * @see https://github.com/Yozh2/millionaire
  */
 
-import { LoadingSandboxPage } from '@pages';
+import LoadingSandboxPage from '@pages/LoadingSandboxPage';
 import { GameSelectorScreen } from './screens/registry/GameSelectorScreen';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import RegisteredGamePage from '@pages/RegisteredGamePage';

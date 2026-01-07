@@ -15,7 +15,8 @@
         "icons": [
           "/games/bg3/icons/campaigns/darkurge.webp",
           "/games/bg3/icons/campaigns/hero.webp",
-          "/games/bg3/icons/campaigns/mindflayer.webp"
+          "/games/bg3/icons/campaigns/mindflayer.webp",
+          "/games/bg3/icons/coin.webp"
         ],
         "sounds": [
           "/games/bg3/sounds/action-press.m4a",
@@ -47,7 +48,6 @@
         "victoryMusic": "/games/bg3/music/Victory.m4a",
         "retreatMusic": "/games/bg3/music/retreat.m4a",
         "icons": [
-          "/games/bg3/icons/coin.webp",
           "/games/bg3/icons/defeat.webp",
           "/games/bg3/icons/retreat.webp",
           "/games/bg3/icons/victory.webp"
@@ -134,7 +134,8 @@
       },
       "level1": {
         "icons": [
-          "/games/sky-cotl/icons/campaigns/skykid.webp"
+          "/games/sky-cotl/icons/campaigns/skykid.webp",
+          "/games/sky-cotl/icons/coin.webp"
         ],
         "sounds": [],
         "mainMenuMusic": null,
@@ -145,9 +146,7 @@
         "defeatMusic": null,
         "victoryMusic": null,
         "retreatMusic": null,
-        "icons": [
-          "/games/sky-cotl/icons/coin.webp"
-        ],
+        "icons": [],
         "endImages": {
           "victory": [],
           "defeat": [],
