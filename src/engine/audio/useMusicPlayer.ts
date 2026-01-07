@@ -90,6 +90,7 @@ export function useMusicPlayer(
 
   const musicEverEnabled = useRef(false);
   const userDisabledMusic = useRef(false);
+  const wasPlayingBeforeHide = useRef(false);
 
   const getAudioElement = useCallback((): HTMLAudioElement | null => {
     return document.getElementById(audioElementId) as HTMLAudioElement | null;
@@ -272,6 +273,62 @@ export function useMusicPlayer(
     setAudioSource,
     disableAllSounds,
   ]);
+
+  useEffect(() => {
+    if (typeof document === 'undefined' || typeof window === 'undefined') return;
+
+    const pauseForBackground = () => {
+      const audio = getAudioElement();
+      if (!audio) return;
+
+      const wasPlaying = !audio.paused && !audio.ended;
+      if (wasPlaying) {
+        wasPlayingBeforeHide.current = true;
+        audio.pause();
+        setIsMusicPlaying(false);
+      }
+    };
+
+    const resumeFromBackground = () => {
+      if (!wasPlayingBeforeHide.current) return;
+      if (userDisabledMusic.current || !isSoundEnabled()) return;
+
+      const audio = getAudioElement();
+      if (!audio || !audio.src) return;
+
+      ensureAudioContext();
+      warmUpAudioContext();
+
+      audio
+        .play()
+        .then(() => {
+          setIsMusicPlaying(true);
+        })
+        .catch(() => {
+          setIsMusicPlaying(false);
+        });
+
+      wasPlayingBeforeHide.current = false;
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        pauseForBackground();
+      } else {
+        resumeFromBackground();
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('pagehide', pauseForBackground);
+    window.addEventListener('pageshow', resumeFromBackground);
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('pagehide', pauseForBackground);
+      window.removeEventListener('pageshow', resumeFromBackground);
+    };
+  }, [getAudioElement]);
 
   const tryPlayTrackWithFallback = useCallback(
     async (trackFiles: (string | undefined)[], autoPlay: boolean = false): Promise<boolean> => {

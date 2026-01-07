@@ -1,10 +1,10 @@
-@import './Base.css';
-@import './Animations.css';
-@import './Panels.css';
+@import './base.css';
+@import './animations.css';
+@import './panels.css';
 @import './CampaignCard.css';
 @import './GameCard.css';
-@import './Glare.css';
+@import './glare.css';
 @import './PortalTitle.css';
 @import './PrizeLadder.css';
-@import './Buttons.css';
+@import './buttons.css';
 @import './EndScreen.css';

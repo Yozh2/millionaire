@@ -12,7 +12,7 @@
 import { useEffect, useCallback, useMemo, useRef, useState } from 'react';
 import type { PointerEvent } from 'react';
 
-import '@engine/ui/styles/Engine.css';
+import '@engine/ui/styles/engine.css';
 
 import { ThemeProvider } from './theme';
 import {
@@ -33,6 +33,18 @@ import { SoundConsentOverlay } from './components/overlays/SoundConsentOverlay';
 import { DEFAULT_PORTAL_HEADER_TUNER_VALUES } from './components/sliders/portalHeaderTunerDefaults';
 import { createCoinDrawFromConfig } from './effects/createCoinDrawFromConfig';
 import { preprocessGameConfig } from '@engine/utils/preprocessGameConfig';
+
+const DEFAULT_BG_GRADIENT =
+  'radial-gradient(ellipse at center, #1a0f0a 0%, #0d0604 50%, #000 100%)';
+
+const GRADIENT_COLOR_PATTERN =
+  /(#(?:[0-9a-fA-F]{3,8})|rgba?\([^)]*\)|hsla?\([^)]*\)|var\([^)]*\))/g;
+
+const getGradientEndColor = (gradient: string): string => {
+  const matches = gradient.match(GRADIENT_COLOR_PATTERN);
+  if (!matches || matches.length === 0) return '#000';
+  return matches[matches.length - 1];
+};
 
 interface MillionaireGameProps {
   /** Game configuration - defines modes, questions, themes, etc. */
@@ -170,14 +182,27 @@ export function MillionaireGame({
   const theme: ThemeColors =
     currentCampaign?.theme || config.campaigns[0].theme;
 
-  // Get background style based on mode
-  const getBackgroundStyle = () => {
-    if (!theme.bgGradient) {
-      // Default fantasy background
-      return 'radial-gradient(ellipse at center, #1a0f0a 0%, #0d0604 50%, #000 100%)';
-    }
-    return theme.bgGradient;
-  };
+  const backgroundGradient = useMemo(() => {
+    return theme.bgGradient || DEFAULT_BG_GRADIENT;
+  }, [theme.bgGradient]);
+
+  const safeAreaColor = useMemo(() => {
+    return getGradientEndColor(backgroundGradient);
+  }, [backgroundGradient]);
+
+  useEffect(() => {
+    const root = document.documentElement;
+    const previousTint = root.style.getPropertyValue('--ui-tint');
+    root.style.setProperty('--ui-tint', safeAreaColor);
+
+    return () => {
+      if (previousTint) {
+        root.style.setProperty('--ui-tint', previousTint);
+      } else {
+        root.style.removeProperty('--ui-tint');
+      }
+    };
+  }, [safeAreaColor]);
 
   // Wrapper for selectCampaign with sound (campaign select SFX only if user enabled sound)
   const handleSelectCampaign = useCallback((campaign: Campaign) => {
@@ -349,9 +374,9 @@ export function MillionaireGame({
   return (
     <ThemeProvider theme={theme}>
       <div
-        className="engine min-h-screen p-4 transition-all duration-500 relative overflow-hidden flex flex-col"
+        className="engine min-h-screen transition-all duration-500 relative overflow-hidden flex flex-col"
         style={{
-          background: getBackgroundStyle(),
+          background: backgroundGradient,
           fontFamily: config.fontFamily || DEFAULT_FONT_FAMILY,
         }}
       >

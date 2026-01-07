@@ -24,6 +24,10 @@
 .engine {
   font-family: Arial, Helvetica, sans-serif;
   background: #000;
+  padding: calc(1rem + env(safe-area-inset-top))
+    calc(1rem + env(safe-area-inset-right))
+    calc(1rem + env(safe-area-inset-bottom))
+    calc(1rem + env(safe-area-inset-left));
 
   --glare-rest: -150%;
   --glare-start: -150%;
