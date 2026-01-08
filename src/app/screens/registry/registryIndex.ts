@@ -5,6 +5,20 @@ import type { GameRegistry } from '@app/types';
 
 export const GAME_REGISTRY_INDEX: GameRegistry[] = [
   {
+    "id": "axis",
+    "visible": true,
+    "available": true,
+    "title": "AXIS",
+    "emoji": "🧭",
+    "theme": {
+      "isLight": true,
+      "bgFrom": "#f8fafc",
+      "bgVia": "#d1fae5",
+      "bgTo": "#e0f2fe",
+      "glow": "#38bdf8"
+    }
+  },
+  {
     "id": "bg3",
     "visible": true,
     "available": true,

@@ -10,6 +10,9 @@ export { pocConfig } from './poc';
 // Baldur's Gate 3
 export { bg3Config } from './bg3';
 
+// Axis
+export { axisConfig } from './axis';
+
 // Transformers 
 export { transformersConfig } from './transformers';
 
