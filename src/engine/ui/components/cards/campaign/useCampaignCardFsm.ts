@@ -160,6 +160,18 @@ export function useCampaignCardFsm({
       '--campaign-glareY',
       `${((-m.tiltX / TILT_MAX) * GLARE_SHIFT).toFixed(3)}px`,
     );
+
+    const tiltXNorm = clamp(m.tiltX / TILT_MAX, -1, 1);
+    const tiltYNorm = clamp(m.tiltY / TILT_MAX, -1, 1);
+    const tiltMag = Math.min(1, Math.hypot(tiltXNorm, tiltYNorm));
+
+    const iconShiftX = tiltYNorm * 1.6;
+    const iconShiftY = -tiltXNorm * 1.6;
+    const iconLift = 8 + tiltMag * 4;
+
+    el.style.setProperty('--campaign-icon-shift-x', `${iconShiftX.toFixed(3)}px`);
+    el.style.setProperty('--campaign-icon-shift-y', `${iconShiftY.toFixed(3)}px`);
+    el.style.setProperty('--campaign-icon-z', `${iconLift.toFixed(3)}px`);
   }, []);
 
   const startLoop = useCallback(() => {

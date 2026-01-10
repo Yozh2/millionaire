@@ -100,6 +100,9 @@
   --campaign-glare: 0;
   --campaign-glareX: 0px;
   --campaign-glareY: 0px;
+  --campaign-icon-shift-x: 0px;
+  --campaign-icon-shift-y: 0px;
+  --campaign-icon-z: 10px;
 
   transform: perspective(900px)
     translateX(var(--campaign-shiftX))
@@ -194,6 +197,7 @@
     transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
   animation: campaign-glow-breathe 2.6s ease-in-out infinite;
   animation-play-state: paused;
+  z-index: 0;
 }
 
 .engine .campaign-icon-glow::before {
@@ -223,6 +227,7 @@
     transform 640ms cubic-bezier(0.22, 1, 0.36, 1);
   will-change: transform, opacity;
   pointer-events: none;
+  z-index: 0;
 }
 
 .engine .campaign-icon-rays {
@@ -291,6 +296,31 @@
     campaign-rays-rotate-reverse 13.4s linear infinite,
     campaign-rays-shimmer 2.7s ease-in-out infinite;
   animation-play-state: paused;
+}
+
+.engine .campaign-icon-parallax {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform-style: preserve-3d;
+  transform: translate3d(
+      var(--campaign-icon-shift-x),
+      var(--campaign-icon-shift-y),
+      var(--campaign-icon-z)
+    );
+  transition: transform 140ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.engine .campaign-icon-img {
+  transform: translateZ(6px);
+  filter:
+    drop-shadow(0 10px 18px rgba(0, 0, 0, 0.65))
+    drop-shadow(0 4px 6px rgba(0, 0, 0, 0.55));
 }
 
 .engine .campaign-card[data-selected='true'] .campaign-icon-glow,

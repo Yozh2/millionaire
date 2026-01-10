@@ -78,8 +78,8 @@ export function CampaignCard({
       data-card-state={fsm.state}
       className={`campaign-card relative flex-none overflow-hidden border-4 w-[170px] h-[215px] ${
         isLightTheme
-          ? 'bg-gradient-to-b from-white/45 via-white/25 to-white/10'
-          : 'bg-gradient-to-b from-stone-950/70 via-stone-950/45 to-black/70'
+          ? 'bg-gradient-to-b from-white/60 via-white/40 to-white/20'
+          : 'bg-gradient-to-b from-stone-950/80 via-stone-950/60 to-black/80'
       }`}
       style={{
         ['--campaign-glow' as string]: glowColor,
@@ -127,7 +127,9 @@ export function CampaignCard({
           <div aria-hidden="true" className="campaign-icon-rays-wrap">
             <div aria-hidden="true" className="campaign-icon-rays" />
           </div>
-          <CampaignIcon className="relative z-10 w-full h-full max-w-full max-h-full object-contain text-5xl leading-none" />
+          <div className="campaign-icon-parallax">
+            <CampaignIcon className="campaign-icon-img relative z-10 w-full h-full max-w-full max-h-full object-contain text-5xl leading-none" />
+          </div>
         </div>
 
         <span
