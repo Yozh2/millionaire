@@ -34,7 +34,9 @@
         "defeatMusic": null,
         "victoryMusic": null,
         "retreatMusic": null,
-        "icons": [],
+        "icons": [
+          "/games/axis/icons/defeat.webp"
+        ],
         "endImages": {
           "victory": [],
           "defeat": [],
@@ -86,7 +88,6 @@
         "victoryMusic": "/games/bg3/music/Victory.m4a",
         "retreatMusic": "/games/bg3/music/retreat.m4a",
         "icons": [
-          "/games/bg3/icons/defeat.webp",
           "/games/bg3/icons/retreat.webp",
           "/games/bg3/icons/victory.webp"
         ],
