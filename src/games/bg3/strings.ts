@@ -25,8 +25,8 @@ export const strings = {
   },
 
   // Game screen: main panels
-  questionHeader: '#{n}',
-  prizesHeader: '✦ СОКРОВИЩЕ ✦',
+  prizeladderHeader: '✦ СОКРОВИЩЕ ✦',
+  currency: 'золотых',
 
   // Game screen: lifelines and actions
   lifelines: {
@@ -55,47 +55,38 @@ export const strings = {
   companionPhrases: {
     confident: [
       'Я уверен, что это "{answer}"',
-      'По-моему, правильный ответ — "{answer}"',
       'Это точно "{answer}"',
-      'Селюнский свет ведёт к "{answer}"',
-      'Астарион уже поднимает бокал за "{answer}"',
+      'Селунитский свет ведёт к "{answer}"',
+      'Астарион уже поднял бокал за "{answer}"',
       'Кости судьбы выпали на "{answer}"',
-      'Даже Мысличный червь не спорит: "{answer}"',
-      "Лаэ'зель потребовала поставить на \"{answer}\"",
+      "Лаэ'зель требует поставить на \"{answer}\"",
       'Гейл дал слово архимагов за "{answer}"',
       'Орфей подтвердил — "{answer}"',
-      'Моя тьма сверхразума шепчет "{answer}"',
+      'Тьма шепчет "{answer}"',
     ],
     uncertain: [
-      'Думаю, что это "{answer}"',
       'Рискну сказать "{answer}"',
       'Возможно, это "{answer}"',
-      'Гадаю на кости — может, "{answer}"',
-      'Оракул в Урдене шепчет про "{answer}", но не уверен',
-      'Иллитид в голове показывает "{answer}", хотя картинка расплывчата',
+      'Иллитид шепчет "{answer}", но неизвестно, на нашей ли он стороне',
       'Жребий жреца лёг на "{answer}", но рука дрогнула',
-      'Шепоты Абсолюта слышат "{answer}", но они редко правы',
-      'Эндаревы карты склоняются к "{answer}"',
+      'Шёпоты Абсолюта слышат "{answer}", но они редко правы',
       'Если следовать интуиции Шэдоухарт, то "{answer}" — но без гарантий',
-      'Побочный эффект тэдпола шепчет про "{answer}"',
     ],
   },
 
-  // End screen: Common
-  newGameButton: 'В ЛАГЕРЬ',
-  currency: 'золотых',
-
   // End screen: victory
-  victoryText: 'Вы завоевали величайшее сокровище Фаэруна!',
   victoryHeader: 'ЛЕГЕНДАРНЫЙ ГЕРОЙ',
+  victoryText: 'Вы завоевали величайшее сокровище Фаэруна!',
 
   // End screen: defeat
-  defeatText: 'Кость брошена. Неверный ответ.',
   defeatHeader: 'КРИТИЧЕСКИЙ ПРОВАЛ',
-  correctAnswerLabel: 'Правильный ответ:',
+  defeatText: 'Кость брошена. Неверный ответ.',
 
   // End screen: retreat
-  retreatText: 'Разумное решение, искатель приключений',
   retreatHeader: 'МУДРЫЙ ВЫБОР',
+  retreatText: 'Разумное решение, искатель приключений',
+
+  // End screen: Common
+  newGameButton: 'В ЛАГЕРЬ',
 
 } as const satisfies GameStringsNamespace;

@@ -22,8 +22,8 @@ export const strings = {
   },
 
   // Game screen: main panels
-  questionHeader: '#{n}',
-  prizesHeader: 'ПРИЗЫ',
+  prizeladderHeader: 'ПРИЗЫ',
+  currency: '$',
 
   // Game screen: lifelines and actions
   lifelines: {
@@ -55,20 +55,18 @@ export const strings = {
     uncertain: ['Может быть "{answer}"?', 'Думаю, это "{answer}"'],
   },
 
-  // End screen: Common
-  newGameButton: 'ИГРАТЬ СНОВА',
-  currency: '$',
-
   // End screen: victory
-  victoryText: 'Поздравляем! Вы выиграли главный приз!',
   victoryHeader: '🎉 ПОБЕДА!',
+  victoryText: 'Поздравляем! Вы выиграли главный приз!',
 
   // End screen: defeat
-  defeatText: 'Неправильный ответ!',
   defeatHeader: '❌ ИГРА ОКОНЧЕНА',
-  correctAnswerLabel: 'Правильный ответ:',
+  defeatText: 'Неправильный ответ!',
 
   // End screen: retreat
-  retreatText: 'Умный выбор!',
   retreatHeader: '💰 ДЕНЬГИ ЗАБРАНЫ',
+  retreatText: 'Умный выбор!',
+
+  // End screen: Common
+  newGameButton: 'ИГРАТЬ СНОВА',
 } as const satisfies GameStringsNamespace;

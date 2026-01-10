@@ -365,12 +365,8 @@ export interface GameStrings {
   selectPath: string;
   startButton: string;
 
-  // Game screen - Question panel
-  /** Template for question numbering (use {n} placeholder) */
-  questionHeader: string;
-
   // Game screen - Prize ladder
-  prizesHeader: string;
+  prizeladderHeader: string;
 
   // Lifelines (preferred)
   lifelinePhoneHeader: string;
@@ -393,15 +389,14 @@ export interface GameStrings {
   };
 
   // End screens
-  victoryText: string;
   victoryHeader: string;
+  victoryText: string;
 
-  defeatText: string;
   defeatHeader: string;
-  correctAnswerLabel: string;
+  defeatText: string;
 
-  retreatText: string;
   retreatHeader: string;
+  retreatText: string;
 
   newGameButton: string;
 

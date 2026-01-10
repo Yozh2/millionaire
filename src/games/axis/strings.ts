@@ -3,44 +3,45 @@ import type { GameStringsNamespace } from '@engine/types';
 export const strings = {
   // Common layout
   headerTitle: 'КТО ХОЧЕТ СТАТЬ МИЛЛИОНЕРОМ',
-  headerSubtitle: 'Axis Edition',
-  footer: '✦ Ось Поднебесья ✦',
+  headerSubtitle: 'Мир Поднебесья',
+  footer: '✦ Мир Поднебесья ✦',
 
   // Audio controls
-  musicOn: 'Выключить музыку',
-  musicOff: 'Включить музыку',
+  musicOn: 'Вкл. звук',
+  musicOff: 'Выкл. звук',
 
   // Campaign selection screen
   introText:
-    '{Путник!}\nПеред тобой испытание {на знание} {Оси Поднебесья}.\n' +
-    '{15 вопросов}, {подсказки}, {миллион на кону}',
+    '{Путник!}\n' +
+    '{Перед тобой испытание} {на знание} {вселенной Поднебесья}.\n' +
+    '{15 вопросов}, подсказки, {миллион на кону}',
   selectPath: '✦ ВЫБЕРИ ПУТЬ ✦',
-  startButton: 'В ПУТЬ',
+  startButton: 'В ПРИКЛЮЧЕНИЕ',
 
   // Campaign cards
   campaigns: {
-    yona: { name: 'ПУТЬ ЁНЫ', label: 'История', iconAlt: 'Yona' },
-    travelers: { name: 'СТРАННИКИ', label: 'Путешествие', iconAlt: 'Travelers' },
-    world: { name: 'ПОДНЕБЕСЬЕ', label: 'Лор', iconAlt: 'World' },
+    yona: { name: 'ПУТЬ ЁНЫ', label: 'Акмурийка', iconAlt: 'Yona' },
+    travelers: { name: 'СТРАННИКИ', label: 'Команда', iconAlt: 'Travelers' },
+    world: { name: 'ПОДНЕБЕСЬЕ', label: 'Мироустройство', iconAlt: 'World' },
   },
 
   // Game screen: main panels
-  questionHeader: '#{n}',
-  prizesHeader: '✦ НАГРАДА ✦',
+  prizeladderHeader: '✦ НАГРАДА ✦',
+  currency: 'зм',
 
   // Game screen: lifelines and actions
   lifelines: {
     fifty: '50:50',
-    phone: 'Спутник',
-    audience: 'Голос пути',
-    double: 'Двойной шанс',
+    phone: 'Послание',
+    audience: 'Кошкомоли',
+    double: 'Вдохновение',
   },
   retreat: 'Забрать',
 
   // Game screen: lifeline panels
-  lifelinePhoneHeader: '✦ СОВЕТ СПУТНИКА ✦',
-  lifelineAudienceHeader: '✦ ГОЛОС ПУТИ ✦',
-  lifelineSenderLabel: 'Спутник:',
+  lifelinePhoneHeader: '✦ СВИТОК ОТ ДОБРОЖЕЛАТЕЛЯ ✦',
+  lifelineAudienceHeader: '✦ ЗНАК КОШКОМОЛЕЙ ✦',
+  lifelineSenderLabel: 'Послание:',
   lifelineAudienceLabel: 'Мнение пути:',
 
   // Game screen: companion names
@@ -57,39 +58,31 @@ export const strings = {
       'Это точно "{answer}"',
       'Спорить нечего — "{answer}"',
       'Я бы поставил на "{answer}"',
-      'Путь указывает на "{answer}"',
-      'Ёли уже рычит: "{answer}"',
-      'Чуйка ведёт к "{answer}"',
       'Вижу это ясно: "{answer}"',
       'Мои заметки сходятся на "{answer}"',
     ],
     uncertain: [
-      'Думаю, что это "{answer}"',
+      'Возможно, что это "{answer}"',
       'Склоняюсь к "{answer}", но не уверен',
-      'Возможно, "{answer}"',
       'Если довериться интуиции — "{answer}"',
-      'Похоже на "{answer}", но могу ошибаться',
-      'Скорее всего "{answer}"',
+      'Похоже на "{answer}"',
       'Сердце говорит "{answer}"',
-      'Не клянусь, но скажу "{answer}"',
     ],
   },
 
-  // End screen: Common
-  newGameButton: 'Новый путь',
-  currency: 'зм',
-
   // End screen: victory
-  victoryText: 'Ты прошёл все испытания и добрался до вершины Оси.',
   victoryHeader: 'ПУТНИК ОСИ',
+  victoryText: 'Ты прошёл все испытания и добрался до вершины Оси.',
 
   // End screen: defeat
-  defeatText: 'Неверный ответ. Путь обрывается.',
-  defeatHeader: 'СЛОМАННЫЙ КРУГ',
-  correctAnswerLabel: 'Правильный ответ:',
+  defeatHeader: 'КРИТИЧЕСКИЙ ПРОВАЛ',
+  defeatText: 'Путь был труден, и ты не смог дойти до цели.',
 
   // End screen: retreat
-  retreatText: 'Иногда лучше свернуть с тропы вовремя.',
   retreatHeader: 'МУДРЫЙ ОТХОД',
+  retreatText: 'Иногда лучше свернуть с тропы вовремя.',
+
+  // End screen: Common
+  newGameButton: 'В ЛАГЕРЬ',
 
 } as const satisfies GameStringsNamespace;

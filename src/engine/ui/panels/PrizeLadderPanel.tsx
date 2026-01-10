@@ -4,7 +4,7 @@ import { LifelineButton } from '@engine/ui/components/buttons';
 import { Panel, PanelHeader } from '@engine/ui/components/panel';
 
 interface PrizeLadderPanelProps {
-  prizesHeader: string;
+  prizeladderHeader: string;
   prizes: string[];
   guaranteedPrizes: number[];
   currentQuestion: number;
@@ -17,7 +17,7 @@ interface PrizeLadderPanelProps {
 }
 
 export function PrizeLadderPanel({
-  prizesHeader,
+  prizeladderHeader,
   prizes,
   guaranteedPrizes,
   currentQuestion,
@@ -48,7 +48,7 @@ export function PrizeLadderPanel({
 
   return (
     <Panel className="p-1 h-fit">
-      <PanelHeader>{prizesHeader}</PanelHeader>
+      <PanelHeader>{prizeladderHeader}</PanelHeader>
       <div className="p-2 space-y-1">
         {[...prizes].reverse().map((prize: string, reverseIndex: number) => {
           const index = totalQuestions - 1 - reverseIndex;

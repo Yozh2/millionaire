@@ -23,8 +23,8 @@ export const strings = {
   },
 
   // Game screen: main panels
-  questionHeader: '#{n}',
-  prizesHeader: 'CANDLE RUN',
+  prizeladderHeader: 'CANDLE RUN',
+  currency: 'candles',
 
   // Game screen: lifelines and actions
   lifelines: {
@@ -68,20 +68,18 @@ export const strings = {
     ],
   },
 
-  // End screen: Common
-  newGameButton: 'HOME',
-  currency: 'candles',
-
   // End screen: victory
-  victoryText: 'You ascended to the Orbit!',
   victoryHeader: 'ASCENDED',
+  victoryText: 'You ascended to the Orbit!',
 
   // End screen: defeat
-  defeatText: 'Your light has dimmed.',
   defeatHeader: 'DIMMED LIGHT',
-  correctAnswerLabel: 'Correct answer:',
+  defeatText: 'Your light has dimmed.',
 
   // End screen: retreat
-  retreatText: 'A wise choice — safe and bright.',
   retreatHeader: 'YOU TOOK THE CANDLES',
+  retreatText: 'A wise choice — safe and bright.',
+
+  // End screen: Common
+  newGameButton: 'HOME',
 } as const satisfies GameStringsNamespace;

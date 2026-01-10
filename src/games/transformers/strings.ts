@@ -38,8 +38,8 @@ export const strings = {
   },
 
   // Game screen: main panels
-  questionHeader: '#{n}',
-  prizesHeader: 'ЭНЕРГОН',
+  prizeladderHeader: 'ЭНЕРГОН',
+  currency: 'энергона',
 
   // Game screen: lifelines and actions
   lifelines: {
@@ -261,21 +261,19 @@ export const strings = {
     ],
   },
 
-  // End screen: Common
-  newGameButton: 'ТРАНСФОРМАЦИЯ',
-  currency: 'энергона',
-
   // End screen: victory
-  victoryText: 'Ты достоин нести Матрицу Лидерства!',
   victoryHeader: '⚡ ПОБЕДА! ⚡',
+  victoryText: 'Ты достоин нести Матрицу Лидерства!',
 
   // End screen: defeat
-  defeatText: 'Твоя искра погасла...',
   defeatHeader: 'ПОРАЖЕНИЕ',
-  correctAnswerLabel: 'Правильный ответ:',
+  defeatText: 'Твоя искра погасла...',
 
   // End screen: retreat
-  retreatText: '{Мудрое решение —} {сохранить ресурсы}!',
   retreatHeader: 'ЭНЕРГОН СОБРАН',
+  retreatText: '{Мудрое решение —} {сохранить ресурсы}!',
+
+  // End screen: Common
+  newGameButton: 'ТРАНСФОРМАЦИЯ',
 
 } as const satisfies GameStringsNamespace;

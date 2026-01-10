@@ -183,7 +183,8 @@ export function GameScreen({
 
   const questionNumber = currentQuestion + 1;
   const formattedQuestionNumber = String(questionNumber).padStart(2, '0');
-  const questionHeaderText = config.strings.questionHeader.replace(
+  const questionHeaderTemplate = '#{n}';
+  const questionHeaderText = questionHeaderTemplate.replace(
     '{n}',
     `\u00A0${formattedQuestionNumber}`
   );
@@ -238,7 +239,7 @@ export function GameScreen({
 
       {/* Prize Ladder */}
       <PrizeLadderPanel
-        prizesHeader={config.strings.prizesHeader}
+        prizeladderHeader={config.strings.prizeladderHeader}
         prizes={prizes}
         guaranteedPrizes={guaranteedPrizes}
         currentQuestion={currentQuestion}

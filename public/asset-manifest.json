@@ -12,20 +12,19 @@
         "favicon": null
       },
       "level1": {
-        "icons": [],
+        "icons": [
+          "/games/axis/icons/campaigns/travelers.png",
+          "/games/axis/icons/campaigns/travelers.webp",
+          "/games/axis/icons/campaigns/yona.png",
+          "/games/axis/icons/campaigns/yona.webp"
+        ],
         "sounds": [
           "/games/axis/sounds/action-press.m4a",
           "/games/axis/sounds/answer-click.m4a",
           "/games/axis/sounds/defeat.m4a",
           "/games/axis/sounds/lifeline-audience.m4a",
           "/games/axis/sounds/lifeline-fifty.m4a",
-          "/games/axis/sounds/retreat.m4a",
-          "/games/axis/sounds/select-darkurge.m4a",
-          "/games/axis/sounds/select-hero.m4a",
-          "/games/axis/sounds/select-mindflayer.m4a",
-          "/games/axis/sounds/select-travelers.m4a",
-          "/games/axis/sounds/select-world.m4a",
-          "/games/axis/sounds/select-yona.m4a"
+          "/games/axis/sounds/retreat.m4a"
         ],
         "mainMenuMusic": null,
         "startImages": [],
