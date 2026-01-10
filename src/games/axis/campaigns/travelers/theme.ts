@@ -1,55 +1,38 @@
 import type { ThemeColors } from '@engine/types';
 
 export const theme: ThemeColors = {
-  isLight: true,
-
-  bgGradient:
-    'linear-gradient(180deg,' +
-    ' #fffaf0 0%,' +
-    ' #fef3c7 20%,' +
-    ' #f9d5a5 45%,' +
-    ' #7dd3fc 72%,' +
-    ' #e0f2fe 100%' +
-    ')',
-
-  textPrimary: 'text-amber-900',
-  textSecondary: 'text-amber-800',
+  textPrimary: 'text-amber-400',
+  textSecondary: 'text-amber-200',
   textMuted: 'text-amber-700',
-  textAccent: 'text-sky-700',
+  textAccent: 'text-amber-100',
 
-  textTitle: 'text-amber-900',
-  textHeader: 'text-white/95',
-  headerTextShadow: '0 4px 18px rgba(15, 23, 42, 0.18), 0 0 22px rgba(245, 158, 11, 0.32)',
-  panelHeaderTextShadow: '0 1px 2px rgba(15, 23, 42, 0.2)',
+  border: 'border-amber-800',
+  borderLight: 'border-amber-600',
+  borderHover: 'hover:border-amber-600',
 
-  border: 'border-amber-300',
-  borderLight: 'border-amber-200',
-  borderHover: 'hover:border-sky-300',
+  bgPanelFrom: '#451a03',
+  bgPanelVia: '#1c1917',
+  bgPanelTo: '#0c0a09',
 
-  bgPanelFrom: 'rgba(255, 255, 255, 0.92)',
-  bgPanelVia: 'rgba(254, 243, 199, 0.82)',
-  bgPanelTo: 'rgba(255, 251, 235, 0.9)',
+  bgHeader: 'from-amber-900 via-amber-800 to-amber-900',
+  bgHeaderVia: '#92400e',
 
-  bgHeader: 'from-amber-400 via-orange-300 to-sky-400',
-  bgHeaderVia: '#fdba74',
-  headerBorderColor: '#f59e0b',
+  bgButton: 'from-amber-700 via-amber-800 to-amber-900',
+  bgAnswer: 'from-amber-950 via-stone-900 to-neutral-950',
+  bgAnswerHover: 'hover:from-amber-900 hover:to-stone-900',
+  bgLifeline: 'from-amber-700 to-amber-900',
 
-  bgButton: 'from-amber-500 via-orange-400 to-amber-500',
+  bgPrizeCurrent: 'bg-amber-900/60',
+  bgPrizePassed: 'bg-amber-950/40',
 
-  bgAnswer: 'from-white/80 via-amber-50/80 to-white/80',
-  bgAnswerHover: 'hover:from-white/90 hover:via-amber-100/80 hover:to-white/90',
-  shadowAnswer: 'hover:shadow-amber-400/40',
+  textLifeline: 'text-amber-100',
+  borderLifeline: 'border-amber-500',
+  shadowAnswer: 'hover:shadow-amber-900/50',
 
-  bgLifeline: 'from-amber-500 to-sky-500',
-  textLifeline: 'text-white',
-  borderLifeline: 'border-amber-200',
+  glow: 'rgba(217, 119, 6, 0.5)',
+  glowColor: '#fbbf24',
+  glowSecondary: '#d97706',
 
-  bgPrizeCurrent: 'bg-amber-400/30',
-  bgPrizePassed: 'bg-amber-200/25',
-
-  glow: 'rgba(245, 158, 11, 0.35)',
-  glowColor: '#f59e0b',
-  glowSecondary: '#38bdf8',
-
-  borderImageColors: '#f59e0b, rgba(255,255,255,0.6), #38bdf8',
+  borderImageColors: '#92400e, #451a03',
+  headerBorderColor: '#451a03',
 };

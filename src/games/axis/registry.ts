@@ -10,10 +10,10 @@ export const registry = {
   title: 'AXIS',
   emoji: '🧭',
   theme: {
-    isLight: true,
-    bgFrom: '#f8fafc',
-    bgVia: '#d1fae5',
-    bgTo: '#e0f2fe',
+    isLight: false,
+    bgFrom: '#020617',
+    bgVia: '#0b1b34',
+    bgTo: '#05070f',
     glow: '#38bdf8',
   } satisfies BaseTheme,
 } satisfies GameRegistry;

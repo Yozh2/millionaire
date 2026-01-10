@@ -1,55 +1,64 @@
 import type { ThemeColors } from '@engine/types';
 
 export const theme: ThemeColors = {
-  isLight: true,
+  isLight: false,
 
   bgGradient:
     'linear-gradient(180deg,' +
-    ' #f6f7f2 0%,' +
-    ' #e2f3e7 18%,' +
-    ' #b9e4c8 46%,' +
-    ' #4c9468 72%,' +
-    ' #0f2a1e 100%' +
+    ' #04140d 0%,' +
+    ' #0b2a1c 24%,' +
+    ' #0f3b26 50%,' +
+    ' #0b2a1c 76%,' +
+    ' #03100a 100%' +
     ')',
 
-  textPrimary: 'text-emerald-900',
-  textSecondary: 'text-emerald-800',
-  textMuted: 'text-emerald-700',
-  textAccent: 'text-lime-700',
+  textPrimary: 'text-emerald-100',
+  textSecondary: 'text-emerald-200',
+  textMuted: 'text-emerald-300/70',
+  textAccent: 'text-lime-300',
 
-  textTitle: 'text-emerald-900',
-  textHeader: 'text-white/95',
-  headerTextShadow: '0 4px 18px rgba(15, 23, 42, 0.18), 0 0 22px rgba(16, 185, 129, 0.35)',
-  panelHeaderTextShadow: '0 1px 2px rgba(15, 23, 42, 0.18)',
+  textTitle: 'text-emerald-100',
+  textHeader: 'text-emerald-50',
+  headerTextShadow: '0 6px 18px rgba(0, 0, 0, 0.35), 0 0 16px rgba(16, 185, 129, 0.25)',
+  panelHeaderTextShadow: '0 1px 2px rgba(0, 0, 0, 0.7)',
 
-  border: 'border-emerald-300',
-  borderLight: 'border-emerald-200',
-  borderHover: 'hover:border-emerald-400',
+  border: 'border-emerald-800',
+  borderLight: 'border-emerald-700',
+  borderHover: 'hover:border-emerald-500',
 
-  bgPanelFrom: 'rgba(255, 255, 255, 0.92)',
-  bgPanelVia: 'rgba(236, 253, 245, 0.86)',
-  bgPanelTo: 'rgba(255, 255, 255, 0.9)',
+  bgPanelFrom: 'rgba(4, 20, 13, 0.9)',
+  bgPanelVia: 'rgba(11, 42, 28, 0.72)',
+  bgPanelTo: 'rgba(6, 30, 18, 0.84)',
 
-  bgHeader: 'from-emerald-600 via-emerald-500 to-lime-500',
-  bgHeaderVia: '#10b981',
-  headerBorderColor: '#059669',
+  bgHeader: 'from-emerald-900 via-emerald-700 to-lime-900',
+  bgHeaderVia: '#059669',
+  headerBorderColor: '#10b981',
 
-  bgButton: 'from-emerald-600 via-emerald-500 to-emerald-600',
+  bgButton: 'from-emerald-700 via-emerald-600 to-emerald-800',
 
-  bgAnswer: 'from-white/80 via-emerald-50/80 to-white/80',
-  bgAnswerHover: 'hover:from-white/90 hover:via-emerald-100/80 hover:to-white/90',
-  shadowAnswer: 'hover:shadow-emerald-400/40',
+  bgAnswer: 'from-emerald-950/80 via-emerald-900/55 to-emerald-950/80',
+  bgAnswerHover: 'hover:from-emerald-950/90 hover:via-emerald-900/70 hover:to-emerald-950/90',
+  shadowAnswer: 'hover:shadow-emerald-700/40',
 
-  bgLifeline: 'from-emerald-600 to-lime-600',
-  textLifeline: 'text-white',
-  borderLifeline: 'border-emerald-200',
+  bgLifeline: 'from-emerald-700 to-lime-800',
+  textLifeline: 'text-emerald-50',
+  borderLifeline: 'border-emerald-500',
 
-  bgPrizeCurrent: 'bg-emerald-500/25',
-  bgPrizePassed: 'bg-emerald-300/20',
+  bgPrizeCurrent: 'bg-gradient-to-b from-emerald-700/90 via-emerald-800/90 to-emerald-900/90',
+  bgPrizePassed: 'bg-emerald-950/45',
+  prizeTextCurrent: 'text-emerald-100',
+  prizeTextPassed: 'text-emerald-300/70',
+  prizeTextFuture: 'text-emerald-200/60',
+  prizeBgGuaranteed: 'bg-emerald-900/40',
+  prizeTextGuaranteed: 'text-lime-200',
+  prizeBorderGuaranteed: 'border-emerald-600/70',
+  prizeBorderCurrent: 'border-lime-400/70',
+  prizeBorderPassed: 'border-emerald-800',
+  prizeGlowCurrent: 'rgba(16, 185, 129, 0.6)',
 
-  glow: 'rgba(16, 185, 129, 0.45)',
+  glow: 'rgba(16, 185, 129, 0.4)',
   glowColor: '#10b981',
-  glowSecondary: '#84cc16',
+  glowSecondary: '#a3e635',
 
-  borderImageColors: '#10b981, rgba(255,255,255,0.6), #84cc16',
+  borderImageColors: 'rgba(16,185,129,0.85), #052013, rgba(163,230,53,0.8)',
 };
