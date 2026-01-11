@@ -9,13 +9,12 @@
     "axis": {
       "cardAssets": {
         "gameCard": null,
-        "favicon": null
+        "favicon": "/games/axis/favicon/favicon.svg"
       },
       "level1": {
         "icons": [
-          "/games/axis/icons/campaigns/travelers.png",
           "/games/axis/icons/campaigns/travelers.webp",
-          "/games/axis/icons/campaigns/yona.png",
+          "/games/axis/icons/campaigns/world.webp",
           "/games/axis/icons/campaigns/yona.webp"
         ],
         "sounds": [
@@ -88,6 +87,7 @@
         "victoryMusic": "/games/bg3/music/Victory.m4a",
         "retreatMusic": "/games/bg3/music/retreat.m4a",
         "icons": [
+          "/games/bg3/icons/defeat.webp",
           "/games/bg3/icons/retreat.webp",
           "/games/bg3/icons/victory.webp"
         ],
