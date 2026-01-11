@@ -28,9 +28,9 @@
   - React-обертка вокруг `AssetLoader`.
   - Возвращает `{ isLoading, progress, isComplete, error }` + `reload()`.
 - `src/engine/utils/assetLoader.ts`
-  - Резолвер аудио-путей с fallback-поддержкой.
+  - Резолвер аудио-путей.
   - Проверяет наличие файла (HEAD / ranged GET), чтобы выбрать:
-    game-specific -> shared fallback -> oscillator / silence.
+    game-specific -> oscillator / silence.
   - Используется аудио-плеерами, не связан с манифестным прелоадером.
 
 ## 3) Уровни загрузки (AssetLoader)
@@ -95,9 +95,11 @@
 
 - `getAssetPaths(type, filename, gameId)` строит:
   - `/games/{gameId}/{type}/{filename}` (game-specific)
-  - `/games/shared/{type}/{filename}` (fallback)
 - `checkFileExists(url)` делает HEAD, а затем ranged GET (0-0) как fallback.
-- `resolveAssetPath(...)` выбирает specific -> shared -> none.
+  - Для аудио путей (`/games/.../sounds|music|voices/`) при наличии
+    `asset-manifest.json` использует его как быстрый источник истины,
+    чтобы не делать сетевые проверки при отсутствии файлов.
+- `resolveAssetPath(...)` выбирает specific -> none.
 - Используется в:
   - `src/engine/utils/audioPlayer.ts`
   - `src/engine/audio/useSoundPlayer.ts`

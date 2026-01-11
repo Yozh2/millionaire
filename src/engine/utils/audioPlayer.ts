@@ -1,15 +1,13 @@
 /**
- * Audio player with fallback support.
+ * Audio player with oscillator fallback.
  *
  * Loading priority for sounds:
  * 1. Game-specific file: /games/{gameId}/sounds/{filename}
- * 2. Shared fallback file: /games/shared/sounds/{filename}
- * 3. Oscillator-generated sound
+ * 2. Oscillator-generated sound
  *
  * For music/voices:
  * 1. Game-specific file: /games/{gameId}/music/{filename}
- * 2. Shared fallback file: /games/shared/music/{filename}
- * 3. Silent (no playback)
+ * 2. Silent (no playback)
  */
 
 import { getAssetPaths, checkFileExists } from './assetLoader';
@@ -655,8 +653,7 @@ const getOscillatorKeyFromFilename = (filename: string): OscillatorSoundKey | nu
 /**
  * Play a sound effect with fallback chain:
  * 1. Game-specific file
- * 2. Base fallback file
- * 3. Oscillator sound
+ * 2. Oscillator sound
  */
 export const playSound = async (
   filename: string,
@@ -671,9 +668,11 @@ export const playSound = async (
     return 'file';
   }
 
-  // 2. Try fallback path
-  if (await tryPlayFile(paths.fallback, volume)) {
-    return 'file';
+  // 2. Try fallback path (if explicitly provided)
+  if (paths.fallback && paths.fallback !== paths.specific) {
+    if (await tryPlayFile(paths.fallback, volume)) {
+      return 'file';
+    }
   }
 
   // 3. Try oscillator fallback
@@ -736,7 +735,9 @@ export const playSoundWithHandle = async (
 
   const handle =
     (await playFileWithHandle(paths.specific, volume)) ||
-    (await playFileWithHandle(paths.fallback, volume));
+    (paths.fallback && paths.fallback !== paths.specific
+      ? await playFileWithHandle(paths.fallback, volume)
+      : null);
 
   if (handle) return handle;
 
@@ -788,15 +789,17 @@ export const playMusic = async (
   }
 
   // Try fallback path
-  const fallbackExists = await checkFileExists(paths.fallback);
-  if (fallbackExists) {
-    audioElement.src = paths.fallback;
-    audioElement.volume = volume;
-    try {
-      await audioElement.play();
-      return true;
-    } catch {
-      return false;
+  if (paths.fallback && paths.fallback !== paths.specific) {
+    const fallbackExists = await checkFileExists(paths.fallback);
+    if (fallbackExists) {
+      audioElement.src = paths.fallback;
+      audioElement.volume = volume;
+      try {
+        await audioElement.play();
+        return true;
+      } catch {
+        return false;
+      }
     }
   }
 
@@ -820,8 +823,10 @@ export const playVoice = async (
   }
 
   // Try fallback path
-  if (await tryPlayFile(paths.fallback, volume)) {
-    return true;
+  if (paths.fallback && paths.fallback !== paths.specific) {
+    if (await tryPlayFile(paths.fallback, volume)) {
+      return true;
+    }
   }
 
   return false;
@@ -841,7 +846,12 @@ export const preloadSounds = async (
     const paths = getAssetPaths('sounds', filename, gameId);
 
     // Try to preload specific first, then fallback
-    for (const path of [paths.specific, paths.fallback]) {
+    const candidates = [paths.specific];
+    if (paths.fallback && paths.fallback !== paths.specific) {
+      candidates.push(paths.fallback);
+    }
+
+    for (const path of candidates) {
       try {
         const exists = await checkFileExists(path);
         if (exists) {

@@ -30,14 +30,14 @@ export const axisConfig: GameConfig = {
   strings,
 
   lifelines: {
-    fifty: { name: strings.lifelines.fifty, icon: '🌿', enabled: true },
-    phone: { name: strings.lifelines.phone, icon: '🗣️', enabled: true },
-    audience: { name: strings.lifelines.audience, icon: '📣', enabled: true },
+    fifty: { name: strings.lifelines.fifty, icon: '⚡️', enabled: true },
+    phone: { name: strings.lifelines.phone, icon: '📜', enabled: true },
+    audience: { name: strings.lifelines.audience, icon: '🐱', enabled: true },
     double: { name: strings.lifelines.double, icon: '✨', enabled: true },
   },
 
   actions: {
-    retreat: { name: strings.retreat, icon: '🧭', enabled: true },
+    retreat: { name: strings.retreat, icon: '💰', enabled: true },
   },
 
   prizes: {

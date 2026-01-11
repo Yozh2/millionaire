@@ -129,12 +129,14 @@ export function useMusicPlayer(
           return;
         }
 
-        if (
-          getPreloadedAudioSrc(paths.fallback) ||
-          (await checkFileExists(paths.fallback))
-        ) {
-          setCurrentTrack(paths.fallback);
-          return;
+        if (paths.fallback && paths.fallback !== paths.specific) {
+          if (
+            getPreloadedAudioSrc(paths.fallback) ||
+            (await checkFileExists(paths.fallback))
+          ) {
+            setCurrentTrack(paths.fallback);
+            return;
+          }
         }
       }
     };
@@ -162,8 +164,10 @@ export function useMusicPlayer(
       if (getPreloadedAudioSrc(paths.specific)) return paths.specific;
       if (await checkFileExists(paths.specific)) return paths.specific;
 
-      if (getPreloadedAudioSrc(paths.fallback)) return paths.fallback;
-      if (await checkFileExists(paths.fallback)) return paths.fallback;
+      if (paths.fallback && paths.fallback !== paths.specific) {
+        if (getPreloadedAudioSrc(paths.fallback)) return paths.fallback;
+        if (await checkFileExists(paths.fallback)) return paths.fallback;
+      }
 
       return null;
     },

@@ -26,7 +26,7 @@ import {
   preDecodeAudio,
   registerPreloadedAudioBuffer,
 } from '@engine/utils/audioPlayer';
-import { getBasePath } from '@app/utils/paths';
+import { getBasePath, loadAssetManifest } from '@app/utils/paths';
 
 const EMPTY_MANIFEST: AssetManifest = {
   version: '0.0.0',
@@ -109,12 +109,7 @@ class AssetLoader {
 
     const manifestUrl = `${getBasePath()}asset-manifest.json`;
 
-    this.manifestPromise = fetch(manifestUrl)
-      .then(async (res) => {
-        if (!res.ok) return null;
-        return (await res.json()) as AssetManifest;
-      })
-      .catch(() => null)
+    this.manifestPromise = loadAssetManifest()
       .then((data) => {
         if (!data) {
           this.manifest = EMPTY_MANIFEST;

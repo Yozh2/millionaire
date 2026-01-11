@@ -84,12 +84,146 @@ export const getAssetPaths = (
   type: AssetType,
   filename: string,
   gameId: string
-): { specific: string; fallback: string } => {
+): { specific: string; fallback: string | null } => {
   const basePath = getBasePath();
   return {
     specific: `${basePath}games/${gameId}/${type}/${stripLeadingSlash(filename)}`,
-    fallback: `${basePath}games/shared/${type}/${stripLeadingSlash(filename)}`,
+    fallback: null,
   };
+};
+
+type ManifestCampaignAssets = {
+  level1_1?: {
+    music?: string | null;
+    musicAlt?: string | null;
+  };
+};
+
+type ManifestGameAssets = {
+  level1?: {
+    sounds?: string[];
+    mainMenuMusic?: string | null;
+  };
+  level2?: {
+    defeatMusic?: string | null;
+    victoryMusic?: string | null;
+    retreatMusic?: string | null;
+  };
+  voices?: string[];
+  campaigns?: Record<string, ManifestCampaignAssets>;
+};
+
+type AssetManifest = {
+  engine?: { sounds?: string[] };
+  games?: Record<string, ManifestGameAssets>;
+};
+
+let manifestPromise: Promise<AssetManifest | null> | null = null;
+let manifestCache: AssetManifest | null = null;
+let audioIndexPromise: Promise<Set<string> | null> | null = null;
+let audioIndexCache: Set<string> | null = null;
+
+const getManifestUrl = (): string => `${getBasePath()}asset-manifest.json`;
+
+export const loadAssetManifest = async (): Promise<AssetManifest | null> => {
+  if (manifestCache) return manifestCache;
+  if (!manifestPromise) {
+    manifestPromise = fetch(getManifestUrl())
+      .then(async (res) => {
+        if (!res.ok) return null;
+        return (await res.json()) as AssetManifest;
+      })
+      .catch(() => null);
+  }
+
+  const manifest = await manifestPromise;
+  manifestCache = manifest;
+  return manifest;
+};
+
+const addList = (set: Set<string>, list?: string[] | null): void => {
+  if (!list) return;
+  for (const item of list) {
+    set.add(item);
+  }
+};
+
+const addValue = (set: Set<string>, value?: string | null): void => {
+  if (value) {
+    set.add(value);
+  }
+};
+
+const buildAudioIndex = (manifest: AssetManifest): Set<string> => {
+  const index = new Set<string>();
+
+  addList(index, manifest.engine?.sounds);
+
+  for (const game of Object.values(manifest.games ?? {})) {
+    addList(index, game.level1?.sounds);
+    addValue(index, game.level1?.mainMenuMusic);
+    addValue(index, game.level2?.defeatMusic);
+    addValue(index, game.level2?.victoryMusic);
+    addValue(index, game.level2?.retreatMusic);
+    addList(index, game.voices);
+
+    for (const campaign of Object.values(game.campaigns ?? {})) {
+      addValue(index, campaign.level1_1?.music);
+      addValue(index, campaign.level1_1?.musicAlt);
+    }
+  }
+
+  return index;
+};
+
+const getAudioIndex = async (): Promise<Set<string> | null> => {
+  if (audioIndexCache) return audioIndexCache;
+  if (!audioIndexPromise) {
+    audioIndexPromise = (async () => {
+      const manifest = await loadAssetManifest();
+      if (!manifest) return null;
+      const index = buildAudioIndex(manifest);
+      audioIndexCache = index;
+      return index;
+    })();
+  }
+
+  return audioIndexPromise;
+};
+
+const normalizeManifestPath = (url: string): string | null => {
+  if (typeof window === 'undefined') return null;
+
+  try {
+    const parsed = new URL(url, window.location.href);
+    if (parsed.origin !== window.location.origin) return null;
+
+    let pathname = parsed.pathname;
+    const basePath = stripTrailingSlash(getBasePath());
+
+    if (basePath && basePath !== '/' && pathname.startsWith(`${basePath}/`)) {
+      pathname = pathname.slice(basePath.length);
+    }
+
+    return pathname.startsWith('/') ? pathname : `/${pathname}`;
+  } catch {
+    return null;
+  }
+};
+
+const isAudioManifestPath = (path: string): boolean =>
+  /\/games\/[^/]+\/(sounds|music|voices)\//i.test(path);
+
+const checkManifestAudioAvailability = async (
+  url: string
+): Promise<boolean | null> => {
+  const path = normalizeManifestPath(url);
+  if (!path || !isAudioManifestPath(path)) return null;
+
+  const index = await getAudioIndex();
+  if (!index) return null;
+
+  return index.has(path);
 };
 
 export async function imageExists(url: string): Promise<boolean> {
@@ -118,6 +252,11 @@ export async function fileExistsNotHtml(url: string): Promise<boolean> {
 
 // File existence with a HEAD + ranged GET fallback
 export async function checkFileExists(url: string): Promise<boolean> {
+  const manifestAvailability = await checkManifestAudioAvailability(url);
+  if (manifestAvailability !== null) {
+    return manifestAvailability;
+  }
+
   if (await fileExistsNotHtml(url)) return true;
 
   try {

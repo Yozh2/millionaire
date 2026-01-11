@@ -1,11 +1,10 @@
 /**
- * Asset loader with fallback support.
+ * Asset loader for game assets.
  *
  * Loading priority:
  * 1. Game-specific: /games/{gameId}/sounds/Click.m4a
- * 2. Shared fallback: /games/shared/sounds/Click.m4a
- * 3. Oscillator (sounds only)
- * 4. Silent (music/voices)
+ * 2. Oscillator (sounds only)
+ * 3. Silent (music/voices)
  */
 
 import { logger } from '@engine/services/logger';
@@ -18,12 +17,12 @@ export type { AssetType } from '@app/utils/paths';
 /** Result of asset resolution */
 export interface AssetResolution {
   path: string | null;
-  source: 'specific' | 'fallback' | 'none';
+  source: 'specific' | 'none';
 }
 
 /**
- * Resolve asset path with fallback
- * Checks specific path first, then fallback
+ * Resolve asset path
+ * Checks specific path only
  */
 export const resolveAssetPath = async (
   type: AssetType,
@@ -35,11 +34,6 @@ export const resolveAssetPath = async (
   // Try specific path first
   if (await checkFileExists(paths.specific)) {
     return { path: paths.specific, source: 'specific' };
-  }
-
-  // Try fallback path
-  if (await checkFileExists(paths.fallback)) {
-    return { path: paths.fallback, source: 'fallback' };
   }
 
   // No file found
@@ -67,7 +61,7 @@ export const preloadAudioFile = (url: string): Promise<HTMLAudioElement> => {
 };
 
 /**
- * Preload multiple audio files with fallback resolution
+ * Preload multiple audio files
  */
 export const preloadAssets = async (
   type: AssetType,
