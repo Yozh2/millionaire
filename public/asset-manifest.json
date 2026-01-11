@@ -15,7 +15,8 @@
         "icons": [
           "/games/axis/icons/campaigns/travelers.webp",
           "/games/axis/icons/campaigns/world.webp",
-          "/games/axis/icons/campaigns/yona.webp"
+          "/games/axis/icons/campaigns/yona.webp",
+          "/games/axis/icons/coin.webp"
         ],
         "sounds": [
           "/games/axis/sounds/action-press.m4a",
@@ -26,7 +27,9 @@
           "/games/axis/sounds/retreat.m4a"
         ],
         "mainMenuMusic": null,
-        "startImages": [],
+        "startImages": [
+          "/games/axis/images/start/ame.webp"
+        ],
         "campaignStartImages": {}
       },
       "level2": {
@@ -34,7 +37,8 @@
         "victoryMusic": null,
         "retreatMusic": null,
         "icons": [
-          "/games/axis/icons/defeat.webp"
+          "/games/axis/icons/defeat.webp",
+          "/games/axis/icons/retreat.webp"
         ],
         "endImages": {
           "victory": [],
@@ -43,7 +47,48 @@
         }
       },
       "voices": [],
-      "campaigns": {}
+      "campaigns": {
+        "travelers": {
+          "level1_1": {
+            "music": null,
+            "musicAlt": null,
+            "playImages": {
+              "easy": []
+            }
+          },
+          "level2": {
+            "playImages": {
+              "medium": [],
+              "hard": []
+            },
+            "endImages": {
+              "victory": [],
+              "defeat": [],
+              "retreat": []
+            }
+          }
+        },
+        "yona": {
+          "level1_1": {
+            "music": null,
+            "musicAlt": null,
+            "playImages": {
+              "easy": []
+            }
+          },
+          "level2": {
+            "playImages": {
+              "medium": [],
+              "hard": []
+            },
+            "endImages": {
+              "victory": [],
+              "defeat": [],
+              "retreat": []
+            }
+          }
+        }
+      }
     },
     "bg3": {
       "cardAssets": {
