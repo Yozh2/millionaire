@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Batch convert OGG (Vorbis) -> M4A (AAC-LC) with safe replacement.
+# Batch convert OGG/MP3 -> M4A (AAC-LC) with safe replacement.
 
 set -euo pipefail
 
@@ -26,6 +26,7 @@ convert_dir () {
     if (( ${#ch_args[@]} > 0 )); then
       ffmpeg -nostdin -hide_banner -loglevel error -y \
         -i "$f" \
+        -map 0:a:0 -vn -sn -dn \
         "${ch_args[@]}" \
         -af "alimiter=limit=0.99" \
         -c:a aac -profile:a aac_low -b:a "$bitrate" \
@@ -35,6 +36,7 @@ convert_dir () {
     else
       ffmpeg -nostdin -hide_banner -loglevel error -y \
         -i "$f" \
+        -map 0:a:0 -vn -sn -dn \
         -af "alimiter=limit=0.99" \
         -c:a aac -profile:a aac_low -b:a "$bitrate" \
         -movflags +faststart \
@@ -49,10 +51,15 @@ convert_dir () {
       echo "Error: failed to create $out"
       exit 1
     fi
-  done < <(find "$root" -type f -regex ".*/${subdir}/.*\\.ogg$" -print0)
+  done < <(
+    find "$root" -type f \
+      -path "*/${subdir}/*" \
+      \( -iname "*.ogg" -o -iname "*.mp3" \) \
+      -print0
+  )
 }
 
-echo "Converting OGG assets under $PUBLIC_DIR/games..."
+echo "Converting OGG/MP3 assets under $PUBLIC_DIR/games..."
 
 convert_dir "$PUBLIC_DIR/games" "music" "112k" "keep"
 convert_dir "$PUBLIC_DIR/games" "sounds" "64k" "keep"

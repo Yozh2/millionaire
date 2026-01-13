@@ -26,16 +26,16 @@
           "/games/axis/sounds/lifeline-fifty.m4a",
           "/games/axis/sounds/retreat.m4a"
         ],
-        "mainMenuMusic": null,
+        "mainMenuMusic": "/games/axis/music/menu.m4a",
         "startImages": [
           "/games/axis/images/start/ame.webp"
         ],
         "campaignStartImages": {}
       },
       "level2": {
-        "defeatMusic": null,
-        "victoryMusic": null,
-        "retreatMusic": null,
+        "defeatMusic": "/games/axis/music/defeat.m4a",
+        "victoryMusic": "/games/axis/music/victory.m4a",
+        "retreatMusic": "/games/axis/music/retreat.m4a",
         "icons": [
           "/games/axis/icons/defeat.webp",
           "/games/axis/icons/retreat.webp"
@@ -50,7 +50,7 @@
       "campaigns": {
         "travelers": {
           "level1_1": {
-            "music": null,
+            "music": "/games/axis/music/travelers.m4a",
             "musicAlt": null,
             "playImages": {
               "easy": []
@@ -70,7 +70,27 @@
         },
         "yona": {
           "level1_1": {
-            "music": null,
+            "music": "/games/axis/music/yona.m4a",
+            "musicAlt": null,
+            "playImages": {
+              "easy": []
+            }
+          },
+          "level2": {
+            "playImages": {
+              "medium": [],
+              "hard": []
+            },
+            "endImages": {
+              "victory": [],
+              "defeat": [],
+              "retreat": []
+            }
+          }
+        },
+        "world": {
+          "level1_1": {
+            "music": "/games/axis/music/world.m4a",
             "musicAlt": null,
             "playImages": {
               "easy": []
