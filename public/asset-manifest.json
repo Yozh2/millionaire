@@ -45,7 +45,8 @@
         "retreatMusic": "/games/axis/music/retreat.m4a",
         "icons": [
           "/games/axis/icons/defeat.webp",
-          "/games/axis/icons/retreat.webp"
+          "/games/axis/icons/retreat.webp",
+          "/games/axis/icons/victory.webp"
         ],
         "endImages": {
           "victory": [],
