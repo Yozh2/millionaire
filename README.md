@@ -86,6 +86,7 @@ Design goal: if manifests/assets are missing, the engine should still start (wit
 
 Engine styles are bundled by the engine itself (`src/engine/index.ts` imports `src/engine/ui/styles/Engine.css`) and scoped under the `.engine` root class to avoid leaking styles into the host app.
 
-## License
+## Acknowledgements
 
-MIT
+- Thanks to Denis Shiryaev (Telegram channel "[Denis Sexy IT](https://t.me/denissexy)") for the inspiration and the initial idea. Original source (his StarCraft quiz): [Claude artifact](https://claude.ai/public/artifacts/d13e3506-a0ac-451b-a12b-6265277fd5aa).
+- Thanks to Larian Studios, IDW, Skybound, and thatgamecompany (Sky: Children of the Light) for assets; all asset rights belong to their respective owners.
