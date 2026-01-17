@@ -169,9 +169,20 @@ export function useCampaignCardFsm({
     const iconShiftY = -tiltXNorm * 1.6;
     const iconLift = 8 + tiltMag * 4;
 
+    const lightX = clamp(-tiltYNorm, 0, 1);
+    const lightY = clamp(tiltXNorm, 0, 1);
+    const lightFactor = Math.min(1, (lightX + lightY) / 1.2);
+    const shadowOffset = 2 + lightFactor * 10;
+    const shadowBlur = 8 + lightFactor * 6;
+    const shadowOpacity = 0.45 + lightFactor * 0.25;
+
     el.style.setProperty('--campaign-icon-shift-x', `${iconShiftX.toFixed(3)}px`);
     el.style.setProperty('--campaign-icon-shift-y', `${iconShiftY.toFixed(3)}px`);
     el.style.setProperty('--campaign-icon-z', `${iconLift.toFixed(3)}px`);
+    el.style.setProperty('--campaign-icon-shadow-x', `${shadowOffset.toFixed(3)}px`);
+    el.style.setProperty('--campaign-icon-shadow-y', `${shadowOffset.toFixed(3)}px`);
+    el.style.setProperty('--campaign-icon-shadow-blur', `${shadowBlur.toFixed(3)}px`);
+    el.style.setProperty('--campaign-icon-shadow-opacity', `${shadowOpacity.toFixed(3)}`);
   }, []);
 
   const startLoop = useCallback(() => {

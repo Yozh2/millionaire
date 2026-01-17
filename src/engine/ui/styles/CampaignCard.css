@@ -103,6 +103,10 @@
   --campaign-icon-shift-x: 0px;
   --campaign-icon-shift-y: 0px;
   --campaign-icon-z: 10px;
+  --campaign-icon-shadow-x: 2px;
+  --campaign-icon-shadow-y: 2px;
+  --campaign-icon-shadow-blur: 10px;
+  --campaign-icon-shadow-opacity: 0.6;
 
   transform: perspective(900px)
     translateX(var(--campaign-shiftX))
@@ -318,9 +322,12 @@
 
 .engine .campaign-icon-img {
   transform: translateZ(6px);
-  filter:
-    drop-shadow(0 10px 18px rgba(0, 0, 0, 0.65))
-    drop-shadow(0 4px 6px rgba(0, 0, 0, 0.55));
+  filter: drop-shadow(
+    var(--campaign-icon-shadow-x)
+      var(--campaign-icon-shadow-y)
+      var(--campaign-icon-shadow-blur)
+      rgba(0, 0, 0, var(--campaign-icon-shadow-opacity))
+  );
 }
 
 .engine .campaign-card[data-selected='true'] .campaign-icon-glow,
