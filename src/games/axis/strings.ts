@@ -50,8 +50,18 @@ export const strings = {
     { id: 'antey', name: 'Антей' },
     { id: 'yuilun', name: 'Юйлун' },
     { id: 'yoli', name: 'Ёли' },
+    { id: 'fenglin', name: 'Фэн Лин' },
+    { id: 'ryodan', name: 'Рёдан' },
+    { id: 'tsuyori', name: 'Цуёри' },
+    { id: 'yosu', name: 'Ёсу' },
+    { id: 'soha', name: 'Соха' },
+    { id: 'kantejun', name: 'Кан Тэджун' },
+    { id: 'mucifan', name: 'Му Цифан' },
+    { id: 'hyudo', name: 'Хьюдо' },
+    { id: 'ryohei', name: 'Рёхэй' },
+    { id: 'sohyeon', name: 'Сохён' },
+    { id: 'juri', name: 'Джури' },
   ],
-
   // Game screen: companion phrases
   companionPhrases: {
     confident: [
@@ -71,16 +81,16 @@ export const strings = {
   },
 
   // End screen: victory
-  victoryHeader: 'ПУТНИК ОСИ',
-  victoryText: 'Ты прошёл все испытания и добрался до вершины Оси.',
+  victoryHeader: 'ВЕЛИКИЙ МУДРЕЦ',
+  victoryText: 'Все испытания пройдены —\nтайны Поднебесья раскрыты!',
 
   // End screen: defeat
   defeatHeader: 'КРИТИЧЕСКИЙ ПРОВАЛ',
-  defeatText: 'Путь был труден, и ты не смог дойти до цели.',
+  defeatText: 'Путь был слишком труден\n{и добраться} {не удалось}',
 
   // End screen: retreat
-  retreatHeader: 'МУДРЫЙ ОТХОД',
-  retreatText: 'Иногда лучше свернуть с тропы вовремя.',
+  retreatHeader: 'МУДРЫЙ ВЫБОР',
+  retreatText: 'Иногда лучше свернуть {с тропы} вовремя',
 
   // End screen: Common
   newGameButton: 'В ЛАГЕРЬ',
