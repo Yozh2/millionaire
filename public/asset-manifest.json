@@ -21,10 +21,17 @@
         "sounds": [
           "/games/axis/sounds/action-press.m4a",
           "/games/axis/sounds/answer-click.m4a",
+          "/games/axis/sounds/correct.m4a",
           "/games/axis/sounds/defeat.m4a",
           "/games/axis/sounds/lifeline-audience.m4a",
+          "/games/axis/sounds/lifeline-double.m4a",
           "/games/axis/sounds/lifeline-fifty.m4a",
-          "/games/axis/sounds/retreat.m4a"
+          "/games/axis/sounds/lifeline-phone.m4a",
+          "/games/axis/sounds/retreat.m4a",
+          "/games/axis/sounds/select-travelers.m4a",
+          "/games/axis/sounds/select-travelers2.m4a",
+          "/games/axis/sounds/select-world.m4a",
+          "/games/axis/sounds/select-yona.m4a"
         ],
         "mainMenuMusic": "/games/axis/music/menu.m4a",
         "startImages": [
@@ -283,8 +290,6 @@
           "/games/transformers/sounds/retreat.m4a",
           "/games/transformers/sounds/select-autocracy.m4a",
           "/games/transformers/sounds/select-megatron.m4a",
-          "/games/transformers/sounds/select-megatron2.m4a",
-          "/games/transformers/sounds/select-megatron3.m4a",
           "/games/transformers/sounds/select-skybound.m4a",
           "/games/transformers/sounds/victory.m4a"
         ],
