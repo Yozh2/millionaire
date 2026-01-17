@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Millionaire</title>
+    <script type="text/javascript">
+      // SPA fallback for GitHub Pages deep links (repo base = /millionaire/).
+      var segmentCount = 1;
+      var l = window.location;
+      l.replace(
+        l.protocol +
+          '//' +
+          l.hostname +
+          (l.port ? ':' + l.port : '') +
+          l.pathname.split('/').slice(0, 1 + segmentCount).join('/') +
+          '/?/' +
+          l.pathname.split('/').slice(1 + segmentCount).join('/') +
+          l.search.replace(/&/g, '~and~') +
+          l.hash
+      );
+    </script>
+  </head>
+  <body></body>
+</html>
