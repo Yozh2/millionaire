@@ -28,16 +28,25 @@
           "/games/axis/sounds/lifeline-fifty.m4a",
           "/games/axis/sounds/lifeline-phone.m4a",
           "/games/axis/sounds/retreat.m4a",
+          "/games/axis/sounds/select-travelers-alt.m4a",
           "/games/axis/sounds/select-travelers.m4a",
-          "/games/axis/sounds/select-travelers2.m4a",
           "/games/axis/sounds/select-world.m4a",
-          "/games/axis/sounds/select-yona.m4a"
+          "/games/axis/sounds/select-yona.m4a",
+          "/games/axis/sounds/victory.m4a"
         ],
         "mainMenuMusic": "/games/axis/music/menu.m4a",
-        "startImages": [
-          "/games/axis/images/start/ame.webp"
-        ],
-        "campaignStartImages": {}
+        "startImages": [],
+        "campaignStartImages": {
+          "travelers": [
+            "/games/axis/images/campaigns/travelers/start/01.webp"
+          ],
+          "world": [
+            "/games/axis/images/campaigns/world/start/01.webp"
+          ],
+          "yona": [
+            "/games/axis/images/campaigns/yona/start/01.webp"
+          ]
+        }
       },
       "level2": {
         "defeatMusic": "/games/axis/music/defeat.m4a",
@@ -76,9 +85,9 @@
             }
           }
         },
-        "yona": {
+        "world": {
           "level1_1": {
-            "music": "/games/axis/music/yona.m4a",
+            "music": "/games/axis/music/world.m4a",
             "musicAlt": null,
             "playImages": {
               "easy": []
@@ -96,9 +105,9 @@
             }
           }
         },
-        "world": {
+        "yona": {
           "level1_1": {
-            "music": "/games/axis/music/world.m4a",
+            "music": "/games/axis/music/yona.m4a",
             "musicAlt": null,
             "playImages": {
               "easy": []

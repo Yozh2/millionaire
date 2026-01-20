@@ -3,10 +3,29 @@
     "travelers": {
       "play": {
         "images": [
+          "01.webp",
+          "02.webp",
+          "03.webp"
+        ]
+      },
+      "start": {
+        "images": [
+          "01.webp"
+        ]
+      }
+    },
+    "world": {
+      "play": {
+        "images": [
+          "01.webp",
           "02.webp",
           "03.webp",
-          "04.webp",
-          "monastery.webp"
+          "04.webp"
+        ]
+      },
+      "start": {
+        "images": [
+          "01.webp"
         ]
       }
     },
@@ -16,14 +35,36 @@
           "01.webp",
           "02.webp",
           "03.webp",
-          "04.webp"
+          "04.webp",
+          "05.webp",
+          "06.webp"
+        ]
+      },
+      "start": {
+        "images": [
+          "01.webp"
         ]
       }
     }
   },
-  "start": {
-    "images": [
-      "ame.webp"
-    ]
+  "end": {
+    "defeat": {
+      "images": [
+        "01.webp",
+        "02.webp"
+      ]
+    },
+    "retreat": {
+      "images": [
+        "01.png"
+      ]
+    },
+    "victory": {
+      "images": [
+        "01.webp",
+        "02.webp",
+        "03.webp"
+      ]
+    }
   }
 }
