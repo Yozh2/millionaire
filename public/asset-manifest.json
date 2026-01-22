@@ -248,6 +248,37 @@
         }
       }
     },
+    "nnr": {
+      "cardAssets": {
+        "gameCard": null,
+        "favicon": "/games/nnr/favicon/favicon.svg"
+      },
+      "level1": {
+        "icons": [
+          "/games/nnr/icons/campaigns/nn.svg",
+          "/games/nnr/icons/campaigns/radar.svg",
+          "/games/nnr/icons/campaigns/research.svg",
+          "/games/nnr/icons/coin.svg"
+        ],
+        "sounds": [],
+        "mainMenuMusic": null,
+        "startImages": [],
+        "campaignStartImages": {}
+      },
+      "level2": {
+        "defeatMusic": null,
+        "victoryMusic": null,
+        "retreatMusic": null,
+        "icons": [],
+        "endImages": {
+          "victory": [],
+          "defeat": [],
+          "retreat": []
+        }
+      },
+      "voices": [],
+      "campaigns": {}
+    },
     "sky-cotl": {
       "cardAssets": {
         "gameCard": "/games/sky-cotl/icons/game-card.webp",

@@ -13,6 +13,9 @@ export { bg3Config } from './bg3';
 // Axis
 export { axisConfig } from './axis';
 
+// Neural Networks in Radar
+export { nnrConfig } from './nnr';
+
 // Transformers 
 export { transformersConfig } from './transformers';
 

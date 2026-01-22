@@ -33,6 +33,20 @@ export const GAME_REGISTRY_INDEX: GameRegistry[] = [
     }
   },
   {
+    "id": "nnr",
+    "visible": true,
+    "available": true,
+    "title": "НЕЙРОСЕТИ В РАДИОЛОКАЦИИ",
+    "emoji": "🧠",
+    "theme": {
+      "isLight": false,
+      "bgFrom": "#041815",
+      "bgVia": "#063647",
+      "bgTo": "#02060c",
+      "glow": "#63D792"
+    }
+  },
+  {
     "id": "poc",
     "visible": true,
     "available": true,
