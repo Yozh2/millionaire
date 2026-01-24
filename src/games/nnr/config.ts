@@ -5,7 +5,7 @@ import {
   DefeatIncineratorIcon,
   NeuralCampaignIcon,
   NnrCoinIcon,
-  RadarCampaignIcon,
+  PerceptronCampaignIcon,
   ResearchCampaignIcon,
   RetreatCubeIcon,
   VictoryCakeIcon,
@@ -14,11 +14,11 @@ import { strings } from './strings';
 
 type CampaignId = keyof typeof strings.campaigns;
 
-export const campaignIDs = ['radar', 'nn', 'research'] as const satisfies
+export const campaignIDs = ['perceptron', 'nn', 'research'] as const satisfies
   readonly CampaignId[];
 
 const campaignIcons = {
-  radar: RadarCampaignIcon,
+  perceptron: PerceptronCampaignIcon,
   nn: NeuralCampaignIcon,
   research: ResearchCampaignIcon,
 } as const;

@@ -18,9 +18,9 @@ const buildCampaignIcon = (filename: string, label: string) =>
     />
   );
 
-export const RadarCampaignIcon = buildCampaignIcon(
-  'radar.svg',
-  strings.campaigns.radar.iconAlt ?? strings.campaigns.radar.name
+export const PerceptronCampaignIcon = buildCampaignIcon(
+  'perceptron.svg',
+  strings.campaigns.perceptron.iconAlt ?? strings.campaigns.perceptron.name
 );
 
 export const NeuralCampaignIcon = buildCampaignIcon(

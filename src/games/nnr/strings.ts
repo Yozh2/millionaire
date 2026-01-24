@@ -12,17 +12,17 @@ export const strings = {
 
   // Campaign selection screen
   introText:
-    '{Испытуемый}, приветствую. Протокол NNR активирован.' +
-    '\nТебя ждут {15 вопросов}. Подсказки разрешены. {Миллион на кону}.' +
+    '{Испытуемый!} Протокол NNR активирован.' +
+    '\n{Тебя ждут} {15 вопросов}. {Миллион на кону}.' +
     '\nНепредвиденное поведение будет зафиксировано.',
   selectPath: 'ВЫБЕРИ ИСПЫТАНИЕ',
   startButton: 'НАЧАТЬ ИСПЫТАНИЕ',
 
   // Campaign cards
   campaigns: {
-    radar: { name: 'РАДИОЛОКАЦИЯ', label: 'Радиолокация', iconAlt: 'Радиолокация' },
-    nn: { name: 'НЕЙРОСЕТИ', label: 'Машинное обучение', iconAlt: 'Нейросети' },
-    research: { name: 'РЕСЁРЧ', label: 'Исследования', iconAlt: 'Исследования' },
+    perceptron: { name: 'ПЕРЦЕПТРОН', label: 'Машинное обучение', iconAlt: 'Perceptron' },
+    nn: { name: 'НЕЙРОСЕТИ', label: 'Архитектуры', iconAlt: 'Нейросети' },
+    research: { name: 'ИССЛЕДОВАНИЯ', label: 'Научная информация', iconAlt: 'Наука' },
   },
 
   // Game screen: main panels
