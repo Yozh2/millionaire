@@ -182,10 +182,7 @@ export function useHeaderImages(
       }
 
       if (screen !== 'start') {
-        const startFallback = findFirstMatch(
-          nodes.filter((n) => n.basePath === gameBasePath),
-          partsForScreen('start')
-        );
+        const startFallback = findFirstMatch(nodes, partsForScreen('start'));
         if (startFallback) {
           if (!cancelled) {
             setImages(startFallback.images);
