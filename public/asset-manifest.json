@@ -166,7 +166,7 @@
       },
       "level2": {
         "defeatMusic": "/games/bg3/music/defeat.m4a",
-        "victoryMusic": "/games/bg3/music/Victory.m4a",
+        "victoryMusic": "/games/bg3/music/victory.m4a",
         "retreatMusic": "/games/bg3/music/retreat.m4a",
         "icons": [
           "/games/bg3/icons/defeat.webp",
@@ -188,7 +188,7 @@
       "campaigns": {
         "darkurge": {
           "level1_1": {
-            "music": "/games/bg3/music/DarkUrge.m4a",
+            "music": "/games/bg3/music/darkurge.m4a",
             "musicAlt": null,
             "playImages": {
               "easy": []
@@ -208,7 +208,7 @@
         },
         "hero": {
           "level1_1": {
-            "music": "/games/bg3/music/Hero.m4a",
+            "music": "/games/bg3/music/hero.m4a",
             "musicAlt": null,
             "playImages": {
               "easy": []
@@ -228,7 +228,7 @@
         },
         "mindflayer": {
           "level1_1": {
-            "music": "/games/bg3/music/MindFlayer.m4a",
+            "music": "/games/bg3/music/mindflayer.m4a",
             "musicAlt": null,
             "playImages": {
               "easy": []
@@ -277,7 +277,68 @@
         }
       },
       "voices": [],
-      "campaigns": {}
+      "campaigns": {
+        "nn": {
+          "level1_1": {
+            "music": null,
+            "musicAlt": null,
+            "playImages": {
+              "easy": []
+            }
+          },
+          "level2": {
+            "playImages": {
+              "medium": [],
+              "hard": []
+            },
+            "endImages": {
+              "victory": [],
+              "defeat": [],
+              "retreat": []
+            }
+          }
+        },
+        "perceptron": {
+          "level1_1": {
+            "music": null,
+            "musicAlt": null,
+            "playImages": {
+              "easy": []
+            }
+          },
+          "level2": {
+            "playImages": {
+              "medium": [],
+              "hard": []
+            },
+            "endImages": {
+              "victory": [],
+              "defeat": [],
+              "retreat": []
+            }
+          }
+        },
+        "research": {
+          "level1_1": {
+            "music": null,
+            "musicAlt": null,
+            "playImages": {
+              "easy": []
+            }
+          },
+          "level2": {
+            "playImages": {
+              "medium": [],
+              "hard": []
+            },
+            "endImages": {
+              "victory": [],
+              "defeat": [],
+              "retreat": []
+            }
+          }
+        }
+      }
     },
     "sky-cotl": {
       "cardAssets": {
