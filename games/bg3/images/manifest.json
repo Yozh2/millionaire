@@ -1,0 +1,68 @@
+{
+  "campaigns": {
+    "darkurge": {
+      "end": {
+        "defeat": {
+          "images": [
+            "01.webp"
+          ]
+        }
+      },
+      "start": {
+        "images": [
+          "01.webp"
+        ]
+      }
+    },
+    "hero": {
+      "end": {
+        "defeat": {
+          "images": [
+            "01.webp"
+          ]
+        }
+      },
+      "play": {
+        "images": [
+          "01.webp"
+        ]
+      },
+      "start": {
+        "images": [
+          "01.webp"
+        ]
+      }
+    },
+    "mindflayer": {
+      "end": {
+        "defeat": {
+          "images": [
+            "01.webp"
+          ]
+        }
+      },
+      "start": {
+        "images": [
+          "01.webp"
+        ]
+      }
+    }
+  },
+  "end": {
+    "defeat": {
+      "images": [
+        "01.webp"
+      ]
+    },
+    "retreat": {
+      "images": [
+        "01.webp"
+      ]
+    },
+    "victory": {
+      "images": [
+        "01.webp"
+      ]
+    }
+  }
+}

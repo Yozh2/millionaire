@@ -1,0 +1,25 @@
+{
+  "end": {
+    "defeat": {
+      "images": [
+        "1fd6b8f9b13318adc358fca5d1ea1b5b.jpg",
+        "7261aaf006e09a2ba1983a1af540ddbb.jpg",
+        "f4377a3b425ed46deb89dbcf812904de.jpg"
+      ]
+    },
+    "retreat": {
+      "images": [
+        "04fa231dbab860eecd74f34b3c721140.png",
+        "a99fe9649b8fd60bde0893fd908dbecd.png",
+        "da5b59745c6a4699dee7684eba901bba.png"
+      ]
+    },
+    "victory": {
+      "images": [
+        "33c9052ca7a0a2585b6e1bb4a91cf0fc.png",
+        "72d1b4e4dd5b9071797bf39fcb420f92.png",
+        "8dfb0f5e389f9d19c436d83da7073879.png"
+      ]
+    }
+  }
+}
