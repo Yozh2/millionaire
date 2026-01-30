@@ -102,7 +102,7 @@
   --campaign-glareY: 0px;
   --campaign-icon-shift-x: 0px;
   --campaign-icon-shift-y: 0px;
-  --campaign-icon-z: 10px;
+  --campaign-icon-z: 24px;
   --campaign-icon-shadow-x: 2px;
   --campaign-icon-shadow-y: 2px;
   --campaign-icon-shadow-blur: 10px;
@@ -321,7 +321,7 @@
 }
 
 .engine .campaign-icon-img {
-  transform: translateZ(6px);
+  transform: translateZ(calc(var(--campaign-icon-z) * 0.6));
   filter: drop-shadow(
     var(--campaign-icon-shadow-x)
       var(--campaign-icon-shadow-y)

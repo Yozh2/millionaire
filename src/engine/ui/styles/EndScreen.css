@@ -16,3 +16,20 @@
   font-size: inherit !important;
   line-height: inherit !important;
 }
+
+.bg3-defeat-icon {
+  max-height: 512px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bg3-defeat-icon__img {
+  display: block;
+  max-height: 512px;
+  max-width: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}

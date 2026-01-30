@@ -2,9 +2,9 @@
  * EndScreen - Game over screens (victory, defeat, retreat)
  */
 
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef, useCallback, useState } from 'react';
 import type { PointerEvent } from 'react';
-import { EffectsAPI, GameConfig, ThemeColors } from '@engine/types';
+import { EffectsAPI, GameConfig, GameState, ThemeColors } from '@engine/types';
 import { UseGameStateReturn } from '@engine/ui/hooks/useGameState';
 import { ResultPanel, type ResultVariant } from '@engine/ui/panels/ResultPanel';
 
@@ -28,6 +28,10 @@ export function EndScreen({
   const { gameState: state, wonPrize } = gameState;
   const wonPrizeValue = Number.parseInt(wonPrize.replace(/\s+/g, ''), 10) || 0;
   const hasWonPrize = wonPrizeValue > 0;
+  const [defeatRenderKey, setDefeatRenderKey] = useState(
+    state === 'defeat' ? 1 : 0
+  );
+  const prevStateRef = useRef<GameState>(state);
 
   // Ref for the icon container to get its position for coin effects
   const iconRef = useRef<HTMLDivElement>(null);
@@ -81,6 +85,13 @@ export function EndScreen({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state, hasWonPrize, getIconOrigin]); // effects intentionally omitted to prevent re-triggering
 
+  useEffect(() => {
+    if (state === 'defeat' && prevStateRef.current !== 'defeat') {
+      setDefeatRenderKey((value) => value + 1);
+    }
+    prevStateRef.current = state;
+  }, [state]);
+
   // Trigger lost sparks effect - continuous tiny spark bursts from broken icon
   // Only enabled when config.enableLostSparks is true
   useEffect(() => {
@@ -114,9 +125,12 @@ export function EndScreen({
 
   const variant: ResultVariant =
     state === 'victory' ? 'victory' : state === 'defeat' ? 'defeat' : 'retreat';
+  const resultPanelKey =
+    state === 'defeat' ? `defeat-${defeatRenderKey}` : state;
 
   return (
     <ResultPanel
+      key={resultPanelKey}
       config={config}
       theme={theme}
       variant={variant}

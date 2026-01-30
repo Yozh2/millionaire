@@ -19,6 +19,9 @@ const BOB_RANGE = 7; // px
 const BOB_PERIOD = 3.0; // s
 const TILT_MAX = 9; // deg
 const GLARE_SHIFT = 28; // px
+const ICON_LIFT_BASE = 24; // px
+const ICON_LIFT_TILT = 20; // px
+const ICON_PARALLAX_SHIFT = 3.2; // px
 
 // Damped spring: a = -k(x-target) - c*v
 const SPRING_K = 190;
@@ -165,9 +168,9 @@ export function useCampaignCardFsm({
     const tiltYNorm = clamp(m.tiltY / TILT_MAX, -1, 1);
     const tiltMag = Math.min(1, Math.hypot(tiltXNorm, tiltYNorm));
 
-    const iconShiftX = tiltYNorm * 1.6;
-    const iconShiftY = -tiltXNorm * 1.6;
-    const iconLift = 8 + tiltMag * 4;
+    const iconShiftX = tiltYNorm * ICON_PARALLAX_SHIFT;
+    const iconShiftY = -tiltXNorm * ICON_PARALLAX_SHIFT;
+    const iconLift = ICON_LIFT_BASE + tiltMag * ICON_LIFT_TILT;
 
     const lightX = clamp(-tiltYNorm, 0, 1);
     const lightY = clamp(tiltXNorm, 0, 1);
