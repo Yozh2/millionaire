@@ -151,7 +151,9 @@
           "/games/bg3/sounds/select-mindflayer.m4a"
         ],
         "mainMenuMusic": "/games/bg3/music/menu.m4a",
-        "startImages": [],
+        "startImages": [
+          "/games/bg3/images/start/01.webp"
+        ],
         "campaignStartImages": {
           "darkurge": [
             "/games/bg3/images/campaigns/darkurge/start/01.webp"
@@ -191,13 +193,28 @@
             "music": "/games/bg3/music/darkurge.m4a",
             "musicAlt": null,
             "playImages": {
-              "easy": []
+              "easy": [
+                "/games/bg3/images/campaigns/darkurge/play/easy/01.webp",
+                "/games/bg3/images/campaigns/darkurge/play/easy/02.webp",
+                "/games/bg3/images/campaigns/darkurge/play/easy/03.webp",
+                "/games/bg3/images/campaigns/darkurge/play/easy/04.webp"
+              ]
             }
           },
           "level2": {
             "playImages": {
-              "medium": [],
-              "hard": []
+              "medium": [
+                "/games/bg3/images/campaigns/darkurge/play/medium/01.webp",
+                "/games/bg3/images/campaigns/darkurge/play/medium/02.webp",
+                "/games/bg3/images/campaigns/darkurge/play/medium/03.webp",
+                "/games/bg3/images/campaigns/darkurge/play/medium/04.webp"
+              ],
+              "hard": [
+                "/games/bg3/images/campaigns/darkurge/play/hard/01.webp",
+                "/games/bg3/images/campaigns/darkurge/play/hard/02.webp",
+                "/games/bg3/images/campaigns/darkurge/play/hard/03.webp",
+                "/games/bg3/images/campaigns/darkurge/play/hard/04.webp"
+              ]
             },
             "endImages": {
               "victory": [],
@@ -211,13 +228,28 @@
             "music": "/games/bg3/music/hero.m4a",
             "musicAlt": null,
             "playImages": {
-              "easy": []
+              "easy": [
+                "/games/bg3/images/campaigns/hero/play/easy/01.webp",
+                "/games/bg3/images/campaigns/hero/play/easy/02.webp",
+                "/games/bg3/images/campaigns/hero/play/easy/03.webp",
+                "/games/bg3/images/campaigns/hero/play/easy/04.webp"
+              ]
             }
           },
           "level2": {
             "playImages": {
-              "medium": [],
-              "hard": []
+              "medium": [
+                "/games/bg3/images/campaigns/hero/play/medium/01.webp",
+                "/games/bg3/images/campaigns/hero/play/medium/02.webp",
+                "/games/bg3/images/campaigns/hero/play/medium/03.webp",
+                "/games/bg3/images/campaigns/hero/play/medium/04.webp"
+              ],
+              "hard": [
+                "/games/bg3/images/campaigns/hero/play/hard/01.webp",
+                "/games/bg3/images/campaigns/hero/play/hard/02.webp",
+                "/games/bg3/images/campaigns/hero/play/hard/03.webp",
+                "/games/bg3/images/campaigns/hero/play/hard/04.webp"
+              ]
             },
             "endImages": {
               "victory": [],
@@ -231,13 +263,31 @@
             "music": "/games/bg3/music/mindflayer.m4a",
             "musicAlt": null,
             "playImages": {
-              "easy": []
+              "easy": [
+                "/games/bg3/images/campaigns/mindflayer/play/easy/01.webp",
+                "/games/bg3/images/campaigns/mindflayer/play/easy/02.webp",
+                "/games/bg3/images/campaigns/mindflayer/play/easy/03.webp",
+                "/games/bg3/images/campaigns/mindflayer/play/easy/04.webp",
+                "/games/bg3/images/campaigns/mindflayer/play/easy/05.webp"
+              ]
             }
           },
           "level2": {
             "playImages": {
-              "medium": [],
-              "hard": []
+              "medium": [
+                "/games/bg3/images/campaigns/mindflayer/play/medium/01.webp",
+                "/games/bg3/images/campaigns/mindflayer/play/medium/02.webp",
+                "/games/bg3/images/campaigns/mindflayer/play/medium/03.webp",
+                "/games/bg3/images/campaigns/mindflayer/play/medium/04.webp",
+                "/games/bg3/images/campaigns/mindflayer/play/medium/05.webp"
+              ],
+              "hard": [
+                "/games/bg3/images/campaigns/mindflayer/play/hard/01.webp",
+                "/games/bg3/images/campaigns/mindflayer/play/hard/02.webp",
+                "/games/bg3/images/campaigns/mindflayer/play/hard/03.webp",
+                "/games/bg3/images/campaigns/mindflayer/play/hard/04.webp",
+                "/games/bg3/images/campaigns/mindflayer/play/hard/05.webp"
+              ]
             },
             "endImages": {
               "victory": [],

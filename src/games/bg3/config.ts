@@ -1,7 +1,7 @@
 import type { GameConfig } from '@engine/types';
 import { createDefaultAudioConfig } from '@engine/audio/defaultAudio';
 import { createCampaignsFromGlobs } from '@engine/utils';
-import { lifelinePhoneIcon, lifelineAudienceIcon } from './icons';
+import { Bg3DefeatIcon, lifelinePhoneIcon, lifelineAudienceIcon } from './icons';
 import { strings } from './strings';
 
 type CampaignId = keyof typeof strings.campaigns;
@@ -37,7 +37,7 @@ export const bg3Config: GameConfig = {
   lifelines: {
     fifty: { name: strings.lifelines.fifty, icon: '⚡️', enabled: true },
     phone: { name: strings.lifelines.phone, icon: '📜', enabled: true },
-    audience: { name: strings.lifelines.audience, icon: '🍺', enabled: true },
+    audience: { name: strings.lifelines.audience, icon: '👁️', enabled: true },
     double: { name: strings.lifelines.double, icon: '🎲', enabled: true },
   },
 
@@ -60,6 +60,10 @@ export const bg3Config: GameConfig = {
   icons: {
     lifelinePhone: lifelinePhoneIcon,
     lifelineAudience: lifelineAudienceIcon,
+  },
+
+  endIcons: {
+    defeat: Bg3DefeatIcon,
   },
 
   headerSlideshow: {

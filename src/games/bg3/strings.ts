@@ -19,9 +19,9 @@ export const strings = {
 
   // Campaign cards
   campaigns: {
-    hero: { name: 'ГЕРОЙ', label: 'Легко', iconAlt: 'Hero' },
-    mindflayer: { name: 'ИЛЛИТИД', label: 'Сложно', iconAlt: 'Mind Flayer' },
-    darkurge: { name: 'СОБЛАЗН', label: 'Доблесть', iconAlt: 'Dark Urge' },
+    hero: { name: 'ГЕРОЙ', label: 'Путешественник', iconAlt: 'Hero' },
+    mindflayer: { name: 'ИЛЛИТИД', label: 'Культ Абсолют', iconAlt: 'Mind Flayer' },
+    darkurge: { name: 'СОБЛАЗН', label: 'Избранник Баала', iconAlt: 'Dark Urge' },
   },
 
   // Game screen: main panels
@@ -32,16 +32,16 @@ export const strings = {
   lifelines: {
     fifty: '50:50',
     phone: 'Послание',
-    audience: 'Таверна',
+    audience: 'Внимание',
     double: 'Вдохновение',
   },
   retreat: 'Забрать',
 
   // Game screen: lifeline panels
   lifelinePhoneHeader: '✦ МАГИЧЕСКОЕ ПОСЛАНИЕ ✦',
-  lifelineAudienceHeader: '✦ РЕЗУЛЬТАТЫ ГАДАНИЯ ✦',
+  lifelineAudienceHeader: '✦ БРОСОК НА ПРОНИЦАТЕЛЬНОСТЬ ✦',
   lifelineSenderLabel: 'Отправитель:',
-  lifelineAudienceLabel: 'Мнение таверны:',
+  lifelineAudienceLabel: 'Интуиция подсказывает:',
 
   // Game screen: companion names
   companions: [
@@ -76,15 +76,15 @@ export const strings = {
 
   // End screen: victory
   victoryHeader: 'ЛЕГЕНДАРНЫЙ ГЕРОЙ',
-  victoryText: 'Вы завоевали величайшее сокровище Фаэруна!',
+  victoryText: '{Вы завоевали}\n {сокровище Фаэруна!}',
 
   // End screen: defeat
   defeatHeader: 'КРИТИЧЕСКИЙ ПРОВАЛ',
-  defeatText: 'Кость брошена. Неверный ответ.',
+  defeatText: '{Кость брошена.}\n {Неверный ответ.}',
 
   // End screen: retreat
   retreatHeader: 'МУДРЫЙ ВЫБОР',
-  retreatText: 'Разумное решение, искатель приключений',
+  retreatText: '{Разумное решение,}\n {искатель приключений}',
 
   // End screen: Common
   newGameButton: 'В ЛАГЕРЬ',
