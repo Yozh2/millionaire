@@ -142,8 +142,10 @@
         "sounds": [
           "/games/bg3/sounds/action-press.m4a",
           "/games/bg3/sounds/answer-click.m4a",
+          "/games/bg3/sounds/correct.m4a",
           "/games/bg3/sounds/defeat.m4a",
           "/games/bg3/sounds/lifeline-audience.m4a",
+          "/games/bg3/sounds/lifeline-double.m4a",
           "/games/bg3/sounds/lifeline-fifty.m4a",
           "/games/bg3/sounds/retreat.m4a",
           "/games/bg3/sounds/select-darkurge.m4a",

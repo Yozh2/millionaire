@@ -11,7 +11,7 @@ export interface CreateCampaignsFromGlobsParams<CampaignId extends string> {
   /** Used only for error messages */
   gameId: string;
   /** Ordered list of campaign ids */
-  campaignIDs: readonly CampaignId[];
+  campaignIDs?: readonly CampaignId[];
   /** Usually `strings.campaigns` */
   campaignStrings: Record<CampaignId, CampaignStringsEntry>;
   /** `import.meta.glob('./campaigns/<id>/theme.ts', { eager: true })` */
@@ -58,6 +58,8 @@ export function createCampaignsFromGlobs<CampaignId extends string>({
   questionModules,
   iconsById,
 }: CreateCampaignsFromGlobsParams<CampaignId>): Campaign[] {
+  const ids =
+    (campaignIDs?.length ? campaignIDs : Object.keys(campaignStrings)) as CampaignId[];
   const themesById = buildExportMap<ThemeColors>(themeModules, 'theme', gameId);
   const questionsById = buildExportMap<QuestionPool>(
     questionModules,
@@ -65,7 +67,7 @@ export function createCampaignsFromGlobs<CampaignId extends string>({
     gameId
   );
 
-  return campaignIDs.map((id) => {
+  return ids.map((id) => {
     const meta = campaignStrings[id];
     const theme = themesById.get(id);
     const questions = questionsById.get(id);

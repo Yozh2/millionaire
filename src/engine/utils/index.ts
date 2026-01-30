@@ -36,3 +36,5 @@ export {
 export { applyNoBreakMarkup, applyNoBreakMarkupDeep } from './noBreakMarkup';
 export { preprocessGameConfig } from './preprocessGameConfig';
 export { createCampaignsFromGlobs } from './createCampaignsFromGlobs';
+export { createCampaignsForGame } from './createCampaignsForGame';
+export { defineGameConfig } from './defineGameConfig';

@@ -32,6 +32,28 @@ describe('createCampaignsFromGlobs', () => {
     expect(campaigns[1]?.icon).toBe(HeroIcon);
   });
 
+  it('uses strings order when campaignIDs are omitted', () => {
+    const campaignStrings = {
+      b: { name: 'B', label: 'B' },
+      a: { name: 'A', label: 'A' },
+    } as const satisfies Record<string, CampaignStringsEntry>;
+
+    const campaigns = createCampaignsFromGlobs({
+      gameId: 'order',
+      campaignStrings,
+      themeModules: {
+        './campaigns/a/theme.ts': { theme: { primary: 'a' } },
+        './campaigns/b/theme.ts': { theme: { primary: 'b' } },
+      },
+      questionModules: {
+        './campaigns/a/questions.ts': { questions: { easy: [] } },
+        './campaigns/b/questions.ts': { questions: { easy: [] } },
+      },
+    });
+
+    expect(campaigns.map((c) => c.id)).toEqual(['b', 'a']);
+  });
+
   it('throws on invalid module shape', () => {
     const campaignIDs = ['x'] as const;
     const campaignStrings = {
@@ -53,4 +75,3 @@ describe('createCampaignsFromGlobs', () => {
     ).toThrow(/Invalid module shape/);
   });
 });
-

@@ -6,5 +6,5 @@
  * - Autocracy
  */
 
-export { campaignIDs, transformersConfig, transformersConfig as default } from './config';
+export { transformersConfig, transformersConfig as default } from './config';
 export { strings } from './strings';

@@ -243,6 +243,12 @@ export interface LifelineConfig {
   enabled: boolean;
 }
 
+/** Partial lifeline config for authoring (name/enabled are optional) */
+export type LifelineConfigInput = Partial<LifelineConfig>;
+
+/** Partial lifelines map for authoring */
+export type LifelinesConfigInput = Partial<Record<LifelineKind, LifelineConfigInput>>;
+
 /** Configuration for a single non-lifeline action button (e.g. retreat) */
 export interface ActionConfig {
   /** Display name */
@@ -254,6 +260,9 @@ export interface ActionConfig {
   /** Whether this action is enabled */
   enabled: boolean;
 }
+
+/** Partial action config for authoring (name/enabled are optional) */
+export type ActionConfigInput = Partial<ActionConfig>;
 
 /** All lifelines configuration */
 export interface LifelinesConfig {
@@ -676,6 +685,39 @@ export interface GameConfig {
     /** Button label for disabling sound. */
     soundConsentDisableLabel?: string;
   };
+}
+
+/** Authoring-friendly game config (allows engine defaults to fill gaps). */
+export interface GameConfigInput
+  extends Omit<
+    GameConfig,
+    | 'title'
+    | 'subtitle'
+    | 'companions'
+    | 'strings'
+    | 'lifelines'
+    | 'actions'
+    | 'prizes'
+    | 'audio'
+  > {
+  /** Main title (defaults to strings.headerTitle) */
+  title?: string;
+  /** Subtitle (defaults to strings.headerSubtitle) */
+  subtitle?: string;
+  /** Companions list (defaults to strings.companions) */
+  companions?: readonly Companion[];
+  /** Full strings namespace (includes header titles, lifelines, currency, etc.) */
+  strings: GameStringsNamespace;
+  /** Lifelines (icon required per entry; name/enabled defaulted) */
+  lifelines?: LifelinesConfigInput;
+  /** Actions (icon required per entry; name/enabled defaulted) */
+  actions?: {
+    retreat?: ActionConfigInput;
+  };
+  /** Prize configuration (currency defaults to strings.currency) */
+  prizes: Omit<PrizesConfig, 'currency'> & { currency?: string };
+  /** Audio configuration (merged with engine defaults) */
+  audio?: Partial<AudioConfig> & { sounds?: SoundEffects };
 }
 
 

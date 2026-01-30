@@ -7,60 +7,37 @@
  * - Skybound
  */
 
-import type { GameConfig } from '@engine/types';
-import { createDefaultAudioConfig } from '@engine/audio/defaultAudio';
-import { createCampaignsFromGlobs } from '@engine/utils';
+import { createCampaignsForGame, defineGameConfig } from '@engine/utils';
 import { drawEnergonCrystal, EnergonCoinIcon } from './icons';
 import { strings } from './strings';
 
-type CampaignId = keyof typeof strings.campaigns;
-
-export const campaignIDs = ['megatron', 'autocracy', 'skybound'] as const satisfies
-  readonly CampaignId[];
-
-const campaigns = createCampaignsFromGlobs({
-  gameId: 'transformers',
-  campaignIDs,
-  campaignStrings: strings.campaigns,
-  themeModules: import.meta.glob('./campaigns/*/theme.ts', { eager: true }),
-  questionModules: import.meta.glob('./campaigns/*/questions.ts', { eager: true }),
-});
-
-export const transformersConfig: GameConfig = {
+export const transformersConfig = defineGameConfig({
   id: 'transformers',
 
   fontFamily: '"Neuropol X Rg", "Roboto", "Helvetica Neue", sans-serif',
 
-  title: strings.headerTitle,
-  subtitle: strings.headerSubtitle,
+  campaigns: createCampaignsForGame({
+    gameId: 'transformers',
+    campaignStrings: strings.campaigns,
+  }),
 
-  campaigns,
-
-  companions: strings.companions,
   strings,
 
   lifelines: {
-    fifty: { name: strings.lifelines.fifty, icon: '⚙️', enabled: true },
-    phone: { name: strings.lifelines.phone, icon: '📡', enabled: true },
-    audience: { name: strings.lifelines.audience, icon: '🤖', enabled: true },
-    double: { name: strings.lifelines.double, icon: '🛰️', enabled: true },
+    fifty: { icon: '⚙️' },
+    phone: { icon: '📡' },
+    audience: { icon: '🤖' },
+    double: { icon: '🛰️' },
   },
 
   actions: {
-    retreat: { name: strings.retreat, icon: '⚡️', enabled: true },
+    retreat: { icon: '⚡️' },
   },
 
   prizes: {
     maxPrize: 1000000,
-    currency: strings.currency,
     guaranteedFractions: [1 / 3, 2 / 3, 1],
   },
-
-  audio: createDefaultAudioConfig({
-    musicVolume: 0.3,
-    soundVolume: 1.0,
-    voiceVolume: 1.0,
-  }),
 
   icons: {
     coin: EnergonCoinIcon,
@@ -73,6 +50,6 @@ export const transformersConfig: GameConfig = {
 
   enableLostSparks: true,
   lostSparkColors: ['#00BFFF', '#87CEEB', '#00CED1', '#1E90FF'],
-};
+});
 
 export default transformersConfig;

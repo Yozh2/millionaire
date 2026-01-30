@@ -2,7 +2,7 @@
  * Sky: Children of the Light - Barrel Export
  */
 
-export { campaignIDs, default, skyCotlConfig } from './config';
+export { default, skyCotlConfig } from './config';
 export { strings } from './strings';
 export {
   WingedLightVictoryIcon,

@@ -1,2 +1,2 @@
-export { bg3Config, campaignIDs, default } from './config';
+export { bg3Config, default } from './config';
 export { strings } from './strings';

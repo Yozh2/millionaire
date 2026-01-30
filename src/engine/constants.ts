@@ -33,13 +33,13 @@ export const DEFAULT_SLIDESHOW_OPACITY = 0.4;
 // ============================================
 
 /** Default music volume (0-1) */
-export const DEFAULT_MUSIC_VOLUME = 0.5;
+export const DEFAULT_MUSIC_VOLUME = 0.3;
 
 /** Default sound effects volume (0-1) */
-export const DEFAULT_SOUND_VOLUME = 0.7;
+export const DEFAULT_SOUND_VOLUME = 1.0;
 
 /** Default voice volume (0-1) */
-export const DEFAULT_VOICE_VOLUME = 0.8;
+export const DEFAULT_VOICE_VOLUME = 1.0;
 
 // ============================================
 // Animation
