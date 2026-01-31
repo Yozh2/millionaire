@@ -59,7 +59,7 @@ export const useGameCardImage = (gameId: string): UseGameCardImageResult => {
   useEffect(() => setSrcIndex(0), [gameId, sources.length]);
 
   const imageSrc = srcIndex < sources.length ? sources[srcIndex] : null;
-  const isGameCardArt = srcIndex === 0 && !!imageSrc;
+  const isGameCardArt = includeGameCard && srcIndex === 0 && !!imageSrc;
   const [isImageReady, setIsImageReady] = useState(false);
 
   useEffect(() => {
