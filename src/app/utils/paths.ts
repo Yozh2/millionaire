@@ -100,6 +100,10 @@ type ManifestCampaignAssets = {
 };
 
 type ManifestGameAssets = {
+  cardAssets?: {
+    gameCard?: string | null;
+    favicon?: string | null;
+  };
   level1?: {
     sounds?: string[];
     mainMenuMusic?: string | null;
