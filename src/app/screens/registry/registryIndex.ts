@@ -36,7 +36,7 @@ export const GAME_REGISTRY_INDEX: GameRegistry[] = [
     "id": "nnr",
     "visible": true,
     "available": true,
-    "title": "НЕЙРОСЕТИ В РАДИОЛОКАЦИИ",
+    "title": "КУРС NNR",
     "emoji": "🧠",
     "theme": {
       "isLight": false,

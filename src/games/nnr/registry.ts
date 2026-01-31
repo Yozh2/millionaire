@@ -7,7 +7,7 @@ export const registry = {
   id: 'nnr',
   visible: true,
   available: true,
-  title: 'НЕЙРОСЕТИ В РАДИОЛОКАЦИИ',
+  title: 'КУРС NNR',
   emoji: '🧠',
   theme: {
     isLight: false,
