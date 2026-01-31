@@ -1,0 +1,1 @@
+const s={sm:"w-14 h-14",md:"w-16 h-16",lg:"w-24 h-24"},n=(e="md")=>s[e],t="mx-auto object-contain",a="mx-auto flex items-center justify-center",o=`${a} w-[min(18rem,72vw)] overflow-visible text-[clamp(10rem,30vw,18rem)] leading-none`,c="Arial, Helvetica, sans-serif";export{c as D,a,t as b,o as e,n as g};

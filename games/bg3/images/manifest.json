@@ -1,0 +1,172 @@
+{
+  "campaigns": {
+    "darkurge": {
+      "end": {
+        "defeat": {
+          "images": [
+            "01.webp",
+            "02.webp",
+            "03.webp"
+          ]
+        },
+        "retreat": {
+          "images": [
+            "01.webp"
+          ]
+        },
+        "victory": {
+          "images": [
+            "02.webp",
+            "03.webp"
+          ]
+        }
+      },
+      "play": {
+        "easy": {
+          "images": [
+            "01.webp",
+            "02.webp",
+            "03.webp",
+            "04.webp"
+          ]
+        },
+        "hard": {
+          "images": [
+            "01.webp",
+            "02.webp",
+            "03.webp",
+            "04.webp"
+          ]
+        },
+        "medium": {
+          "images": [
+            "01.webp",
+            "02.webp",
+            "03.webp",
+            "04.webp"
+          ]
+        }
+      },
+      "start": {
+        "images": [
+          "01.webp"
+        ]
+      }
+    },
+    "hero": {
+      "end": {
+        "defeat": {
+          "images": [
+            "01.webp",
+            "02.webp"
+          ]
+        },
+        "retreat": {
+          "images": [
+            "01.webp",
+            "02.webp"
+          ]
+        },
+        "victory": {
+          "images": [
+            "01.webp",
+            "02.webp"
+          ]
+        }
+      },
+      "play": {
+        "easy": {
+          "images": [
+            "01.webp",
+            "02.webp",
+            "03.webp",
+            "04.webp"
+          ]
+        },
+        "hard": {
+          "images": [
+            "01.webp",
+            "02.webp",
+            "03.webp",
+            "04.webp"
+          ]
+        },
+        "medium": {
+          "images": [
+            "01.webp",
+            "02.webp",
+            "03.webp",
+            "04.webp"
+          ]
+        }
+      },
+      "start": {
+        "images": [
+          "01.webp"
+        ]
+      }
+    },
+    "mindflayer": {
+      "end": {
+        "defeat": {
+          "images": [
+            "01.webp",
+            "02.webp"
+          ]
+        },
+        "retreat": {
+          "images": [
+            "01.webp",
+            "02.webp"
+          ]
+        },
+        "victory": {
+          "images": [
+            "01.webp",
+            "02.webp",
+            "03.webp"
+          ]
+        }
+      },
+      "play": {
+        "easy": {
+          "images": [
+            "01.webp",
+            "02.webp",
+            "03.webp",
+            "04.webp",
+            "05.webp"
+          ]
+        },
+        "hard": {
+          "images": [
+            "01.webp",
+            "02.webp",
+            "03.webp",
+            "04.webp",
+            "05.webp"
+          ]
+        },
+        "medium": {
+          "images": [
+            "01.webp",
+            "02.webp",
+            "03.webp",
+            "04.webp",
+            "05.webp"
+          ]
+        }
+      },
+      "start": {
+        "images": [
+          "01.webp"
+        ]
+      }
+    }
+  },
+  "start": {
+    "images": [
+      "01.webp"
+    ]
+  }
+}
