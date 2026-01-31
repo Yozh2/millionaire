@@ -38,7 +38,7 @@
     "predev": "npm run test",
     "dev": "npm run generate:manifests && vite",
     "prebuild": "npm run test",
-    "build": "npm run convert:audio && npm run generate:manifests && vite build",
+    "build": "npm run convert:audio && npm run generate:manifests && vite build && npm run prepare:dist",
     "preview": "vite preview",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
@@ -52,6 +52,7 @@
     "convert:images": "node scripts/convert-images.js",
     "generate:registry": "node scripts/generate-game-registry.js",
     "generate:manifests": "node scripts/generate-game-registry.js && node scripts/generate-image-manifest.js && node scripts/generate-asset-manifest.js",
-    "generate:assets": "node scripts/generate-asset-manifest.js"
+    "generate:assets": "node scripts/generate-asset-manifest.js",
+    "prepare:dist": "node scripts/prepare-dist.js"
   }
 }
