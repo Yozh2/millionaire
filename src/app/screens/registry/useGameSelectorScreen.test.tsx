@@ -1,7 +1,8 @@
 import { renderHook, act, waitFor } from '@testing-library/react';
+import type { GameRegistryEntry } from './gameRegistry';
 
 const navigateMock = vi.hoisted(() => vi.fn());
-const selectorEntries = vi.hoisted(() => [
+const selectorEntries = vi.hoisted<GameRegistryEntry[]>(() => [
   {
     kind: 'game',
     id: 'game-a',
@@ -35,16 +36,15 @@ vi.mock('./gameRegistry', () => ({
 const loadHook = async () => {
   vi.resetModules();
   const { useGameSelectorScreen } = await import('./useGameSelectorScreen');
-  const { LoadingProvider } = await import('@app/screens/loading/LoadingOrchestrator');
+  const { LoadingProvider } =
+    await import('@app/screens/loading/LoadingOrchestrator');
   return { useGameSelectorScreen, LoadingProvider };
 };
 
 describe('useGameSelectorScreen', () => {
   beforeEach(() => {
     navigateMock.mockClear();
-    document
-      .querySelectorAll('link[rel="icon"]')
-      .forEach((el) => el.remove());
+    document.querySelectorAll('link[rel="icon"]').forEach((el) => el.remove());
   });
 
   it('returns selector entries and navigates on available entry', async () => {
@@ -79,7 +79,7 @@ describe('useGameSelectorScreen', () => {
       const link = document.querySelector('link[rel="icon"]');
       expect(link).not.toBeNull();
       expect(link?.getAttribute('href')?.startsWith('data:image/svg+xml')).toBe(
-        true
+        true,
       );
     });
   });

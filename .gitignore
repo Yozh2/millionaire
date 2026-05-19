@@ -28,6 +28,7 @@ Thumbs.db
 
 # Local scratch
 temp/
+.agent/
 
 # Force include images in public/ (override global gitignore)
 !public/**/*.png

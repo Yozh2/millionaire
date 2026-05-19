@@ -109,22 +109,25 @@ class AssetLoader {
 
     const manifestUrl = `${getBasePath()}asset-manifest.json`;
 
-    this.manifestPromise = loadAssetManifest()
-      .then((data) => {
-        if (!data) {
-          this.manifest = EMPTY_MANIFEST;
-          logger.assetLoader.warn('Asset manifest not found; continuing without preloading', {
+    this.manifestPromise = loadAssetManifest().then((data): AssetManifest => {
+      const manifest = data as AssetManifest | null;
+      if (!manifest) {
+        this.manifest = EMPTY_MANIFEST;
+        logger.assetLoader.warn(
+          'Asset manifest not found; continuing without preloading',
+          {
             url: manifestUrl,
-          });
-          return this.manifest;
-        }
-
-        this.manifest = data;
-        logger.assetLoader.info(
-          `Manifest loaded: ${Object.keys(data.games).length} games`
+          },
         );
-        return data;
-      });
+        return this.manifest;
+      }
+
+      this.manifest = manifest;
+      logger.assetLoader.info(
+        `Manifest loaded: ${Object.keys(manifest.games).length} games`,
+      );
+      return manifest;
+    });
 
     return this.manifestPromise;
   }
@@ -155,7 +158,7 @@ class AssetLoader {
    */
   private findCampaign(
     game: GameAssets,
-    campaignId: string
+    campaignId: string,
   ): CampaignAssets | null {
     // Try exact match first
     if (game.campaigns[campaignId]) {
@@ -179,7 +182,7 @@ class AssetLoader {
   async getAssetsForLevel(
     level: LoadLevel,
     gameId?: string,
-    campaignId?: string
+    campaignId?: string,
   ): Promise<string[]> {
     const manifest = await this.loadManifest();
     const assets: string[] = [];
@@ -196,7 +199,8 @@ class AssetLoader {
         // - otherwise fallback to favicon
         for (const game of Object.values(manifest.games)) {
           if (game.cardAssets.gameCard) assets.push(game.cardAssets.gameCard);
-          else if (game.cardAssets.favicon) assets.push(game.cardAssets.favicon);
+          else if (game.cardAssets.favicon)
+            assets.push(game.cardAssets.favicon);
         }
         break;
 
@@ -307,7 +311,7 @@ class AssetLoader {
     level: LoadLevel,
     gameId?: string,
     campaignId?: string,
-    options: LoadOptions = {}
+    options: LoadOptions = {},
   ): Promise<void> {
     const levelKey = `${level}:${gameId || ''}:${campaignId || ''}`;
 
@@ -335,7 +339,7 @@ class AssetLoader {
   isLevelLoaded(
     level: LoadLevel,
     gameId?: string,
-    campaignId?: string
+    campaignId?: string,
   ): boolean {
     const levelKey = `${level}:${gameId || ''}:${campaignId || ''}`;
     return this.loadedLevels.has(levelKey);
@@ -463,10 +467,9 @@ class AssetLoader {
       loadPromise = this.loadAudio(fullUrl, url);
     } else {
       // Unknown type - just fetch it
-      loadPromise = fetch(fullUrl)
-        .then(() => {
-          this.state.loaded.add(url);
-        });
+      loadPromise = fetch(fullUrl).then(() => {
+        this.state.loaded.add(url);
+      });
     }
 
     this.state.pending.set(url, loadPromise);
@@ -630,7 +633,7 @@ class AssetLoader {
   preloadInBackground(
     level: LoadLevel,
     gameId?: string,
-    campaignId?: string
+    campaignId?: string,
   ): void {
     this.loadLevel(level, gameId, campaignId).catch((error) => {
       logger.assetLoader.warn('Background preload failed', { error });

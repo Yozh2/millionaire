@@ -22,7 +22,9 @@ export function VerticalSlider({
   onChange,
 }: VerticalSliderProps) {
   const id = useId();
-  const displayValue = formatValue ? formatValue(value) : String(Math.round(value));
+  const displayValue = formatValue
+    ? formatValue(value)
+    : String(Math.round(value));
 
   return (
     <div className="flex flex-col items-center gap-1">
@@ -47,9 +49,12 @@ export function VerticalSlider({
           onChange={(e) => onChange(Number(e.target.value))}
           className="h-32 w-8 appearance-none bg-transparent cursor-pointer"
           style={{
-            writingMode: 'bt-lr',
+            writingMode: 'vertical-lr',
+            direction: 'rtl',
             WebkitAppearance: 'slider-vertical',
-            accentColor: disabled ? 'rgba(255,255,255,0.25)' : 'rgba(255,255,255,0.85)',
+            accentColor: disabled
+              ? 'rgba(255,255,255,0.25)'
+              : 'rgba(255,255,255,0.85)',
           }}
         />
       </div>

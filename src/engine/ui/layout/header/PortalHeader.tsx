@@ -16,7 +16,7 @@ import { assetLoader } from '@engine/services';
 import { VolumeButton } from '@engine/ui/components/buttons';
 import {
   PortalHeaderTuner,
-  type PortalHeaderTunerValues
+  type PortalHeaderTunerValues,
 } from '@engine/ui/components/sliders';
 import { DEFAULT_PORTAL_HEADER_TUNER_VALUES } from '@engine/ui/components/sliders/portalHeaderTunerDefaults';
 import { useHeaderImages } from './useHeaderImages';
@@ -29,7 +29,9 @@ type Motion = 'open' | 'close';
 
 function prefersReducedMotion() {
   try {
-    return window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches ?? false;
+    return (
+      window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches ?? false
+    );
   } catch {
     return false;
   }
@@ -162,7 +164,7 @@ function makeLayers(cfg: PortalConfig): LayerDef[] {
 function getPortalHalfDims(
   cfg: PortalConfig,
   width: number,
-  height: number
+  height: number,
 ): { a: number; b: number } {
   const maxH = height * 0.5 * (1 - cfg.portalMargin * 2);
   const maxW = width * 0.5 * (1 - cfg.portalMargin * 2);
@@ -189,7 +191,7 @@ function wobbleScale(
   time: number,
   detail: number,
   profile: 'portal' | 'reveal',
-  seed: number
+  seed: number,
 ) {
   const k = profile === 'reveal' ? 0.85 : 1.0;
 
@@ -208,16 +210,27 @@ function wobbleScale(
   // Fractional values (e.g. 0.5) break 2π periodicity so angle=0 and angle=2π no longer match,
   // which shows up as a seam / phase break where the path closes.
   const lump =
-    0.11 * Math.sin((angle + anglePhase) * 1.0 + (time + timePhase) * 0.33 * v1) +
-    0.08 * Math.sin((angle + anglePhase) * 2.0 - (time + timePhase) * 0.21 * v2) +
-    0.06 * Math.sin((angle - anglePhase * 0.6) * 4.0 + (time - timePhase * 0.4) * 0.18);
+    0.11 *
+      Math.sin((angle + anglePhase) * 1.0 + (time + timePhase) * 0.33 * v1) +
+    0.08 *
+      Math.sin((angle + anglePhase) * 2.0 - (time + timePhase) * 0.21 * v2) +
+    0.06 *
+      Math.sin(
+        (angle - anglePhase * 0.6) * 4.0 + (time - timePhase * 0.4) * 0.18,
+      );
 
   const fine =
-    0.082 * Math.sin(2 * (angle + anglePhase) + (time + timePhase) * 1.05 * v1) +
-    0.061 * Math.sin(3 * (angle - anglePhase * 0.6) - (time + timePhase) * 0.78 * v2) +
-    0.044 * Math.sin(5 * (angle + anglePhase * 0.4) + (time - timePhase) * 0.46) +
+    0.082 *
+      Math.sin(2 * (angle + anglePhase) + (time + timePhase) * 1.05 * v1) +
+    0.061 *
+      Math.sin(
+        3 * (angle - anglePhase * 0.6) - (time + timePhase) * 0.78 * v2,
+      ) +
+    0.044 *
+      Math.sin(5 * (angle + anglePhase * 0.4) + (time - timePhase) * 0.46) +
     0.03 * Math.sin(9 * (angle - anglePhase) - (time - timePhase) * 0.31) +
-    0.022 * Math.sin(13 * (angle + anglePhase * 0.2) + (time + timePhase) * 0.27);
+    0.022 *
+      Math.sin(13 * (angle + anglePhase * 0.2) + (time + timePhase) * 0.27);
 
   return 1 + k * detail * (fine + lump);
 }
@@ -229,7 +242,7 @@ function drawSuperBlobPath(
   b: number,
   time: number,
   profile: 'portal' | 'reveal',
-  opts: { steps: number; detail: number; seed: number }
+  opts: { steps: number; detail: number; seed: number },
 ) {
   const { steps, detail, seed } = opts;
 
@@ -257,7 +270,7 @@ function layerFactor(
   reveal: number,
   layerIndex: number,
   layersCount: number,
-  motion: Motion
+  motion: Motion,
 ) {
   const n1 = Math.max(1, layersCount - 1);
 
@@ -284,7 +297,7 @@ function layerAlphaFactor(
   p: number,
   layerIndex: number,
   layersCount: number,
-  motion: Motion
+  motion: Motion,
 ) {
   const pp = clamp01(p);
   const h = layersCount <= 1 ? 0 : layerIndex / (layersCount - 1);
@@ -309,7 +322,7 @@ function drawPyramidMask(
   masterProgress: number,
   time: number,
   profile: 'portal' | 'reveal',
-  motion: Motion
+  motion: Motion,
 ) {
   const detail = profile === 'reveal' ? cfg.revealDetail : cfg.portalDetail;
   const steps = profile === 'reveal' ? 220 : 250;
@@ -320,8 +333,20 @@ function drawPyramidMask(
 
   for (let layerIndex = 0; layerIndex < layers.length; layerIndex += 1) {
     const layer = layers[layerIndex];
-    const p = layerFactor(cfg, masterProgress, layerIndex, layers.length, motion);
-    const alphaFactor = layerAlphaFactor(cfg, p, layerIndex, layers.length, motion);
+    const p = layerFactor(
+      cfg,
+      masterProgress,
+      layerIndex,
+      layers.length,
+      motion,
+    );
+    const alphaFactor = layerAlphaFactor(
+      cfg,
+      p,
+      layerIndex,
+      layers.length,
+      motion,
+    );
 
     const minA = 6;
     const minB = 6;
@@ -359,9 +384,12 @@ function drawPyramidMask(
       continue;
     }
 
-    const blurPx = cfg.featherBasePx + (layers.length - 1 - layerIndex) * cfg.blurStepPx;
+    const blurPx =
+      cfg.featherBasePx + (layers.length - 1 - layerIndex) * cfg.blurStepPx;
 
-    const outerFilter = cfg.enableBlur ? `blur(${blurPx * cfg.featherMult}px)` : 'none';
+    const outerFilter = cfg.enableBlur
+      ? `blur(${blurPx * cfg.featherMult}px)`
+      : 'none';
     if (ctx.filter !== outerFilter) ctx.filter = outerFilter;
     ctx.globalAlpha = layer.alpha * alphaFactor * 0.55;
     drawSuperBlobPath(ctx, cfg, a * 1.03, b * 1.03, t + 0.22, profile, {
@@ -406,7 +434,7 @@ function getAssetCacheKey(src: string): string {
 }
 
 async function loadImage(
-  src: string
+  src: string,
 ): Promise<{ img: HTMLImageElement; fromAssetCache: boolean }> {
   const cacheKey = getAssetCacheKey(src);
   const cached = assetLoader.getImage(cacheKey);
@@ -425,7 +453,9 @@ async function loadImage(
   return { img, fromAssetCache: false };
 }
 
-function getSourceDims(source: CanvasImageSource): { w: number; h: number } | null {
+function getSourceDims(
+  source: CanvasImageSource,
+): { w: number; h: number } | null {
   if (source instanceof HTMLImageElement) {
     const w = source.naturalWidth || source.width;
     const h = source.naturalHeight || source.height;
@@ -448,7 +478,10 @@ function getSourceDims(source: CanvasImageSource): { w: number; h: number } | nu
   }
 
   const anySource = source as unknown as { width?: number; height?: number };
-  if (typeof anySource.width === 'number' && typeof anySource.height === 'number') {
+  if (
+    typeof anySource.width === 'number' &&
+    typeof anySource.height === 'number'
+  ) {
     const w = anySource.width;
     const h = anySource.height;
     if (!w || !h) return null;
@@ -462,7 +495,7 @@ function drawCoverImage(
   ctx: CanvasRenderingContext2D,
   img: CanvasImageSource,
   w: number,
-  h: number
+  h: number,
 ) {
   const dims = getSourceDims(img);
   if (!dims) return;
@@ -480,7 +513,7 @@ function drawCoverImage(
 function buildHeaderImagePaths(
   images: string[],
   basePath: string,
-  subfolder: string
+  subfolder: string,
 ): string[] {
   if (!images.length || !basePath) return [];
   const prefix = subfolder ? `${basePath}/${subfolder}` : basePath;
@@ -605,7 +638,7 @@ function usePortalCanvas({
         entry?.release();
       }
     },
-    [maxCachedImages]
+    [maxCachedImages],
   );
 
   useEffect(() => {
@@ -638,20 +671,28 @@ function usePortalCanvas({
       const maxBlurPx = enableBlur
         ? cfg.featherBasePx + (layersCount - 1) * cfg.blurStepPx
         : 0;
-      const padCss = enableBlur ? Math.ceil(maxBlurPx * cfg.featherMult + 6) : 0;
+      const padCss = enableBlur
+        ? Math.ceil(maxBlurPx * cfg.featherMult + 6)
+        : 0;
       const padPx = Math.max(0, Math.ceil(padCss * dpr));
       maskPadRef.current = { css: padCss, px: padPx };
 
       const maskW = pixelW + padPx * 2;
       const maskH = pixelH + padPx * 2;
 
-      if (!portalMaskRef.current) portalMaskRef.current = ensureOffscreen(maskW, maskH);
-      if (!revealMaskRef.current) revealMaskRef.current = ensureOffscreen(maskW, maskH);
+      if (!portalMaskRef.current)
+        portalMaskRef.current = ensureOffscreen(maskW, maskH);
+      if (!revealMaskRef.current)
+        revealMaskRef.current = ensureOffscreen(maskW, maskH);
 
-      if (portalMaskRef.current.width !== maskW) portalMaskRef.current.width = maskW;
-      if (portalMaskRef.current.height !== maskH) portalMaskRef.current.height = maskH;
-      if (revealMaskRef.current.width !== maskW) revealMaskRef.current.width = maskW;
-      if (revealMaskRef.current.height !== maskH) revealMaskRef.current.height = maskH;
+      if (portalMaskRef.current.width !== maskW)
+        portalMaskRef.current.width = maskW;
+      if (portalMaskRef.current.height !== maskH)
+        portalMaskRef.current.height = maskH;
+      if (revealMaskRef.current.width !== maskW)
+        revealMaskRef.current.width = maskW;
+      if (revealMaskRef.current.height !== maskH)
+        revealMaskRef.current.height = maskH;
 
       portalMaskCtxRef.current = portalMaskRef.current.getContext('2d');
       revealMaskCtxRef.current = revealMaskRef.current.getContext('2d');
@@ -718,7 +759,7 @@ function usePortalCanvas({
         },
       };
     },
-    [maxRasterPixels]
+    [maxRasterPixels],
   );
 
   const preloadImage = useCallback(
@@ -743,14 +784,14 @@ function usePortalCanvas({
       pendingLoadsRef.current.set(src, p);
       await p;
     },
-    [rasterizeImage]
+    [rasterizeImage],
   );
 
   const ensureImage = useCallback(
     (src: string) => {
       void preloadImage(src);
     },
-    [preloadImage]
+    [preloadImage],
   );
 
   useEffect(() => {
@@ -816,7 +857,9 @@ function usePortalCanvas({
       lastFrameMsRef.current = timeNow;
 
       const enableBlur = cfg.enableBlur;
-      const effectiveCfg: PortalConfig = enableBlur ? cfg : { ...cfg, enableBlur: false };
+      const effectiveCfg: PortalConfig = enableBlur
+        ? cfg
+        : { ...cfg, enableBlur: false };
 
       const transitionActive =
         st.motion === 'close' || st.reveal < 0.999 || st.alpha < 0.999;
@@ -862,11 +905,17 @@ function usePortalCanvas({
         1,
         time * effectiveCfg.portalTSpeed,
         'portal',
-        'open'
+        'open',
       );
 
       ctx.globalCompositeOperation = 'destination-in';
-      ctx.drawImage(portalMask, -padCss, -padCss, w + padCss * 2, h + padCss * 2);
+      ctx.drawImage(
+        portalMask,
+        -padCss,
+        -padCss,
+        w + padCss * 2,
+        h + padCss * 2,
+      );
 
       rm.setTransform(1, 0, 0, 1, 0, 0);
       rm.clearRect(0, 0, revealMask.width, revealMask.height);
@@ -883,10 +932,16 @@ function usePortalCanvas({
         st.reveal,
         time * effectiveCfg.revealTSpeed,
         'reveal',
-        st.motion
+        st.motion,
       );
 
-      ctx.drawImage(revealMask, -padCss, -padCss, w + padCss * 2, h + padCss * 2);
+      ctx.drawImage(
+        revealMask,
+        -padCss,
+        -padCss,
+        w + padCss * 2,
+        h + padCss * 2,
+      );
       ctx.globalCompositeOperation = 'source-over';
 
       if (transitionActive || idleMotionEnabled) scheduleNext();
@@ -900,7 +955,8 @@ function usePortalCanvas({
         else if (stateRef.current.currentSrc) {
           const stNow = stateRef.current;
           const frozen = frozenTimeRef.current;
-          startedAtRef.current = nowMs() - Math.max(0, frozen - stNow.phaseShift) * 1000;
+          startedAtRef.current =
+            nowMs() - Math.max(0, frozen - stNow.phaseShift) * 1000;
           ensureLoop();
         }
       } catch {
@@ -942,7 +998,8 @@ function usePortalCanvas({
         if (tokenRef.current !== token) return;
 
         const st = stateRef.current;
-        const isEmpty = !st.currentSrc || st.reveal <= 0.001 || st.alpha <= 0.001;
+        const isEmpty =
+          !st.currentSrc || st.reveal <= 0.001 || st.alpha <= 0.001;
         const easeOpen = (t: number) => easeOutPow(t, 3.0);
         const easeClose = (t: number) => easeInPow(t, 3.0);
 
@@ -952,7 +1009,7 @@ function usePortalCanvas({
           to: number,
           ms: number,
           easing: (t: number) => number,
-          onDone?: () => void
+          onDone?: () => void,
         ) => {
           const start = nowMs();
           const dur = Math.max(1, ms);
@@ -1013,7 +1070,7 @@ function usePortalCanvas({
 
       openWithImage();
     },
-    [closeMs, ensureLoop, openMs, preloadImage, pruneImageCache]
+    [closeMs, ensureLoop, openMs, preloadImage, pruneImageCache],
   );
 
   const preload = useCallback(
@@ -1021,7 +1078,7 @@ function usePortalCanvas({
       if (!imageSrc) return;
       await preloadImage(imageSrc);
     },
-    [preloadImage]
+    [preloadImage],
   );
 
   const hide = useCallback(() => {
@@ -1126,7 +1183,7 @@ function usePortalCanvas({
 
   return useMemo(
     () => ({ show, hide, isShowing, preload }),
-    [hide, isShowing, preload, show]
+    [hide, isShowing, preload, show],
   );
 }
 
@@ -1161,13 +1218,21 @@ export function PortalHeader({
   const enableBlur = config.headerSlideshow?.enableBlur ?? false;
   const [portalBaseHeight, setPortalBaseHeight] = useState(0);
 
-  const { enabled, isLoading, images, basePath, subfolder, displayDuration, transitionDuration, opacity } =
-    useHeaderImages(config.headerSlideshow, {
-      gameId: config.id,
-      campaignId,
-      screen: slideshowScreen,
-      difficulty,
-    });
+  const {
+    enabled,
+    isLoading,
+    images,
+    basePath,
+    subfolder,
+    displayDuration,
+    transitionDuration,
+    opacity,
+  } = useHeaderImages(config.headerSlideshow, {
+    gameId: config.id,
+    campaignId,
+    screen: slideshowScreen,
+    difficulty,
+  });
 
   const orderMode: 'alphabetical' | 'random' =
     slideshowScreen === 'play'
@@ -1177,7 +1242,7 @@ export function PortalHeader({
   const orderedImages = useMemo(() => {
     if (orderMode !== 'alphabetical') return images;
     return [...images].sort((a, b) =>
-      a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' })
+      a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }),
     );
   }, [images, orderMode]);
 
@@ -1195,7 +1260,10 @@ export function PortalHeader({
     openMs,
     closeMs,
     opacity,
-    onLayoutSize: useCallback(({ h }) => setPortalBaseHeight(h), []),
+    onLayoutSize: useCallback(
+      ({ h }: { w: number; h: number }) => setPortalBaseHeight(h),
+      [],
+    ),
   });
   const { show, hide } = portal;
 
@@ -1232,7 +1300,16 @@ export function PortalHeader({
       return;
     }
     show(fullPath);
-  }, [activated, campaignId, enabled, fullPath, hide, isLoading, show, slideshowScreen]);
+  }, [
+    activated,
+    campaignId,
+    enabled,
+    fullPath,
+    hide,
+    isLoading,
+    show,
+    slideshowScreen,
+  ]);
 
   useEffect(() => {
     if (!activated) return;
@@ -1241,7 +1318,8 @@ export function PortalHeader({
 
     const intervalId = window.setInterval(() => {
       setCurrentIndex((prev) => {
-        if (orderMode === 'alphabetical') return (prev + 1) % orderedImages.length;
+        if (orderMode === 'alphabetical')
+          return (prev + 1) % orderedImages.length;
         let next = 0;
         do {
           next = Math.floor(Math.random() * orderedImages.length);
@@ -1251,17 +1329,27 @@ export function PortalHeader({
     }, displayDuration);
 
     return () => window.clearInterval(intervalId);
-  }, [activated, displayDuration, enabled, isLoading, orderMode, orderedImages.length]);
+  }, [
+    activated,
+    displayDuration,
+    enabled,
+    isLoading,
+    orderMode,
+    orderedImages.length,
+  ]);
 
   const tunerUiAvailable = usePortalTunerUi();
 
   const [tuner, setTuner] = useState<PortalHeaderTunerValues>(
-    DEFAULT_PORTAL_HEADER_TUNER_VALUES
+    DEFAULT_PORTAL_HEADER_TUNER_VALUES,
   );
   const translateY = Math.round(tuner.translateY);
   const scale = tuner.scale;
   const panelsCeilingPx = Math.round(tuner.panelsOverlap);
-  const minHeightPx = Math.max(1, Math.round((portalBaseHeight || 162) * scale));
+  const minHeightPx = Math.max(
+    1,
+    Math.round((portalBaseHeight || 162) * scale),
+  );
   const headerTopPx = useViewportAnchorTop(rootRef);
   const safeTranslateY = Math.max(translateY, -Math.round(headerTopPx));
 
@@ -1296,7 +1384,9 @@ export function PortalHeader({
         <div className="fixed top-3 right-3 z-[250] pointer-events-auto flex flex-col items-end gap-2">
           <VolumeButton
             onClick={onToggleMusic}
-            title={isMusicPlaying ? config.strings.musicOn : config.strings.musicOff}
+            title={
+              isMusicPlaying ? config.strings.musicOn : config.strings.musicOff
+            }
           >
             {isMusicPlaying ? '🔊' : '🔇'}
           </VolumeButton>

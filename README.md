@@ -6,14 +6,17 @@ A reusable “Who Wants to Be a Millionaire?”‑style quiz engine built with R
 
 ## Games (current)
 
-Games are registered in `src/app/registry/gameRegistry.ts`.
+Games are registered through `src/games/*/registry.ts` and the generated
+catalog consumed by `src/app/screens/registry/gameRegistry.ts`.
 
-| Game ID | Title | Language | Notes |
-|---|---|---|---|
-| `poc` | Proof of Concept | RU | Minimal engine demo (can run with no external assets) |
-| `bg3` | Baldur's Gate III | RU |  |
-| `sky-cotl` | Sky: Children of the Light | EN |  |
-| `transformers` | Transformers (comics) | RU |  |
+| Game ID        | Title                      | Language | Notes                                                 |
+| -------------- | -------------------------- | -------- | ----------------------------------------------------- |
+| `axis`         | AXIS                       | RU       | Themed multi-campaign quiz                            |
+| `bg3`          | Baldur's Gate III          | RU       |                                                       |
+| `nnr`          | КУРС NNR                   | RU       | Neural-network themed quiz                            |
+| `poc`          | Proof of Concept           | RU       | Minimal engine demo (can run with no external assets) |
+| `sky-cotl`     | Sky: Children of the Light | EN       |                                                       |
+| `transformers` | Transformers (comics)      | RU       |                                                       |
 
 ## Repository layout
 
@@ -24,6 +27,15 @@ Games are registered in `src/app/registry/gameRegistry.ts`.
 - `scripts/**` — build helpers + sandboxes (not part of runtime).
 - `public/**` — optional runtime assets (manifests, images, sounds). The engine itself should not hard‑require this directory.
 
+## Documentation
+
+- `AGENTS.md` — required workflow for AI agents working in this repo.
+- `docs/workflows.md` — development, documentation, UI, asset, and agent workflows.
+- `docs/repository-layout.md` — canonical map of repository directories and important files.
+- `docs/game-design.md` — detailed design document for product, mechanics, content model, UX, assets, and quality criteria.
+- `docs/styleguide.md` — code style, imports, tests, and comments.
+- `docs/asset-loading-strategy.md` — current runtime asset loading behavior.
+
 ## Engine architecture (high‑level)
 
 The engine is intentionally split into layers:
@@ -31,7 +43,7 @@ The engine is intentionally split into layers:
 - `src/engine/game/**` — pure domain logic (state machine, reducer, selectors, lifelines, prizes, session). No React/DOM.
 - `src/engine/ui/**` — React UI (screens, panels, components, layout, theme, styles).
 - `src/engine/audio/**` — music + SFX/voice players (with fallbacks and “stop handles”).
-- `src/engine/assets/**` + `src/engine/services/assetLoader.ts` — manifest‑based asset loading; must be resilient when manifests/assets are missing.
+- `src/engine/services/AssetLoader.ts` + `src/engine/utils/assetLoader.ts` — manifest‑based asset loading and audio path resolution; must be resilient when manifests/assets are missing.
 
 Terminology used across code/docs:
 
@@ -52,20 +64,44 @@ Useful commands:
 
 ```bash
 npm test
+npm run typecheck
 npm run lint
 npm run build
+```
+
+## Git hooks and quality gate
+
+Install the repository hooks once per clone:
+
+```bash
+npm run hooks:install
+```
+
+The versioned hooks live in `.githooks/`.
+
+- `pre-commit` formats staged files with Prettier, then runs typecheck, ESLint,
+  and tests.
+- `pre-push` checks formatting for changed files, then runs typecheck, ESLint,
+  and production build.
+
+Manual equivalents:
+
+```bash
+npm run quality:commit
+npm run quality:push
 ```
 
 ## Adding a new game
 
 1. Create a new directory: `src/games/<gameId>/`.
 2. Add campaigns:
-   - `src/games/<gameId>/campaigns/<campaignId>/campaign.ts`
    - `src/games/<gameId>/campaigns/<campaignId>/questions.ts`
    - `src/games/<gameId>/campaigns/<campaignId>/theme.ts`
 3. Add `src/games/<gameId>/config.ts` exporting `<gameId>Config: GameConfig`.
-4. Register the game in `src/app/registry/gameRegistry.ts` (card meta + lazy `getConfig()` import).
-5. Optional: add `public/` assets (sounds/images) and regenerate manifests.
+4. Add `src/games/<gameId>/registry.ts` with lightweight card metadata.
+5. Export the game from `src/games/<gameId>/index.ts`.
+6. Regenerate registry/manifests with `npm run generate:manifests`.
+7. Optional: add `public/` assets (sounds/images) and regenerate manifests again.
 
 ## Assets and manifests
 

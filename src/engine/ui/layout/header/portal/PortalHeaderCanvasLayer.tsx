@@ -1,4 +1,4 @@
-import type { RefObject } from 'react';
+import type { MutableRefObject } from 'react';
 
 const MIN_PORTAL_HEIGHT_PX = 160;
 const MIN_PORTAL_WIDTH_PX = Math.ceil((MIN_PORTAL_HEIGHT_PX * 960) / 310);
@@ -9,8 +9,8 @@ export type PortalHeaderCanvasLayerProps = {
   translateY: number;
   scale: number;
   active: boolean;
-  containerRef: RefObject<HTMLDivElement | null>;
-  canvasRef: RefObject<HTMLCanvasElement | null>;
+  containerRef: MutableRefObject<HTMLDivElement | null>;
+  canvasRef: MutableRefObject<HTMLCanvasElement | null>;
   zIndex?: number;
 };
 
@@ -35,7 +35,9 @@ export function PortalHeaderCanvasLayer({
       }}
     >
       <div
-        ref={containerRef}
+        ref={(node) => {
+          containerRef.current = node;
+        }}
         style={{
           position: 'relative',
           width: portalWidthCss,
@@ -47,7 +49,9 @@ export function PortalHeaderCanvasLayer({
         }}
       >
         <canvas
-          ref={canvasRef}
+          ref={(node) => {
+            canvasRef.current = node;
+          }}
           className="absolute inset-0 w-full h-full"
           style={{ pointerEvents: 'none' }}
         />

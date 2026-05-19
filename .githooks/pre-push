@@ -1,0 +1,13 @@
+#!/bin/sh
+set -eu
+
+if command -v git-lfs >/dev/null 2>&1; then
+  git lfs pre-push "$@"
+fi
+
+echo '[pre-push] Running full TypeScript quality gate...'
+
+npm run format:changed
+npm run typecheck
+npm run lint
+npm run build

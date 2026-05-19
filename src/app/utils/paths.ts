@@ -35,8 +35,11 @@ export type GamePublicDir =
 export const gameDir = (gameId: string, dir: GamePublicDir): string =>
   publicDir(`games/${gameId}/${dir}`);
 
-export const gameFile = (gameId: string, dir: GamePublicDir, filename: string): string =>
-  `${gameDir(gameId, dir)}/${stripLeadingSlash(filename)}`;
+export const gameFile = (
+  gameId: string,
+  dir: GamePublicDir,
+  filename: string,
+): string => `${gameDir(gameId, dir)}/${stripLeadingSlash(filename)}`;
 
 export const gameIconsDir = (gameId: string): string =>
   gameDir(gameId, 'icons');
@@ -52,7 +55,7 @@ export const gameFaviconFile = (gameId: string, filename: string): string =>
 
 export const resolveGameFavicon = (
   gameId: string,
-  favicon?: string | null
+  favicon?: string | null,
 ): string | undefined => {
   if (!favicon) return undefined;
 
@@ -83,7 +86,7 @@ export type AssetType = 'sounds' | 'music' | 'voices';
 export const getAssetPaths = (
   type: AssetType,
   filename: string,
-  gameId: string
+  gameId: string,
 ): { specific: string; fallback: string | null } => {
   const basePath = getBasePath();
   return {
@@ -118,8 +121,9 @@ type ManifestGameAssets = {
 };
 
 type AssetManifest = {
-  engine?: { sounds?: string[] };
-  games?: Record<string, ManifestGameAssets>;
+  version: string;
+  engine: { icons?: string[]; images?: string[]; sounds?: string[] };
+  games: Record<string, ManifestGameAssets>;
 };
 
 let manifestPromise: Promise<AssetManifest | null> | null = null;
@@ -219,7 +223,7 @@ const isAudioManifestPath = (path: string): boolean =>
   /\/games\/[^/]+\/(sounds|music|voices)\//i.test(path);
 
 const checkManifestAudioAvailability = async (
-  url: string
+  url: string,
 ): Promise<boolean | null> => {
   const path = normalizeManifestPath(url);
   if (!path || !isAudioManifestPath(path)) return null;
@@ -247,7 +251,9 @@ export async function fileExistsNotHtml(url: string): Promise<boolean> {
     const response = await fetch(url, { method: 'HEAD' });
     if (!response.ok) return false;
 
-    const contentType = (response.headers.get('Content-Type') || '').toLowerCase();
+    const contentType = (
+      response.headers.get('Content-Type') || ''
+    ).toLowerCase();
     return !contentType.startsWith('text/html');
   } catch {
     return false;
@@ -271,7 +277,9 @@ export async function checkFileExists(url: string): Promise<boolean> {
 
     if (!(response.ok || response.status === 206)) return false;
 
-    const contentType = (response.headers.get('Content-Type') || '').toLowerCase();
+    const contentType = (
+      response.headers.get('Content-Type') || ''
+    ).toLowerCase();
     return !contentType.startsWith('text/html');
   } catch {
     return false;
@@ -282,7 +290,7 @@ export async function checkFileExists(url: string): Promise<boolean> {
 export async function findFile(
   basePaths: string[],
   filename: string,
-  exists: (url: string) => Promise<boolean>
+  exists: (url: string) => Promise<boolean>,
 ): Promise<string | null> {
   for (const basePath of basePaths) {
     const url = `${basePath}/${filename}`;
@@ -291,10 +299,9 @@ export async function findFile(
   return null;
 }
 
-export const GAME_CONFIG_MODULES = import.meta.glob('/src/games/*/config.ts') as Record<
-  string,
-  () => Promise<{ default: unknown }>
->;
+export const GAME_CONFIG_MODULES = import.meta.glob(
+  '/src/games/*/config.ts',
+) as Record<string, () => Promise<{ default: unknown }>>;
 
 export const extractGameIdFromPath = (path: string): string | null => {
   const match = path.match(/\/games\/([^/]+)\/(config|registry)\.ts$/);

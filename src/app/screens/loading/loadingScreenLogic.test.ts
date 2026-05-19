@@ -37,9 +37,11 @@ describe('loadingScreenLogic', () => {
   });
 
   it('tracks smoothed progress state', () => {
+    const initialProps: { progress: number | undefined } = { progress: 40 };
     const { result, rerender } = renderHook(
-      ({ progress }) => useSmoothedProgress(progress),
-      { initialProps: { progress: 40 } }
+      ({ progress }: { progress: number | undefined }) =>
+        useSmoothedProgress(progress),
+      { initialProps },
     );
 
     expect(result.current.isIndeterminate).toBe(false);
@@ -51,7 +53,10 @@ describe('loadingScreenLogic', () => {
 
   it('tracks viewport size updates', () => {
     Object.defineProperty(window, 'innerWidth', { value: 900, writable: true });
-    Object.defineProperty(window, 'innerHeight', { value: 700, writable: true });
+    Object.defineProperty(window, 'innerHeight', {
+      value: 700,
+      writable: true,
+    });
 
     const { result } = renderHook(() => useViewportSize());
 

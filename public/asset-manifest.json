@@ -37,15 +37,9 @@
         "mainMenuMusic": "/games/axis/music/menu.m4a",
         "startImages": [],
         "campaignStartImages": {
-          "travelers": [
-            "/games/axis/images/campaigns/travelers/start/01.webp"
-          ],
-          "world": [
-            "/games/axis/images/campaigns/world/start/01.webp"
-          ],
-          "yona": [
-            "/games/axis/images/campaigns/yona/start/01.webp"
-          ]
+          "travelers": ["/games/axis/images/campaigns/travelers/start/01.webp"],
+          "world": ["/games/axis/images/campaigns/world/start/01.webp"],
+          "yona": ["/games/axis/images/campaigns/yona/start/01.webp"]
         }
       },
       "level2": {
@@ -153,19 +147,11 @@
           "/games/bg3/sounds/select-mindflayer.m4a"
         ],
         "mainMenuMusic": "/games/bg3/music/menu.m4a",
-        "startImages": [
-          "/games/bg3/images/start/01.webp"
-        ],
+        "startImages": ["/games/bg3/images/start/01.webp"],
         "campaignStartImages": {
-          "darkurge": [
-            "/games/bg3/images/campaigns/darkurge/start/01.webp"
-          ],
-          "hero": [
-            "/games/bg3/images/campaigns/hero/start/01.webp"
-          ],
-          "mindflayer": [
-            "/games/bg3/images/campaigns/mindflayer/start/01.webp"
-          ]
+          "darkurge": ["/games/bg3/images/campaigns/darkurge/start/01.webp"],
+          "hero": ["/games/bg3/images/campaigns/hero/start/01.webp"],
+          "mindflayer": ["/games/bg3/images/campaigns/mindflayer/start/01.webp"]
         }
       },
       "level2": {
@@ -192,7 +178,7 @@
       "campaigns": {
         "darkurge": {
           "level1_1": {
-            "music": "/games/bg3/music/darkurge.m4a",
+            "music": "/games/bg3/music/DarkUrge.m4a",
             "musicAlt": null,
             "playImages": {
               "easy": [
@@ -227,7 +213,7 @@
         },
         "hero": {
           "level1_1": {
-            "music": "/games/bg3/music/hero.m4a",
+            "music": "/games/bg3/music/Hero.m4a",
             "musicAlt": null,
             "playImages": {
               "easy": [
@@ -262,7 +248,7 @@
         },
         "mindflayer": {
           "level1_1": {
-            "music": "/games/bg3/music/mindflayer.m4a",
+            "music": "/games/bg3/music/MindFlayer.m4a",
             "musicAlt": null,
             "playImages": {
               "easy": [
@@ -290,6 +276,53 @@
                 "/games/bg3/images/campaigns/mindflayer/play/hard/04.webp",
                 "/games/bg3/images/campaigns/mindflayer/play/hard/05.webp"
               ]
+            },
+            "endImages": {
+              "victory": [],
+              "defeat": [],
+              "retreat": []
+            }
+          }
+        }
+      }
+    },
+    "mom55": {
+      "cardAssets": {
+        "gameCard": null,
+        "favicon": null
+      },
+      "level1": {
+        "icons": [],
+        "sounds": [],
+        "mainMenuMusic": null,
+        "startImages": [],
+        "campaignStartImages": {}
+      },
+      "level2": {
+        "defeatMusic": null,
+        "victoryMusic": null,
+        "retreatMusic": null,
+        "icons": [],
+        "endImages": {
+          "victory": [],
+          "defeat": [],
+          "retreat": []
+        }
+      },
+      "voices": [],
+      "campaigns": {
+        "family": {
+          "level1_1": {
+            "music": null,
+            "musicAlt": null,
+            "playImages": {
+              "easy": []
+            }
+          },
+          "level2": {
+            "playImages": {
+              "medium": [],
+              "hard": []
             },
             "endImages": {
               "victory": [],
@@ -329,68 +362,7 @@
         }
       },
       "voices": [],
-      "campaigns": {
-        "nn": {
-          "level1_1": {
-            "music": null,
-            "musicAlt": null,
-            "playImages": {
-              "easy": []
-            }
-          },
-          "level2": {
-            "playImages": {
-              "medium": [],
-              "hard": []
-            },
-            "endImages": {
-              "victory": [],
-              "defeat": [],
-              "retreat": []
-            }
-          }
-        },
-        "perceptron": {
-          "level1_1": {
-            "music": null,
-            "musicAlt": null,
-            "playImages": {
-              "easy": []
-            }
-          },
-          "level2": {
-            "playImages": {
-              "medium": [],
-              "hard": []
-            },
-            "endImages": {
-              "victory": [],
-              "defeat": [],
-              "retreat": []
-            }
-          }
-        },
-        "research": {
-          "level1_1": {
-            "music": null,
-            "musicAlt": null,
-            "playImages": {
-              "easy": []
-            }
-          },
-          "level2": {
-            "playImages": {
-              "medium": [],
-              "hard": []
-            },
-            "endImages": {
-              "victory": [],
-              "defeat": [],
-              "retreat": []
-            }
-          }
-        }
-      }
+      "campaigns": {}
     },
     "sky-cotl": {
       "cardAssets": {

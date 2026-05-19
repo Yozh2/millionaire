@@ -11,7 +11,7 @@ describe('GameCard', () => {
         emoji="T"
         available
         onSelect={onSelect}
-      />
+      />,
     );
 
     fireEvent.click(screen.getByRole('button'));
@@ -27,25 +27,20 @@ describe('GameCard', () => {
         emoji="T"
         available={false}
         onSelect={onSelect}
-      />
+      />,
     );
 
     fireEvent.click(screen.getByRole('button'));
     expect(onSelect).not.toHaveBeenCalled();
   });
 
-  it('renders a card image placeholder', () => {
+  it('renders a card image fallback', () => {
     const { container } = render(
-      <GameCard
-        gameId="poc"
-        title="Test Game"
-        emoji="T"
-        available
-      />
+      <GameCard gameId="poc" title="Test Game" emoji="T" available />,
     );
 
     const image = container.querySelector('img');
     expect(image).not.toBeNull();
-    expect(image?.getAttribute('data-image-kind')).toBe('art');
+    expect(image?.getAttribute('data-image-kind')).toBe('icon');
   });
 });
