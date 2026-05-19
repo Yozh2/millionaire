@@ -359,8 +359,17 @@
           "/games/nnr/icons/campaigns/research.svg",
           "/games/nnr/icons/coin.svg"
         ],
-        "sounds": [],
-        "mainMenuMusic": null,
+        "sounds": [
+          "/games/nnr/sounds/action-press.m4a",
+          "/games/nnr/sounds/answer-click.m4a",
+          "/games/nnr/sounds/correct.m4a",
+          "/games/nnr/sounds/defeat.m4a",
+          "/games/nnr/sounds/lifeline-audience.m4a",
+          "/games/nnr/sounds/lifeline-double.m4a",
+          "/games/nnr/sounds/lifeline-fifty.m4a",
+          "/games/nnr/sounds/lifeline-phone.m4a"
+        ],
+        "mainMenuMusic": "/games/nnr/music/menu.m4a",
         "startImages": [],
         "campaignStartImages": {}
       },
