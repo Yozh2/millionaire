@@ -1,4 +1,4 @@
-import { createCampaignsForGame, defineGameConfig } from '@engine/utils';
+import { createCampaignsFromGlobs, defineGameConfig } from '@engine/utils';
 import {
   CandleIcon,
   FallenStarIcon,
@@ -10,12 +10,21 @@ import {
 } from './icons';
 import { strings } from './strings';
 
+const themeModules = import.meta.glob('./campaigns/*/theme.ts', {
+  eager: true,
+});
+const questionModules = import.meta.glob('./campaigns/*/questions.ts', {
+  eager: true,
+});
+
 export const skyCotlConfig = defineGameConfig({
   id: 'sky-cotl',
 
-  campaigns: createCampaignsForGame({
+  campaigns: createCampaignsFromGlobs({
     gameId: 'sky-cotl',
     campaignStrings: strings.campaigns,
+    themeModules,
+    questionModules,
     iconsById: {
       moth: MothCampaignIcon,
       ikeman: IkemanCampaignIcon,
@@ -61,7 +70,8 @@ export const skyCotlConfig = defineGameConfig({
     loadingGameSubtitle: 'Preparing your journey',
     loadingCampaignTitle: 'Preparing campaign…',
     soundConsentTitle: 'Sound',
-    soundConsentMessage: 'This game is best experienced with headphones.\nEnable sound?',
+    soundConsentMessage:
+      'This game is best experienced with headphones.\nEnable sound?',
     soundConsentEnableLabel: 'With sound',
     soundConsentDisableLabel: 'Without sound',
   },

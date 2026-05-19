@@ -15,10 +15,7 @@ const FORMAT_EXTENSIONS = new Set([
   '.yaml',
 ]);
 
-const GENERATED_PATHS = new Set([
-  'public/asset-manifest.json',
-  'src/app/screens/registry/registryIndex.ts',
-]);
+const GENERATED_PATHS = new Set(['public/asset-manifest.json']);
 
 const isGeneratedFile = (file) =>
   GENERATED_PATHS.has(file) ||

@@ -2,7 +2,7 @@ import type { Campaign, CampaignIconProps } from '@engine/types';
 import { baseImgIconClass, getCampaignIconSizeClass } from '@engine/types';
 import { useRef, type CSSProperties } from 'react';
 import { useCampaignCardFsm } from './useCampaignCardFsm';
-import { gameIconsFile } from '@app/utils/paths';
+import { gameIconsFile } from '@engine/utils/paths';
 
 const createEmojiSvgDataUrl = (emoji: string): string => {
   const svg =
@@ -55,8 +55,10 @@ export function CampaignCard({
     selected,
     onSelect,
   });
-  const glowColor = campaign.theme.campaignCardGlowColor ?? campaign.theme.glowColor;
-  const glowSecondary = campaign.theme.campaignCardGlowSecondary ?? campaign.theme.glowSecondary;
+  const glowColor =
+    campaign.theme.campaignCardGlowColor ?? campaign.theme.glowColor;
+  const glowSecondary =
+    campaign.theme.campaignCardGlowSecondary ?? campaign.theme.glowSecondary;
   const glow = campaign.theme.campaignCardGlow ?? campaign.theme.glow;
 
   return (
@@ -74,6 +76,7 @@ export function CampaignCard({
       }}
       {...fsm.eventHandlers}
       data-campaign-card="true"
+      data-campaign-id={campaign.id}
       data-selected={selected ? 'true' : 'false'}
       data-card-state={fsm.state}
       className={`campaign-card relative flex-none overflow-hidden border-4 w-[170px] h-[215px] ${

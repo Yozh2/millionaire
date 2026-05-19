@@ -12,4 +12,4 @@ export {
   gameImagesDir,
   gameImagesFile,
   type GamePublicDir,
-} from '@app/utils/paths';
+} from '@engine/utils/paths';

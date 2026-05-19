@@ -11,7 +11,7 @@ when moving between app/engine layers.
 - `camelCase` (lowerCamel, mixedCase): variables, functions, parameters, fields.
   - Examples: `gameId`, `buildGameEntries`, `handleClick`.
 - `PascalCase` (UpperCamel): React components, classes, types, interfaces, enums.
-  - Examples: `LoadingScreen`, `GameRegistryEntry`, `GameCardFsmState`.
+  - Examples: `LoadingScreen`, `GameCatalogEntry`, `GameCardFsmState`.
 - `SCREAMING_SNAKE_CASE`: true constants (immutable shared parameters/configs).
   - Examples: `DEFAULT_LOGO_URL`, `SPRING_K`.
 - Booleans: use `is/has/can/should` prefixes.
@@ -29,9 +29,9 @@ If it is a local variable with regular lifetime, use `camelCase`.
 - Hooks: `useX.ts` or `useX.tsx`.
   - Examples: `useFavicon.ts`, `useGameCardFsm.ts`.
 - Logic without JSX: `camelCase.ts`.
-  - Examples: `loadingScreenLogic.ts`, `gameRegistry.ts`.
+  - Examples: `loadingScreenLogic.ts`, `gameCatalog.ts`.
 - Tests: file name + `.test.ts`/`.test.tsx`.
-  - Examples: `LoadingScreen.test.tsx`, `gameRegistry.test.ts`.
+  - Examples: `LoadingScreen.test.tsx`, `gameCatalog.test.ts`.
 - Barrels: `index.ts`.
 
 ### 1.3 Directories and game ids
@@ -42,9 +42,9 @@ If it is a local variable with regular lifetime, use `camelCase`.
 
 ## 2. Architecture and layers
 
-- `src/app` is UI and user interaction.
+- `src/hub` is UI and user interaction.
 - `src/engine` is engine, game logic, and infrastructure.
-- `app` can import `engine`, but not the other way around.
+- `hub` can import `engine`, but not the other way around.
 - Separate rendering and logic:
   - `Component.tsx` owns JSX/DOM.
   - Logic goes to `componentLogic.ts` or `useComponent.ts`.
@@ -52,12 +52,13 @@ If it is a local variable with regular lifetime, use `camelCase`.
 ## 3. Styles
 
 - All styles live in CSS under:
-  - `src/app/styles`
+  - `src/styles`
+  - `src/hub/styles`
   - `src/engine/ui/styles`
 - Do not keep `.css` files next to components/screens; import from `styles`.
-- Global styles and aggregation: `src/app/styles/index.css`, `src/engine/ui/styles/Engine.css`.
+- Global styles and aggregation: `src/styles/index.css`, `src/engine/ui/styles/Engine.css`.
 - CSS file name matches component/screen/module.
-  - Example: `src/app/styles/LoadingScreen.css`.
+  - Example: `src/hub/styles/LoadingScreen.css`.
 - Class naming: `kebab-case` with BEM-ish structure.
   - Example: `.loading-screen__ring`, `.game-selector__title`.
 - Inline styles only for dynamic values (CSS variables/numbers).
@@ -72,10 +73,9 @@ If it is a local variable with regular lifetime, use `camelCase`.
 ## 5. Imports
 
 - Global aliases (for paths above the current directory):
-  - `@app` → `/src/app`
-  - `@pages` → `/src/pages`
+  - `@hub` → `/src/hub`
+  - `@hub/pages` → `/src/hub/pages`
   - `@engine` → `/src/engine`
-  - `@games` → `/src/games`
   - `@public` → `/public`
 - Order: external packages → internal aliases → relative paths.
 - Import types via `import type`.

@@ -3,7 +3,33 @@
  * These types define the contract for game configurations.
  */
 
-import { ComponentType } from 'react';
+import type { ComponentType } from 'react';
+
+export interface BaseTheme {
+  isLight?: boolean;
+  bgFrom: string;
+  bgVia: string;
+  bgTo: string;
+  glow: string;
+}
+
+export interface GameManifest {
+  id: string;
+  visible: boolean;
+  available: boolean;
+  title: string;
+  emoji: string;
+  favicon?: string;
+  theme?: BaseTheme;
+  devonly?: boolean;
+  route?: string;
+}
+
+export interface GameModule {
+  id: string;
+  info: GameManifest;
+  loadConfig: () => Promise<GameConfig>;
+}
 
 export interface CampaignIconProps {
   className?: string;
@@ -18,8 +44,9 @@ export const CAMPAIGN_ICON_SIZE_CLASS: Record<CampaignIconSize, string> = {
   lg: 'w-24 h-24',
 } as const;
 
-export const getCampaignIconSizeClass = (size: CampaignIconSize = 'md'): string =>
-  CAMPAIGN_ICON_SIZE_CLASS[size];
+export const getCampaignIconSizeClass = (
+  size: CampaignIconSize = 'md',
+): string => CAMPAIGN_ICON_SIZE_CLASS[size];
 
 /**
  * Shared icon className building blocks used across games.
@@ -41,7 +68,7 @@ export const endScreenIconFrameClass = `${baseCenteredIconClass} w-[min(18rem,72
 export type DrawCoinFunction = (
   ctx: CanvasRenderingContext2D,
   size: number,
-  colorIndex: number
+  colorIndex: number,
 ) => void;
 
 // ============================================
@@ -247,7 +274,9 @@ export interface LifelineConfig {
 export type LifelineConfigInput = Partial<LifelineConfig>;
 
 /** Partial lifelines map for authoring */
-export type LifelinesConfigInput = Partial<Record<LifelineKind, LifelineConfigInput>>;
+export type LifelinesConfigInput = Partial<
+  Record<LifelineKind, LifelineConfigInput>
+>;
 
 /** Configuration for a single non-lifeline action button (e.g. retreat) */
 export interface ActionConfig {
@@ -430,7 +459,9 @@ export type LifelineNameMap = Pick<
   Record<LifelineKind, string>,
   'fifty' | 'phone' | 'audience'
 > &
-  Partial<Record<Exclude<LifelineKind, 'fifty' | 'phone' | 'audience'>, string>>;
+  Partial<
+    Record<Exclude<LifelineKind, 'fifty' | 'phone' | 'audience'>, string>
+  >;
 
 export interface CampaignStringsEntry {
   name: string;
@@ -688,18 +719,17 @@ export interface GameConfig {
 }
 
 /** Authoring-friendly game config (allows engine defaults to fill gaps). */
-export interface GameConfigInput
-  extends Omit<
-    GameConfig,
-    | 'title'
-    | 'subtitle'
-    | 'companions'
-    | 'strings'
-    | 'lifelines'
-    | 'actions'
-    | 'prizes'
-    | 'audio'
-  > {
+export interface GameConfigInput extends Omit<
+  GameConfig,
+  | 'title'
+  | 'subtitle'
+  | 'companions'
+  | 'strings'
+  | 'lifelines'
+  | 'actions'
+  | 'prizes'
+  | 'audio'
+> {
   /** Main title (defaults to strings.headerTitle) */
   title?: string;
   /** Subtitle (defaults to strings.headerSubtitle) */
@@ -719,7 +749,6 @@ export interface GameConfigInput
   /** Audio configuration (merged with engine defaults) */
   audio?: Partial<AudioConfig> & { sounds?: SoundEffects };
 }
-
 
 // ============================================
 // Effects API Types

@@ -1,8 +1,11 @@
-/**
- * NNR Game
- *
- * "Neural Networks in Radar Problems" course module.
- */
+import type { GameModule } from '@engine/types';
+import { manifest } from './manifest';
 
-export { nnrConfig, nnrConfig as default } from './config';
+export const gameModule = {
+  id: manifest.id,
+  info: manifest,
+  loadConfig: async () => (await import('./config')).default,
+} satisfies GameModule;
+
+export default gameModule;
 export { strings } from './strings';

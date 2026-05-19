@@ -8,11 +8,15 @@
  */
 
 import { logger } from '@engine/services/logger';
-import { checkFileExists, getAssetPaths } from '@app/utils/paths';
-import type { AssetType } from '@app/utils/paths';
+import { checkFileExists, getAssetPaths } from '@engine/utils/paths';
+import type { AssetType } from '@engine/utils/paths';
 
-export { getBasePath, getAssetPaths, checkFileExists } from '@app/utils/paths';
-export type { AssetType } from '@app/utils/paths';
+export {
+  getBasePath,
+  getAssetPaths,
+  checkFileExists,
+} from '@engine/utils/paths';
+export type { AssetType } from '@engine/utils/paths';
 
 /** Result of asset resolution */
 export interface AssetResolution {
@@ -27,7 +31,7 @@ export interface AssetResolution {
 export const resolveAssetPath = async (
   type: AssetType,
   filename: string,
-  gameId: string
+  gameId: string,
 ): Promise<AssetResolution> => {
   const paths = getAssetPaths(type, filename, gameId);
 
@@ -51,9 +55,13 @@ export const preloadAudioFile = (url: string): Promise<HTMLAudioElement> => {
     audio.addEventListener('canplaythrough', () => resolve(audio), {
       once: true,
     });
-    audio.addEventListener('error', () => reject(new Error(`Failed to load: ${url}`)), {
-      once: true,
-    });
+    audio.addEventListener(
+      'error',
+      () => reject(new Error(`Failed to load: ${url}`)),
+      {
+        once: true,
+      },
+    );
 
     audio.src = url;
     audio.load();
@@ -67,7 +75,7 @@ export const preloadAssets = async (
   type: AssetType,
   filenames: string[],
   gameId: string,
-  cache: Map<string, HTMLAudioElement>
+  cache: Map<string, HTMLAudioElement>,
 ): Promise<void> => {
   const loadPromises = filenames.map(async (filename) => {
     const resolution = await resolveAssetPath(type, filename, gameId);
@@ -77,7 +85,9 @@ export const preloadAssets = async (
         const audio = await preloadAudioFile(resolution.path);
         cache.set(filename, audio);
       } catch (err) {
-        logger.assetLoader.warn(`Failed to preload ${type}/${filename}`, { error: err });
+        logger.assetLoader.warn(`Failed to preload ${type}/${filename}`, {
+          error: err,
+        });
       }
     }
   });

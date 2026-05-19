@@ -1,15 +1,11 @@
-/**
- * PoC Game - Proof of Concept
- *
- * Minimal game for testing the engine.
- */
+import type { GameModule } from '@engine/types';
+import { manifest } from './manifest';
 
-export { pocConfig, pocConfig as default } from './config';
-export {
-  VictoryIcon as VictoryIcon,
-  DefeatIcon,
-  EasyCampaignIcon,
-  HardCampaignIcon,
-  RetreatIcon,
-} from './icons';
+export const gameModule = {
+  id: manifest.id,
+  info: manifest,
+  loadConfig: async () => (await import('./config')).default,
+} satisfies GameModule;
+
+export default gameModule;
 export { strings } from './strings';

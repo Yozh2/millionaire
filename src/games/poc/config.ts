@@ -5,7 +5,7 @@
  * Uses oscillator sounds only, no external assets.
  */
 
-import { createCampaignsForGame, defineGameConfig } from '@engine/utils';
+import { createCampaignsFromGlobs, defineGameConfig } from '@engine/utils';
 import {
   DefeatIcon,
   EasyCampaignIcon,
@@ -15,12 +15,21 @@ import {
 } from './icons';
 import { strings } from './strings';
 
+const themeModules = import.meta.glob('./campaigns/*/theme.ts', {
+  eager: true,
+});
+const questionModules = import.meta.glob('./campaigns/*/questions.ts', {
+  eager: true,
+});
+
 export const pocConfig = defineGameConfig({
   id: 'poc',
 
-  campaigns: createCampaignsForGame({
+  campaigns: createCampaignsFromGlobs({
     gameId: 'poc',
     campaignStrings: strings.campaigns,
+    themeModules,
+    questionModules,
     iconsById: {
       easy: EasyCampaignIcon,
       hard: HardCampaignIcon,

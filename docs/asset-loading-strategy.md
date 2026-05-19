@@ -39,35 +39,43 @@
 `AssetLoader.getAssetsForLevel`.
 
 ### Level 0 (GameSelector)
+
 Предназначен для экрана выбора игры. Сейчас определен в коде, но
 активно не запускается приложением.
 
 Загружаемые ассеты:
+
 - Карточки игр: `gameCard`, если есть, иначе `favicon`.
 
 ### Level 1 (Игра выбрана -> StartScreen)
+
 Запускается через `useAssetPreloader('level1', gameId)` в `MillionaireGame`.
 
 Загружаемые ассеты:
+
 - Иконки игры.
 - Звуки игры.
 - Музыка главного меню (если есть).
 - Стартовые изображения (общие + стартовые изображения кампаний).
 
 ### Level 1.1 (Кампания выбрана)
+
 Запускается при выборе кампании:
 `assetLoader.loadLevel('level1_1', gameId, campaignId)` с прогрессом.
 
 Загружаемые ассеты:
+
 - Музыка кампании (если есть).
 - Изображения режима easy (кампания).
 - Голосовые реплики игры.
 
 ### Level 2 (Геймплей)
+
 Запускается при старте игры:
 `assetLoader.preloadInBackground('level2', gameId, campaignId)`.
 
 Загружаемые ассеты:
+
 - Музыка конца игры (victory/defeat/retreat) на уровне игры.
 - Изображения конца игры (fallback на уровне игры).
 - Изображения режима medium/hard (кампания).
@@ -113,5 +121,56 @@
 - Фавиконки управляются хуками `useFavicon` / `useImmediateFavicon`, которые
   обновляют `<link rel="icon">` и связанные meta-теги во время выполнения.
   Для игры используется файл из `public/games/{gameId}/favicon` (если есть);
-  иначе favicon генерируется из эмодзи игры из `registry`.
+  иначе favicon генерируется из эмодзи игры из `manifest.ts`.
   Стандартный favicon движка — эмодзи (data URI), без файлового svg-фоллбека.
+
+## 7) Измерение waterfall загрузки
+
+Для воспроизводимой проверки медленной загрузки используется:
+
+```bash
+npm run trace:loading -- --game transformers --profile slow-3g
+```
+
+Скрипт `scripts/trace-loading.mjs`:
+
+- собирает production build и запускает `vite preview`;
+- открывает игру через Playwright/Chromium;
+- включает throttling через Chrome DevTools Protocol;
+- отключает browser cache;
+- проходит сценарий до gameplay;
+- пишет артефакты в `.agent/runtime/loading-traces/<timestamp>-<game>-<profile>/`.
+
+Основные артефакты:
+
+- `summary.md` — компактный отчёт: buckets, slowest/largest requests,
+  loading trace events и ошибки;
+- `trace.json` — машинно-читаемые network entries + события приложения;
+- `network.har` — HAR без тела ответов;
+- `final.png` — финальный скриншот сценария.
+
+Смысловые события приложения приходят из dev-readable trace sink:
+
+- `loading-phase:*` — фазы `boot`, `app`, `engine`, `assets`;
+- `game-config:*` и `engine-chunk:*` — загрузка config и engine chunk;
+- `asset-manifest:*`;
+- `asset-level:*` для `level1`, `level1_1`, `level2`;
+- `asset:*` для отдельных ассетов;
+- `header-manifest:*` и `header-images:*`;
+- `file-exists:*` для динамических проверок файлов.
+
+Первый production trace для `transformers` на `slow-3g` показал, что текущая
+стратегия блокирует UX крупными музыкальными файлами:
+
+- `level1` завершается примерно на 105 секундах, основной блокер —
+  `games/transformers/music/menu.m4a` около 3.2 MB;
+- `level1_1` для кампании `megatron` завершается примерно на 184 секунде,
+  основной блокер — `games/transformers/music/Megatron.m4a` около 3.2 MB;
+- стартовые изображения и campaign icons заметны, но вторичны по сравнению с
+  полной загрузкой музыки до показа UI.
+
+Практический вывод для следующей оптимизации: музыка не должна блокировать
+показ StartScreen или переход в gameplay. Её нужно переводить в streaming /
+background preload или в отдельный non-blocking level, оставляя blocking
+preload только для минимальных изображений и SFX, без которых первый экран
+или первый клик заметно деградируют.

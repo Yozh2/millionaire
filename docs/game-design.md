@@ -144,7 +144,7 @@ application shell со списком игр и набор готовых conten
 
 ### Game selector
 
-Показывает доступные игры и metadata из registry. Карточка игры должна
+Показывает доступные игры и метаданные из `manifest.ts`. Карточка игры должна
 оставаться лёгкой: selector не должен тянуть тяжёлый `GameConfig` всех игр
 ради первого экрана.
 
@@ -234,7 +234,7 @@ Preload levels:
 
 ```text
 src/games/<gameId>/
-  registry.ts
+  manifest.ts
   index.ts
   config.ts
   strings.ts

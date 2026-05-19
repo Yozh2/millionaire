@@ -9,7 +9,7 @@ import {
   setSoundEnabled as setEngineSoundEnabled,
 } from '@engine/utils/audioPlayer';
 import { getAssetPaths, checkFileExists } from '@engine/utils/assetLoader';
-import { withBasePath } from '@app/utils/paths';
+import { withBasePath } from '@engine/utils/paths';
 import { getPreloadedAudioSrc } from '@engine/utils/audioPlayer';
 
 export interface UseMusicPlayerReturn {
@@ -46,7 +46,7 @@ const resolvePublicPath = (path: string): string => {
 
 const findManifestCampaign = (
   game: GameAssets,
-  campaignId: string
+  campaignId: string,
 ): CampaignAssets | null => {
   if (game.campaigns[campaignId]) {
     return game.campaigns[campaignId];
@@ -62,7 +62,7 @@ const findManifestCampaign = (
 
 const resolveManifestCampaignTrack = async (
   gameId: string,
-  campaignId: string
+  campaignId: string,
 ): Promise<string | null> => {
   const assets = await assetLoader.getGameAssets(gameId);
   if (!assets) return null;
@@ -72,18 +72,23 @@ const resolveManifestCampaignTrack = async (
 
 const buildTrackCandidates = (
   trackFiles: (string | undefined)[],
-  baseNames: string[]
+  baseNames: string[],
 ): string[] => {
   const candidates = [
     ...trackFiles.filter((track): track is string => !!track),
-    ...baseNames.flatMap((name) => MUSIC_EXTENSIONS.map((ext) => `${name}${ext}`)),
+    ...baseNames.flatMap((name) =>
+      MUSIC_EXTENSIONS.map((ext) => `${name}${ext}`),
+    ),
   ];
   return Array.from(new Set(candidates));
 };
 
 export function useMusicPlayer(
   config: GameConfig,
-  { audioElementId = 'bg-music', onDisableAllSounds }: UseMusicPlayerOptions = {}
+  {
+    audioElementId = 'bg-music',
+    onDisableAllSounds,
+  }: UseMusicPlayerOptions = {},
 ): UseMusicPlayerReturn {
   const [isMusicPlaying, setIsMusicPlaying] = useState(false);
   const [currentTrack, setCurrentTrack] = useState('');
@@ -96,11 +101,14 @@ export function useMusicPlayer(
     return document.getElementById(audioElementId) as HTMLAudioElement | null;
   }, [audioElementId]);
 
-  const setAudioSource = useCallback((audio: HTMLAudioElement, logicalPath: string) => {
-    const cachedSrc = getPreloadedAudioSrc(logicalPath);
-    audio.src = cachedSrc ?? logicalPath;
-    audio.dataset.logicalSrc = logicalPath;
-  }, []);
+  const setAudioSource = useCallback(
+    (audio: HTMLAudioElement, logicalPath: string) => {
+      const cachedSrc = getPreloadedAudioSrc(logicalPath);
+      audio.src = cachedSrc ?? logicalPath;
+      audio.dataset.logicalSrc = logicalPath;
+    },
+    [],
+  );
 
   const primeAudio = useCallback((audio: HTMLAudioElement) => {
     try {
@@ -114,7 +122,7 @@ export function useMusicPlayer(
     const loadInitialTrack = async () => {
       const candidates = buildTrackCandidates(
         [config.audio.menuTrack],
-        ['menu', 'MainMenu']
+        ['menu', 'MainMenu'],
       );
 
       for (const candidate of candidates) {
@@ -171,7 +179,7 @@ export function useMusicPlayer(
 
       return null;
     },
-    [config.id]
+    [config.id],
   );
 
   const switchMusicTrack = useCallback(
@@ -227,7 +235,13 @@ export function useMusicPlayer(
         audio.addEventListener('canplay', tryPlay, { once: true });
       }
     },
-    [config.audio.musicVolume, getAudioElement, loadTrack, primeAudio, setAudioSource]
+    [
+      config.audio.musicVolume,
+      getAudioElement,
+      loadTrack,
+      primeAudio,
+      setAudioSource,
+    ],
   );
 
   const disableAllSounds = useCallback(() => {
@@ -279,7 +293,8 @@ export function useMusicPlayer(
   ]);
 
   useEffect(() => {
-    if (typeof document === 'undefined' || typeof window === 'undefined') return;
+    if (typeof document === 'undefined' || typeof window === 'undefined')
+      return;
 
     const pauseForBackground = () => {
       const audio = getAudioElement();
@@ -335,7 +350,10 @@ export function useMusicPlayer(
   }, [getAudioElement]);
 
   const tryPlayTrackWithFallback = useCallback(
-    async (trackFiles: (string | undefined)[], autoPlay: boolean = false): Promise<boolean> => {
+    async (
+      trackFiles: (string | undefined)[],
+      autoPlay: boolean = false,
+    ): Promise<boolean> => {
       for (const trackFile of trackFiles) {
         if (!trackFile) continue;
         const trackPath = await loadTrack(trackFile);
@@ -346,21 +364,22 @@ export function useMusicPlayer(
       }
       return false;
     },
-    [loadTrack, switchMusicTrack]
+    [loadTrack, switchMusicTrack],
   );
 
   const playMainMenu = useCallback(() => {
-    const shouldAutoPlay = musicEverEnabled.current && !userDisabledMusic.current;
+    const shouldAutoPlay =
+      musicEverEnabled.current && !userDisabledMusic.current;
     void tryPlayTrackWithFallback(
       buildTrackCandidates([config.audio.menuTrack], ['menu', 'MainMenu']),
-      shouldAutoPlay
+      shouldAutoPlay,
     );
   }, [config.audio.menuTrack, tryPlayTrackWithFallback]);
 
   const playGameOver = useCallback(() => {
     void tryPlayTrackWithFallback(
       buildTrackCandidates([config.audio.defeatTrack], ['defeat', 'Defeat']),
-      true
+      true,
     );
   }, [config.audio.defeatTrack, tryPlayTrackWithFallback]);
 
@@ -368,11 +387,15 @@ export function useMusicPlayer(
     void tryPlayTrackWithFallback(
       buildTrackCandidates(
         [config.audio.victoryTrack, config.audio.defeatTrack],
-        ['victory', 'defeat', 'Victory', 'Defeat']
+        ['victory', 'defeat', 'Victory', 'Defeat'],
       ),
-      true
+      true,
     );
-  }, [config.audio.defeatTrack, config.audio.victoryTrack, tryPlayTrackWithFallback]);
+  }, [
+    config.audio.defeatTrack,
+    config.audio.victoryTrack,
+    tryPlayTrackWithFallback,
+  ]);
 
   const playRetreat = useCallback(() => {
     void tryPlayTrackWithFallback(
@@ -382,9 +405,9 @@ export function useMusicPlayer(
           config.audio.victoryTrack,
           config.audio.defeatTrack,
         ],
-        ['retreat', 'victory', 'defeat', 'Retreat', 'Victory', 'Defeat']
+        ['retreat', 'victory', 'defeat', 'Retreat', 'Victory', 'Defeat'],
       ),
-      true
+      true,
     );
   }, [
     config.audio.defeatTrack,
@@ -405,7 +428,7 @@ export function useMusicPlayer(
       }
       playGameOver();
     },
-    [playGameOver, playRetreat, playVictory]
+    [playGameOver, playRetreat, playVictory],
   );
 
   const playCampaignMusic = useCallback(
@@ -413,21 +436,25 @@ export function useMusicPlayer(
       const playCampaignTrack = async () => {
         const manifestTrack = await resolveManifestCampaignTrack(
           config.id,
-          campaign.id
+          campaign.id,
         );
 
         await tryPlayTrackWithFallback(
           buildTrackCandidates(
-            [manifestTrack ?? undefined, campaign.musicTrack, config.audio.menuTrack],
-            ['menu', 'MainMenu']
+            [
+              manifestTrack ?? undefined,
+              campaign.musicTrack,
+              config.audio.menuTrack,
+            ],
+            ['menu', 'MainMenu'],
           ),
-          true
+          true,
         );
       };
 
       void playCampaignTrack();
     },
-    [config.audio.menuTrack, config.id, tryPlayTrackWithFallback]
+    [config.audio.menuTrack, config.id, tryPlayTrackWithFallback],
   );
 
   const stopMusic = useCallback(() => {

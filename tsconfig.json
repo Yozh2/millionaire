@@ -4,12 +4,10 @@
     "paths": {
       "@engine": ["src/engine"],
       "@engine/*": ["src/engine/*"],
-      "@games": ["src/games"],
-      "@games/*": ["src/games/*"],
-      "@app": ["src/app"],
-      "@app/*": ["src/app/*"],
-      "@pages": ["src/pages"],
-      "@pages/*": ["src/pages/*"],
+      "@hub": ["src/hub"],
+      "@hub/*": ["src/hub/*"],
+      "@hub/pages": ["src/hub/pages"],
+      "@hub/pages/*": ["src/hub/pages/*"],
       "@public": ["public"],
       "@public/*": ["public/*"]
     },
@@ -28,7 +26,13 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true,
-    "types": ["vitest/globals", "vite/client", "react", "react-dom", "@testing-library/jest-dom"]
+    "types": [
+      "vitest/globals",
+      "vite/client",
+      "react",
+      "react-dom",
+      "@testing-library/jest-dom"
+    ]
   },
   "include": ["src", "*.tsx"],
   "references": [{ "path": "./tsconfig.node.json" }]

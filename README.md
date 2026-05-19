@@ -6,8 +6,9 @@ A reusable “Who Wants to Be a Millionaire?”‑style quiz engine built with R
 
 ## Games (current)
 
-Games are registered through `src/games/*/registry.ts` and the generated
-catalog consumed by `src/app/screens/registry/gameRegistry.ts`.
+Games expose lightweight manifests through `src/games/*/manifest.ts`.
+The hub catalog consumes those manifests and lazy-loads the selected
+`config.ts` only when a player opens a game.
 
 | Game ID        | Title                      | Language | Notes                                                 |
 | -------------- | -------------------------- | -------- | ----------------------------------------------------- |
@@ -20,8 +21,8 @@ catalog consumed by `src/app/screens/registry/gameRegistry.ts`.
 
 ## Repository layout
 
-- `src/app/**` — app shell (selector UI, registry).
-- `src/pages/**` — app pages (routing targets).
+- `src/hub/**` — hub shell (selector UI, catalog).
+- `src/hub/pages/**` — app pages (routing targets).
 - `src/engine/**` — the engine.
 - `src/games/**` — game content / mods.
 - `scripts/**` — build helpers + sandboxes (not part of runtime).
@@ -67,7 +68,16 @@ npm test
 npm run typecheck
 npm run lint
 npm run build
+npm run build:game -- --game nnr --out dist/games/nnr
+npm run build:bundle -- --games nnr,poc --out dist/bundles/nnr-poc
+npm run docker:game -- --game nnr --out dist/games/nnr
+npm run docker:bundle -- --games nnr,poc --out dist/bundles/nnr-poc
+npm run trace:loading -- --game transformers --profile slow-3g
 ```
+
+`build:game` creates a standalone offline game dist with only one game and its
+assets. `build:bundle` creates an offline hub bundle with only selected games.
+Docker commands wrap those dist folders into local nginx images.
 
 ## Git hooks and quality gate
 
@@ -98,9 +108,9 @@ npm run quality:push
    - `src/games/<gameId>/campaigns/<campaignId>/questions.ts`
    - `src/games/<gameId>/campaigns/<campaignId>/theme.ts`
 3. Add `src/games/<gameId>/config.ts` exporting `<gameId>Config: GameConfig`.
-4. Add `src/games/<gameId>/registry.ts` with lightweight card metadata.
-5. Export the game from `src/games/<gameId>/index.ts`.
-6. Regenerate registry/manifests with `npm run generate:manifests`.
+4. Add `src/games/<gameId>/manifest.ts` with lightweight card metadata.
+5. Export `gameModule` from `src/games/<gameId>/index.ts`.
+6. Regenerate manifests with `npm run generate:manifests`.
 7. Optional: add `public/` assets (sounds/images) and regenerate manifests again.
 
 ## Assets and manifests

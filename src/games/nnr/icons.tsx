@@ -4,10 +4,11 @@ import {
   getCampaignIconSizeClass,
   type CampaignIconProps,
 } from '@engine/types';
-import { gameIconsFile } from '@app/utils/paths';
+import { gameIconsFile } from '@engine/utils/paths';
 import { strings } from './strings';
 
-const buildCampaignIcon = (filename: string, label: string) =>
+const buildCampaignIcon =
+  (filename: string, label: string) =>
   ({ className, size }: CampaignIconProps) => (
     <img
       src={gameIconsFile('nnr', `campaigns/${filename}`)}
@@ -20,17 +21,17 @@ const buildCampaignIcon = (filename: string, label: string) =>
 
 export const PerceptronCampaignIcon = buildCampaignIcon(
   'perceptron.svg',
-  strings.campaigns.perceptron.iconAlt ?? strings.campaigns.perceptron.name
+  strings.campaigns.perceptron.iconAlt ?? strings.campaigns.perceptron.name,
 );
 
 export const NeuralCampaignIcon = buildCampaignIcon(
   'nn.svg',
-  strings.campaigns.nn.iconAlt ?? strings.campaigns.nn.name
+  strings.campaigns.nn.iconAlt ?? strings.campaigns.nn.name,
 );
 
 export const ResearchCampaignIcon = buildCampaignIcon(
   'research.svg',
-  strings.campaigns.research.iconAlt ?? strings.campaigns.research.name
+  strings.campaigns.research.iconAlt ?? strings.campaigns.research.name,
 );
 
 export const NnrCoinIcon = () => (
@@ -51,7 +52,14 @@ export const VictoryCakeIcon = () => (
       style={{ filter: 'drop-shadow(0 10px 22px rgba(0, 0, 0, 0.55))' }}
     >
       <ellipse cx="100" cy="162" rx="70" ry="16" fill="#0f172a" opacity="0.7" />
-      <ellipse cx="100" cy="158" rx="62" ry="12" fill="#cbd5f5" opacity="0.35" />
+      <ellipse
+        cx="100"
+        cy="158"
+        rx="62"
+        ry="12"
+        fill="#cbd5f5"
+        opacity="0.35"
+      />
       <rect x="46" y="90" width="108" height="60" rx="12" fill="#5b2c1a" />
       <rect x="54" y="70" width="92" height="28" rx="12" fill="#6b3420" />
       <path
@@ -145,14 +153,8 @@ export const DefeatIncineratorIcon = () => (
         stroke="#f97316"
         strokeWidth="3"
       />
-      <path
-        d="M100 82c14 14 16 32 0 48c-18-12-14-34 0-48z"
-        fill="#f97316"
-      />
-      <path
-        d="M100 92c8 8 8 18 0 28c-10-8-8-20 0-28z"
-        fill="#fde047"
-      />
+      <path d="M100 82c14 14 16 32 0 48c-18-12-14-34 0-48z" fill="#f97316" />
+      <path d="M100 92c8 8 8 18 0 28c-10-8-8-20 0-28z" fill="#fde047" />
       <path
         d="M56 150l88-12"
         stroke="#ef4444"

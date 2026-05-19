@@ -26,7 +26,8 @@ import {
   preDecodeAudio,
   registerPreloadedAudioBuffer,
 } from '@engine/utils/audioPlayer';
-import { getBasePath, loadAssetManifest } from '@app/utils/paths';
+import { getBasePath, loadAssetManifest } from '@engine/utils/paths';
+import { traceLoading } from '@engine/utils/loadingTrace';
 
 const EMPTY_MANIFEST: AssetManifest = {
   version: '0.0.0',
@@ -42,6 +43,13 @@ const isMetaAsset = (url: string): boolean => {
     lower.endsWith('site.webmanifest') ||
     lower.includes('/meta/')
   );
+};
+
+const cacheKindForAudio = (url: string): string => {
+  if (url.includes('/sounds/')) return 'sound';
+  if (url.includes('/music/')) return 'music';
+  if (url.includes('/voices/')) return 'voice';
+  return 'audio';
 };
 
 /** Cached assets by URL */
@@ -108,11 +116,13 @@ class AssetLoader {
     }
 
     const manifestUrl = `${getBasePath()}asset-manifest.json`;
+    traceLoading('asset-manifest:start', { url: manifestUrl });
 
     this.manifestPromise = loadAssetManifest().then((data): AssetManifest => {
       const manifest = data as AssetManifest | null;
       if (!manifest) {
         this.manifest = EMPTY_MANIFEST;
+        traceLoading('asset-manifest:missing', { url: manifestUrl });
         logger.assetLoader.warn(
           'Asset manifest not found; continuing without preloading',
           {
@@ -123,6 +133,10 @@ class AssetLoader {
       }
 
       this.manifest = manifest;
+      traceLoading('asset-manifest:end', {
+        url: manifestUrl,
+        games: Object.keys(manifest.games).length,
+      });
       logger.assetLoader.info(
         `Manifest loaded: ${Object.keys(manifest.games).length} games`,
       );
@@ -317,20 +331,44 @@ class AssetLoader {
 
     // Skip if already loaded
     if (this.loadedLevels.has(levelKey)) {
+      traceLoading('asset-level:skip', {
+        level,
+        gameId: gameId ?? null,
+        campaignId: campaignId ?? null,
+        reason: 'already-loaded',
+      });
       options.onProgress?.(1, 1);
       return;
     }
 
     const assets = await this.getAssetsForLevel(level, gameId, campaignId);
+    traceLoading('asset-level:start', {
+      level,
+      gameId: gameId ?? null,
+      campaignId: campaignId ?? null,
+      total: assets.length,
+    });
 
     if (assets.length === 0) {
       this.loadedLevels.add(levelKey);
+      traceLoading('asset-level:end', {
+        level,
+        gameId: gameId ?? null,
+        campaignId: campaignId ?? null,
+        total: 0,
+      });
       options.onProgress?.(1, 1);
       return;
     }
 
     await this.loadAssets(assets, options);
     this.loadedLevels.add(levelKey);
+    traceLoading('asset-level:end', {
+      level,
+      gameId: gameId ?? null,
+      campaignId: campaignId ?? null,
+      total: assets.length,
+    });
   }
 
   /**
@@ -445,12 +483,14 @@ class AssetLoader {
   async loadAsset(url: string): Promise<void> {
     // Already loaded
     if (this.state.loaded.has(url)) {
+      traceLoading('asset:skip', { url, reason: 'already-loaded' });
       return;
     }
 
     // Currently loading - wait for it
     const pending = this.state.pending.get(url);
     if (pending) {
+      traceLoading('asset:join-pending', { url });
       return pending;
     }
 
@@ -462,11 +502,17 @@ class AssetLoader {
     let loadPromise: Promise<void>;
 
     if (isImage) {
+      traceLoading('asset:start', { url, kind: 'image' });
       loadPromise = this.loadImage(fullUrl, url);
     } else if (isAudio) {
+      traceLoading('asset:start', {
+        url,
+        kind: cacheKindForAudio(url),
+      });
       loadPromise = this.loadAudio(fullUrl, url);
     } else {
       // Unknown type - just fetch it
+      traceLoading('asset:start', { url, kind: 'fetch' });
       loadPromise = fetch(fullUrl).then(() => {
         this.state.loaded.add(url);
       });
@@ -476,6 +522,13 @@ class AssetLoader {
 
     try {
       await loadPromise;
+      traceLoading('asset:end', { url });
+    } catch (error) {
+      traceLoading('asset:error', {
+        url,
+        error: error instanceof Error ? error.message : String(error),
+      });
+      throw error;
     } finally {
       this.state.pending.delete(url);
     }

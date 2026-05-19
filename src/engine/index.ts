@@ -7,9 +7,9 @@
  * @example
  * ```tsx
  * import { MillionaireGame } from './';
- * import { myGameConfig } from '@games/myGame';
+ * import { myGameConfig } from './myGame/config';
  *
- * function App() {
+ * function HubApp() {
  *   return <MillionaireGame config={myGameConfig} />;
  * }
  * ```
@@ -58,7 +58,11 @@ export { MillionaireGame } from './ui/MillionaireGame';
 // =========================
 // UI primitives / effects
 // =========================
-export { ParticleCanvas, type EffectType, drawDefaultCoin } from './ui/effects/ParticleCanvas';
+export {
+  ParticleCanvas,
+  type EffectType,
+  drawDefaultCoin,
+} from './ui/effects/ParticleCanvas';
 
 // Error boundary (app-level safety)
 export { ErrorBoundary } from './ui/components/errors/ErrorBoundary';

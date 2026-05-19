@@ -18,6 +18,7 @@ Thumbs.db
 
 # Tooling caches
 .mypy_cache/
+.build/
 
 # Environment
 .env

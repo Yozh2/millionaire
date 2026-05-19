@@ -4,14 +4,24 @@
  * - remove .DS_Store files
  * - disable Git LFS filters in gh-pages output
  */
-import { existsSync, readdirSync, statSync, unlinkSync, writeFileSync } from 'fs';
+import {
+  existsSync,
+  readdirSync,
+  statSync,
+  unlinkSync,
+  writeFileSync,
+} from 'fs';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const DIST_DIR = join(__dirname, '..', 'dist');
+const distArgIndex = process.argv.indexOf('--dist');
+const distArg = distArgIndex === -1 ? null : process.argv[distArgIndex + 1];
+const DIST_DIR = distArg
+  ? join(process.cwd(), distArg)
+  : join(__dirname, '..', 'dist');
 
 if (!existsSync(DIST_DIR)) {
   console.error('[prepare-dist] dist/ not found. Run build first.');

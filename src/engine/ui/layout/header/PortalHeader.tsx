@@ -23,7 +23,7 @@ import { useHeaderImages } from './useHeaderImages';
 import { usePortalTunerUi } from './portal/usePortalTunerUi';
 import { PortalHeaderCanvasLayer } from './portal/PortalHeaderCanvasLayer';
 import { useViewportAnchorTop } from './portal/useViewportAnchorTop';
-import { getBasePath, stripLeadingSlash } from '@app/utils/paths';
+import { getBasePath, stripLeadingSlash } from '@engine/utils/paths';
 
 type Motion = 'open' | 'close';
 

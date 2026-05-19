@@ -4,7 +4,8 @@ import type {
   QuestionDifficulty,
   SlideshowScreen,
 } from '@engine/types';
-import { gameImagesDir } from '@app/utils/paths';
+import { gameImagesDir } from '@engine/utils/paths';
+import { traceLoading } from '@engine/utils/loadingTrace';
 
 /** Manifest structure matching generate-image-manifest.js output */
 interface ImageManifest {
@@ -33,16 +34,23 @@ async function loadManifest(basePath: string): Promise<ImageManifest | null> {
   if (cacheKey in manifestCache) return manifestCache[cacheKey];
 
   try {
+    traceLoading('header-manifest:start', { basePath });
     const response = await fetch(`${basePath}/manifest.json`);
     if (!response.ok) {
       manifestCache[cacheKey] = null;
+      traceLoading('header-manifest:missing', {
+        basePath,
+        status: response.status,
+      });
       return null;
     }
     const data = (await response.json()) as ImageManifest;
     manifestCache[cacheKey] = data;
+    traceLoading('header-manifest:end', { basePath });
     return data;
   } catch {
     manifestCache[cacheKey] = null;
+    traceLoading('header-manifest:error', { basePath });
     return null;
   }
 }
@@ -64,7 +72,7 @@ function getImagesAtPath(node: unknown, parts: string[]): string[] {
 
 function findFirstMatch(
   nodes: Array<{ node: unknown; basePath: string }>,
-  partsList: string[][]
+  partsList: string[][],
 ): { images: string[]; basePath: string; subfolder: string } | null {
   for (const { node, basePath } of nodes) {
     for (const parts of partsList) {
@@ -79,7 +87,7 @@ function findFirstMatch(
 
 function partsForScreen(
   screen: SlideshowScreen,
-  difficulty?: QuestionDifficulty
+  difficulty?: QuestionDifficulty,
 ): string[][] {
   if (screen === 'start') return [['start'], []];
   if (screen === 'play') {
@@ -115,7 +123,7 @@ export function useHeaderImages(
     campaignId?: string;
     screen: SlideshowScreen;
     difficulty?: QuestionDifficulty;
-  }
+  },
 ): UseHeaderImagesResult {
   const requestKey = `${gameId}::${campaignId ?? ''}::${screen}::${difficulty ?? ''}`;
 
@@ -167,11 +175,21 @@ export function useHeaderImages(
         nodes.push({ node: campaigns, basePath: `${gameBasePath}/campaigns` });
       }
 
-      if (gameManifest) nodes.push({ node: gameManifest, basePath: gameBasePath });
+      if (gameManifest)
+        nodes.push({ node: gameManifest, basePath: gameBasePath });
 
       const match = findFirstMatch(nodes, partsForScreen(screen, difficulty));
       if (match) {
         if (!cancelled) {
+          traceLoading('header-images:resolved', {
+            gameId,
+            campaignId: campaignId ?? null,
+            screen,
+            difficulty: difficulty ?? null,
+            count: match.images.length,
+            basePath: match.basePath,
+            subfolder: match.subfolder,
+          });
           setImages(match.images);
           setBasePath(match.basePath);
           setSubfolder(match.subfolder);
@@ -185,6 +203,14 @@ export function useHeaderImages(
         const startFallback = findFirstMatch(nodes, partsForScreen('start'));
         if (startFallback) {
           if (!cancelled) {
+            traceLoading('header-images:fallback', {
+              gameId,
+              campaignId: campaignId ?? null,
+              screen,
+              count: startFallback.images.length,
+              basePath: startFallback.basePath,
+              subfolder: startFallback.subfolder,
+            });
             setImages(startFallback.images);
             setBasePath(startFallback.basePath);
             setSubfolder(startFallback.subfolder);
@@ -196,6 +222,12 @@ export function useHeaderImages(
       }
 
       if (!cancelled) {
+        traceLoading('header-images:empty', {
+          gameId,
+          campaignId: campaignId ?? null,
+          screen,
+          difficulty: difficulty ?? null,
+        });
         setImages([]);
         setBasePath('');
         setSubfolder('');
@@ -215,6 +247,7 @@ export function useHeaderImages(
     difficulty,
     enabled,
     gameBasePath,
+    gameId,
     requestKey,
     screen,
   ]);

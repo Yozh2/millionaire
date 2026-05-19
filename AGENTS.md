@@ -53,8 +53,8 @@
 
 - `src/engine` — переиспользуемый quiz engine. Он не должен зависеть от
   конкретных игр, маршрутов приложения или DOM вне своего UI-слоя.
-- `src/app` — shell приложения и каталог игр.
-- `src/pages` — route-level страницы.
+- `src/hub` — shell приложения и каталог игр.
+- `src/hub/pages` — route-level страницы.
 - `src/games` — контент и конфигурации конкретных игр.
 - `public` — runtime-ассеты и сгенерированные манифесты.
 - Следуй терминологии проекта: `lifeline`, `prizeLadder`, `rewardKind`,

@@ -7,18 +7,27 @@
  * - Skybound
  */
 
-import { createCampaignsForGame, defineGameConfig } from '@engine/utils';
+import { createCampaignsFromGlobs, defineGameConfig } from '@engine/utils';
 import { drawEnergonCrystal, EnergonCoinIcon } from './icons';
 import { strings } from './strings';
+
+const themeModules = import.meta.glob('./campaigns/*/theme.ts', {
+  eager: true,
+});
+const questionModules = import.meta.glob('./campaigns/*/questions.ts', {
+  eager: true,
+});
 
 export const transformersConfig = defineGameConfig({
   id: 'transformers',
 
   fontFamily: '"Neuropol X Rg", "Roboto", "Helvetica Neue", sans-serif',
 
-  campaigns: createCampaignsForGame({
+  campaigns: createCampaignsFromGlobs({
     gameId: 'transformers',
     campaignStrings: strings.campaigns,
+    themeModules,
+    questionModules,
   }),
 
   strings,

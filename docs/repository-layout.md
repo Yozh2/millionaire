@@ -11,11 +11,13 @@
 - `AGENTS.md` — обязательные правила для ИИ-агентов.
 - `package.json` — npm scripts, runtime- и dev-зависимости.
 - `vite.config.ts` — Vite, React plugin, aliases, base path `/millionaire/`,
-  Vitest-конфигурация.
+  target-aware hub/game/bundle сборки, Vitest-конфигурация.
 - `tsconfig.json` — TypeScript strict mode и path aliases.
 - `vitest.setup.ts` — setup тестовой среды.
 - `.gitignore` — локальные, generated и cache-файлы.
+- `.dockerignore` — минимальный Docker build context для offline images.
 - `.githooks/` — versioned git hooks для локального quality gate.
+- `docker/` — nginx Dockerfile/config для static offline images.
 - `.agent/` — локальные рабочие контексты агентов. Каталог не коммитится.
 
 ## Документация
@@ -39,30 +41,24 @@
 Вход React-приложения. Подключает приложение к DOM и содержит глобальные
 browser-side ограничения вроде отключения context menu и drag для изображений.
 
-### `src/app/`
+### `src/hub/`
 
 Application shell и экран выбора игр.
 
-- `src/app/App.tsx` и `src/app/AppShell.tsx` — верхний shell приложения.
-- `src/app/components/` — компоненты shell-уровня: game cards, error
+- `src/hub/HubApp.tsx` и `src/hub/HubShell.tsx` — верхний shell приложения.
+- `src/hub/components/` — компоненты shell-уровня: game cards, error
   boundary, card image/FSM hooks.
-- `src/app/hooks/` — app-level хуки, включая favicon.
-- `src/app/screens/loading/` — loading screen и orchestrator фаз загрузки.
-- `src/app/screens/registry/` — текущий каталог игр, registry index,
-  selector screen и тесты.
-- `src/app/styles/` — CSS shell-уровня.
-- `src/app/types/` — типы app/registry-уровня.
-- `src/app/utils/` — path helpers и favicon helpers.
+- `src/hub/hooks/` — app-level хуки, включая favicon.
+- `src/hub/screens/loading/` — loading screen и orchestrator фаз загрузки.
+- `src/hub/catalog/` — каталог игр, selector screen и тесты.
+- `src/hub/styles/` — CSS shell-уровня.
+- `src/hub/utils/` — favicon helpers.
 
-Текущий код ещё использует термин `registry`. Планируемое направление —
-переход к терминам `hub`, `catalog`, `manifest` и `gameModule`; детали
-зафиксированы в `docs/superpowers/plans/`.
-
-### `src/pages/`
+### `src/hub/pages/`
 
 Route-level страницы:
 
-- `RegisteredGamePage.tsx` — загрузка выбранной игры по registry entry,
+- `RegisteredGamePage.tsx` — загрузка выбранной игры по catalog entry,
   orchestration фаз и передача `GameConfig` в engine UI.
 - `LoadingSandboxPage.tsx` — sandbox loading-сценариев.
 - `SandboxPage.tsx` и `EffectsSandboxPage.tsx` — вспомогательные sandbox
@@ -97,7 +93,7 @@ Route-level страницы:
 ```text
 src/games/<gameId>/
   index.ts
-  registry.ts
+  manifest.ts
   config.ts
   strings.ts
   icons.tsx
@@ -107,7 +103,7 @@ src/games/<gameId>/
       theme.ts
 ```
 
-`registry.ts` содержит лёгкие metadata для текущего каталога игр.
+`manifest.ts` содержит лёгкие метаданные для каталога игр.
 `config.ts` собирает полный `GameConfig`.
 `questions.ts` содержит вопросы кампании.
 `theme.ts` задаёт визуальную тему кампании.
@@ -142,9 +138,16 @@ src/games/<gameId>/
 
 ## Скрипты
 
-- `scripts/generate-game-registry.js` — генерирует текущий registry index.
 - `scripts/generate-image-manifest.js` — генерирует image manifests.
 - `scripts/generate-asset-manifest.js` — генерирует общий asset manifest.
+- `scripts/build-game.js` — собирает standalone dist одной игры.
+- `scripts/build-bundle.js` — собирает hub bundle с выбранными играми.
+- `scripts/build-docker-game.js` — собирает Docker image одной игры.
+- `scripts/build-docker-bundle.js` — собирает Docker image bundle.
+- `scripts/assert-game-dist.js` и `scripts/assert-bundle-dist.js` —
+  проверяют, что dist содержит только ожидаемые игры и ассеты.
+- `scripts/verify-offline-containers.js` — browser smoke для запущенных
+  offline-контейнеров.
 - `scripts/convert-images.js` — конвертирует wallpaper-изображения в `.webp`.
 - `scripts/convert_audio_to_m4a.sh` — конвертирует аудио перед build.
 - `scripts/prepare-dist.js` — post-build подготовка `dist`.
@@ -154,11 +157,15 @@ src/games/<gameId>/
   файлов, изменённых относительно upstream или последнего коммита.
 - `scripts/install-git-hooks.sh` — подключает `.githooks/` через
   `core.hooksPath`.
+- `scripts/trace-loading.mjs` — запускает production preview и Playwright/CDP
+  trace для анализа waterfall загрузки на throttled network profiles.
 
 ## Generated и локальные каталоги
 
 - `node_modules/` — npm-зависимости.
 - `dist/` — результат `npm run build`.
+- `.build/` — временные staging-каталоги для single-game/bundle public assets
+  и screenshots offline verification.
 - `.vite/` — Vite cache.
 - `temp/` — локальные scratch-файлы.
 - `.agent/` — локальный агентский контекст.

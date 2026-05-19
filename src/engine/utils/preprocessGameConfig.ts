@@ -1,7 +1,7 @@
 import type { GameConfig, CampaignIconProps } from '@engine/types';
 import { baseImgIconClass, getCampaignIconSizeClass } from '@engine/types';
 import { applyNoBreakMarkupDeep } from './noBreakMarkup';
-import { gameIconsFile } from '@app/utils/paths';
+import { gameIconsFile } from '@engine/utils/paths';
 import { jsx } from 'react/jsx-runtime';
 
 const createEmojiSvgDataUrl = (emoji: string): string => {
@@ -33,7 +33,8 @@ const createDefaultCampaignIcon =
     });
 
 const createDefaultEndIcon =
-  (gameId: string, filename: string, alt: string, emojiFallback: string) => () =>
+  (gameId: string, filename: string, alt: string, emojiFallback: string) =>
+  () =>
     jsx('img', {
       src: gameIconsFile(gameId, filename),
       alt,

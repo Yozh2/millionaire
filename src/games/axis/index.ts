@@ -1,8 +1,11 @@
-/**
- * Axis Game
- *
- * Three campaigns based on the Axis lore.
- */
+import type { GameModule } from '@engine/types';
+import { manifest } from './manifest';
 
-export { axisConfig, axisConfig as default } from './config';
+export const gameModule = {
+  id: manifest.id,
+  info: manifest,
+  loadConfig: async () => (await import('./config')).default,
+} satisfies GameModule;
+
+export default gameModule;
 export { strings } from './strings';

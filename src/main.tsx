@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { AppShell } from '@app/AppShell';
-import '@app/styles/index.css';
+import { RootShell } from 'virtual:root-shell';
+import './styles/index.css';
 
 const preventDefault = (e: Event) => e.preventDefault();
 
@@ -12,12 +12,15 @@ if (typeof document !== 'undefined') {
     'contextmenu',
     (e) => {
       const mouseEvent = e as MouseEvent;
-      if (import.meta.env.DEV && (mouseEvent.ctrlKey || mouseEvent.metaKey || mouseEvent.shiftKey)) {
+      if (
+        import.meta.env.DEV &&
+        (mouseEvent.ctrlKey || mouseEvent.metaKey || mouseEvent.shiftKey)
+      ) {
         return;
       }
       e.preventDefault();
     },
-    { capture: true }
+    { capture: true },
   );
 
   document.addEventListener(
@@ -28,7 +31,7 @@ if (typeof document !== 'undefined') {
         preventDefault(e);
       }
     },
-    { capture: true }
+    { capture: true },
   );
 }
 
@@ -47,8 +50,8 @@ const root = ReactDOM.createRoot(document.getElementById('root')!);
 
 root.render(
   <React.StrictMode>
-    <AppShell />
-  </React.StrictMode>
+    <RootShell />
+  </React.StrictMode>,
 );
 
 const bootLoader = document.getElementById('boot-loader');

@@ -14,7 +14,13 @@
  * Or:  npm run generate:assets
  */
 
-import { readdirSync, writeFileSync, existsSync, statSync, mkdirSync } from 'fs';
+import {
+  readdirSync,
+  writeFileSync,
+  existsSync,
+  statSync,
+  mkdirSync,
+} from 'fs';
 import { join, extname, relative } from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
@@ -22,13 +28,47 @@ import { dirname } from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const PUBLIC_DIR = join(__dirname, '..', 'public');
+function readOption(name) {
+  const index = process.argv.indexOf(name);
+  if (index === -1) return null;
+  const value = process.argv[index + 1];
+  if (!value || value.startsWith('--')) {
+    console.error(`[generate-asset-manifest] Missing value for ${name}`);
+    process.exit(1);
+  }
+  return value;
+}
+
+const PUBLIC_DIR =
+  readOption('--public-dir') ?? join(__dirname, '..', 'public');
 const OUTPUT_FILE = join(PUBLIC_DIR, 'asset-manifest.json');
 
 const IMAGE_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.webp', '.gif', '.svg'];
 const AUDIO_EXTENSIONS = ['.m4a', '.ogg', '.mp3', '.wav'];
 const FAVICON_NAMES = ['favicon.png', 'favicon.svg', 'favicon.ico'];
 const GAME_CARD_NAMES = ['game-card.webp', 'game-card.png'];
+
+function readGameFilter() {
+  const singleGame = readOption('--game');
+  const games = readOption('--games');
+
+  if (singleGame && games) {
+    console.error(
+      '[generate-asset-manifest] Use either --game or --games, not both',
+    );
+    process.exit(1);
+  }
+
+  if (singleGame) return [singleGame];
+  if (games && games !== 'all') {
+    return games
+      .split(',')
+      .map((gameId) => gameId.trim())
+      .filter(Boolean);
+  }
+
+  return null;
+}
 
 /**
  * Check file type by extension.
@@ -50,10 +90,12 @@ function findFirstExistingFile(dirPath, names) {
     return null;
   }
 
-  const entries = readdirSync(dirPath).filter((entry) => !entry.startsWith('.'));
+  const entries = readdirSync(dirPath).filter(
+    (entry) => !entry.startsWith('.'),
+  );
   const entriesSet = new Set(entries);
   const entriesByLower = new Map(
-    entries.map((entry) => [entry.toLowerCase(), entry])
+    entries.map((entry) => [entry.toLowerCase(), entry]),
   );
 
   for (const name of names) {
@@ -125,7 +167,7 @@ function getSubdirectories(dirPath) {
 /**
  * Scan all games and their assets.
  */
-function scanGames() {
+function scanGames(onlyGameIds = null) {
   const gamesDir = join(PUBLIC_DIR, 'games');
   if (!existsSync(gamesDir)) {
     return {};
@@ -134,10 +176,21 @@ function scanGames() {
   console.log('📁 Scanning games...');
 
   const games = {};
-  const gameIds = getSubdirectories(gamesDir).filter((id) => id !== 'shared');
+  const gameIds = onlyGameIds
+    ? onlyGameIds
+    : getSubdirectories(gamesDir).filter((id) => id !== 'shared');
 
   for (const gameId of gameIds) {
     const gameDir = join(gamesDir, gameId);
+    if (!existsSync(gameDir) || !statSync(gameDir).isDirectory()) {
+      if (onlyGameIds) {
+        console.log(`   📂 ${gameId} (no public assets)`);
+        games[gameId] = scanGameAssets(gameDir, gameId);
+        continue;
+      }
+      console.error(`[generate-asset-manifest] Game not found: ${gameId}`);
+      process.exit(1);
+    }
     console.log(`   📂 ${gameId}`);
 
     games[gameId] = scanGameAssets(gameDir, gameId);
@@ -154,10 +207,10 @@ function scanGameAssets(gameDir, gameId) {
   const campaignIconsDir = join(iconsDir, 'campaigns');
   const faviconDir = join(gameDir, 'favicon');
 
-const gameCardFilename = findFirstExistingFile(iconsDir, GAME_CARD_NAMES);
-const faviconInFaviconDir = findFirstExistingFile(faviconDir, FAVICON_NAMES);
-const faviconInIconsDir = findFirstExistingFile(iconsDir, FAVICON_NAMES);
-const faviconFilename = faviconInFaviconDir ?? faviconInIconsDir;
+  const gameCardFilename = findFirstExistingFile(iconsDir, GAME_CARD_NAMES);
+  const faviconInFaviconDir = findFirstExistingFile(faviconDir, FAVICON_NAMES);
+  const faviconInIconsDir = findFirstExistingFile(iconsDir, FAVICON_NAMES);
+  const faviconFilename = faviconInFaviconDir ?? faviconInIconsDir;
   const mainMenuMusicFilename = findFirstExistingFile(join(gameDir, 'music'), [
     'menu.m4a',
     'menu.ogg',
@@ -184,17 +237,21 @@ const faviconFilename = faviconInFaviconDir ?? faviconInIconsDir;
   ]);
 
   const campaignIcons = getFilesFromDir(campaignIconsDir, isImageFile);
-  const gameplayIcons = getFilesFromDir(iconsDir, isImageFile).filter((iconPath) => {
-    const filename = iconPath.split('/').pop() || '';
-    return !GAME_CARD_NAMES.includes(filename) && !FAVICON_NAMES.includes(filename);
-  });
+  const gameplayIcons = getFilesFromDir(iconsDir, isImageFile).filter(
+    (iconPath) => {
+      const filename = iconPath.split('/').pop() || '';
+      return (
+        !GAME_CARD_NAMES.includes(filename) && !FAVICON_NAMES.includes(filename)
+      );
+    },
+  );
   const primaryGameplayIcons = gameplayIcons.filter((iconPath) => {
     const filename = iconPath.split('/').pop() || '';
     const base = filename.toLowerCase().replace(/\.[^/.]+$/, '');
     return base.includes('coin') || base.includes('money');
   });
   const secondaryGameplayIcons = gameplayIcons.filter(
-    (iconPath) => !primaryGameplayIcons.includes(iconPath)
+    (iconPath) => !primaryGameplayIcons.includes(iconPath),
   );
 
   const game = {
@@ -223,11 +280,14 @@ const faviconFilename = faviconInFaviconDir ?? faviconInIconsDir;
 
     // Level 2: End game assets (loaded during gameplay)
     level2: {
-      defeatMusic: defeatMusicFilename ? `/games/${gameId}/music/${defeatMusicFilename}`
+      defeatMusic: defeatMusicFilename
+        ? `/games/${gameId}/music/${defeatMusicFilename}`
         : null,
-      victoryMusic: victoryMusicFilename ? `/games/${gameId}/music/${victoryMusicFilename}`
+      victoryMusic: victoryMusicFilename
+        ? `/games/${gameId}/music/${victoryMusicFilename}`
         : null,
-      retreatMusic: retreatMusicFilename ? `/games/${gameId}/music/${retreatMusicFilename}`
+      retreatMusic: retreatMusicFilename
+        ? `/games/${gameId}/music/${retreatMusicFilename}`
         : null,
       icons: secondaryGameplayIcons,
       endImages: {
@@ -259,10 +319,10 @@ const faviconFilename = faviconInFaviconDir ?? faviconInIconsDir;
       }
 
       // Campaign-specific assets (Level 1.1 and Level 2)
-      const campaignMusicFilename = findFirstExistingFile(join(gameDir, 'music'), [
-        `${campaignId}.m4a`,
-        `${campaignId}.ogg`,
-      ]);
+      const campaignMusicFilename = findFirstExistingFile(
+        join(gameDir, 'music'),
+        [`${campaignId}.m4a`, `${campaignId}.ogg`],
+      );
 
       game.campaigns[campaignId] = {
         // Level 1.1: Loaded when campaign button is pressed
@@ -309,15 +369,13 @@ const faviconFilename = faviconInFaviconDir ?? faviconInIconsDir;
 
     // Get existing campaign IDs (lowercase for comparison)
     const existingCampaignIds = Object.keys(game.campaigns).map((id) =>
-      id.toLowerCase()
+      id.toLowerCase(),
     );
 
     // Create campaign entries for music files that don't have campaign folders
     for (const musicPath of musicFiles) {
       const filename = musicPath.split('/').pop() || '';
-      const filenameLower = filename
-        .replace(/\.[^/.]+$/, '')
-        .toLowerCase();
+      const filenameLower = filename.replace(/\.[^/.]+$/, '').toLowerCase();
 
       // Skip system music files
       if (systemMusicFiles.includes(filenameLower)) {
@@ -378,10 +436,10 @@ const faviconFilename = faviconInFaviconDir ?? faviconInIconsDir;
     game.level2.endImages.retreat.length;
 
   console.log(
-    `      Level 1: ${level1Count} assets, Level 2: ${level2Count} assets`
+    `      Level 1: ${level1Count} assets, Level 2: ${level2Count} assets`,
   );
   console.log(
-    `      Campaigns: ${Object.keys(game.campaigns).join(', ') || 'none'}`
+    `      Campaigns: ${Object.keys(game.campaigns).join(', ') || 'none'}`,
   );
   console.log(`      Voices: ${game.voices.length} files`);
 
@@ -392,6 +450,7 @@ const faviconFilename = faviconInFaviconDir ?? faviconInIconsDir;
  * Generate the complete manifest.
  */
 function generateManifest() {
+  const onlyGameIds = readGameFilter();
   console.log('🎮 Generating asset manifest...\n');
 
   // Ensure /public exists so dev/build can run without it committed.
@@ -402,7 +461,7 @@ function generateManifest() {
   const manifest = {
     version: '1.0.0',
     engine: { icons: [], images: [], sounds: [] },
-    games: scanGames(),
+    games: scanGames(onlyGameIds),
   };
 
   // Calculate totals

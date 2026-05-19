@@ -99,6 +99,27 @@ npm run build
 `npm run build` особенно важен для изменений ассетов, manifest generation,
 Vite-конфигурации, маршрутизации и публичного деплоя.
 
+Для offline-экспорта:
+
+```bash
+npm run build:game -- --game nnr --out dist/games/nnr
+npm run build:bundle -- --games nnr,poc --out dist/bundles/nnr-poc
+npm run docker:game -- --game nnr --out dist/games/nnr
+npm run docker:bundle -- --games nnr,poc --out dist/bundles/nnr-poc
+```
+
+`build:game` собирает только выбранную игру и её ассеты. `build:bundle`
+собирает hub и выбранные игры. Docker-команды используют уже тот же pipeline,
+а затем упаковывают static dist в nginx image.
+
+Smoke-проверка запущенных offline-контейнеров:
+
+```bash
+docker run -d --name millionaire-game-nnr-test -p 18081:80 millionaire-game-nnr:local
+docker run -d --name millionaire-bundle-nnr-poc-test -p 18082:80 millionaire-bundle-nnr-poc:local
+npm run verify:offline -- --game-url http://127.0.0.1:18081/ --bundle-url http://127.0.0.1:18082/ --game nnr --bundle-games nnr,poc
+```
+
 ## 4. Git hooks и quality gate
 
 Репозиторий хранит versioned git hooks в `.githooks/`. После клонирования
@@ -180,9 +201,8 @@ src/games/<gameId>/campaigns/<campaignId>/
   theme.ts
 ```
 
-4. Добавить registry metadata в текущем registry-механизме проекта.
-5. Зарегистрировать игру в `src/app/screens/registry/gameRegistry.ts`, если
-   текущая архитектура ещё использует ручной registry.
+4. Добавить лёгкие метаданные в `src/games/<gameId>/manifest.ts`.
+5. Экспортировать `gameModule` из `src/games/<gameId>/index.ts`.
 6. Добавить ассеты в `public/games/<gameId>/`, если игра зависит от
    изображений, аудио, favicon или game card.
 7. Запустить `npm run generate:manifests`.
@@ -190,9 +210,8 @@ src/games/<gameId>/campaigns/<campaignId>/
 9. Обновить `README.md`, `docs/game-design.md` или профильный документ, если
    игра вводит новый режим, механику, ассетный контракт или исключение.
 
-Важно: текущий план в `docs/superpowers/plans/` описывает будущий переход от
-`registry.ts` к лёгким `manifest.ts`. Пока код не мигрирован, документация
-должна явно различать текущее состояние и целевую архитектуру.
+Hub найдёт игру через build-time glob по `src/games/*/manifest.ts`; вручную
+добавлять игру в catalog не нужно.
 
 ## 7. Workflow изменения ассетов
 
@@ -211,7 +230,25 @@ Runtime-ассеты живут в `public/`. Движок должен стар
 6. Запустить `npm run build`.
 7. Проверить игру в браузере.
 
-## 8. Workflow крупных архитектурных задач
+## 8. Offline export workflow
+
+Offline export имеет два формата:
+
+- `offline-game` — один `game` + `engine`, без hub и других игр.
+- `offline-bundle` — `hub` + выбранный набор игр + `engine`.
+
+Оба формата используют static assets и могут работать в Docker без внешнего
+домена или VPS.
+
+Правила:
+
+- Для одиночной игры использовать `build:game`, не `build`.
+- Для выбранного набора игр использовать `build:bundle -- --games a,b`.
+- В bundle catalog должен содержать только выбранные игры.
+- `asset-manifest.json` в dist должен содержать только выбранные игры.
+- Browser smoke должен проверять не только HTML, но и реальные asset fetch-и.
+
+## 9. Workflow крупных архитектурных задач
 
 Крупные задачи оформляются как исполняемые планы в
 `docs/superpowers/plans/`.

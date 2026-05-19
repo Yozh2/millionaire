@@ -22,9 +22,43 @@ import { dirname } from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const PUBLIC_DIR = join(__dirname, '..', 'public');
+function readOption(name) {
+  const index = process.argv.indexOf(name);
+  if (index === -1) return null;
+  const value = process.argv[index + 1];
+  if (!value || value.startsWith('--')) {
+    console.error(`[generate-image-manifest] Missing value for ${name}`);
+    process.exit(1);
+  }
+  return value;
+}
+
+const PUBLIC_DIR =
+  readOption('--public-dir') ?? join(__dirname, '..', 'public');
 const GAMES_DIR = join(PUBLIC_DIR, 'games');
 const IMAGE_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.webp', '.gif'];
+
+function readGameFilter() {
+  const singleGame = readOption('--game');
+  const games = readOption('--games');
+
+  if (singleGame && games) {
+    console.error(
+      '[generate-image-manifest] Use either --game or --games, not both',
+    );
+    process.exit(1);
+  }
+
+  if (singleGame) return [singleGame];
+  if (games && games !== 'all') {
+    return games
+      .split(',')
+      .map((gameId) => gameId.trim())
+      .filter(Boolean);
+  }
+
+  return null;
+}
 
 /**
  * Check if a file is an image based on extension.
@@ -42,9 +76,7 @@ function getImagesFromDir(dirPath) {
     return [];
   }
 
-  return readdirSync(dirPath)
-    .filter(isImageFile)
-    .sort();
+  return readdirSync(dirPath).filter(isImageFile).sort();
 }
 
 /**
@@ -149,6 +181,7 @@ function countImages(obj) {
  * Main: scan all directories and generate manifests.
  */
 function main() {
+  const onlyGameIds = readGameFilter();
   console.log('🖼️  Generating image manifests...\n');
 
   let totalManifests = 0;
@@ -158,11 +191,16 @@ function main() {
   if (existsSync(GAMES_DIR)) {
     console.log('\n📁 Scanning game images...');
 
-    const games = readdirSync(GAMES_DIR);
+    const games = onlyGameIds ?? readdirSync(GAMES_DIR);
 
     for (const gameId of games) {
       const gamePath = join(GAMES_DIR, gameId);
-      if (!statSync(gamePath).isDirectory()) continue;
+      if (!existsSync(gamePath) || !statSync(gamePath).isDirectory()) {
+        if (onlyGameIds) {
+          console.log(`   📭 ${gameId}: no public image directory`);
+        }
+        continue;
+      }
 
       const result = generateGameManifest(gameId);
 
@@ -183,7 +221,9 @@ function main() {
     console.log('  • public/games/{gameId}/images/...\n');
     console.log('See README.md for full structure documentation.\n');
   } else {
-    console.log(`✨ Generated ${totalManifests} manifest(s) with ${totalImages} images total\n`);
+    console.log(
+      `✨ Generated ${totalManifests} manifest(s) with ${totalImages} images total\n`,
+    );
   }
 }
 

@@ -1,14 +1,23 @@
-import { createCampaignsForGame, defineGameConfig } from '@engine/utils';
+import { createCampaignsFromGlobs, defineGameConfig } from '@engine/utils';
 import { strings } from './strings';
+
+const themeModules = import.meta.glob('./campaigns/*/theme.ts', {
+  eager: true,
+});
+const questionModules = import.meta.glob('./campaigns/*/questions.ts', {
+  eager: true,
+});
 
 export const axisConfig = defineGameConfig({
   id: 'axis',
 
   fontFamily: 'Georgia, "Times New Roman", serif',
 
-  campaigns: createCampaignsForGame({
+  campaigns: createCampaignsFromGlobs({
     gameId: 'axis',
     campaignStrings: strings.campaigns,
+    themeModules,
+    questionModules,
   }),
 
   strings,
