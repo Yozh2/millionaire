@@ -15,6 +15,16 @@ const FORMAT_EXTENSIONS = new Set([
   '.yaml',
 ]);
 
+const GENERATED_PATHS = new Set([
+  'public/asset-manifest.json',
+  'src/app/screens/registry/registryIndex.ts',
+]);
+
+const isGeneratedFile = (file) =>
+  GENERATED_PATHS.has(file) ||
+  /^public\/games\/.*\/images\/manifest\.json$/.test(file) ||
+  /^public\/games\/.*\/favicon\/site\.webmanifest$/.test(file);
+
 const run = (command, args, options = {}) => {
   const result = spawnSync(command, args, {
     stdio: 'inherit',
@@ -49,6 +59,7 @@ if (listResult.status !== 0) {
 
 const stagedFiles = listResult.stdout.split('\0').filter(Boolean);
 const formatTargets = stagedFiles.filter((file) => {
+  if (isGeneratedFile(file)) return false;
   if (!existsSync(file)) return false;
   const dotIndex = file.lastIndexOf('.');
   if (dotIndex === -1) return false;

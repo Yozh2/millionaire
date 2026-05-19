@@ -15,6 +15,16 @@ const FORMAT_EXTENSIONS = new Set([
   '.yaml',
 ]);
 
+const GENERATED_PATHS = new Set([
+  'public/asset-manifest.json',
+  'src/app/screens/registry/registryIndex.ts',
+]);
+
+const isGeneratedFile = (file) =>
+  GENERATED_PATHS.has(file) ||
+  /^public\/games\/.*\/images\/manifest\.json$/.test(file) ||
+  /^public\/games\/.*\/favicon\/site\.webmanifest$/.test(file);
+
 const runText = (args) => {
   const result = spawnSync('git', args, { encoding: 'utf8' });
   if (result.status !== 0) return null;
@@ -64,6 +74,7 @@ const getFormatBase = () => {
 };
 
 const isFormatTarget = (file) => {
+  if (isGeneratedFile(file)) return false;
   if (!existsSync(file)) return false;
   const dotIndex = file.lastIndexOf('.');
   if (dotIndex === -1) return false;
