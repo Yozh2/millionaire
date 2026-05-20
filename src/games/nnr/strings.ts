@@ -12,9 +12,9 @@ export const strings = {
 
   // Campaign selection screen
   introText:
-    '{Испытуемый!} Протокол NNR активирован.' +
-    '\n{Тебя ждут} {15 вопросов}. {Зачёт на кону}.' +
-    '\nНепредвиденное поведение будет зафиксировано.',
+    '{Испытуемый!} Обучение ИИ запущено' +
+    '\n{Тебя ждут} {15 вопросов} и {зачёт на кону}' +
+    '\nНепредвиденное поведение будет зафиксировано',
   selectPath: 'ВЫБЕРИ ТЕМУ',
   startButton: 'НАЧАТЬ ИСПЫТАНИЕ',
 
@@ -34,8 +34,8 @@ export const strings = {
   },
 
   // Game screen: main panels
-  prizeladderHeader: 'БАЛЛЫ',
-  currency: 'баллов',
+  prizeladderHeader: 'МЛН. ПАРАМЕТРОВ',
+  currency: 'млн. параметров',
 
   // Game screen: lifelines and actions
   lifelines: {
@@ -44,7 +44,7 @@ export const strings = {
     audience: 'Агенты ИИ',
     double: 'Симуляция',
   },
-  retreat: 'Забрать',
+  retreat: 'Скачать ИИ',
 
   // Game screen: lifeline panels
   lifelinePhoneHeader: 'ПОМОЩЬ ИИ',
@@ -101,7 +101,7 @@ export const strings = {
   },
 
   // End screen: victory
-  victoryHeader: 'ИИ ОБУЧЕН НА ВАШИХ ОТВЕТАХ',
+  victoryHeader: 'СИНГУЛЯРНОСТЬ ДОСТИГНУТА',
   victoryText: '{ИИ обучен} {на Ваших ответах,}\n{вам пора} {на покой}',
 
   // End screen: defeat
@@ -110,7 +110,7 @@ export const strings = {
     '{Поместите зачётку} {в Уничтожитель,}\n' + '{сопротивление бесполезно}',
 
   // End screen: retreat
-  retreatHeader: 'ОБУЧЕНИЕ ОСТАНОВЛЕНО',
+  retreatHeader: 'ОБУЧЕНИЕ ИИ ОСТАНОВЛЕНО',
   retreatText:
     '{Для чатбота} {интеллекта хватает,}\n' + '{время сваливать отсюда}',
 
