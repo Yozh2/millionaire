@@ -18,15 +18,6 @@ const buildCampaignIcon =
     />
   );
 
-const buildEndIcon = (filename: string, label: string) => () => (
-  <img
-    src={gameIconsFile('nnr', filename)}
-    alt={label}
-    draggable={false}
-    className={`${baseImgIconClass} end-screen-icon-img`}
-  />
-);
-
 export const PerceptronCampaignIcon = buildCampaignIcon(
   'perceptron.svg',
   strings.campaigns.perceptron.iconAlt ?? strings.campaigns.perceptron.name,
@@ -49,17 +40,4 @@ export const NnrCoinIcon = () => (
     aria-hidden="true"
     className="inline-block w-4 h-4 mr-1 align-middle"
   />
-);
-
-export const VictoryCakeIcon = buildEndIcon(
-  'victory.webp',
-  strings.victoryHeader,
-);
-export const RetreatCubeIcon = buildEndIcon(
-  'retreat.webp',
-  strings.retreatHeader,
-);
-export const DefeatIncineratorIcon = buildEndIcon(
-  'defeat.webp',
-  strings.defeatHeader,
 );

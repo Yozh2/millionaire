@@ -1,12 +1,9 @@
 import { createCampaignsFromGlobs, defineGameConfig } from '@engine/utils';
 import {
-  DefeatIncineratorIcon,
   NeuralCampaignIcon,
   NnrCoinIcon,
   PerceptronCampaignIcon,
   ResearchCampaignIcon,
-  RetreatCubeIcon,
-  VictoryCakeIcon,
 } from './icons';
 import { strings } from './strings';
 
@@ -56,12 +53,6 @@ export const nnrConfig = defineGameConfig({
 
   icons: {
     coin: NnrCoinIcon,
-  },
-
-  endIcons: {
-    victory: VictoryCakeIcon,
-    defeat: DefeatIncineratorIcon,
-    retreat: RetreatCubeIcon,
   },
 
   headerSlideshow: {
