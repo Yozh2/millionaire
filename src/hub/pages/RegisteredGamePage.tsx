@@ -143,6 +143,31 @@ export default function RegisteredGamePage({
     };
   }, [gameId]);
 
+  useEffect(() => {
+    if (!import.meta.env.DEV || !import.meta.hot) return;
+
+    const gamePathPrefix = `/src/games/${gameId}/`;
+    const isCurrentGameUpdate = (path: string) =>
+      path.split('?')[0].startsWith(gamePathPrefix);
+    const handleBeforeUpdate = (payload: {
+      updates: Array<{ path: string; acceptedPath: string }>;
+    }) => {
+      const shouldReload = payload.updates.some((update) =>
+        [update.path, update.acceptedPath].some(isCurrentGameUpdate),
+      );
+
+      if (shouldReload) {
+        window.location.reload();
+      }
+    };
+
+    import.meta.hot.on('vite:beforeUpdate', handleBeforeUpdate);
+
+    return () => {
+      import.meta.hot?.off('vite:beforeUpdate', handleBeforeUpdate);
+    };
+  }, [gameId]);
+
   if (!entry) {
     return <Navigate to="/" replace />;
   }

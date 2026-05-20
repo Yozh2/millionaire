@@ -48,16 +48,15 @@ export const theme: ThemeColors = {
   textLifeline: 'text-cyan-50',
   borderLifeline: 'border-cyan-400',
 
-  bgPrizeCurrent:
-    'bg-gradient-to-b from-yellow-400/95 via-yellow-600/75 to-yellow-950/95',
-  bgPrizePassed: 'bg-black/48',
+  bgPrizeCurrent: 'bg-yellow-500',
+  bgPrizePassed: 'bg-cyan-950',
   prizeTextCurrent: 'text-black',
-  prizeTextPassed: 'text-zinc-400',
+  prizeTextPassed: 'text-cyan-200/70',
   prizeTextFuture: 'text-cyan-100',
-  prizeBgGuaranteed: 'bg-cyan-950/52',
-  prizeTextGuaranteed: 'text-yellow-200',
+  prizeBgGuaranteed: 'bg-cyan-950/70',
+  prizeTextGuaranteed: 'text-yellow-500',
   prizeBorderGuaranteed: 'border-yellow-500',
-  prizeBorderCurrent: 'border-yellow-200',
+  prizeBorderCurrent: 'border-yellow-500',
   prizeBorderPassed: 'border-cyan-950',
   prizeGlowCurrent: 'rgba(250, 204, 21, 0.42)',
 
