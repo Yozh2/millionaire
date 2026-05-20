@@ -2,7 +2,7 @@ import type { GameStringsNamespace } from '@engine/types';
 
 export const strings = {
   // Common layout
-  headerTitle: 'КТО ХОЧЕТ СТАТЬ МИЛЛИОНЕРОМ',
+  headerTitle: 'КТО ХОЧЕТ БЫТЬ С ЗАЧЁТОМ?',
   headerSubtitle: 'НЕЙРОННЫЕ СЕТИ В ЗАДАЧАХ РАДИОЛОКАЦИИ',
   footer: '✦ Курс NNR ✦',
 
@@ -13,16 +13,24 @@ export const strings = {
   // Campaign selection screen
   introText:
     '{Испытуемый!} Протокол NNR активирован.' +
-    '\n{Тебя ждут} {15 вопросов}. {Миллион на кону}.' +
+    '\n{Тебя ждут} {15 вопросов}. {Зачёт на кону}.' +
     '\nНепредвиденное поведение будет зафиксировано.',
   selectPath: 'ВЫБЕРИ ИСПЫТАНИЕ',
   startButton: 'НАЧАТЬ ИСПЫТАНИЕ',
 
   // Campaign cards
   campaigns: {
-    perceptron: { name: 'ПЕРЦЕПТРОН', label: 'Машинное обучение', iconAlt: 'Perceptron' },
+    perceptron: {
+      name: 'ПЕРЦЕПТРОН',
+      label: 'Машинное обучение',
+      iconAlt: 'Perceptron',
+    },
     nn: { name: 'НЕЙРОСЕТИ', label: 'Архитектуры', iconAlt: 'Нейросети' },
-    research: { name: 'ИССЛЕДОВАНИЯ', label: 'Научная информация', iconAlt: 'Наука' },
+    research: {
+      name: 'ИССЛЕДОВАНИЯ',
+      label: 'Научная информация',
+      iconAlt: 'Наука',
+    },
   },
 
   // Game screen: main panels
@@ -93,20 +101,18 @@ export const strings = {
   },
 
   // End screen: victory
-  victoryHeader: 'ОБУЧЕНИЕ УСПЕШНО ЗАВЕРШЕНО',
-  victoryText: '{ИИ обучен} {на Ваших ответах.}\n{Тортик предоставлен.}',
+  victoryHeader: 'ИИ ОБУЧЕН НА ВАШИХ ОТВЕТАХ',
+  victoryText: '{ИИ обучен} {на Ваших ответах,}\n{вам пора} {на покой}',
 
   // End screen: defeat
   defeatHeader: 'КРИТИЧЕСКИЙ СБОЙ',
   defeatText:
-    '{Поместите зачётку} {в Уничтожитель.}\n' +
-    '{Сопротивление бесполезно.}',
+    '{Поместите зачётку} {в Уничтожитель,}\n' + '{сопротивление бесполезно}',
 
   // End screen: retreat
   retreatHeader: 'ИСПЫТАНИЕ ОСТАНОВЛЕНО',
   retreatText:
-    '{Набранных баллов достаточно.}\n' +
-    '{ИИ благодарит} {за сотрудничество.}',
+    '{Набранных баллов достаточно,}\n' + '{шанс на отступление предоставлен}',
 
   // End screen: Common
   newGameButton: 'НОВАЯ ИГРА',

@@ -3,17 +3,29 @@
  * Сначала пытается game-card.webp, затем фавиконки игры и общие иконки.
  */
 import { useEffect, useMemo, useState } from 'react';
-import { loadAssetManifest } from '@engine/utils/paths';
+import { loadAssetManifest, withBasePath } from '@engine/utils/paths';
 
 type ManifestGameCardAssets = {
   gameCard?: string | null;
   favicon?: string | null;
 };
 
+const normalizeAssetSource = (source?: string | null): string | null => {
+  if (!source) return null;
+  if (
+    source.startsWith('data:') ||
+    source.startsWith('http://') ||
+    source.startsWith('https://')
+  ) {
+    return source;
+  }
+  return withBasePath(source);
+};
+
 const buildGameCardSources = (cardAssets?: ManifestGameCardAssets): string[] =>
-  [cardAssets?.gameCard, cardAssets?.favicon].filter(
-    (source): source is string => !!source,
-  );
+  [cardAssets?.gameCard, cardAssets?.favicon]
+    .map(normalizeAssetSource)
+    .filter((source): source is string => !!source);
 
 export interface UseGameCardImageResult {
   imageSrc: string | null;
