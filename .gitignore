@@ -19,6 +19,10 @@ Thumbs.db
 # Tooling caches
 .mypy_cache/
 .build/
+.build/desktop/
+.build/desktop-packages/
+.build/electron-cache/
+.build/electron-builder-cache/
 
 # Environment
 .env

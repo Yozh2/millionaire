@@ -5,9 +5,10 @@
 
 ## Перед началом задачи
 
-1. Прочитай `README.md`, `docs/workflows.md`, `docs/repository-layout.md`,
-   `docs/game-design.md`, `docs/styleguide.md` и
-   `docs/asset-loading-strategy.md`.
+1. Прочитай `README.md`, `docs/workflows.md`, `docs/agent-workflow.md`,
+   `docs/development-workflow.md`, `docs/repository-layout.md`,
+   `docs/game-design.md`, `docs/game-authoring.md`, `docs/styleguide.md`,
+   `docs/asset-loading-strategy.md` и `docs/export-workflow.md`.
 2. Посмотри существующие агентские контексты в
    `.agent/agents/*/current-task.md`, если каталог есть.
 3. Выбери уникальный `agent-id`. Рекомендуемый формат:

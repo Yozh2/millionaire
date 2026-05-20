@@ -31,11 +31,16 @@ The hub catalog consumes those manifests and lazy-loads the selected
 ## Documentation
 
 - `AGENTS.md` — required workflow for AI agents working in this repo.
-- `docs/workflows.md` — development, documentation, UI, asset, and agent workflows.
+- `docs/workflows.md` — workflow map and documentation update rules.
+- `docs/agent-workflow.md` — local agent context and handoff rules.
+- `docs/development-workflow.md` — feature work, checks, git hooks, and UI smoke.
+- `docs/game-authoring.md` — adding and maintaining games, campaigns, questions, themes, and game assets.
+- `docs/export-workflow.md` — standalone game builds, hub bundles, Docker images, and desktop artifacts.
 - `docs/repository-layout.md` — canonical map of repository directories and important files.
-- `docs/game-design.md` — detailed design document for product, mechanics, content model, UX, assets, and quality criteria.
+- `docs/game-design.md` — product design, mechanics, UX, assets, and quality criteria.
 - `docs/styleguide.md` — code style, imports, tests, and comments.
 - `docs/asset-loading-strategy.md` — current runtime asset loading behavior.
+- `docs/loading-trace.md` — reproducible loading waterfall traces and findings.
 
 ## Engine architecture (high‑level)
 
@@ -70,6 +75,8 @@ npm run lint
 npm run build
 npm run build:game -- --game nnr --out dist/games/nnr
 npm run build:bundle -- --games nnr,poc --out dist/bundles/nnr-poc
+npm run package:desktop:nnr
+npm run package:desktop:game -- --game nnr
 npm run docker:game -- --game nnr --out dist/games/nnr
 npm run docker:bundle -- --games nnr,poc --out dist/bundles/nnr-poc
 npm run trace:loading -- --game transformers --profile slow-3g
@@ -78,6 +85,10 @@ npm run trace:loading -- --game transformers --profile slow-3g
 `build:game` creates a standalone offline game dist with only one game and its
 assets. `build:bundle` creates an offline hub bundle with only selected games.
 Docker commands wrap those dist folders into local nginx images.
+Desktop packaging commands wrap a standalone game dist into an Electron
+portable artifact for the current platform: macOS `.zip` with `.app`, Windows
+portable `.exe`, or Linux `.AppImage`. By default, desktop artifacts are written
+under `.build/desktop-packages/<gameId>/`.
 
 ## Git hooks and quality gate
 
@@ -102,6 +113,8 @@ npm run quality:push
 ```
 
 ## Adding a new game
+
+Detailed authoring rules live in `docs/game-authoring.md`.
 
 1. Create a new directory: `src/games/<gameId>/`.
 2. Add campaigns:

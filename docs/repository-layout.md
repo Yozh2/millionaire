@@ -18,19 +18,31 @@
 - `.dockerignore` — минимальный Docker build context для offline images.
 - `.githooks/` — versioned git hooks для локального quality gate.
 - `docker/` — nginx Dockerfile/config для static offline images.
+- `electron/` — минимальная Electron-оболочка для portable desktop-сборок
+  offline игр.
 - `.agent/` — локальные рабочие контексты агентов. Каталог не коммитится.
 
 ## Документация
 
-- `docs/game-design.md` — подробный диздок: продукт, механики, контентная
-  модель, UX, ассеты и критерии качества.
-- `docs/workflows.md` — рабочие процессы разработки, документации, UI,
-  ассетов и агентских сессий.
+- `docs/workflows.md` — карта workflow-документов и правила обновления
+  документации.
+- `docs/agent-workflow.md` — локальный контекст агентов, handoff и крупные
+  архитектурные планы.
+- `docs/development-workflow.md` — разработка фич, проверки, git hooks и UI
+  smoke.
+- `docs/game-authoring.md` — добавление и поддержка игр, кампаний, вопросов,
+  тем и game-specific ассетов.
+- `docs/export-workflow.md` — standalone game builds, hub bundles, Docker
+  images и Electron desktop artifacts.
+- `docs/game-design.md` — продуктовый диздок: механики, UX, ассеты и
+  критерии качества.
 - `docs/repository-layout.md` — этот документ.
 - `docs/styleguide.md` — стиль TypeScript, React, CSS, импортов, тестов и
   комментариев.
 - `docs/asset-loading-strategy.md` — фактическая стратегия загрузки
   манифестов, изображений и аудио.
+- `docs/loading-trace.md` — воспроизводимые waterfall traces и выводы по
+  загрузке.
 - `docs/superpowers/plans/` — планы крупных изменений. Это рабочие планы, а
   не автоматическое описание уже реализованного состояния.
 
@@ -142,6 +154,8 @@ src/games/<gameId>/
 - `scripts/generate-asset-manifest.js` — генерирует общий asset manifest.
 - `scripts/build-game.js` — собирает standalone dist одной игры.
 - `scripts/build-bundle.js` — собирает hub bundle с выбранными играми.
+- `scripts/package-electron-game.js` — собирает standalone dist одной игры и
+  упаковывает его в Electron portable artifact для текущей платформы.
 - `scripts/build-docker-game.js` — собирает Docker image одной игры.
 - `scripts/build-docker-bundle.js` — собирает Docker image bundle.
 - `scripts/assert-game-dist.js` и `scripts/assert-bundle-dist.js` —
@@ -164,8 +178,8 @@ src/games/<gameId>/
 
 - `node_modules/` — npm-зависимости.
 - `dist/` — результат `npm run build`.
-- `.build/` — временные staging-каталоги для single-game/bundle public assets
-  и screenshots offline verification.
+- `.build/` — временные staging-каталоги для single-game/bundle public assets,
+  Electron desktop artifacts/cache и screenshots offline verification.
 - `.vite/` — Vite cache.
 - `temp/` — локальные scratch-файлы.
 - `.agent/` — локальный агентский контекст.
