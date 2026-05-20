@@ -49,10 +49,9 @@ export const theme: ThemeColors = {
   textLifeline: 'text-sky-50',
   borderLifeline: 'border-sky-400',
 
-  bgPrizeCurrent:
-    'bg-gradient-to-b from-sky-400/95 via-sky-700/95 to-sky-950/95',
+  bgPrizeCurrent: 'bg-white',
   bgPrizePassed: 'bg-sky-950/40',
-  prizeTextCurrent: 'text-white',
+  prizeTextCurrent: 'text-sky-950',
   prizeTextPassed: 'text-slate-300',
   prizeTextFuture: 'text-sky-100',
   prizeBgGuaranteed: 'bg-sky-950/55',
