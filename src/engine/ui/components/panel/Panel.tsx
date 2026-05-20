@@ -23,17 +23,20 @@ export const Panel: React.FC<PanelProps> = ({
   const theme = useTheme();
 
   const variantClass = variant === 'headless' ? 'rounded-md' : '';
+  const panelGradientDirection = theme.panelGradientDirection ?? 'to bottom';
+  const borderImageGradientDirection =
+    theme.borderImageGradientDirection ?? '180deg';
 
   return (
     <div
       className={`bg-gradient-to-b border-4 transition-all duration-300 ${variantClass} ${className}`}
       style={{
-        background: `linear-gradient(to bottom, ${theme.bgPanelFrom}, ${theme.bgPanelVia}, ${theme.bgPanelTo})`,
+        background: `linear-gradient(${panelGradientDirection}, ${theme.bgPanelFrom}, ${theme.bgPanelVia}, ${theme.bgPanelTo})`,
         boxShadow:
           `inset 0 2px 8px ${theme.glow}, ` +
           '0 0 30px rgba(0,0,0,0.8), ' +
           `0 4px 20px ${theme.glow}`,
-        borderImage: `linear-gradient(180deg, ${theme.borderImageColors}) 1`,
+        borderImage: `linear-gradient(${borderImageGradientDirection}, ${theme.borderImageColors}) 1`,
         borderStyle: 'ridge',
       }}
     >

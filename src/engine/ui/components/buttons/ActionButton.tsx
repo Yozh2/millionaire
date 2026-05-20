@@ -1,4 +1,10 @@
-import { useLayoutEffect, useRef, useState, type PointerEvent, type ReactNode } from 'react';
+import {
+  useLayoutEffect,
+  useRef,
+  useState,
+  type PointerEvent,
+  type ReactNode,
+} from 'react';
 import type { ThemeColors } from '@engine/types';
 import { BaseButton } from './BaseButton';
 
@@ -42,7 +48,9 @@ export function ActionButton({
 
         const next = Math.min(1, (available - 1) / needed);
         const clamped = Math.max(0.6, next);
-        setFitScale((prev) => (Math.abs(prev - clamped) < 0.002 ? prev : clamped));
+        setFitScale((prev) =>
+          Math.abs(prev - clamped) < 0.002 ? prev : clamped,
+        );
       });
     };
 
@@ -66,6 +74,8 @@ export function ActionButton({
     };
   }, [children]);
 
+  const buttonGlow = theme.buttonGlow ?? theme.glow;
+
   return (
     <div ref={wrapRef} className="w-full flex justify-center overflow-visible">
       <div
@@ -84,11 +94,11 @@ export function ActionButton({
           glareRestart="pointer"
           className={`glare action-btn px-8 py-3 font-bold text-lg tracking-wide border-4 ${className}`}
           style={{
-            ['--btn-glow' as string]: theme.glow,
+            ['--btn-glow' as string]: buttonGlow,
             touchAction: 'manipulation',
             boxShadow: disabled
               ? 'none'
-              : `0 5px 20px rgba(0, 0, 0, 0.3), 0 0 25px ${theme.glow}`,
+              : `0 5px 20px rgba(0, 0, 0, 0.3), 0 0 25px ${buttonGlow}`,
             borderStyle: 'ridge',
             textShadow: disabled ? 'none' : '0 2px 4px rgba(0,0,0,0.8)',
           }}

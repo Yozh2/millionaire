@@ -249,6 +249,14 @@ src/games/<gameId>/
 Engine не должен импортировать конкретную игру напрямую ради доступа к
 вопросам или ассетам.
 
+`theme.ts` задаёт campaign-level визуальный контракт: цвета текста, фон,
+панели, кнопки, ответы, `lifeline`, `prizeLadder`, glow-эффекты и
+опциональные overrides для отдельных поверхностей вроде panel gradient
+direction, primary action button и campaign card. `GameConfig.defaultCampaignId`
+может задавать кампанию, которая автоматически выбрана на стартовом экране.
+Такие overrides должны оставаться визуальными настройками темы, а не
+переносить game-specific поведение в engine UI.
+
 ## 15. Текущие игры
 
 - `poc` — минимальная демонстрация возможностей engine.

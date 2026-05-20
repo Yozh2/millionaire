@@ -5,65 +5,74 @@ export const theme: ThemeColors = {
 
   bgGradient:
     'linear-gradient(180deg,' +
-    ' #031425 0%,' +
-    ' #0a2b45 28%,' +
-    ' #0b3c5f 58%,' +
-    ' #020b14 100%' +
+    ' #020202 0%,' +
+    ' #031016 32%,' +
+    ' #071f27 64%,' +
+    ' #000000 100%' +
     ')',
 
-  textPrimary: 'text-sky-100',
-  textSecondary: 'text-sky-200',
-  textMuted: 'text-slate-400',
-  textAccent: 'text-cyan-300',
+  textPrimary: 'text-cyan-50',
+  textSecondary: 'text-cyan-100',
+  textMuted: 'text-zinc-400',
+  textAccent: 'text-yellow-200',
 
-  textTitle: 'text-sky-100',
-  textHeader: 'text-sky-100',
+  textTitle: 'text-cyan-50',
+  textHeader: 'text-cyan-50',
   headerTextShadow:
-    '0 6px 18px rgba(0, 0, 0, 0.45), 0 0 18px rgba(0, 170, 255, 0.4)',
-  panelHeaderTextShadow: '0 1px 2px rgba(0, 0, 0, 0.7)',
+    '0 6px 18px rgba(0, 0, 0, 0.62), 0 0 18px rgba(34, 211, 238, 0.42)',
+  panelHeaderTextShadow: '0 2px 6px rgba(0, 0, 0, 0.8)',
 
-  border: 'border-sky-800',
-  borderLight: 'border-sky-600',
-  borderHover: 'hover:border-sky-400',
+  border: 'border-yellow-500',
+  borderLight: 'border-cyan-300',
+  borderHover: 'hover:border-yellow-300',
 
-  bgPanelFrom: 'rgba(3, 16, 28, 0.88)',
-  bgPanelVia: 'rgba(6, 28, 46, 0.75)',
-  bgPanelTo: 'rgba(3, 14, 26, 0.92)',
+  panelGradientDirection: '180deg',
+  bgPanelFrom: 'rgba(0, 0, 0, 0.96)',
+  bgPanelVia: 'rgba(6, 58, 69, 0.72)',
+  bgPanelTo: 'rgba(0, 0, 0, 0.98)',
 
-  bgHeader: 'from-sky-900 via-sky-700 to-blue-900',
-  bgHeaderVia: '#00AAFF',
-  headerBorderColor: '#1b4b7a',
+  headerGradientClass: 'bg-gradient-to-r',
+  bgHeader: 'from-black via-cyan-950 to-black',
+  bgHeaderVia: '#06b6d4',
+  headerBorderColor: '#facc15',
 
-  bgButton: 'from-sky-700 via-blue-600 to-sky-800',
+  bgButton: 'from-cyan-500 via-cyan-700 to-cyan-950',
+  buttonBorder: 'border-yellow-300',
+  buttonGlow: 'rgba(34, 211, 238, 0.5)',
 
-  bgAnswer: 'from-slate-950/80 via-sky-900/45 to-slate-950/80',
-  bgAnswerHover:
-    'hover:from-slate-950/90 hover:via-sky-900/60 hover:to-slate-950/90',
-  shadowAnswer: 'hover:shadow-sky-700/40',
+  bgAnswer: 'from-black via-cyan-950/52 to-black',
+  bgAnswerHover: 'hover:from-black hover:via-cyan-900/68 hover:to-black',
+  shadowAnswer: 'hover:shadow-cyan-500/35',
 
-  bgLifeline: 'from-sky-700 to-blue-800',
-  textLifeline: 'text-slate-100',
-  borderLifeline: 'border-sky-500',
+  bgLifeline: 'from-cyan-800 to-black',
+  textLifeline: 'text-cyan-50',
+  borderLifeline: 'border-cyan-400',
 
   bgPrizeCurrent:
-    'bg-gradient-to-b from-sky-700/90 via-blue-800/90 to-blue-900/90',
-  bgPrizePassed: 'bg-slate-950/40',
-  prizeTextCurrent: 'text-sky-100',
-  prizeTextPassed: 'text-slate-400',
-  prizeTextFuture: 'text-slate-300',
-  prizeBgGuaranteed: 'bg-sky-900/40',
-  prizeTextGuaranteed: 'text-sky-200',
-  prizeBorderGuaranteed: 'border-sky-700',
-  prizeBorderCurrent: 'border-sky-300/80',
-  prizeBorderPassed: 'border-sky-800',
-  prizeGlowCurrent: 'rgba(0, 170, 255, 0.55)',
+    'bg-gradient-to-b from-yellow-400/95 via-yellow-600/75 to-yellow-950/95',
+  bgPrizePassed: 'bg-black/48',
+  prizeTextCurrent: 'text-black',
+  prizeTextPassed: 'text-zinc-400',
+  prizeTextFuture: 'text-cyan-100',
+  prizeBgGuaranteed: 'bg-cyan-950/52',
+  prizeTextGuaranteed: 'text-yellow-200',
+  prizeBorderGuaranteed: 'border-yellow-500',
+  prizeBorderCurrent: 'border-yellow-200',
+  prizeBorderPassed: 'border-cyan-950',
+  prizeGlowCurrent: 'rgba(250, 204, 21, 0.42)',
 
-  glow: 'rgba(0, 170, 255, 0.4)',
-  glowColor: '#00AAFF',
-  glowSecondary: '#38bdf8',
-  campaignCardGlow: 'rgba(0, 170, 255, 0.5)',
-  campaignCardGlowColor: '#00AAFF',
-  campaignCardGlowSecondary: '#38bdf8',
+  glow: 'rgba(34, 211, 238, 0.4)',
+  glowColor: '#22d3ee',
+  glowSecondary: '#facc15',
+  campaignCardGlow: 'rgba(34, 211, 238, 0.5)',
+  campaignCardGlowColor: '#22d3ee',
+  campaignCardGlowSecondary: '#facc15',
+  campaignCardSurfaceClass:
+    'bg-gradient-to-b from-black via-cyan-950/52 to-black',
+  campaignCardFrameClass: 'border-yellow-200/18',
+  campaignCardLabelClass: 'text-zinc-300',
+  campaignCardIdleBorderColor: '#0891b2',
 
-  borderImageColors: 'rgba(0, 170, 255, 0.85), #0a2b45, #041824',
+  borderImageGradientDirection: '180deg',
+  borderImageColors: 'rgba(250, 204, 21, 0.95), #ca8a04, #422006',
 };

@@ -300,53 +300,6 @@
         }
       }
     },
-    "mom55": {
-      "cardAssets": {
-        "gameCard": null,
-        "favicon": null
-      },
-      "level1": {
-        "icons": [],
-        "sounds": [],
-        "mainMenuMusic": null,
-        "startImages": [],
-        "campaignStartImages": {}
-      },
-      "level2": {
-        "defeatMusic": null,
-        "victoryMusic": null,
-        "retreatMusic": null,
-        "icons": [],
-        "endImages": {
-          "victory": [],
-          "defeat": [],
-          "retreat": []
-        }
-      },
-      "voices": [],
-      "campaigns": {
-        "family": {
-          "level1_1": {
-            "music": null,
-            "musicAlt": null,
-            "playImages": {
-              "easy": []
-            }
-          },
-          "level2": {
-            "playImages": {
-              "medium": [],
-              "hard": []
-            },
-            "endImages": {
-              "victory": [],
-              "defeat": [],
-              "retreat": []
-            }
-          }
-        }
-      }
-    },
     "nnr": {
       "cardAssets": {
         "gameCard": null,
@@ -370,14 +323,30 @@
           "/games/nnr/sounds/lifeline-phone.m4a"
         ],
         "mainMenuMusic": "/games/nnr/music/menu.m4a",
-        "startImages": [],
-        "campaignStartImages": {}
+        "startImages": [
+          "/games/nnr/images/start/2ef3dce7c059b268cf8b9e0707ee5594.webp"
+        ],
+        "campaignStartImages": {
+          "nn": [
+            "/games/nnr/images/campaigns/nn/start/ce78d1da254c0843eb23951ae077ff5f.webp"
+          ],
+          "perceptron": [
+            "/games/nnr/images/campaigns/perceptron/start/91c029af27d1e60442759b7d1c0671d1.webp"
+          ],
+          "research": [
+            "/games/nnr/images/campaigns/research/start/eae012096c50d904ffb15e23d0a53d5e.webp"
+          ]
+        }
       },
       "level2": {
-        "defeatMusic": null,
-        "victoryMusic": null,
-        "retreatMusic": null,
-        "icons": [],
+        "defeatMusic": "/games/nnr/music/defeat.m4a",
+        "victoryMusic": "/games/nnr/music/victory.m4a",
+        "retreatMusic": "/games/nnr/music/retreat.m4a",
+        "icons": [
+          "/games/nnr/icons/defeat.webp",
+          "/games/nnr/icons/retreat.webp",
+          "/games/nnr/icons/victory.webp"
+        ],
         "endImages": {
           "victory": [],
           "defeat": [],
@@ -385,7 +354,104 @@
         }
       },
       "voices": [],
-      "campaigns": {}
+      "campaigns": {
+        "nn": {
+          "level1_1": {
+            "music": "/games/nnr/music/nn.m4a",
+            "musicAlt": null,
+            "playImages": {
+              "easy": [
+                "/games/nnr/images/campaigns/nn/play/easy/0.webp",
+                "/games/nnr/images/campaigns/nn/play/easy/3a665279646a85e44cbe58307f47457f.webp",
+                "/games/nnr/images/campaigns/nn/play/easy/da5b59745c6a4699dee7684eba901bba.webp"
+              ]
+            }
+          },
+          "level2": {
+            "playImages": {
+              "medium": [
+                "/games/nnr/images/campaigns/nn/play/medium/1.webp",
+                "/games/nnr/images/campaigns/nn/play/medium/77cbd23d130128f4671ef15c77059b91.webp",
+                "/games/nnr/images/campaigns/nn/play/medium/7874b45deabdc0f431760eb6f6494579.webp"
+              ],
+              "hard": [
+                "/games/nnr/images/campaigns/nn/play/hard/677e09724f0e2df9b6c000b75b5da10d.webp",
+                "/games/nnr/images/campaigns/nn/play/hard/8766eedaab2e5ce37cc6c1fcc5d2dfd0.webp",
+                "/games/nnr/images/campaigns/nn/play/hard/dylan-the-geth.webp"
+              ]
+            },
+            "endImages": {
+              "victory": [],
+              "defeat": [],
+              "retreat": []
+            }
+          }
+        },
+        "perceptron": {
+          "level1_1": {
+            "music": "/games/nnr/music/perceptron.m4a",
+            "musicAlt": null,
+            "playImages": {
+              "easy": [
+                "/games/nnr/images/campaigns/perceptron/play/easy/0.webp",
+                "/games/nnr/images/campaigns/perceptron/play/easy/047.webp",
+                "/games/nnr/images/campaigns/perceptron/play/easy/5463b514e21fbd3fec3772fba142a46e.webp"
+              ]
+            }
+          },
+          "level2": {
+            "playImages": {
+              "medium": [
+                "/games/nnr/images/campaigns/perceptron/play/medium/1582774591_2415.webp",
+                "/games/nnr/images/campaigns/perceptron/play/medium/MV5BZGM2NDk1N2ItOTYxNS00ZmQ1LTkwYjQtZGJlZjNlNmNhMTZmXkEyXkFqcGc@._V1_FMjpg_UX1000_.webp",
+                "/games/nnr/images/campaigns/perceptron/play/medium/xghLn0SAsTsdk2hdOP1Gw.webp"
+              ],
+              "hard": [
+                "/games/nnr/images/campaigns/perceptron/play/hard/214d247bb16eab075db924935c29106c.webp",
+                "/games/nnr/images/campaigns/perceptron/play/hard/a.webp",
+                "/games/nnr/images/campaigns/perceptron/play/hard/c0884711188efb40fb4ade64c64bb0d0.webp"
+              ]
+            },
+            "endImages": {
+              "victory": [],
+              "defeat": [],
+              "retreat": []
+            }
+          }
+        },
+        "research": {
+          "level1_1": {
+            "music": "/games/nnr/music/research.m4a",
+            "musicAlt": null,
+            "playImages": {
+              "easy": [
+                "/games/nnr/images/campaigns/research/play/easy/0.webp",
+                "/games/nnr/images/campaigns/research/play/easy/1.webp",
+                "/games/nnr/images/campaigns/research/play/easy/3.webp"
+              ]
+            }
+          },
+          "level2": {
+            "playImages": {
+              "medium": [
+                "/games/nnr/images/campaigns/research/play/medium/0.webp",
+                "/games/nnr/images/campaigns/research/play/medium/1.webp",
+                "/games/nnr/images/campaigns/research/play/medium/ar2qrs.webp"
+              ],
+              "hard": [
+                "/games/nnr/images/campaigns/research/play/hard/0.webp",
+                "/games/nnr/images/campaigns/research/play/hard/1.webp",
+                "/games/nnr/images/campaigns/research/play/hard/2.webp"
+              ]
+            },
+            "endImages": {
+              "victory": [],
+              "defeat": [],
+              "retreat": []
+            }
+          }
+        }
+      }
     },
     "sky-cotl": {
       "cardAssets": {

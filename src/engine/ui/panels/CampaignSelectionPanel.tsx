@@ -1,4 +1,11 @@
-import { useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type PointerEvent } from 'react';
+import {
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+  type CSSProperties,
+  type PointerEvent,
+} from 'react';
 import type { Campaign, GameConfig, ThemeColors } from '@engine/types';
 import { ActionButton } from '@engine/ui/components/buttons';
 import { Panel, PanelHeader } from '@engine/ui/components/panel';
@@ -55,7 +62,9 @@ export function CampaignSelectionPanel({
         if (available <= 0 || content <= 0) return;
 
         const next = clamp((available - 1) / content, 0.48, 1);
-        setFirstRowScale((prev) => (Math.abs(prev - next) < 0.002 ? prev : next));
+        setFirstRowScale((prev) =>
+          Math.abs(prev - next) < 0.002 ? prev : next,
+        );
         setFirstRowAvailablePx(available);
       });
     };
@@ -123,7 +132,9 @@ export function CampaignSelectionPanel({
         if (!Number.isFinite(baseSize) || baseSize <= 0) return;
 
         const getLineCount = () => {
-          const lineHeight = Number.parseFloat(window.getComputedStyle(text).lineHeight);
+          const lineHeight = Number.parseFloat(
+            window.getComputedStyle(text).lineHeight,
+          );
           if (!Number.isFinite(lineHeight) || lineHeight <= 0) return 0;
           return Math.ceil(text.scrollHeight / lineHeight);
         };
@@ -182,7 +193,9 @@ export function CampaignSelectionPanel({
     let cancelled = false;
 
     const computeScale = (selector: string) => {
-      const elements = Array.from(block.querySelectorAll<HTMLElement>(selector));
+      const elements = Array.from(
+        block.querySelectorAll<HTMLElement>(selector),
+      );
       if (elements.length === 0) return 1;
 
       let nextScale = 1;
@@ -205,8 +218,12 @@ export function CampaignSelectionPanel({
         if (cancelled) return;
         const nextNameScale = computeScale('[data-campaign-name]');
         const nextLabelScale = computeScale('[data-campaign-label]');
-        setNameScale((prev) => (Math.abs(prev - nextNameScale) < 0.003 ? prev : nextNameScale));
-        setLabelScale((prev) => (Math.abs(prev - nextLabelScale) < 0.003 ? prev : nextLabelScale));
+        setNameScale((prev) =>
+          Math.abs(prev - nextNameScale) < 0.003 ? prev : nextNameScale,
+        );
+        setLabelScale((prev) =>
+          Math.abs(prev - nextLabelScale) < 0.003 ? prev : nextLabelScale,
+        );
       });
     };
 
@@ -289,7 +306,10 @@ export function CampaignSelectionPanel({
               isTight ? 'gap-3 sm:gap-5' : 'gap-4 sm:gap-6'
             }`}
           >
-            <div ref={firstRowWrapRef} className="w-full flex justify-center overflow-visible">
+            <div
+              ref={firstRowWrapRef}
+              className="w-full flex justify-center overflow-visible"
+            >
               <div
                 ref={firstRowGroupRef}
                 className="inline-flex justify-center gap-3 sm:gap-4 md:gap-6"
@@ -353,7 +373,7 @@ export function CampaignSelectionPanel({
           disabled={!selectedCampaign}
           className={
             selectedCampaign
-              ? `bg-gradient-to-b ${theme.bgButton} text-white ${theme.borderLight}`
+              ? `bg-gradient-to-b ${theme.bgButton} text-white ${theme.buttonBorder ?? theme.borderLight}`
               : 'bg-gradient-to-b from-stone-700 via-stone-800 to-stone-900 text-stone-500 border-stone-600 cursor-not-allowed'
           }
         >

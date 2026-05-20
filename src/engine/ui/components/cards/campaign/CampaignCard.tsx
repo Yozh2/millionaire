@@ -60,6 +60,19 @@ export function CampaignCard({
   const glowSecondary =
     campaign.theme.campaignCardGlowSecondary ?? campaign.theme.glowSecondary;
   const glow = campaign.theme.campaignCardGlow ?? campaign.theme.glow;
+  const surfaceClass =
+    campaign.theme.campaignCardSurfaceClass ??
+    (isLightTheme
+      ? 'bg-gradient-to-b from-white/60 via-white/40 to-white/20'
+      : 'bg-gradient-to-b from-stone-950/80 via-stone-950/60 to-black/80');
+  const frameClass =
+    campaign.theme.campaignCardFrameClass ??
+    (isLightTheme ? 'border-black/10' : 'border-white/10');
+  const labelClass =
+    campaign.theme.campaignCardLabelClass ??
+    (isLightTheme ? 'text-stone-600' : 'text-stone-400');
+  const idleBorderColor =
+    campaign.theme.campaignCardIdleBorderColor ?? '#44403c';
 
   return (
     <button
@@ -79,16 +92,12 @@ export function CampaignCard({
       data-campaign-id={campaign.id}
       data-selected={selected ? 'true' : 'false'}
       data-card-state={fsm.state}
-      className={`campaign-card relative flex-none overflow-hidden border-4 w-[170px] h-[215px] ${
-        isLightTheme
-          ? 'bg-gradient-to-b from-white/60 via-white/40 to-white/20'
-          : 'bg-gradient-to-b from-stone-950/80 via-stone-950/60 to-black/80'
-      }`}
+      className={`campaign-card relative flex-none overflow-hidden border-4 w-[170px] h-[215px] ${surfaceClass}`}
       style={{
         ['--campaign-glow' as string]: glowColor,
         ['--campaign-glow-secondary' as string]: glowSecondary,
         borderStyle: 'ridge',
-        borderColor: selected ? glowColor : '#44403c',
+        borderColor: selected ? glowColor : idleBorderColor,
         boxShadow: selected
           ? `0 0 26px ${glow}, 0 16px 60px rgba(0,0,0,0.55), inset 0 0 14px ${glow}`
           : '0 14px 56px rgba(0,0,0,0.55)',
@@ -101,7 +110,7 @@ export function CampaignCard({
       }}
       onMouseLeave={(e) => {
         if (!selected) {
-          e.currentTarget.style.borderColor = '#44403c';
+          e.currentTarget.style.borderColor = idleBorderColor;
         }
       }}
     >
@@ -119,9 +128,7 @@ export function CampaignCard({
       />
       <div
         aria-hidden="true"
-        className={`campaign-card-frame pointer-events-none absolute inset-2 border ${
-          isLightTheme ? 'border-black/10' : 'border-white/10'
-        }`}
+        className={`campaign-card-frame pointer-events-none absolute inset-2 border ${frameClass}`}
       />
 
       <div className="relative w-full h-full px-3 pt-7 pb-3 flex flex-col items-center">
@@ -148,9 +155,7 @@ export function CampaignCard({
         </span>
         <span
           data-campaign-label="true"
-          className={`relative mt-2 w-full max-w-full px-0.5 text-xs text-center leading-tight whitespace-nowrap overflow-hidden ${
-            isLightTheme ? 'text-stone-600' : 'text-stone-400'
-          }`}
+          className={`relative mt-2 w-full max-w-full px-0.5 text-xs text-center leading-tight whitespace-nowrap overflow-hidden ${labelClass}`}
           style={{
             transform: 'scale(var(--campaign-label-scale, 1))',
             transformOrigin: 'center top',

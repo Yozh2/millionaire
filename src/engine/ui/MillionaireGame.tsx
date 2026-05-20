@@ -15,20 +15,23 @@ import type { PointerEvent } from 'react';
 import '@engine/ui/styles/engine.css';
 
 import { ThemeProvider } from './theme';
-import {
-  useGameState,
-  useAudio,
-  useEffects,
-  useAssetPreloader,
-} from './hooks';
+import { useGameState, useAudio, useEffects, useAssetPreloader } from './hooks';
 import { assetLoader, logger } from '@engine/services';
-import { Campaign, DEFAULT_FONT_FAMILY, GameConfig, ThemeColors } from '@engine/types';
+import {
+  Campaign,
+  DEFAULT_FONT_FAMILY,
+  GameConfig,
+  ThemeColors,
+} from '@engine/types';
 import { EndScreen } from './screens/EndScreen';
 import { GameScreen } from './screens/GameScreen';
 import { ParticleCanvas } from './effects/ParticleCanvas';
 import { StartScreen } from './screens/StartScreen';
 import { PortalHeader } from './layout/header/PortalHeader';
-import { PortalHeaderTitle, type PortalHeaderTitlePhase } from './layout/header/PortalHeaderTitle';
+import {
+  PortalHeaderTitle,
+  type PortalHeaderTitlePhase,
+} from './layout/header/PortalHeaderTitle';
 import { SoundConsentOverlay } from './components/overlays/SoundConsentOverlay';
 import { DEFAULT_PORTAL_HEADER_TUNER_VALUES } from './components/sliders/portalHeaderTunerDefaults';
 import { createCoinDrawFromConfig } from './effects/createCoinDrawFromConfig';
@@ -85,9 +88,7 @@ export function MillionaireGame({
 
     devWindow.sans = () => {
       const prize =
-        prizeLadder.values[prizeLadder.values.length - 1] ??
-        wonPrize ??
-        '0';
+        prizeLadder.values[prizeLadder.values.length - 1] ?? wonPrize ?? '0';
 
       forceWin(prize);
       playVictory();
@@ -107,7 +108,7 @@ export function MillionaireGame({
 
   // Track which campaign is being preloaded for level 1.1
   const [preloadingCampaign, setPreloadingCampaign] = useState<string | null>(
-    null
+    null,
   );
   const [level11Progress, setLevel11Progress] = useState(0);
   const [isWaitingForLevel11, setIsWaitingForLevel11] = useState(false);
@@ -141,7 +142,8 @@ export function MillionaireGame({
 
   // Intro title lifecycle: show once when header portal first reveals (start),
   // then evaporate on first campaign selection; show again only after NEW_GAME.
-  const [introTitlePhase, setIntroTitlePhase] = useState<PortalHeaderTitlePhase | null>(null);
+  const [introTitlePhase, setIntroTitlePhase] =
+    useState<PortalHeaderTitlePhase | null>(null);
   const [isIntroTitleDismissed, setIsIntroTitleDismissed] = useState(false);
   const introTitleTriggeredRef = useRef(false);
 
@@ -160,27 +162,31 @@ export function MillionaireGame({
           setLevel11Progress(progress);
         },
       })
-      .catch((err) => logger.millionaireGame.warn('Level 1.1 preload', { error: err }));
+      .catch((err) =>
+        logger.millionaireGame.warn('Level 1.1 preload', { error: err }),
+      );
   }, [gameState.selectedCampaign?.id, config.id, preloadingCampaign]);
 
   // Start Level 2 background loading when game starts
   useEffect(() => {
-    if (
-      gameState.gameState === 'play' &&
-      gameState.selectedCampaign
-    ) {
+    if (gameState.gameState === 'play' && gameState.selectedCampaign) {
       assetLoader.preloadInBackground(
         'level2',
         config.id,
-        gameState.selectedCampaign.id
+        gameState.selectedCampaign.id,
       );
     }
   }, [gameState.gameState, gameState.selectedCampaign, config.id]);
 
   // Get current theme based on selected campaign
   const currentCampaign = gameState.selectedCampaign;
-  const theme: ThemeColors =
-    currentCampaign?.theme || config.campaigns[0].theme;
+  const defaultCampaign =
+    (config.defaultCampaignId
+      ? config.campaigns.find(
+          (campaign) => campaign.id === config.defaultCampaignId,
+        )
+      : null) ?? config.campaigns[0];
+  const theme: ThemeColors = currentCampaign?.theme || defaultCampaign.theme;
 
   const backgroundGradient = useMemo(() => {
     return theme.bgGradient || DEFAULT_BG_GRADIENT;
@@ -205,20 +211,23 @@ export function MillionaireGame({
   }, [safeAreaColor]);
 
   // Wrapper for selectCampaign with sound (campaign select SFX only if user enabled sound)
-  const handleSelectCampaign = useCallback((campaign: Campaign) => {
-    if (!isIntroTitleDismissed) {
-      setIsIntroTitleDismissed(true);
-      setIntroTitlePhase((prev) => (prev && prev !== 'exit' ? 'exit' : prev));
-    }
+  const handleSelectCampaign = useCallback(
+    (campaign: Campaign) => {
+      if (!isIntroTitleDismissed) {
+        setIsIntroTitleDismissed(true);
+        setIntroTitlePhase((prev) => (prev && prev !== 'exit' ? 'exit' : prev));
+      }
 
-    // Play campaign-specific select sound if defined, otherwise generic click
-    if (campaign.selectSound) {
-      audio.playCampaignSelectSound(campaign.selectSound);
-    } else {
-      audio.playSoundEffect('answerButton');
-    }
-    gameState.selectCampaign(campaign);
-  }, [audio, gameState, isIntroTitleDismissed]);
+      // Play campaign-specific select sound if defined, otherwise generic click
+      if (campaign.selectSound) {
+        audio.playCampaignSelectSound(campaign.selectSound);
+      } else {
+        audio.playSoundEffect('answerButton');
+      }
+      gameState.selectCampaign(campaign);
+    },
+    [audio, gameState, isIntroTitleDismissed],
+  );
 
   // Sound on button press (mousedown/touchstart) - synced with button landing animation
   const handleActionButtonPress = useCallback(
@@ -230,7 +239,7 @@ export function MillionaireGame({
       // Safari (especially iOS) requires audio to start inside the user gesture handler.
       audio.playSoundEffect('actionButton');
     },
-    [audio]
+    [audio],
   );
 
   // Wrapper for startGame with music switch
@@ -249,9 +258,8 @@ export function MillionaireGame({
       try {
         await assetLoader.loadLevel('level1_1', config.id, campaignId, {
           onProgress: (loaded, total) => {
-            const progress = total > 0
-              ? Math.round((loaded / total) * 100)
-              : 100;
+            const progress =
+              total > 0 ? Math.round((loaded / total) * 100) : 100;
             setLevel11Progress(progress);
           },
         });
@@ -306,10 +314,9 @@ export function MillionaireGame({
     showHeader &&
     gameState.gameState === 'start' &&
     (!isSoundConsentDone || isSoundConsentClosing);
-  const isHeaderActivated =
-    showHeader && !showSoundConsent;
+  const isHeaderActivated = showHeader && !showSoundConsent;
   const [panelsCeilingPx, setPanelsCeilingPx] = useState(() =>
-    Math.round(DEFAULT_PORTAL_HEADER_TUNER_VALUES.panelsOverlap)
+    Math.round(DEFAULT_PORTAL_HEADER_TUNER_VALUES.panelsOverlap),
   );
   const [portalHeightPx, setPortalHeightPx] = useState(0);
 
@@ -360,7 +367,11 @@ export function MillionaireGame({
     if (progress < 1 / 3) return 'easy';
     if (progress < 2 / 3) return 'medium';
     return 'hard';
-  }, [gameState.currentQuestion, gameState.gameState, gameState.totalQuestions]);
+  }, [
+    gameState.currentQuestion,
+    gameState.gameState,
+    gameState.totalQuestions,
+  ]);
 
   const screenWrapperClass =
     gameState.gameState === 'victory'
@@ -401,10 +412,10 @@ export function MillionaireGame({
         )}
 
         {/* Background Music */}
-        <audio id="bg-music" loop preload="none"/>
+        <audio id="bg-music" loop preload="none" />
 
-          <div className="w-full flex-1 flex flex-col">
-            {showHeader && (
+        <div className="w-full flex-1 flex flex-col">
+          {showHeader && (
             <div className="relative overflow-visible z-0">
               {introTitlePhase && (
                 <PortalHeaderTitle
@@ -412,7 +423,9 @@ export function MillionaireGame({
                   theme={theme}
                   phase={introTitlePhase}
                   onEntered={() =>
-                    setIntroTitlePhase((prev) => (prev === 'enter' ? 'shown' : prev))
+                    setIntroTitlePhase((prev) =>
+                      prev === 'enter' ? 'shown' : prev,
+                    )
                   }
                   onExited={() => setIntroTitlePhase(null)}
                 />
@@ -444,27 +457,28 @@ export function MillionaireGame({
               {gameState.gameState === 'start' &&
                 !level1Preload.isLoading &&
                 !isWaitingForLevel11 && (
-                <StartScreen
-                  config={config}
-                  selectedCampaign={gameState.selectedCampaign}
-                  onSelectCampaign={handleSelectCampaign}
-                  onStartGame={handleStartGame}
-                  onActionButtonPress={handleActionButtonPress}
-                  theme={theme}
-                />
-              )}
+                  <StartScreen
+                    config={config}
+                    selectedCampaign={gameState.selectedCampaign}
+                    onSelectCampaign={handleSelectCampaign}
+                    onStartGame={handleStartGame}
+                    onActionButtonPress={handleActionButtonPress}
+                    theme={theme}
+                  />
+                )}
 
               {/* Game Screen */}
-              {gameState.gameState === 'play' && gameState.questions.length > 0 && (
-                <GameScreen
-                  config={config}
-                  gameState={gameState}
-                  audio={audio}
-                  theme={theme}
-                  effects={effects}
-                  onNewGame={handleNewGame}
-                />
-              )}
+              {gameState.gameState === 'play' &&
+                gameState.questions.length > 0 && (
+                  <GameScreen
+                    config={config}
+                    gameState={gameState}
+                    audio={audio}
+                    theme={theme}
+                    effects={effects}
+                    onNewGame={handleNewGame}
+                  />
+                )}
 
               {/* End Screen */}
               {(gameState.gameState === 'victory' ||

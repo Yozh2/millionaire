@@ -132,6 +132,8 @@ export interface ThemeColors {
   borderHover: string;
 
   // Panel backgrounds
+  /** Optional CSS gradient direction for panel surfaces (defaults to `to bottom`). */
+  panelGradientDirection?: string;
   bgPanelFrom: string;
   bgPanelVia: string;
   bgPanelTo: string;
@@ -148,6 +150,10 @@ export interface ThemeColors {
 
   // Buttons
   bgButton: string;
+  /** Optional border class for primary action buttons (falls back to borderLight). */
+  buttonBorder?: string;
+  /** Optional glow for primary action buttons (falls back to the theme glow). */
+  buttonGlow?: string;
 
   // Answers
   bgAnswer: string;
@@ -187,8 +193,18 @@ export interface ThemeColors {
   campaignCardGlow?: string;
   campaignCardGlowColor?: string;
   campaignCardGlowSecondary?: string;
+  /** Optional CampaignCard surface classes (falls back to dark/light defaults). */
+  campaignCardSurfaceClass?: string;
+  /** Optional CampaignCard inner frame class (falls back to dark/light defaults). */
+  campaignCardFrameClass?: string;
+  /** Optional CampaignCard secondary label class (falls back to dark/light defaults). */
+  campaignCardLabelClass?: string;
+  /** Optional CampaignCard idle border color (falls back to the default stone border). */
+  campaignCardIdleBorderColor?: string;
 
   // Border image
+  /** Optional CSS gradient direction for panel borders (defaults to `180deg`). */
+  borderImageGradientDirection?: string;
   borderImageColors: string;
 }
 
@@ -621,6 +637,9 @@ export interface GameConfig {
 
   /** Available campaigns/difficulties (2-N) */
   campaigns: Campaign[];
+
+  /** Optional campaign id selected automatically on the start screen. */
+  defaultCampaignId?: string;
 
   /** Companions for "Phone a Friend" (can be empty) */
   companions: readonly Companion[];

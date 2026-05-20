@@ -22,6 +22,8 @@ export const nnrConfig = defineGameConfig({
 
   fontFamily: '"Univers", "Arial", sans-serif',
 
+  defaultCampaignId: 'nn',
+
   campaigns: createCampaignsFromGlobs({
     gameId: 'nnr',
     campaignStrings: strings.campaigns,

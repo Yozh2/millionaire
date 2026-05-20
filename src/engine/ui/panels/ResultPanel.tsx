@@ -38,7 +38,7 @@ export function ResultPanel({
   const IconElement = useMemo(() => {
     const pick = (
       custom: ComponentType | undefined,
-      fallback: JSX.Element
+      fallback: JSX.Element,
     ): JSX.Element => {
       if (custom) {
         const Custom = custom;
@@ -121,7 +121,10 @@ export function ResultPanel({
         const fits = () => {
           const lines = getLineCount();
           if (lines > maxLines) return false;
-          if (textEl.clientWidth > 0 && textEl.scrollWidth > textEl.clientWidth + 0.5) {
+          if (
+            textEl.clientWidth > 0 &&
+            textEl.scrollWidth > textEl.clientWidth + 0.5
+          ) {
             return false;
           }
           return true;
@@ -200,7 +203,7 @@ export function ResultPanel({
             theme={theme}
             onClick={onNewGame}
             onPointerDown={(e) => onActionButtonPress(e)}
-            className={`bg-gradient-to-b ${theme.bgButton} text-white ${theme.borderLight}`}
+            className={`bg-gradient-to-b ${theme.bgButton} text-white ${theme.buttonBorder ?? theme.borderLight}`}
           >
             {config.strings.newGameButton}
           </ActionButton>

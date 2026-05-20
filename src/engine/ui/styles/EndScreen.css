@@ -1,5 +1,5 @@
 .end-screen-icon {
-  max-height: 256px;
+  max-height: min(220px, 28vh);
   width: 100%;
   display: flex;
   align-items: center;
@@ -7,9 +7,9 @@
 }
 
 .end-screen-icon > * {
-  max-height: 256px;
-  max-width: 100%;
-  width: 100% !important;
+  max-height: min(220px, 28vh);
+  max-width: min(220px, 58vw);
+  width: auto !important;
   height: auto !important;
 }
 

@@ -105,7 +105,7 @@ export interface GameStateActions {
 
   /** Handle answer click */
   handleAnswer: (
-    displayIndex: number
+    displayIndex: number,
   ) => Promise<'correct' | 'defeat' | 'victory' | 'retry' | 'ignored'>;
 
   /** Take current winnings and leave */
@@ -136,10 +136,8 @@ export interface GameStateActions {
 export interface UseGameStateReturn extends GameStateData, GameStateActions {}
 
 export const useGameState = (config: GameConfig): UseGameStateReturn => {
-  const [state, dispatch] = useReducer(
-    gameReducer,
-    undefined,
-    () => createInitialGameDomainState()
+  const [state, dispatch] = useReducer(gameReducer, undefined, () =>
+    createInitialGameDomainState(),
   );
 
   const campaignsById = useMemo(() => {
@@ -156,42 +154,58 @@ export const useGameState = (config: GameConfig): UseGameStateReturn => {
   const totalQuestions = useMemo(() => selectTotalQuestions(state), [state]);
   const currentQuestionData = useMemo(
     () => selectCurrentQuestionData(state),
-    [state]
+    [state],
   );
   const currentPrize = useMemo(() => selectCurrentPrize(state), [state]);
   const currentDifficulty = useMemo(
     () => selectCurrentDifficulty(state),
-    [state]
+    [state],
   );
 
   const currentTheme = useMemo(
     () => selectedCampaign?.theme ?? null,
-    [selectedCampaign]
+    [selectedCampaign],
   );
 
   const lifelineAvailability = useMemo(
     () => state.lifelineAvailability,
-    [state.lifelineAvailability]
+    [state.lifelineAvailability],
   );
 
   const selectCampaign = useCallback(
     (campaign: Campaign) => {
       const session = createGameSession(config, campaign.id);
       if (!session) {
-        logger.gameState.warn(`No question pool found for campaign: ${campaign.id}`);
+        logger.gameState.warn(
+          `No question pool found for campaign: ${campaign.id}`,
+        );
       }
 
       dispatch({ type: 'SELECT_CAMPAIGN', campaignId: campaign.id, session });
     },
-    [config]
+    [config],
   );
 
   useEffect(() => {
-    if (config.campaigns.length !== 1) return;
     if (state.phase !== 'start') return;
     if (state.selectedCampaignId) return;
-    selectCampaign(config.campaigns[0]);
-  }, [config.campaigns, selectCampaign, state.phase, state.selectedCampaignId]);
+
+    const defaultCampaign = config.defaultCampaignId
+      ? (campaignsById.get(config.defaultCampaignId) ?? null)
+      : config.campaigns.length === 1
+        ? (config.campaigns[0] ?? null)
+        : null;
+
+    if (!defaultCampaign) return;
+    selectCampaign(defaultCampaign);
+  }, [
+    campaignsById,
+    config.campaigns,
+    config.defaultCampaignId,
+    selectCampaign,
+    state.phase,
+    state.selectedCampaignId,
+  ]);
 
   const startGame = useCallback(() => {
     if (!state.selectedCampaignId) return;
@@ -199,7 +213,7 @@ export const useGameState = (config: GameConfig): UseGameStateReturn => {
     const session = createGameSession(config, state.selectedCampaignId);
     if (!session) {
       logger.gameState.warn(
-        `No question pool found for campaign: ${state.selectedCampaignId}`
+        `No question pool found for campaign: ${state.selectedCampaignId}`,
       );
     }
 
@@ -228,7 +242,7 @@ export const useGameState = (config: GameConfig): UseGameStateReturn => {
 
       dispatch({ type: 'FORCE_WIN', prize: finalPrize });
     },
-    [state.currentQuestionIndex, state.prizeLadder.values]
+    [state.currentQuestionIndex, state.prizeLadder.values],
   );
 
   const newGame = useCallback(() => {
@@ -237,10 +251,11 @@ export const useGameState = (config: GameConfig): UseGameStateReturn => {
 
   const handleAnswer = useCallback(
     async (
-      displayIndex: number
+      displayIndex: number,
     ): Promise<'correct' | 'defeat' | 'victory' | 'retry' | 'ignored'> => {
       if (state.selectedAnswerDisplayIndex !== null) return 'ignored';
-      if (state.eliminatedAnswerDisplayIndices.includes(displayIndex)) return 'ignored';
+      if (state.eliminatedAnswerDisplayIndices.includes(displayIndex))
+        return 'ignored';
 
       dispatch({ type: 'ANSWER_SELECTED', displayIndex });
 
@@ -264,7 +279,7 @@ export const useGameState = (config: GameConfig): UseGameStateReturn => {
         }, ANSWER_REVEAL_DURATION_MS);
       });
     },
-    [state]
+    [state],
   );
 
   const retreat = useCallback(() => {
@@ -348,7 +363,8 @@ export const useGameState = (config: GameConfig): UseGameStateReturn => {
       eliminatedDisplayIndices: state.eliminatedAnswerDisplayIndices,
     });
 
-    const originalIndex = state.shuffledAnswers[suggestedDisplayIndex] ?? question.correct;
+    const originalIndex =
+      state.shuffledAnswers[suggestedDisplayIndex] ?? question.correct;
     const answerText = question.answers[originalIndex] ?? '';
 
     dispatch({
@@ -386,7 +402,10 @@ export const useGameState = (config: GameConfig): UseGameStateReturn => {
     if (!state.lifelineAvailability.double) return;
     if (state.selectedAnswerDisplayIndex !== null) return;
 
-    dispatch({ type: 'APPLY_LIFELINE_DOUBLE', result: { type: 'double', stage: 'armed' } });
+    dispatch({
+      type: 'APPLY_LIFELINE_DOUBLE',
+      result: { type: 'double', stage: 'armed' },
+    });
   }, [state]);
 
   const clearLifelineResult = useCallback(() => {
