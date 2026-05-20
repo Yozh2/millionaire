@@ -34,8 +34,7 @@ export function SoundConsentOverlay({
   const copy = useMemo(() => {
     const defaults = {
       title: 'Звук в игре',
-      message:
-        'Эта игра лучше всего ощущается в наушниках.\nВключить звук?',
+      message: 'Эта игра лучше всего ощущается в наушниках.\nВключить звук?',
       withSound: 'Со звуком',
       withoutSound: 'Без звука',
     };
@@ -60,7 +59,12 @@ export function SoundConsentOverlay({
   };
 
   const buttonBase =
-    'border-3 h-12 w-full flex items-center justify-center bg-gradient-to-b';
+    'border-3 min-h-14 w-full flex items-center justify-center bg-gradient-to-b ' +
+    'ring-1 ring-white/15 shadow-lg text-sm sm:text-base font-bold';
+  const enableButtonClass = `${buttonBase} ${theme.textLifeline} ${theme.borderLight} ${theme.bgButton}`;
+  const disableButtonClass =
+    `${buttonBase} text-slate-100 border-slate-500 ` +
+    'from-slate-700/95 via-slate-900/95 to-black';
 
   return (
     <div
@@ -89,22 +93,24 @@ export function SoundConsentOverlay({
             <div className="w-full grid grid-cols-2 gap-3 pt-1">
               <LifelineButton
                 icon={<VolumeOnIcon />}
+                label={copy.withSound}
                 ariaLabel={copy.withSound}
                 title={copy.withSound}
                 disabled={isClosing}
-                className={`${buttonBase} ${theme.textLifeline} ${theme.borderLifeline} ${theme.bgLifeline}`}
+                className={enableButtonClass}
                 glow={theme.glow}
-                boxShadow={`0 0 15px ${theme.glow}`}
+                boxShadow={`0 10px 24px rgba(0, 0, 0, 0.38), 0 0 18px ${theme.glow}`}
                 onClick={handleEnable}
               />
               <LifelineButton
                 icon={<VolumeOffIcon />}
+                label={copy.withoutSound}
                 ariaLabel={copy.withoutSound}
                 title={copy.withoutSound}
                 disabled={isClosing}
-                className={`${buttonBase} ${theme.textLifeline} ${theme.borderLifeline} ${theme.bgLifeline}`}
+                className={disableButtonClass}
                 glow={theme.glowSecondary ?? theme.glow}
-                boxShadow={`0 0 12px ${theme.glowSecondary ?? theme.glow}55`}
+                boxShadow="0 10px 24px rgba(0, 0, 0, 0.42), inset 0 1px 0 rgba(255,255,255,0.12)"
                 onClick={handleDisable}
               />
             </div>
