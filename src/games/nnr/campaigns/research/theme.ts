@@ -24,7 +24,7 @@ export const theme: ThemeColors = {
 
   border: 'border-orange-700',
   borderLight: 'border-orange-400',
-  borderHover: 'hover:border-orange-400',
+  borderHover: 'hover:border-sky-300 active:border-sky-300',
 
   panelGradientDirection: '180deg',
   bgPanelFrom: 'rgba(5, 6, 7, 0.97)',
@@ -42,11 +42,7 @@ export const theme: ThemeColors = {
 
   bgAnswer: 'from-zinc-950/92 via-zinc-900/78 to-black',
   bgAnswerHover: 'hover:from-zinc-900 hover:via-zinc-800/82 hover:to-black',
-  shadowAnswer: 'hover:shadow-orange-500/32',
-  answerCorrectClass:
-    'bg-gradient-to-br from-sky-400 via-sky-500 to-sky-900 text-sky-50 border-sky-300 shadow-xl shadow-sky-500/35 animate-pulse',
-  answerWrongClass:
-    'bg-gradient-to-br from-sky-500 via-sky-700 to-sky-950 text-sky-50 border-sky-300 shadow-xl shadow-sky-500/35 animate-pulse',
+  shadowAnswer: 'hover:shadow-sky-500/35 active:shadow-sky-500/45',
 
   bgLifeline: 'from-sky-800 via-sky-900 to-sky-950',
   textLifeline: 'text-sky-50',

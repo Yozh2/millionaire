@@ -28,13 +28,6 @@ export function AnswersPanel({
   answerIndexRefs,
   onAnswerClick,
 }: AnswersPanelProps) {
-  const answerCorrectClass =
-    theme.answerCorrectClass ??
-    'bg-gradient-to-br from-emerald-800 to-emerald-950 text-emerald-200 border-emerald-500 shadow-xl animate-pulse';
-  const answerWrongClass =
-    theme.answerWrongClass ??
-    'bg-gradient-to-br from-red-900 to-red-950 text-red-300 border-red-600 shadow-lg animate-pulse';
-
   const getAnswerStyle = (displayIndex: number): string => {
     const base =
       'relative px-4 py-3 text-left transition-all duration-300 ' +
@@ -61,14 +54,24 @@ export function AnswersPanel({
         selectionIsCorrect || !preventCorrectRevealOnWrongSelection;
 
       if (originalIndex === correctAnswerIndex && shouldRevealCorrect) {
-        return base + answerCorrectClass + selectedClass;
+        return (
+          base +
+          'bg-gradient-to-br from-emerald-800 to-emerald-950 ' +
+          'text-emerald-200 border-emerald-500 shadow-xl animate-pulse' +
+          selectedClass
+        );
       }
 
       if (
         displayIndex === selectedAnswer &&
         originalIndex !== correctAnswerIndex
       ) {
-        return base + answerWrongClass + selectedClass;
+        return (
+          base +
+          'bg-gradient-to-br from-red-900 to-red-950 ' +
+          'text-red-300 border-red-600 shadow-lg animate-pulse' +
+          selectedClass
+        );
       }
 
       // After selection, all other answers should look like "50:50 eliminated" ones.

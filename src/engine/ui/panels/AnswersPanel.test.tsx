@@ -70,29 +70,4 @@ describe('AnswersPanel', () => {
     expect(buttons[2]?.className).toContain('opacity-30');
     expect(buttons[3]?.className).toContain('opacity-30');
   });
-
-  it('allows themes to override answer outcome colors', () => {
-    const customTheme = {
-      ...theme,
-      answerCorrectClass: 'bg-sky-500 text-sky-50 border-sky-300',
-      answerWrongClass: 'bg-orange-700 text-orange-50 border-orange-400',
-    } as ThemeColors;
-
-    render(
-      <AnswersPanel
-        answers={['A0', 'A1', 'A2', 'A3']}
-        correctAnswerIndex={1}
-        shuffledAnswers={[0, 1, 2, 3]}
-        eliminatedAnswers={[]}
-        selectedAnswer={1}
-        theme={customTheme}
-        answerIndexRefs={{ current: [] }}
-        onAnswerClick={() => {}}
-      />,
-    );
-
-    const buttons = screen.getAllByRole('button');
-    expect(buttons[1]?.className).toContain('bg-sky-500');
-    expect(buttons[1]?.className).not.toContain('from-emerald-800');
-  });
 });
