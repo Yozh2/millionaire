@@ -31,6 +31,10 @@ const walk = (dir) => {
   return files;
 };
 
+const dsStoreFiles = walk(distPath).filter((file) =>
+  file.endsWith('.DS_Store'),
+);
+
 assert(existsSync(join(distPath, 'index.html')), 'index.html missing');
 assert(
   existsSync(join(distPath, 'asset-manifest.json')),
@@ -76,6 +80,11 @@ for (const file of jsFiles) {
     `${file} references other games: ${unexpected.join(', ')}`,
   );
 }
+
+assert(
+  dsStoreFiles.length === 0,
+  `.DS_Store files found in dist: ${dsStoreFiles.join(', ')}`,
+);
 
 if (failures.length > 0) {
   console.error('Game dist assertion failed:\n');

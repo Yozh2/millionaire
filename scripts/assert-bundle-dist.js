@@ -33,6 +33,10 @@ const walk = (dir) => {
   return files;
 };
 
+const dsStoreFiles = walk(distPath).filter((file) =>
+  file.endsWith('.DS_Store'),
+);
+
 const sameList = (actual, expected) =>
   actual.length === expected.length &&
   actual.every((id, index) => id === expected[index]);
@@ -82,6 +86,11 @@ for (const file of jsFiles) {
     `${file} references other games: ${unexpected.join(', ')}`,
   );
 }
+
+assert(
+  dsStoreFiles.length === 0,
+  `.DS_Store files found in dist: ${dsStoreFiles.join(', ')}`,
+);
 
 if (failures.length > 0) {
   console.error('Bundle dist assertion failed:\n');

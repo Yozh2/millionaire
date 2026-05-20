@@ -109,7 +109,9 @@ npm run docker:bundle -- --games nnr,poc --out dist/bundles/nnr-poc
 ```
 
 `build:game` собирает только выбранную игру и её ассеты. `build:bundle`
-собирает hub и выбранные игры. Docker-команды используют уже тот же pipeline,
+собирает hub и выбранные игры. Во время staging и post-build cleanup из
+`dist` удаляются macOS `.DS_Store` файлы, а bundle assertions падают, если
+они всё же попали в артефакты. Docker-команды используют уже тот же pipeline,
 а затем упаковывают static dist в nginx image.
 
 Smoke-проверка запущенных offline-контейнеров:
