@@ -69,7 +69,7 @@ export const theme: ThemeColors = {
   campaignCardGlowSecondary: '#38bdf8',
   campaignCardSurfaceClass:
     'bg-gradient-to-b from-sky-800/66 via-sky-900/38 to-slate-950/92',
-  campaignCardFrameClass: 'border-sky-950/45',
+  campaignCardFrameClass: 'border-sky-950/70',
   campaignCardLabelClass: 'text-slate-200/85',
   campaignCardIdleBorderColor: '#456879',
 

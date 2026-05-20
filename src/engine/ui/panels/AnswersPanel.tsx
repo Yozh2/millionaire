@@ -11,7 +11,10 @@ interface AnswersPanelProps {
   preventCorrectRevealOnWrongSelection?: boolean;
   theme: ThemeColors;
   answerIndexRefs: MutableRefObject<(HTMLSpanElement | null)[]>;
-  onAnswerClick: (displayIndex: number, e: MouseEvent<HTMLButtonElement>) => void;
+  onAnswerClick: (
+    displayIndex: number,
+    e: MouseEvent<HTMLButtonElement>,
+  ) => void;
 }
 
 export function AnswersPanel({
@@ -25,12 +28,20 @@ export function AnswersPanel({
   answerIndexRefs,
   onAnswerClick,
 }: AnswersPanelProps) {
+  const answerCorrectClass =
+    theme.answerCorrectClass ??
+    'bg-gradient-to-br from-emerald-800 to-emerald-950 text-emerald-200 border-emerald-500 shadow-xl animate-pulse';
+  const answerWrongClass =
+    theme.answerWrongClass ??
+    'bg-gradient-to-br from-red-900 to-red-950 text-red-300 border-red-600 shadow-lg animate-pulse';
+
   const getAnswerStyle = (displayIndex: number): string => {
     const base =
       'relative px-4 py-3 text-left transition-all duration-300 ' +
       'cursor-pointer text-sm border-4 ';
 
-    const isSelected = selectedAnswer !== null && displayIndex === selectedAnswer;
+    const isSelected =
+      selectedAnswer !== null && displayIndex === selectedAnswer;
     const selectedClass = isSelected ? ' answer-btn--selected' : '';
 
     if (eliminatedAnswers.includes(displayIndex)) {
@@ -50,26 +61,20 @@ export function AnswersPanel({
         selectionIsCorrect || !preventCorrectRevealOnWrongSelection;
 
       if (originalIndex === correctAnswerIndex && shouldRevealCorrect) {
-        return (
-          base +
-          'bg-gradient-to-br from-emerald-800 to-emerald-950 ' +
-          'text-emerald-200 border-emerald-500 shadow-xl animate-pulse' +
-          selectedClass
-        );
+        return base + answerCorrectClass + selectedClass;
       }
 
-      if (displayIndex === selectedAnswer && originalIndex !== correctAnswerIndex) {
-        return (
-          base +
-          'bg-gradient-to-br from-red-900 to-red-950 ' +
-          'text-red-300 border-red-600 shadow-lg animate-pulse' +
-          selectedClass
-        );
+      if (
+        displayIndex === selectedAnswer &&
+        originalIndex !== correctAnswerIndex
+      ) {
+        return base + answerWrongClass + selectedClass;
       }
 
       // After selection, all other answers should look like "50:50 eliminated" ones.
       return (
-        base + 'opacity-30 cursor-not-allowed bg-stone-950 text-stone-700 border-stone-900'
+        base +
+        'opacity-30 cursor-not-allowed bg-stone-950 text-stone-700 border-stone-900'
       );
     }
 
@@ -88,7 +93,9 @@ export function AnswersPanel({
         <AnswerButton
           key={displayIndex}
           onClick={(e) => onAnswerClick(displayIndex, e)}
-          disabled={selectedAnswer !== null || eliminatedAnswers.includes(displayIndex)}
+          disabled={
+            selectedAnswer !== null || eliminatedAnswers.includes(displayIndex)
+          }
           className={getAnswerStyle(displayIndex)}
         >
           <span

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Batch convert OGG/MP3 -> M4A (AAC-LC) with safe replacement.
+# Batch convert WAV/OGG/MP3 -> M4A (AAC-LC) with safe replacement.
 
 set -euo pipefail
 
@@ -54,12 +54,12 @@ convert_dir () {
   done < <(
     find "$root" -type f \
       -path "*/${subdir}/*" \
-      \( -iname "*.ogg" -o -iname "*.mp3" \) \
+      \( -iname "*.wav" -o -iname "*.ogg" -o -iname "*.mp3" \) \
       -print0
   )
 }
 
-echo "Converting OGG/MP3 assets under $PUBLIC_DIR/games..."
+echo "Converting WAV/OGG/MP3 assets under $PUBLIC_DIR/games..."
 
 convert_dir "$PUBLIC_DIR/games" "music" "112k" "keep"
 convert_dir "$PUBLIC_DIR/games" "sounds" "64k" "keep"

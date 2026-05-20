@@ -21,23 +21,29 @@
       "play": {
         "easy": {
           "images": [
-            "0.webp",
             "3a665279646a85e44cbe58307f47457f.webp",
+            "ai.webp",
+            "arm46.webp",
+            "blade_runner-hero.webp",
             "da5b59745c6a4699dee7684eba901bba.webp"
           ]
         },
         "hard": {
           "images": [
-            "677e09724f0e2df9b6c000b75b5da10d.webp",
             "8766eedaab2e5ce37cc6c1fcc5d2dfd0.webp",
-            "dylan-the-geth.webp"
+            "dylan-the-geth.webp",
+            "i.webp",
+            "maxresdefault.webp",
+            "war_robots-large.webp"
           ]
         },
         "medium": {
           "images": [
-            "1.webp",
+            "1636861.webp",
             "77cbd23d130128f4671ef15c77059b91.webp",
-            "7874b45deabdc0f431760eb6f6494579.webp"
+            "7874b45deabdc0f431760eb6f6494579.webp",
+            "MV5BMTkyMDg5Njc1N15BMl5BanBnXkFtZTcwNzY2NTIyNw@@._V1_FMjpg_UX1000_.webp",
+            "pacific_rim_the_video_game-hero.webp"
           ]
         }
       },

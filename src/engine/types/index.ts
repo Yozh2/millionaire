@@ -159,6 +159,10 @@ export interface ThemeColors {
   bgAnswer: string;
   bgAnswerHover: string;
   shadowAnswer: string;
+  /** Optional answer class for the revealed correct/active answer. */
+  answerCorrectClass?: string;
+  /** Optional answer class for the selected wrong answer. */
+  answerWrongClass?: string;
 
   // Lifelines
   bgLifeline: string;

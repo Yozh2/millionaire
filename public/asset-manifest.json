@@ -320,7 +320,12 @@
           "/games/nnr/sounds/lifeline-audience.m4a",
           "/games/nnr/sounds/lifeline-double.m4a",
           "/games/nnr/sounds/lifeline-fifty.m4a",
-          "/games/nnr/sounds/lifeline-phone.m4a"
+          "/games/nnr/sounds/lifeline-phone.m4a",
+          "/games/nnr/sounds/retreat.m4a",
+          "/games/nnr/sounds/select-nn.m4a",
+          "/games/nnr/sounds/select-perceptron.m4a",
+          "/games/nnr/sounds/select-research.m4a",
+          "/games/nnr/sounds/victory.m4a"
         ],
         "mainMenuMusic": "/games/nnr/music/menu.m4a",
         "startImages": [
@@ -361,8 +366,10 @@
             "musicAlt": null,
             "playImages": {
               "easy": [
-                "/games/nnr/images/campaigns/nn/play/easy/0.webp",
                 "/games/nnr/images/campaigns/nn/play/easy/3a665279646a85e44cbe58307f47457f.webp",
+                "/games/nnr/images/campaigns/nn/play/easy/ai.webp",
+                "/games/nnr/images/campaigns/nn/play/easy/arm46.webp",
+                "/games/nnr/images/campaigns/nn/play/easy/blade_runner-hero.webp",
                 "/games/nnr/images/campaigns/nn/play/easy/da5b59745c6a4699dee7684eba901bba.webp"
               ]
             }
@@ -370,14 +377,18 @@
           "level2": {
             "playImages": {
               "medium": [
-                "/games/nnr/images/campaigns/nn/play/medium/1.webp",
+                "/games/nnr/images/campaigns/nn/play/medium/1636861.webp",
                 "/games/nnr/images/campaigns/nn/play/medium/77cbd23d130128f4671ef15c77059b91.webp",
-                "/games/nnr/images/campaigns/nn/play/medium/7874b45deabdc0f431760eb6f6494579.webp"
+                "/games/nnr/images/campaigns/nn/play/medium/7874b45deabdc0f431760eb6f6494579.webp",
+                "/games/nnr/images/campaigns/nn/play/medium/MV5BMTkyMDg5Njc1N15BMl5BanBnXkFtZTcwNzY2NTIyNw@@._V1_FMjpg_UX1000_.webp",
+                "/games/nnr/images/campaigns/nn/play/medium/pacific_rim_the_video_game-hero.webp"
               ],
               "hard": [
-                "/games/nnr/images/campaigns/nn/play/hard/677e09724f0e2df9b6c000b75b5da10d.webp",
                 "/games/nnr/images/campaigns/nn/play/hard/8766eedaab2e5ce37cc6c1fcc5d2dfd0.webp",
-                "/games/nnr/images/campaigns/nn/play/hard/dylan-the-geth.webp"
+                "/games/nnr/images/campaigns/nn/play/hard/dylan-the-geth.webp",
+                "/games/nnr/images/campaigns/nn/play/hard/i.webp",
+                "/games/nnr/images/campaigns/nn/play/hard/maxresdefault.webp",
+                "/games/nnr/images/campaigns/nn/play/hard/war_robots-large.webp"
               ]
             },
             "endImages": {
