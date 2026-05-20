@@ -638,7 +638,7 @@ export interface GameConfig {
   /** Available campaigns/difficulties (2-N) */
   campaigns: Campaign[];
 
-  /** Optional campaign id selected automatically on the start screen. */
+  /** Optional campaign id whose theme is used before a campaign is selected. */
   defaultCampaignId?: string;
 
   /** Companions for "Phone a Friend" (can be empty) */

@@ -103,16 +103,6 @@ export function CampaignCard({
           : '0 14px 56px rgba(0,0,0,0.55)',
         ...(style ?? {}),
       }}
-      onMouseEnter={(e) => {
-        if (!selected) {
-          e.currentTarget.style.borderColor = glowColor;
-        }
-      }}
-      onMouseLeave={(e) => {
-        if (!selected) {
-          e.currentTarget.style.borderColor = idleBorderColor;
-        }
-      }}
     >
       <div
         aria-hidden="true"

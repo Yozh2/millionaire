@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useReducer } from 'react';
+import { useCallback, useMemo, useReducer } from 'react';
 import type {
   Campaign,
   Companion,
@@ -185,27 +185,6 @@ export const useGameState = (config: GameConfig): UseGameStateReturn => {
     },
     [config],
   );
-
-  useEffect(() => {
-    if (state.phase !== 'start') return;
-    if (state.selectedCampaignId) return;
-
-    const defaultCampaign = config.defaultCampaignId
-      ? (campaignsById.get(config.defaultCampaignId) ?? null)
-      : config.campaigns.length === 1
-        ? (config.campaigns[0] ?? null)
-        : null;
-
-    if (!defaultCampaign) return;
-    selectCampaign(defaultCampaign);
-  }, [
-    campaignsById,
-    config.campaigns,
-    config.defaultCampaignId,
-    selectCampaign,
-    state.phase,
-    state.selectedCampaignId,
-  ]);
 
   const startGame = useCallback(() => {
     if (!state.selectedCampaignId) return;

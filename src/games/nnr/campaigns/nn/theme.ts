@@ -66,10 +66,10 @@ export const theme: ThemeColors = {
   glowSecondary: '#facc15',
   campaignCardGlow: 'rgba(34, 211, 238, 0.5)',
   campaignCardGlowColor: '#22d3ee',
-  campaignCardGlowSecondary: '#facc15',
+  campaignCardGlowSecondary: '#67e8f9',
   campaignCardSurfaceClass:
-    'bg-gradient-to-b from-black via-cyan-950/52 to-black',
-  campaignCardFrameClass: 'border-yellow-200/18',
+    'bg-gradient-to-b from-cyan-950/72 via-cyan-900/42 to-slate-950/90',
+  campaignCardFrameClass: 'border-cyan-100/16',
   campaignCardLabelClass: 'text-zinc-300',
   campaignCardIdleBorderColor: '#0891b2',
 
