@@ -1,0 +1,9 @@
+# Disable LFS filters in gh-pages output
+*.m4a -filter -diff -merge
+*.mp3 -filter -diff -merge
+*.ogg -filter -diff -merge
+*.wav -filter -diff -merge
+*.ttf -filter -diff -merge
+*.otf -filter -diff -merge
+*.woff -filter -diff -merge
+*.woff2 -filter -diff -merge

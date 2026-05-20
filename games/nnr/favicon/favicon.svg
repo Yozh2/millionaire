@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none">
+  <defs>
+    <linearGradient id="nnrFavicon" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#63D792" />
+      <stop offset="1" stop-color="#00AAFF" />
+    </linearGradient>
+  </defs>
+  <rect width="128" height="128" rx="28" fill="#050b12" />
+  <circle cx="64" cy="64" r="38" stroke="url(#nnrFavicon)" stroke-width="6" />
+  <circle cx="64" cy="64" r="22" stroke="#2dd4bf" stroke-width="4" opacity="0.85" />
+  <path d="M64 64L96 48" stroke="#99f6e4" stroke-width="5" stroke-linecap="round" />
+  <circle cx="96" cy="48" r="5" fill="#63D792" />
+</svg>

@@ -1,0 +1,157 @@
+{
+  "campaigns": {
+    "nn": {
+      "end": {
+        "defeat": {
+          "images": [
+            "m_reapers.webp"
+          ]
+        },
+        "retreat": {
+          "images": [
+            "m_sandevistan.webp"
+          ]
+        },
+        "victory": {
+          "images": [
+            "m_cyborg.webp"
+          ]
+        }
+      },
+      "play": {
+        "easy": {
+          "images": [
+            "3a665279646a85e44cbe58307f47457f.webp",
+            "ai.webp",
+            "arm46.webp",
+            "blade_runner-hero.webp",
+            "da5b59745c6a4699dee7684eba901bba.webp"
+          ]
+        },
+        "hard": {
+          "images": [
+            "8766eedaab2e5ce37cc6c1fcc5d2dfd0.webp",
+            "dylan-the-geth.webp",
+            "i.webp",
+            "maxresdefault.webp",
+            "war_robots-large.webp"
+          ]
+        },
+        "medium": {
+          "images": [
+            "1636861.webp",
+            "77cbd23d130128f4671ef15c77059b91.webp",
+            "7874b45deabdc0f431760eb6f6494579.webp",
+            "MV5BMTkyMDg5Njc1N15BMl5BanBnXkFtZTcwNzY2NTIyNw@@._V1_FMjpg_UX1000_.webp",
+            "pacific_rim_the_video_game-hero.webp"
+          ]
+        }
+      },
+      "start": {
+        "images": [
+          "ce78d1da254c0843eb23951ae077ff5f.webp"
+        ]
+      }
+    },
+    "perceptron": {
+      "end": {
+        "defeat": {
+          "images": [
+            "0.webp",
+            "2.webp"
+          ]
+        },
+        "retreat": {
+          "images": [
+            "m_retreat.webp"
+          ]
+        },
+        "victory": {
+          "images": [
+            "m_android_peace.webp"
+          ]
+        }
+      },
+      "play": {
+        "easy": {
+          "images": [
+            "0.webp",
+            "047.webp",
+            "5463b514e21fbd3fec3772fba142a46e.webp"
+          ]
+        },
+        "hard": {
+          "images": [
+            "214d247bb16eab075db924935c29106c.webp",
+            "a.webp",
+            "c0884711188efb40fb4ade64c64bb0d0.webp"
+          ]
+        },
+        "medium": {
+          "images": [
+            "1582774591_2415.webp",
+            "MV5BZGM2NDk1N2ItOTYxNS00ZmQ1LTkwYjQtZGJlZjNlNmNhMTZmXkEyXkFqcGc@._V1_FMjpg_UX1000_.webp",
+            "xghLn0SAsTsdk2hdOP1Gw.webp"
+          ]
+        }
+      },
+      "start": {
+        "images": [
+          "91c029af27d1e60442759b7d1c0671d1.webp"
+        ]
+      }
+    },
+    "research": {
+      "end": {
+        "defeat": {
+          "images": [
+            "m_defeat_portal.webp"
+          ]
+        },
+        "retreat": {
+          "images": [
+            "m_cake.webp"
+          ]
+        },
+        "victory": {
+          "images": [
+            "m_cj.webp"
+          ]
+        }
+      },
+      "play": {
+        "easy": {
+          "images": [
+            "0.webp",
+            "1.webp",
+            "3.webp"
+          ]
+        },
+        "hard": {
+          "images": [
+            "0.webp",
+            "1.webp",
+            "2.webp"
+          ]
+        },
+        "medium": {
+          "images": [
+            "0.webp",
+            "1.webp",
+            "ar2qrs.webp"
+          ]
+        }
+      },
+      "start": {
+        "images": [
+          "eae012096c50d904ffb15e23d0a53d5e.webp"
+        ]
+      }
+    }
+  },
+  "start": {
+    "images": [
+      "2ef3dce7c059b268cf8b9e0707ee5594.webp"
+    ]
+  }
+}
